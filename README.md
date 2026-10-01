@@ -6,11 +6,11 @@
   <img alt="OpenDot" src="assets/brand/opendot-readme-banner-light.svg" width="1280">
 </picture>
 
-[简体中文](README.zh-CN.md) · [Released a6 install guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) · [0.3 local-wheel guide](docs/installed-quickstart.md) · [Capabilities](CAPABILITIES.md) · [Architecture](docs/architecture.md)
+[简体中文](README.zh-CN.md) · [Install 0.3.0a1](docs/installed-quickstart.md) · [Capabilities](CAPABILITIES.md) · [Architecture](docs/architecture.md)
 
 Run a declared Python tool, inspect its acceptance result, and retrieve the exact bytes it produced. OpenDot Engineering brings local callable execution, hash-addressed artifacts, evidence checks, and controlled Git workspaces into one package for developers and research engineers.
 
-**Experimental alpha source: 0.3.0a1; NOT_SCORED.** This source
+**Experimental alpha prerelease: 0.3.0a1; NOT_SCORED.** This source
 integrates [structural default verification v2](docs/structural-default-v2.md):
 conditional per-element energy consistency, schema 2 and explicit historical
 `artifact_v1` compatibility. Scientific acceptance remains false. The source-boundary
@@ -21,7 +21,7 @@ The [Gmsh CPU callback](docs/gmsh-cpu-ceiling.md) preserves inherited lower
 ceilings; fake-resource checks do not establish native/kernel enforcement.
 [Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
-For published installation assets and current release status, see [Releases](https://github.com/sddvacav/opendot/releases). The [published a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) keeps its version-specific artifact pins. Source descriptions and local build records do not replace exact released-artifact acceptance.
+The [0.3.0a1 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1) is available. Follow the [version-pinned installation guide](docs/installed-quickstart.md) for its exact wheel, matching source examples and SHA-256 checks. The [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retains its separate version-specific pins; earlier-version results do not accept these artifacts.
 
 The historical [0.2.0a6 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)
 is available separately. Its [tagged source](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f)

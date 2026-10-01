@@ -1,48 +1,50 @@
-# 从已复核的本地 wheel 得到第一个结果
+# 从 0.3.0a1 预发布版得到第一个结果
 
 [English](installed-quickstart.md) · [仅使用源码的路径](../README.zh-CN.md#运行合成示例)
 
 执行一个受权限检查的 Python callable，保存合成结果，并独立核对存储字节。
-第一个示例只需要已复核的 wheel，不需要源码仓库、模型密钥、网络服务、原生求解器或设备。
+第一个示例只需要已发布的 wheel，不需要源码仓库、模型密钥、网络服务、原生求解器或设备。
 这是有限的本地软件操作，不是自治智能体运行时。
 
 结构默认返回值已变更，详见[迁移指南](structural-default-v2.md)。本入门教程仍使用行为未变的函数／产物流程。
 
 ## 1. 准备独立环境
 
-需要 Python 3.12+（含 `venv` 和 pip 支持）、可信 POSIX 环境，以及已保存到本地的
-经过单独复核的 `0.3.0a1` wheel。先前本地检查使用 Linux 和 CPython 3.12，不代表承诺支持所有平台。
+需要 Python 3.12+（含 `venv` 和 pip 支持）以及可信 POSIX 环境。
+先前本地检查使用 Linux 和 CPython 3.12，不代表承诺支持所有平台。
 以下命令假设 `/tmp` 适合作为你信任的临时父目录。
 
-该候选尚未发布。本文不构成 `0.3.0a1` wheel 的复核记录，先前版本的复核不批准本版本。
-请从同一份独立复核的交付记录取得 wheel 及其 SHA-256；本文没有
-声明任何公开软件源或下载地址。不要安装名字相似的软件包。摘要一致仅核对文件字节，
-不能证明作者身份、安全性或公开发布状态。
-[0.3.0a1 验证记录](structural-v2-candidate-verification.md)将本候选的源码选择、离线构建、全新安装
-检查和双语操作实测分别记录。请查看该精确候选记录；先前 a3／a4／a5 的产物或
-安装实测不批准本 wheel。[文档检查](documentation-checks.md)仅比较下方八个 shell
-代码块，不执行这些命令。
+从 [0.3.0a1 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)下载
+[opendot_engineering-0.3.0a1-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot_engineering-0.3.0a1-py3-none-any.whl)，
+保存到可信的本地目录。其精确 SHA-256 固定在下方命令中，也列于发布包的
+[SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/SHA256SUMS)。
+本文使用 GitHub 发布产物，不声明已发布到 PyPI。不要替换为名字相似的软件包，
+或先前具有相同版本号的构建。摘要一致仅核对文件字节，不能证明作者身份、安全性或科学有效性。
 
-运行前替换 `WHEEL` 和 `EXPECTED_WHEEL_SHA256`。若 Python 3.12+ 的可执行文件
-名称不同，也请修改 `PYTHON`。所有代码块在同一个 shell 会话运行。安装使用新环境，
-不下载任何依赖。
+[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/RELEASE-NOTES.md)将这些产物绑定至公开提交
+[49891de448f0bf80c47c035aab4742e1d32221d9](https://github.com/sddvacav/opendot/commit/49891de448f0bf80c47c035aab4742e1d32221d9)。
+[0.3.0a1 发布前验证记录](structural-v2-candidate-verification.md)保留源码、离线构建、安装检查
+和教程实测的独立范围；先前版本的结果不批准本 wheel。
+[文档检查](documentation-checks.md)仅比较下方八个 shell 代码块，不执行这些命令。
+
+只将 `WHEEL` 替换为已下载 wheel 的绝对路径。若 Python 3.12+ 的可执行文件
+名称不同，也请修改 `PYTHON`。保留固定 SHA-256 不变。所有代码块在同一个 shell
+会话运行。安装使用新环境，不下载任何依赖。
 
 ```sh
 set -eu
 PYTHON=python3.12
 WHEEL='/absolute/path/to/opendot_engineering-0.3.0a1-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='paste-the-independently-reviewed-wheel-sha256'
+EXPECTED_WHEEL_SHA256='53ba4398939dce8d037be21656bfadf6686abdd9bcc1134d85efa44a9b5c1207'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
-import hashlib, pathlib, re, sys
+import hashlib, pathlib, sys
 if sys.version_info < (3, 12):
     raise SystemExit("Python 3.12 or newer is required")
 wheel, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
-if not re.fullmatch(r"[0-9a-f]{64}", expected):
-    raise SystemExit("Replace EXPECTED_WHEEL_SHA256 with the reviewed wheel SHA-256")
 if hashlib.sha256(wheel.read_bytes()).hexdigest() != expected:
     raise SystemExit("Wheel hash mismatch: stop and check the reviewed artifact")
-print("Reviewed wheel bytes match")
+print("Released wheel bytes match")
 PYCODE
 
 JOURNEY=$(mktemp -d /tmp/opendot-first-run.XXXXXX)
@@ -126,11 +128,28 @@ PYCODE
 
 ## 3. 观察成功、语义拒绝与缺少权限
 
-wheel 包含 Python 包，但不包含示例脚本和夹具。本步骤需要另行取得配套的已复核
-源码，并替换 `SOURCE`。这里只从源码复制公开示例；Python 仍从已安装 wheel 导入。
+wheel 包含 Python 包，但不包含示例脚本和夹具。从同一版本下载配套的
+[完整源码归档](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot-engineering-0.3.0a1-source.tar.gz)，
+将 `SOURCE_ARCHIVE` 替换为其绝对本地路径。请使用这个具名产物，而非范围更窄的打包
+sdist 或 GitHub 自动生成的源码链接；它们的字节不同。保留固定源码 SHA-256 不变。
+代码块先验证归档，再解压到全新的教程目录中，然后仅复制公开示例。
+Python 仍从已安装 wheel 导入。
 
 ```sh
-SOURCE='/absolute/path/to/matching-reviewed-source'
+SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a1-source.tar.gz'
+EXPECTED_SOURCE_SHA256='bd7dfa520e1a176b48bf4cebaafbddb02dfb90aad5c7be759595ed13d3c7a73c'
+"$PY" -I -B - "$SOURCE_ARCHIVE" "$EXPECTED_SOURCE_SHA256" "$JOURNEY/source" <<'PYCODE'
+import hashlib, pathlib, sys, tarfile
+archive, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
+if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
+    raise SystemExit("Source archive hash mismatch: stop and check the released asset")
+output = pathlib.Path(sys.argv[3])
+output.mkdir(exist_ok=False)
+with tarfile.open(archive, "r:gz") as source:
+    source.extractall(output, filter="data")
+print("Released source archive bytes match")
+PYCODE
+SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a1"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"

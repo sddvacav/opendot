@@ -1,53 +1,56 @@
-# First useful result from a reviewed local wheel
+# First useful result from the 0.3.0a1 prerelease
 
 [简体中文](installed-quickstart.zh-CN.md) · [Source-only route](../README.md#run-the-synthetic-examples)
 
 Run one permission-gated Python callable, store its synthetic result, and verify
-the stored bytes independently. This first result needs only the reviewed wheel;
+the stored bytes independently. This first result needs only the released wheel;
 it does not need a source checkout, model key, network service, native solver, or
 device. These are finite local software examples, not an autonomous agent runtime.
 
 ## 1. Prepare one isolated environment
 
-You need Python 3.12+ with `venv` and pip support, a trusted POSIX environment,
-and a separately reviewed `0.3.0a1` wheel already on disk. Earlier local checks used Linux and
-CPython 3.12; this is not a general platform-support promise. Use a shell session
-in which `/tmp` is a suitable trusted temporary parent.
+You need Python 3.12+ with `venv` and pip support and a trusted POSIX environment.
+Earlier local checks used Linux and CPython 3.12; this is not a general
+platform-support promise. Use a shell session in which `/tmp` is a suitable
+trusted temporary parent.
 
-This candidate is unreleased. This guide does not establish review of a `0.3.0a1`
-wheel; earlier-version reviews do not approve it. Get the wheel and its SHA-256
-from the same independently reviewed delivery record; no public registry or download URL is
-asserted here. Do not substitute a similarly named package. A matching digest
-checks the supplied bytes, not their authorship, safety, or public release status.
-The [0.3.0a1 verification record](structural-v2-candidate-verification.md) separates this
-candidate's source selection, offline builds, fresh installed checks and bilingual
-journeys. Consult that exact-candidate ledger; earlier a3/a4/a5 artifact or
-journey results do not approve this wheel. The breaking structural default is covered by the
+Download the [opendot_engineering-0.3.0a1-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot_engineering-0.3.0a1-py3-none-any.whl)
+from the [0.3.0a1 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)
+to a trusted local directory. Its exact SHA-256 is pinned below and listed in the
+release's [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/SHA256SUMS).
+This guide uses GitHub release assets; no PyPI publication is claimed. Do not
+substitute a similarly named package or an earlier same-version build. A matching
+digest checks the supplied bytes, not their authorship, safety or scientific validity.
+
+The [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/RELEASE-NOTES.md)
+bind these assets to public commit
+[49891de448f0bf80c47c035aab4742e1d32221d9](https://github.com/sddvacav/opendot/commit/49891de448f0bf80c47c035aab4742e1d32221d9).
+The [0.3.0a1 pre-publication verification record](structural-v2-candidate-verification.md)
+keeps source, offline-build, installed and guide checks separate; earlier-version
+results do not approve this wheel. The breaking structural default is covered by the
 [migration guide](structural-default-v2.md); this first-result journey uses the unchanged
-callable/artifact profile. The
-[documentation check](documentation-checks.md) compares the eight shell blocks
-below without executing them.
+callable/artifact profile. The [documentation check](documentation-checks.md)
+compares the eight shell blocks below without executing them.
 
-Replace `WHEEL` and `EXPECTED_WHEEL_SHA256` below before running. If your Python
-3.12+ executable has another name, change `PYTHON` too. Run all blocks in the same
-shell. The setup creates a fresh environment and makes no dependency download.
+Replace only `WHEEL` with the absolute path to the downloaded wheel. If your Python
+3.12+ executable has another name, change `PYTHON` too. Keep the pinned SHA-256
+unchanged. Run all blocks in the same shell. Installation creates a fresh environment
+and makes no dependency download.
 
 ```sh
 set -eu
 PYTHON=python3.12
 WHEEL='/absolute/path/to/opendot_engineering-0.3.0a1-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='paste-the-independently-reviewed-wheel-sha256'
+EXPECTED_WHEEL_SHA256='53ba4398939dce8d037be21656bfadf6686abdd9bcc1134d85efa44a9b5c1207'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
-import hashlib, pathlib, re, sys
+import hashlib, pathlib, sys
 if sys.version_info < (3, 12):
     raise SystemExit("Python 3.12 or newer is required")
 wheel, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
-if not re.fullmatch(r"[0-9a-f]{64}", expected):
-    raise SystemExit("Replace EXPECTED_WHEEL_SHA256 with the reviewed wheel SHA-256")
 if hashlib.sha256(wheel.read_bytes()).hexdigest() != expected:
     raise SystemExit("Wheel hash mismatch: stop and check the reviewed artifact")
-print("Reviewed wheel bytes match")
+print("Released wheel bytes match")
 PYCODE
 
 JOURNEY=$(mktemp -d /tmp/opendot-first-run.XXXXXX)
@@ -137,12 +140,29 @@ follows symlinks, and is not a transaction or recovery system.
 ## 3. Try success, refusal, and missing permission
 
 The wheel contains the Python package, not the example scripts or fixtures.
-For this step, obtain the matching reviewed source separately and replace
-`SOURCE`. The source directory is only used to copy public examples; imports
-continue to come from the installed wheel.
+Download the matching [full source archive](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot-engineering-0.3.0a1-source.tar.gz)
+from the same release and replace `SOURCE_ARCHIVE` with its absolute local path.
+Use this named asset, not the narrower packaging sdist or GitHub's automatically
+generated source links, which have different bytes. Keep the source SHA-256 pin
+unchanged. The block verifies the archive before extracting it into the fresh
+journey directory, then copies only public examples. Imports continue to come
+from the installed wheel.
 
 ```sh
-SOURCE='/absolute/path/to/matching-reviewed-source'
+SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a1-source.tar.gz'
+EXPECTED_SOURCE_SHA256='bd7dfa520e1a176b48bf4cebaafbddb02dfb90aad5c7be759595ed13d3c7a73c'
+"$PY" -I -B - "$SOURCE_ARCHIVE" "$EXPECTED_SOURCE_SHA256" "$JOURNEY/source" <<'PYCODE'
+import hashlib, pathlib, sys, tarfile
+archive, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
+if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
+    raise SystemExit("Source archive hash mismatch: stop and check the released asset")
+output = pathlib.Path(sys.argv[3])
+output.mkdir(exist_ok=False)
+with tarfile.open(archive, "r:gz") as source:
+    source.extractall(output, filter="data")
+print("Released source archive bytes match")
+PYCODE
+SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a1"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"
