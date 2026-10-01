@@ -1,6 +1,11 @@
 # OpenDot release checklist
 
-Current release disposition for **0.2.0a6**: **unreleased; NOT_SCORED**. The [a6 verification scope](a6-candidate-verification.md) declares 1,183 portable / 1,342 controlled-local nodes; actual source, build, installed and independent outcomes require exact-candidate external receipts. No hosted run or publication is established.
+Current release disposition for **0.3.0a1**: **unreleased; NOT_SCORED**. The
+[successor verification scope](structural-v2-candidate-verification.md) declares
+1,309 portable / 1,468 controlled-local nodes. Actual source, offline build,
+installed and independent outcomes require exact-candidate external receipts.
+No successor hosted run or publication is established. Frozen a6 evidence remains
+version-bound and is not an acceptance of the changed default schema/profile.
 
 Historical release disposition for `0.2.0a4`: **unreleased source candidate; 1,066 selected author source checks passed with zero failures/errors/skips. Exact final outgoing-artifact and installed acceptance require separate receipts, and a publication destination remains unverified.** Separately accepted solver-gate and documentation-checker component reviews overlap the source selection; they are not additional unique coverage and do not accept the final artifacts. The 988-node portable CI definition excludes 78 local Git cases and has not run on hosted CI. See [historical a4 verification](verifier-ci-verification.md).
 

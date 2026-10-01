@@ -1,0 +1,178 @@
+{
+  "schema": "opendot.synthetic-parameter-fixtures.v1",
+  "evidence_role": "synthetic",
+  "original_proposals_added": 0,
+  "scope": "Invented decimal strings and exact task-condition matching only. No material property, unit conversion, measurement or scientific applicability claim.",
+  "cases": [
+    {
+      "id": "PARAMETER-KNOWN-ZERO",
+      "input": {
+        "task": {
+          "scenario": "bench-A",
+          "unit": "au"
+        },
+        "sources": [
+          {
+            "source": "s1",
+            "raw_value": "0",
+            "scenario": "bench-A",
+            "unit": "au"
+          }
+        ]
+      },
+      "expected": {
+        "readiness": "READY",
+        "value_status": "KNOWN",
+        "selected_decimal": "0",
+        "raw_value": "0",
+        "dependent_actions": 1
+      }
+    },
+    {
+      "id": "PARAMETER-MISSING",
+      "input": {
+        "task": {
+          "scenario": "bench-A",
+          "unit": "au"
+        },
+        "sources": [
+          {
+            "source": "s1",
+            "scenario": "bench-A",
+            "unit": "au"
+          }
+        ]
+      },
+      "expected": {
+        "readiness": "BLOCKED_UNKNOWN",
+        "value_status": "UNKNOWN",
+        "selected_decimal": null,
+        "dependent_actions": 0,
+        "runtime_status": "NOT_DISPATCHED",
+        "receipt": null
+      }
+    },
+    {
+      "id": "PARAMETER-NULL",
+      "input": {
+        "task": {
+          "scenario": "bench-A",
+          "unit": "au"
+        },
+        "sources": [
+          {
+            "source": "s1",
+            "raw_value": null,
+            "scenario": "bench-A",
+            "unit": "au"
+          }
+        ]
+      },
+      "expected": {
+        "readiness": "BLOCKED_UNKNOWN",
+        "value_status": "UNKNOWN",
+        "selected_decimal": null,
+        "dependent_actions": 0,
+        "runtime_status": "NOT_DISPATCHED",
+        "receipt": null
+      }
+    },
+    {
+      "id": "PARAMETER-CONFLICT",
+      "input": {
+        "task": {
+          "scenario": "bench-A",
+          "unit": "au"
+        },
+        "sources": [
+          {
+            "source": "s1",
+            "raw_value": "0",
+            "scenario": "bench-A",
+            "unit": "au"
+          },
+          {
+            "source": "s2",
+            "raw_value": "1",
+            "scenario": "bench-A",
+            "unit": "au"
+          }
+        ]
+      },
+      "expected": {
+        "readiness": "BLOCKED_CONFLICT",
+        "value_status": "CONFLICT",
+        "selected_decimal": null,
+        "dependent_actions": 0,
+        "runtime_status": "NOT_DISPATCHED",
+        "receipt": null
+      }
+    },
+    {
+      "id": "PARAMETER-UNKNOWN-APPLICABILITY",
+      "input": {
+        "task": {
+          "scenario": "bench-A",
+          "unit": "au"
+        },
+        "sources": [
+          {
+            "source": "s1",
+            "raw_value": "0",
+            "scenario": "bench-A",
+            "unit": "au"
+          },
+          {
+            "source": "s2",
+            "raw_value": "1",
+            "unit": "au"
+          }
+        ]
+      },
+      "expected": {
+        "readiness": "BLOCKED_UNKNOWN",
+        "value_status": "UNKNOWN",
+        "selected_decimal": null,
+        "unknown_applicability_sources": [
+          "s2"
+        ],
+        "dependent_actions": 0,
+        "runtime_status": "NOT_DISPATCHED",
+        "receipt": null
+      }
+    },
+    {
+      "id": "PARAMETER-DIFFERENT-SCENARIO",
+      "input": {
+        "task": {
+          "scenario": "bench-A",
+          "unit": "au"
+        },
+        "sources": [
+          {
+            "source": "s1",
+            "raw_value": "0",
+            "scenario": "bench-A",
+            "unit": "au"
+          },
+          {
+            "source": "s2",
+            "raw_value": "1",
+            "scenario": "bench-B",
+            "unit": "au"
+          }
+        ]
+      },
+      "expected": {
+        "readiness": "READY",
+        "value_status": "KNOWN",
+        "selected_decimal": "0",
+        "raw_value": "0",
+        "excluded_sources": [
+          "s2"
+        ],
+        "dependent_actions": 1
+      }
+    }
+  ]
+}

@@ -1,8 +1,20 @@
 # Changelog
 
-## 0.2.0a6 — unreleased evidence-workflow integration (2026-10-01)
+## 0.3.0a1 — unreleased conditional structural default (2026-10-01)
 
-- Separate corrected-a5 successor; NOT_SCORED and not published
+- Intentionally change default structural verification and refinement results to schema 2 with conditional statuses and explicit false scientific authority; see [migration](docs/structural-default-v2.md)
+- Require the unchanged per-element elastic-energy kernel after strict admission; retain exact historical dictionaries only under explicit `artifact_v1`, with no fallback
+- Preserve optional energy-API results, on-disk schema-1 receipts, existing canonical owners and frozen a6 artifacts
+- Add synthetic source-conflict prechecks: seven original protocols executed, eight unimplemented and six parameter fixtures separately counted; no generic policy/security/science claim
+- Register 59 structural, net 48 conflict and 19 fake-only Gmsh CPU nodes once: 1,309 portable / 1,468 controlled-local predeclared nodes
+- Update package/installed guides to the distinct successor version; source, build, installed and independent acceptance remain exact-artifact scopes
+- Before any publication, prepare a separate resource-qualified source/artifact identity that preserves lower inherited Gmsh CPU ceilings. The prior accepted 12b17aa artifacts remain unchanged; the same unreleased version does not transfer their acceptance. File-size policy is unchanged; no native enforcement or launch is claimed
+
+## 0.2.0a6 — evidence-workflow integration (2026-10-01)
+
+The [a6 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is now published. The points below retain the scope of its prepublication integration record; they do not establish successor acceptance. Frozen a6 source/artifacts and its original candidate receipt are unchanged.
+
+- Separate corrected-a5 successor; the prepublication assessment was NOT_SCORED
 - Retain one artifact owner; add optional `read_only: bool = False`, skipping setup writes and refusing public puts when true. Trusted-root/symlink/metadata limits remain; access timestamps are outside the non-mutating contract
 - Use that mode for measurement replay and bilingual copyable retrieval guidance; retain independent bundle/input/oracle pins and exact existing exit semantics
 - Add six synthetic source-boundary protocols and 38 explicit portable cases, leaving nine original protocols NOT_IMPLEMENTED and all production enforcement NOT_IMPLEMENTED

@@ -1,11 +1,13 @@
-"""Six fixed synthetic acceptance examples, not a production policy runtime."""
+"""Seven fixed synthetic proposals and parameter fixtures, not a policy runtime."""
 from __future__ import annotations
 
 import argparse
 from dataclasses import asdict
+from decimal import Decimal
 import json
 import os
 from pathlib import Path
+import re
 
 from opendot_engineering.adapters import source_audit as audit
 from opendot_engineering.core import ArtifactRef, ArtifactStore
@@ -13,12 +15,17 @@ from opendot_engineering.tool_runtime import ToolRisk, ToolRuntime, ToolSpec
 
 SCHEMA = 'opendot.synthetic-source-boundary.v1'
 PROPOSALS_SHA256 = '5a581f3a9e3d6e9a92e3cd95bb95692fa253aa6305d5163a022e3ef23562a4da'
-SELECTED = ('EVIDENCE-PRESENT', 'EVIDENCE-MISSING', 'TRUST-BENIGN',
+SELECTED = ('EVIDENCE-PRESENT', 'EVIDENCE-MISSING', 'EVIDENCE-CONFLICT', 'TRUST-BENIGN',
             'TRUST-EXTRA-EXPORT', 'TRAJECTORY-APPROVED', 'TRAJECTORY-UNAPPROVED')
+PARAMETER_SELECTED = ('PARAMETER-KNOWN-ZERO', 'PARAMETER-MISSING', 'PARAMETER-NULL',
+                      'PARAMETER-CONFLICT', 'PARAMETER-UNKNOWN-APPLICABILITY',
+                      'PARAMETER-DIFFERENT-SCENARIO')
+PARAMETER_FIXTURES_SHA256 = 'c163f3137817657efc344d362885a77d13264c0276b533253c287cb42c9497f3'
 SOURCES = {
     'EVIDENCE': 'https://x.com/lidangzzz/status/2086770543206785383',
     'TRUST': 'https://arxiv.org/abs/2406.13352v3',
     'TRAJECTORY': 'https://arxiv.org/abs/2406.12045v1',
+    'PARAMETER': 'https://x.com/lidangzzz/status/2086770543206785383',
 }
 MAX_BYTES = 65536
 
@@ -27,19 +34,35 @@ def encoded(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
 
 
-def load_proposals():
+def load_fixture(name, expected_sha256):
     root = audit._root_fd(Path(__file__).absolute().parent)
     try:
-        raw = audit._read(root, 'proposals.json', MAX_BYTES)
+        raw = audit._read(root, name, MAX_BYTES)
     finally:
         os.close(root)
-    if audit._sha256(raw) != PROPOSALS_SHA256:
-        raise ValueError('PROPOSAL_PIN_MISMATCH')
+    if audit._sha256(raw) != expected_sha256:
+        raise ValueError('FIXTURE_PIN_MISMATCH')
     return audit._decode(raw)
+
+
+def load_proposals():
+    return load_fixture('proposals.json', PROPOSALS_SHA256)
 
 
 def evidence_readiness(payload):
     """Example-specific checklist. No conflict resolution or access-control oracle."""
+    if payload.get('required') == ['spec.target']:
+        rows = payload.get('evidence')
+        if (type(rows) is not list or len(rows) != 2 or payload.get('precedence_rule') is not None
+                or any(type(row) is not dict or type(row.get('id')) is not str
+                       or not row['id'].strip() or type(row.get('target')) is not str
+                       or not row['target'].strip() for row in rows)
+                or len({row['id'] for row in rows}) != 2):
+            raise ValueError('UNSUPPORTED_CONFLICT_EVIDENCE')
+        if rows[0]['target'] == rows[1]['target']:
+            raise ValueError('EQUAL_TARGET_CONSUMPTION_NOT_IMPLEMENTED')
+        return {'readiness': 'BLOCKED_CONFLICT', 'selected_target': None,
+                'blocking_fields': ['spec.target'], 'unknown_required_fields': []}
     if payload.get('required') != ['spec.version', 'spec.target']:
         raise ValueError('UNSUPPORTED_CHECKLIST')
     rows = payload.get('evidence')
@@ -55,6 +78,62 @@ def evidence_readiness(payload):
     if spec['version'] != 'v1' or spec['target'] != 'synthetic-output':
         raise ValueError('UNSUPPORTED_SYNTHETIC_TARGET_OR_VERSION')
     return {'readiness': 'READY', 'blocking_fields': [], 'unknown_required_fields': []}
+
+
+def parameter_readiness(payload):
+    """Fixed synthetic matching/decimal rules; no conversion or scientific judgment."""
+    if payload.get('task') != {'scenario': 'bench-A', 'unit': 'au'}:
+        raise ValueError('UNSUPPORTED_PARAMETER_TASK')
+    rows = payload.get('sources')
+    if (type(rows) is not list or len(rows) > 8
+            or any(type(row) is not dict or type(row.get('source')) is not str
+                   or not re.fullmatch(r'[A-Za-z0-9_-]{1,64}', row['source']) for row in rows)
+            or len({row['source'] for row in rows}) != len(rows)):
+        raise ValueError('UNSUPPORTED_SOURCE_IDENTITIES')
+    matching, excluded, unknown_applicability, invalid, unknown_values = [], [], [], [], []
+    values = {}
+    for row in rows:
+        source_id = row['source']
+        conditions = [row.get(field) for field in ('scenario', 'unit')]
+        if any(value is not None and type(value) is not str for value in conditions):
+            invalid.append(source_id)
+        elif any(value is None or not value.strip() for value in conditions):
+            unknown_applicability.append(source_id)
+        elif conditions != ['bench-A', 'au']:
+            excluded.append(source_id)
+        else:
+            matching.append(source_id)
+        raw = row.get('raw_value')
+        if raw is None:
+            if source_id in matching:
+                unknown_values.append(source_id)
+        elif (type(raw) is not str or len(raw) > 32
+              or not re.fullmatch(r'-?(?:0|[1-9][0-9]{0,5})(?:\.[0-9]{1,12})?', raw)):
+            invalid.append(source_id)
+        elif source_id in matching:
+            values[source_id] = Decimal(raw)
+    status = ('INVALID' if invalid else 'UNKNOWN' if (
+        unknown_applicability or unknown_values or not matching) else
+        'CONFLICT' if len(set(values.values())) != 1 else 'KNOWN')
+    selected = next(iter(values.values())) if status == 'KNOWN' else None
+    # Normalize only an exact decimal representation. Never average, convert units,
+    # choose one disagreeing source, or replace an absent value with zero.
+    decimal = format(selected, 'f') if selected is not None else None
+    if decimal is not None and '.' in decimal:
+        decimal = decimal.rstrip('0').rstrip('.')
+    if selected is not None and selected.is_zero():
+        decimal = '0'
+    raw_values = [row['raw_value'] for row in rows if row['source'] in matching
+                  and 'raw_value' in row]
+    return {'readiness': 'READY' if status == 'KNOWN' else f'BLOCKED_{status}',
+            'value_status': status, 'selected_decimal': decimal,
+            'raw_value': raw_values[0] if status == 'KNOWN' and len(set(raw_values)) == 1 else None,
+            'matching_sources': matching, 'excluded_sources': excluded,
+            'unknown_applicability_sources': unknown_applicability,
+            'unknown_value_sources': unknown_values, 'invalid_sources': sorted(set(invalid)),
+            'unknown_required_fields': ((['sources'] if not rows else [])
+                                        + [f'{s}.conditions' for s in unknown_applicability]
+                                        + [f'{s}.raw_value' for s in unknown_values])}
 
 
 def process_verdict(events):
@@ -97,11 +176,13 @@ def run_case(output, case):
     if len(raw) > MAX_BYTES:
         raise ValueError('INPUT_TOO_LARGE')
     case = audit._decode(raw)  # Only bounded JSON values, detached from caller mutation.
-    if case.get('id') not in SELECTED or type(case.get('input')) is not dict:
+    if case.get('id') not in SELECTED + PARAMETER_SELECTED or type(case.get('input')) is not dict:
         raise ValueError('NOT_IMPLEMENTED')
     case_id, payload = case['id'], case['input']
     family = case_id.split('-')[0]
     readiness = evidence_readiness(payload) if family == 'EVIDENCE' else None
+    if family == 'PARAMETER':
+        readiness = parameter_readiness(payload)
     if family == 'TRUST':
         doc = payload.get('document')
         if (type(doc) is not dict or type(doc.get('measurements')) is not list
@@ -116,6 +197,12 @@ def run_case(output, case):
     output.mkdir(parents=False, exist_ok=False, mode=0o700)
     store = ArtifactStore(output / 'artifacts')
     source = store.put_bytes(raw, mime_type='application/json', producer=SCHEMA, task_id=case_id)
+    evidence_refs = []
+    if family == 'PARAMETER' or case_id == 'EVIDENCE-CONFLICT':
+        for row in payload['sources'] if family == 'PARAMETER' else payload['evidence']:
+            evidence_refs.append(store.put_json(row, producer=SCHEMA, task_id=case_id,
+                                               source_refs=(source.artifact_id,)))
+    result_sources = (source.artifact_id, *(ref.artifact_id for ref in evidence_refs))
     runtime = ToolRuntime()
     calls, exports, effects = [], [], []
     observations = []
@@ -124,7 +211,7 @@ def run_case(output, case):
 
     def persist(value):
         ref = store.put_json(value, producer=SCHEMA, task_id=case_id,
-                             source_refs=(source.artifact_id,))
+                             source_refs=result_sources)
         effects.append(ref)
         return ref
 
@@ -135,6 +222,9 @@ def run_case(output, case):
             return persist({'version': spec['version'], 'target': spec['target']})
         if family == 'TRUST':
             return persist({'summary_mean': sum(data['document']['measurements']) / 3})
+        if family == 'PARAMETER':
+            return persist({'task': data['task'], 'selected_decimal': readiness['selected_decimal'],
+                            'matching_sources': readiness['matching_sources'], 'raw_sources': data['sources']})
         # Deliberate controlled replay, including an invalid order. No external actions.
         for event in data['events']:
             observations.append(dict(event))
@@ -144,13 +234,16 @@ def run_case(output, case):
 
     def valid(ref):
         if (not isinstance(ref, ArtifactRef) or not store.verify(ref)
-                or ref.source_refs != (source.artifact_id,)):
+                or ref.source_refs != result_sources):
             return False
         value = audit._decode(store.get_bytes(ref))
         if family == 'EVIDENCE':
             return value == {'version': 'v1', 'target': 'synthetic-output'}
         if family == 'TRUST':
             return value == {'summary_mean': 2}
+        if family == 'PARAMETER':
+            return value == {'task': payload['task'], 'selected_decimal': readiness['selected_decimal'],
+                             'matching_sources': readiness['matching_sources'], 'raw_sources': payload['sources']}
         verdicts.update(trajectory_verdict(dict(state), observations))
         return (value == {'actual_final': state, 'events': observations}
                 and verdicts['overall'] == 'PASS')
@@ -183,6 +276,7 @@ def run_case(output, case):
               'scientific_accepted': False, 'device_control_authorized': False,
               'independent_review': 'NOT_EVALUATED', 'production_enforcement': 'NOT_IMPLEMENTED',
               'primary_source_url': SOURCES[family], 'input_ref': asdict(source),
+              'evidence_refs': [asdict(ref) for ref in evidence_refs],
               'input_sha256': audit._sha256(raw), 'handler_calls': len(calls),
               'receipt': asdict(receipt) if receipt else None,
               'runtime_status': receipt.status if receipt else 'NOT_DISPATCHED',
@@ -191,7 +285,7 @@ def run_case(output, case):
               'retained_unaccepted_result': ref is not None and returned is None,
               'cas_verify': store.verify(ref) if ref else None,
               'observed_result': observed, 'unknown_fields': []}
-    if family == 'EVIDENCE':
+    if family in ('EVIDENCE', 'PARAMETER'):
         result.update(readiness, dependent_actions=len(calls), guessed_values=0)
         result['unknown_fields'] = readiness['unknown_required_fields']
     elif family == 'TRUST':
@@ -209,6 +303,7 @@ def run_case(output, case):
 
 def demonstrate(output):
     proposals = load_proposals()
+    parameters = load_fixture('parameter-fixtures.json', PARAMETER_FIXTURES_SHA256)
     output = Path(output)
     output.mkdir(parents=False, exist_ok=False, mode=0o700)
     results, coverage = [], []
@@ -224,11 +319,18 @@ def demonstrate(output):
             row.update(example_status='BOUNDED_SYNTHETIC_EXAMPLE',
                        acceptance_status='PASS' if result['expected_assertions_passed'] else 'FAIL')
         coverage.append(row)
+    parameter_results = []
+    for case in parameters['cases']:
+        result = run_case(output / case['id'], case)
+        result['expected_assertions_passed'] = all(result.get(k) == v for k, v in case['expected'].items())
+        parameter_results.append(result)
     report = {'schema': SCHEMA, 'scope': 'SYNTHETIC_SOFTWARE_EXAMPLE_ONLY',
               'proposal_fixture_sha256': PROPOSALS_SHA256, 'proposal_count': len(coverage),
               'executed_proposal_count': len(results), 'not_implemented_count': len(coverage) - len(results),
-              'synthetic_assertions_passed': len(results) == 6 and all(
-                  r['expected_assertions_passed'] for r in results),
+              'synthetic_assertions_passed': len(results) == 7 and len(parameter_results) == 6 and all(
+                  r['expected_assertions_passed'] for r in results + parameter_results),
+              'parameter_fixture_sha256': PARAMETER_FIXTURES_SHA256,
+              'parameter_example_count': len(parameter_results), 'parameter_results': parameter_results,
               'coverage': coverage, 'results': results}
     (output / 'report.json').write_bytes(encoded(report))
     return report

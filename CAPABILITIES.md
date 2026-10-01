@@ -1,18 +1,21 @@
 # OpenDot Engineering capabilities and evidence
 
-**Publication update · 1 October 2026:** [0.2.0a6 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is available. [Reviewed installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md). The source-candidate statements and ledgers below describe the preserved prepublication snapshot, not current release availability. Publication does not broaden the stated runtime, security or scientific limits.
-
 [简体中文](CAPABILITIES.zh-CN.md) · [Overview](OVERVIEW.md) · [Research map](RESEARCH-MAP.md)
 
-Prepublication snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a6 source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
+Snapshot: 1 October 2026. This matrix describes the experimental 0.3.0a1 alpha source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
 
-**Historical source candidate: 0.2.0a6, unreleased and NOT_SCORED at the recorded preparation stage.** This separate integration
-adds optional read-only artifact verification, bilingual measurement walkthroughs,
-and a six-case synthetic source-boundary example to corrected a5. Default
-`read_only=False` writes and the canonical execution/reference owners are retained.
-Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
-scientific acceptance, a hosted-CI result, or a public release.
-[Prepublication a6 verification scope](docs/a6-candidate-verification.md)
+**Experimental alpha source: 0.3.0a1; NOT_SCORED.** This source
+integrates [structural default verification v2](docs/structural-default-v2.md):
+conditional per-element energy consistency, schema 2 and explicit historical
+`artifact_v1` compatibility. Scientific acceptance remains false. The source-boundary
+example covers seven original synthetic protocols, eight unimplemented proposals,
+and six separately counted synthetic parameter fixtures; no production policy is added.
+Canonical execution/reference owners and optional energy-API results are unchanged.
+The [Gmsh CPU callback](docs/gmsh-cpu-ceiling.md) preserves inherited lower
+ceilings; fake-resource checks do not establish native/kernel enforcement.
+[Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
+
+For published installation assets and current release status, see [Releases](https://github.com/sddvacav/opendot/releases). The [published a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) keeps its version-specific artifact pins. Source descriptions and local build records do not replace exact released-artifact acceptance.
 
 ## Historical verification ledger
 

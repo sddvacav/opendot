@@ -1,22 +1,24 @@
 # OpenDot Engineering 版本概览
 
-**发布状态更新 · 2026 年 10 月 1 日：** [0.2.0a6 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)已提供。[已复核的安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)。下方候选状态与证据记录保留发布前快照，不能作为当前是否已发布的判断；公开发布不扩大已声明的运行时、安全或科学验收范围。
-
 [English](OVERVIEW.md) · [能力与证据](CAPABILITIES.zh-CN.md) · [研究与优先级](RESEARCH-MAP.zh-CN.md)
 
-**历史 0.2.0a6 源代码候选 · 发布前证据快照，2026 年 10 月 1 日**
+**0.3.0a1 版本 · 实验性 alpha 源码 · 证据截至 2026 年 10 月 1 日**
 
 OpenDot Engineering 为本地工程工作提供一个便于检查的小型基础包：执行具有明确声明的 Python 工具、查看验收结果、按字节哈希保存产物，并为不同任务创建受控的 Git 工作区。它面向需要检查“执行了什么、产生了什么、哪些检查确实通过”的开发者和科研工程人员。
 
-**历史源码候选：0.2.0a6；在所记录的准备阶段尚未发布、NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
-可选只读产物验证、可直接复制的双语测量复核教程，以及六项合成来源边界示例。
-默认 `read_only=False` 写入行为与既有执行／引用所有者保持不变。
-其余九项拟议协议仍为 `NOT_IMPLEMENTED`；不构成生产安全、科学验收、托管 CI
-结果或公开发布。[发布前 a6 验证范围](docs/a6-candidate-verification.md)
+**实验性 alpha 源码：0.3.0a1；NOT_SCORED。** 本源码整合
+[结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
+返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
+来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
+没有新增生产策略。既有执行／引用所有者及可选能量 API 返回结果保持不变。
+[Gmsh CPU 回调](docs/gmsh-cpu-ceiling.md)保留较低的继承限制；合成资源检查不证明原生或内核强制执行。
+[当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
+
+已发布安装包与当前发布状态见 [Releases](https://github.com/sddvacav/opendot/releases)；[已发布 a6 的安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其对应版本的固定产物与哈希。源码说明和本地构建记录不能代替发布产物的验收。
 
 历史 a4 候选要求热学与结构验证器共享的日志门槛仅接受一个明确的 CalculiX 2.23 版本声明。新增纯源码文档检查器，检查有限范围的本地链接、片段与 HTML 锚点，以及每种安装指南语言中恰好八个非空、逐字一致的 shell 代码块。构建后端固定为 setuptools 84.0.0。这些改动不新增物理模型、运行时、原生执行或公开发布。见[历史 a4 验证记录](docs/verifier-ci-verification.md)、[文档检查边界](docs/documentation-checks.md)和[构建配置](docs/build-toolchain.md)。
 
-历史证据保留版本边界：**0.2.0a1** Git 修复候选通过 **773 项指定作者检查**，无法检查的残留状态修复已通过独立源代码权限丢失反例复验，见[修复记录](docs/git-workspaces-residue-fix.md)。**0.2.0a0** 函数与产物集成另行通过 **695 项独立复跑的可移植检查**。这些结果不构成 **0.2.0a6** 的测试总数或独立验收、完整平台评分或公开发布。
+历史证据保留版本边界：**0.2.0a1** Git 修复候选通过 **773 项指定作者检查**，无法检查的残留状态修复已通过独立源代码权限丢失反例复验，见[修复记录](docs/git-workspaces-residue-fix.md)。**0.2.0a0** 函数与产物集成另行通过 **695 项独立复跑的可移植检查**。这些结果不构成 **0.3.0a1** 的测试总数或独立验收、完整平台评分或公开发布。
 
 **历史 a4 作者源码检查：1,066 项通过**，失败／错误／跳过均为零。**最终精确产物与安装验收以单独交付回执为准。** 独立组件结果存在重叠，不能叠加到该组合总数。可移植 CI 定义选择 988 项，不包含 78 项受控 Git 检查；尚未在托管 CI 上执行。
 
@@ -54,7 +56,7 @@ OpenDot Engineering 为本地工程工作提供一个便于检查的小型基础
 
 分发包名为 `opendot-engineering`，Python 导入命名空间为 `opendot_engineering`。默认安装没有必需的运行时 Python 依赖，要求 Python 3.12 或更新版本。若干文件检查 API 需要 POSIX 操作。模拟实验执行使用可选的固定版本依赖；原生 CAD/CAE 执行有单独的后端环境要求。当前没有注册独立控制台命令。
 
-先阅读[入门说明](docs/getting-started.md)，再运行[小型函数与产物组合示例](examples/callable-artifacts/README.md)。[Git 示例](examples/git-workspaces/README.md)仅适用于满足条件的本地主机。本快照尚未确立正式公开下载与支持地址，不应根据项目名称猜测软件包或仓库身份。
+先阅读[入门说明](docs/getting-started.md)，再运行[小型函数与产物组合示例](examples/callable-artifacts/README.md)。[Git 示例](examples/git-workspaces/README.md)仅适用于满足条件的本地主机。[公开仓库](https://github.com/sddvacav/opendot)与[议题](https://github.com/sddvacav/opendot/issues)已核实。[历史 a6 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)另行提供；安装前请在 [Releases](https://github.com/sddvacav/opendot/releases) 核对现有产物及其精确版本。
 
 ## 仍需遵守的边界
 

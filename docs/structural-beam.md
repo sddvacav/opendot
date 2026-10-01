@@ -108,6 +108,18 @@ and the explicit 2.23 correction from its official release notes. Actual 2.23
 output layout is checked against the bounded observed output, without changing
 these physics acceptance criteria.
 
+## Current default result and migration
+
+The unreleased 0.3.0a1 [default v2 profile](structural-default-v2.md) additionally
+requires the unchanged conditional per-element E/ELSE check after strict admission.
+API/CLI verification returns schema 2 and
+`CONDITIONAL_STRUCTURAL_CONSISTENCY_PASS`; comparison returns
+`CONDITIONAL_STRUCTURAL_REFINEMENT_PASS`. Both retain false scientific authority.
+Read archival fields through `result["artifact_receipt"]`. On-disk schema-1
+receipt/recipe files are unchanged; their saved positive marker is not a current
+v2 verification result. Explicit API `profile="artifact_v1"` retains historical
+admission only; native creation and CLI verification do not expose this bypass.
+
 ## Adapter usage and output contract
 
 Run from the source checkout with an explicitly selected installed CalculiX:

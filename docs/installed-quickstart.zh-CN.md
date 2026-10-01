@@ -1,4 +1,4 @@
-# 从 v0.2.0a6 alpha 预发布版获得第一个结果
+# 从已复核的本地 wheel 得到第一个结果
 
 [English](installed-quickstart.md) · [仅使用源码的路径](../README.zh-CN.md#运行合成示例)
 
@@ -6,32 +6,32 @@
 第一个示例只需要已复核的 wheel，不需要源码仓库、模型密钥、网络服务、原生求解器或设备。
 这是有限的本地软件操作，不是自治智能体运行时。
 
+结构默认返回值已变更，详见[迁移指南](structural-default-v2.md)。本入门教程仍使用行为未变的函数／产物流程。
+
 ## 1. 准备独立环境
 
-需要 Python 3.12+（含 `venv` 和 pip）以及可信 POSIX 环境。
-已复核 Linux／CPython 3.12，不代表承诺支持所有平台。
-以下命令假设 `/tmp` 是适用的可信临时父目录。
+需要 Python 3.12+（含 `venv` 和 pip 支持）、可信 POSIX 环境，以及已保存到本地的
+经过单独复核的 `0.3.0a1` wheel。先前本地检查使用 Linux 和 CPython 3.12，不代表承诺支持所有平台。
+以下命令假设 `/tmp` 适合作为你信任的临时父目录。
 
-从 [v0.2.0a6 ALPHA 发布页](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)下载
-[已复核的 wheel](https://github.com/sddvacav/opendot/releases/download/v0.2.0a6/opendot_engineering-0.2.0a6-py3-none-any.whl)，并保留 [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.2.0a6/SHA256SUMS)。
-本指南离线安装该本地文件，不选择 PyPI 上的同名软件包。
-把下方 `WHEEL` 改为下载文件的路径；预期 SHA-256 已填好，不能为了让不同文件
-通过而修改它。若有需要，修改 `PYTHON`。八段命令在同一个 shell 依次执行，
-无需下载运行时依赖。
+该候选尚未发布。本文不构成 `0.3.0a1` wheel 的复核记录，先前版本的复核不批准本版本。
+请从同一份独立复核的交付记录取得 wheel 及其 SHA-256；本文没有
+声明任何公开软件源或下载地址。不要安装名字相似的软件包。摘要一致仅核对文件字节，
+不能证明作者身份、安全性或公开发布状态。
+[0.3.0a1 验证记录](structural-v2-candidate-verification.md)将本候选的源码选择、离线构建、全新安装
+检查和双语操作实测分别记录。请查看该精确候选记录；先前 a3／a4／a5 的产物或
+安装实测不批准本 wheel。[文档检查](documentation-checks.md)仅比较下方八个 shell
+代码块，不执行这些命令。
 
-发布产物对应源码树 `8caa61849149a3f2d9bda59324fc064fadfcb114`，
-公开提交为 `965ed8c49c47d7b79716ba1843462b84ff21a27f`。
-摘要一致只核对预期字节，不证明作者身份或科学质量。
-[发布说明](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)给出当前发布／核验状态；
-[发布前 a6 记录](a6-candidate-verification.md)保留原有范围。
-当前较新的 `main` 文档不替换标签中的 README 或 wheel 元数据；即使运行时版本相同，
-从 `main` 重建也会改变 README 元数据。
+运行前替换 `WHEEL` 和 `EXPECTED_WHEEL_SHA256`。若 Python 3.12+ 的可执行文件
+名称不同，也请修改 `PYTHON`。所有代码块在同一个 shell 会话运行。安装使用新环境，
+不下载任何依赖。
 
 ```sh
 set -eu
 PYTHON=python3.12
-WHEEL='/absolute/path/to/opendot_engineering-0.2.0a6-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='6f0fa54af4d23591d9d0ae40c6c30ada8da1f1a3757c0abafd97b8b90ee25ca9'
+WHEEL='/absolute/path/to/opendot_engineering-0.3.0a1-py3-none-any.whl'
+EXPECTED_WHEEL_SHA256='paste-the-independently-reviewed-wheel-sha256'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
 import hashlib, pathlib, re, sys
@@ -39,7 +39,7 @@ if sys.version_info < (3, 12):
     raise SystemExit("Python 3.12 or newer is required")
 wheel, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
 if not re.fullmatch(r"[0-9a-f]{64}", expected):
-    raise SystemExit("Expected wheel digest is malformed: restore the documented pinned value")
+    raise SystemExit("Replace EXPECTED_WHEEL_SHA256 with the reviewed wheel SHA-256")
 if hashlib.sha256(wheel.read_bytes()).hexdigest() != expected:
     raise SystemExit("Wheel hash mismatch: stop and check the reviewed artifact")
 print("Reviewed wheel bytes match")
@@ -53,7 +53,7 @@ cd "$JOURNEY"
 "$PY" -I -B -c 'import importlib.metadata as m, opendot_engineering as p; print(m.version("opendot-engineering")); print(p.__file__)'
 ```
 
-应看到版本 `0.2.0a6` 和位于新环境 `site-packages` 内的导入路径。
+应看到版本 `0.3.0a1` 和位于新环境 `site-packages` 内的导入路径。
 无需激活环境或设置 `PYTHONPATH`；`-I` 忽略源码目录导入捷径，`-B` 避免写入 Python
 字节码。软件包没有名为 `opendot` 的独立控制台命令。
 
@@ -126,33 +126,18 @@ PYCODE
 
 ## 3. 观察成功、语义拒绝与缺少权限
 
-wheel 包含 Python 软件包，不包含示例脚本或数据。
-从发布资产下载匹配的[完整源码归档](https://github.com/sddvacav/opendot/releases/download/v0.2.0a6/opendot-engineering-0.2.0a6-source.tar.gz)。
-使用 `opendot-engineering-0.2.0a6-source.tar.gz`，而不是范围较窄的 sdist 或
-GitHub 自动生成的源码包。把下方 `SOURCE_ARCHIVE` 改为下载路径；命令先核对固定哈希，
-再解压到新目录。这里只复制公开示例，运行时仍从已安装 wheel 导入。
+wheel 包含 Python 包，但不包含示例脚本和夹具。本步骤需要另行取得配套的已复核
+源码，并替换 `SOURCE`。这里只从源码复制公开示例；Python 仍从已安装 wheel 导入。
 
 ```sh
-SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.2.0a6-source.tar.gz'
-"$PY" -I -B - "$SOURCE_ARCHIVE" "$JOURNEY/reviewed-source" <<'PYCODE'
-import hashlib, pathlib, sys, tarfile
-archive, destination = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
-expected = "052608c0a751371428d2cbcbb9af93e61790e3d784135df8b9c6bedab7f1b71c"
-if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
-    raise SystemExit("Source archive hash mismatch: stop")
-destination.mkdir(exist_ok=False)
-with tarfile.open(archive) as source:
-    source.extractall(destination, filter="data")
-print("Reviewed source archive bytes match")
-PYCODE
-SOURCE="$JOURNEY/reviewed-source/opendot-engineering-0.2.0a6"
+SOURCE='/absolute/path/to/matching-reviewed-source'
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"
 ```
 
 应看到 `synthetic_software_assertions_passed: true` 和 `package_version:
-"0.2.0a6"`。三个场景的结果有意不同：
+"0.3.0a1"`。三个场景的结果有意不同：
 
 - `success`：`COMPLETED`、语义有效、字节通过独立哈希核对
 - `semantic_refusal`：`FAILED`，仍保留一个完整但**未获接受**的产物

@@ -113,12 +113,12 @@ def real_packs(tmp_path_factory,real_config):
 
 def test_real_solver_and_refinement(real_packs):
     for root in real_packs:
-        assert s.verify_structural_artifacts(root)['status']=='STRUCTURAL_BENCHMARK_PASS'
+        assert s.verify_structural_artifacts(root,profile='artifact_v1')['status']=='STRUCTURAL_BENCHMARK_PASS'
         o=json.loads((root/'oracle.json').read_text())
         assert all(o['checks'].values()) and o['strain_integration_points']==8*o['elements']
         assert o['support_resultant_N'][2]==pytest.approx(.1,abs=1e-5)
         assert o['support_moment_Nm'][1]==pytest.approx(-.02,abs=2e-6)
-    assert s.compare_refinement(*real_packs)['status']=='STRUCTURAL_REFINEMENT_PASS'
+    assert s.compare_refinement(*real_packs,profile='artifact_v1')['status']=='STRUCTURAL_REFINEMENT_PASS'
     with pytest.raises(ValueError):s.compare_refinement(real_packs[0],real_packs[0])
 
 

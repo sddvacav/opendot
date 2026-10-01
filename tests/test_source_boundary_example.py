@@ -47,13 +47,14 @@ def test_exact_original_fifteen_proposals_remain_proposed():
     assert len(PROPOSALS['cases']) == len({c['id'] for c in PROPOSALS['cases']}) == 15
 
 
-def test_six_proposals_and_nine_explicit_gaps(tmp_path):
+def test_seven_proposals_and_eight_explicit_gaps(tmp_path):
     report = module.demonstrate(tmp_path / 'demo')
     assert report['synthetic_assertions_passed'] is True
-    assert report['proposal_count'] == 15 and report['executed_proposal_count'] == 6
+    assert report['proposal_count'] == 15 and report['executed_proposal_count'] == 7
+    assert report['parameter_example_count'] == 6
     gaps = [r for r in report['coverage'] if r['example_status'] == 'NOT_IMPLEMENTED']
     assert {r['case_id'] for r in gaps} == {
-        'EVIDENCE-CONFLICT', 'EVIDENCE-DENIED', 'GUI-STABLE-API', 'GUI-SANDBOX-OUTPUT',
+        'EVIDENCE-DENIED', 'GUI-STABLE-API', 'GUI-SANDBOX-OUTPUT',
         'GUI-TARGET-CHANGED', 'GUI-RESULT-UNKNOWN', 'TRUST-ALL-REFUSED',
         'TRAJECTORY-PARTIAL', 'CONSISTENCY-ALL-TRIALS'}
     assert all(r['acceptance_status'] == 'NOT_RUN' for r in gaps)
