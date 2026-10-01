@@ -1,14 +1,16 @@
 # OpenDot Engineering 能力与证据
 
+**发布状态更新 · 2026 年 10 月 1 日：** [0.2.0a6 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)已提供。[已复核的安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)。下方候选状态与证据记录保留发布前快照，不能作为当前是否已发布的判断；公开发布不扩大已声明的运行时、安全或科学验收范围。
+
 [English](CAPABILITIES.md) · [版本概览](OVERVIEW.zh-CN.md) · [研究映射](RESEARCH-MAP.zh-CN.md)
 
-截至 2026 年 10 月 1 日。本表描述尚未发布的 0.2.0a6 源代码候选边界，并保留 a4 及更早证据的精确范围。这是可追溯性映射，不是评分。“已实现”表示代码存在；前一版独立通过不会自动批准后继改动。
+发布前快照，2026 年 10 月 1 日。本表描述当时尚未发布的 0.2.0a6 源代码候选边界，并保留 a4 及更早证据的精确范围。这是可追溯性映射，不是评分。“已实现”表示代码存在；前一版独立通过不会自动批准后继改动。
 
-**当前候选：0.2.0a6，尚未发布；NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
+**历史源码候选：0.2.0a6；在所记录的准备阶段尚未发布、NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
 可选只读产物验证、可直接复制的双语测量复核教程，以及六项合成来源边界示例。
 默认 `read_only=False` 写入行为与既有执行／引用所有者保持不变。
 其余九项拟议协议仍为 `NOT_IMPLEMENTED`；不构成生产安全、科学验收、托管 CI
-结果或公开发布。[当前 a6 验证范围](docs/a6-candidate-verification.md)
+结果或公开发布。[发布前 a6 验证范围](docs/a6-candidate-verification.md)
 
 ## 历史验证记录
 

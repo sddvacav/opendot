@@ -3,7 +3,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/opendot-readme-banner-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/brand/opendot-readme-banner-light.svg">
-  <img alt="OpenDot" src="assets/brand/opendot-readme-banner-light.svg" width="1280" height="360">
+  <img alt="OpenDot" src="assets/brand/opendot-readme-banner-light.svg" width="1280">
 </picture>
 
 [English](README.md) · [安装与运行](docs/installed-quickstart.zh-CN.md) · [能力清单](CAPABILITIES.zh-CN.md) · [架构](docs/architecture.md)
