@@ -290,7 +290,9 @@ def _execute(executable,out,timeout,*,job_name='thermal'):
     import resource
     def limits():
         resource.setrlimit(resource.RLIMIT_FSIZE,(gmsh_mesh.MAX_BYTES,gmsh_mesh.MAX_BYTES))
-        resource.setrlimit(resource.RLIMIT_CPU,(300,300))
+        inherited_cpu=resource.getrlimit(resource.RLIMIT_CPU)
+        cpu_limit=min([300]+[limit for limit in inherited_cpu if limit!=resource.RLIM_INFINITY])
+        resource.setrlimit(resource.RLIMIT_CPU,(cpu_limit,cpu_limit))
     env={k:v for k,v in os.environ.items() if k in ('PATH','LD_LIBRARY_PATH','HOME','LANG')}
     env.update({k:'1' for k in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','CCX_NPROC_RESULTS','CCX_NPROC_EQUATION_SOLVER')})
     env['LC_ALL']='C'

@@ -1,5 +1,7 @@
 # Exact portable CI boundary
 
+The unreleased 0.2.0a5 selection adds the [explicit solver cross-check manifest](solver-crosscheck-nodes.txt): 17 fake-resource CPU-ceiling cases and 54 optional elastic-energy cases. The current portable union is **1,104 distinct nodes**; adding the separately supported 78 Git and 81 source-provenance nodes gives **1,263**. These are selected counts, not pass claims. [Exact a5 scope and results](../docs/a5-candidate-verification.md). Earlier counts below retain their historical boundaries.
+
 The read-only Python 3.12 workflow installs pinned test tooling only. Checkout
 and setup actions remain pinned to full commits, credentials are not persisted,
 bytecode/plugin autoload/cache are disabled, and JUnit/temp files stay outside
@@ -46,11 +48,12 @@ mapfile -t composition_nodes < ci/composition-nodes.txt
 mapfile -t agent_contract_nodes < ci/agent-contract-nodes.txt
 mapfile -t public_regression_nodes < ci/public-regression-nodes.txt
 mapfile -t delivery_workflow_nodes < ci/delivery-workflow-nodes.txt
+mapfile -t solver_crosscheck_nodes < ci/solver-crosscheck-nodes.txt
 CHECK_OUTPUT=$(mktemp -d /tmp/opendot-check.XXXXXX)
 PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src \
   OPENDOT_TEST_SOURCE_ROOT="$PWD/src" python -B -m pytest -q -ra -p no:cacheprovider \
   "${portable_nodes[@]}" "${callable_nodes[@]}" "${composition_nodes[@]}" \
-  "${agent_contract_nodes[@]}" "${public_regression_nodes[@]}" "${delivery_workflow_nodes[@]}" \
+  "${agent_contract_nodes[@]}" "${public_regression_nodes[@]}" "${delivery_workflow_nodes[@]}" "${solver_crosscheck_nodes[@]}" \
   --basetemp="$CHECK_OUTPUT/pytest" --junitxml="$CHECK_OUTPUT/results.xml"
 ```
 
@@ -130,7 +133,7 @@ that reviewed journey require a deliberate profile update. Hosted CI has not run
 
 The [delivery manifest](delivery-workflow-nodes.txt) adds 45 disjoint cases:
 35 synthetic repeated-measurement example cases and ten test-toolchain lock
-checks. The hosted definition selects 1,033 nodes after this extension; no
+checks. The historical a4 hosted definition selected 1,033 nodes after this extension; no
 hosted run is claimed. The example's installed-only reuse of the unchanged
 0.2.0a4 wheel is a separate verification scope, not extra unique cases.
 

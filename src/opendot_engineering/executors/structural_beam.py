@@ -297,6 +297,145 @@ def verify_structural_artifacts(directory):
     return r
 
 
+# Optional output-only cross-check. These frozen constants do not change the
+# default verifier or its serialized report/receipt. See the source derivation
+# and uncertainty assumptions in docs/structural-elastic-energy.md.
+_ELASTIC_CONTRACT = 'structural.elastic_energy.ccx223.e13_6.v1'
+_ELASTIC_GAUSS = tuple((x*0.577350269189626,y*0.577350269189626,z*0.577350269189626)
+                       for z in (-1,1) for y in (-1,1) for x in (-1,1))
+_ELASTIC_ARITHMETIC_RELATIVE = 1e-10
+
+
+def _elastic_print_quantum(token):
+    """One last-place quantum; canonical zero is conditional on no underflow."""
+    if token in ('0.000000E+00','+0.000000E+00','-0.000000E+00'):
+        return 0.
+    match=re.fullmatch(r'[+-]?[1-9]\.[0-9]{6}E([+-][0-9]{2})',token)
+    if match is None:
+        raise ValueError('Unsupported elastic energy printed precision or exponent')
+    return 10.**(int(match[1])-6)
+
+
+def _elastic_print_budgets(path,data):
+    """Extract precision only after parse_dat has admitted all DAT semantics."""
+    prefixes=(('strains (elem, integ.pnt.,exx,eyy,ezz,exy,exz,eyz) for set BODY and time','strain'),
+              ('internal energy (element, energy) for set BODY and time','energy'),
+              ('displacements (vx,vy,vz) for set ALL and time',None),
+              ('forces (fx,fy,fz) for set ALL and time',None))
+    result={'strain':{},'energy':{}};section=None
+    for raw in shared._read(path).decode('ascii').splitlines():
+        line=raw.strip()
+        if not line:continue
+        header=next(((prefix,name) for prefix,name in prefixes if line.startswith(prefix)),None)
+        if header is not None:
+            section=header[1];continue
+        if section is None:continue
+        fields=line.split();offset=2 if section=='strain' else 1
+        key=(int(fields[0]),int(fields[1])) if section=='strain' else int(fields[0])
+        tokens=fields[offset:]
+        quanta=tuple(_elastic_print_quantum(v) for v in tokens)
+        # Not a second admission parser: bind extracted tokens to the already
+        # admitted identities and values, refusing a changed/repeated read.
+        if key in result[section] or key not in data[section] or tuple(float(v) for v in tokens)!=data[section][key]:
+            raise ValueError('Elastic energy raw/parsed output identity mismatch')
+        result[section][key]=quanta
+    if any(set(result[name])!=set(data[name]) for name in result):
+        raise ValueError('Elastic energy raw/parsed output identity mismatch')
+    return result
+
+
+def _elastic_jacobians(nodes,cell):
+    """Eight physical-node detJ values, in CalculiX 2.23 integration order."""
+    if len(cell)!=8 or len(set(cell))!=8 or any(n not in nodes for n in cell):
+        raise ValueError('Unsupported elastic energy physical-node identity')
+    weights=[]
+    for local in _ELASTIC_GAUSS:
+        derivatives=[tuple(sign[b]*math.prod(1+sign[k]*local[k] for k in range(3) if k!=b)/8
+                           for b in range(3)) for sign in thermal_source.SIGNS]
+        jac=[[math.fsum(nodes[n][a]*d[b] for n,d in zip(cell,derivatives))
+              for b in range(3)] for a in range(3)]
+        a,b,c=jac
+        determinant=math.fsum((a[0]*b[1]*c[2],a[1]*b[2]*c[0],a[2]*b[0]*c[1],
+                               -a[2]*b[1]*c[0],-a[1]*b[0]*c[2],-a[0]*b[2]*c[1]))
+        if not math.isfinite(determinant) or determinant<=0:
+            raise ValueError('Nonpositive or nonfinite elastic energy Jacobian')
+        weights.append(determinant)
+    return tuple(weights)
+
+
+def _elastic_energy_report(nodes,cells,data,budgets):
+    """Fixed-material tensor-strain quadrature, not a displacement solver."""
+    expected={(e,i) for e in cells for i in range(1,9)}
+    if not cells or set(data['strain'])!=expected or set(data['energy'])!=set(cells) or set(budgets['strain'])!=expected or set(budgets['energy'])!=set(cells):
+        raise ValueError('Missing or wrong elastic energy element/integration-point identity')
+    young=210000000000.;poisson=.3
+    mu=young/(2*(1+poisson));lam=young*poisson/((1+poisson)*(1-2*poisson))
+    rows=[]
+    for element,cell in sorted(cells.items()):
+        energies=[];errors=[];weights=_elastic_jacobians(nodes,cell)
+        for ip,weight in enumerate(weights,1):
+            strain=data['strain'][element,ip];delta=budgets['strain'][element,ip]
+            if len(strain)!=6 or len(delta)!=6 or any(not math.isfinite(v) for v in (*strain,*delta)) or any(v<0 for v in delta):
+                raise ValueError('Unsupported elastic energy strain/precision values')
+            trace=math.fsum(strain[:3]);dtrace=math.fsum(delta[:3]);factors=(1,1,1,2,2,2)
+            density=lam/2*trace**2+mu*math.fsum(c*v*v for c,v in zip(factors,strain))
+            bound=lam/2*(2*abs(trace)*dtrace+dtrace*dtrace)+mu*math.fsum(
+                c*(2*abs(v)*d+d*d) for c,v,d in zip(factors,strain,delta))
+            energies.append(weight*density);errors.append(weight*bound)
+        native=data['energy'][element];native_delta=budgets['energy'][element]
+        if len(native)!=1 or len(native_delta)!=1 or not math.isfinite(native[0]) or native[0]<0 or not math.isfinite(native_delta[0]) or native_delta[0]<0:
+            raise ValueError('Unsupported elastic energy ELSE/precision values')
+        energy=math.fsum(energies);printed_bound=math.fsum((*errors,native_delta[0]))
+        arithmetic_bound=_ELASTIC_ARITHMETIC_RELATIVE*max(energy,abs(native[0]))
+        bound=printed_bound+arithmetic_bound;residual=abs(energy-native[0])
+        if not all(math.isfinite(v) for v in (energy,printed_bound,arithmetic_bound,bound,residual)):
+            raise ValueError('Nonfinite elastic energy arithmetic')
+        if residual>bound:
+            raise ValueError(f'Elastic energy mismatch for element {element}: residual {residual:.17g} J exceeds bound {bound:.17g} J')
+        rows.append({'element':element,'strain_energy_J':energy,'native_ELSE_J':native[0],
+                     'absolute_residual_J':residual,'printed_error_bound_J':printed_bound,
+                     'arithmetic_allowance_J':arithmetic_bound,'acceptance_bound_J':bound,
+                     'jacobian_determinants_m3':list(weights)})
+    total=math.fsum(row['strain_energy_J'] for row in rows)
+    native_total=math.fsum(row['native_ELSE_J'] for row in rows)
+    return {'schema_version':'1','status':'CONDITIONAL_ELASTIC_ENERGY_CONSISTENCY_PASS','contract':_ELASTIC_CONTRACT,
+            'recipe':RECIPE,'scope':'Optional per-element E/ELSE consistency under the fixed model and declared print/arithmetic assumptions',
+            'scientific_accepted':False,'physical_validation':'NOT_PERFORMED',
+            'independent_review':'NOT_EVALUATED','mesh_independence':'NOT_ESTABLISHED',
+            'material':{'young_modulus_Pa':young,'poisson_ratio':poisson},
+            'strain_components':['xx','yy','zz','xy','xz','yz'],'shear_convention':'TENSOR',
+            'quadrature':'Eight physical-node Jacobians; CalculiX 2.23 x-fast Gauss order; unit weights',
+            'print_profile':{'format':'1P E13.6','nonzero_exponent_digits':2,'rounding_bound':'ONE_LAST_PLACE_QUANTUM',
+                             'zero_quantum':0.,'no_subnormal_or_underflow':'ASSUMED_NOT_VERIFIED'},
+            'arithmetic_policy':{'relative_allowance':_ELASTIC_ARITHMETIC_RELATIVE,'absolute_floor_J':0.,
+                                 'formal_error_bound':'NOT_PROVED'},
+            'elements':len(rows),'strain_integration_points':len(expected),'per_element':rows,
+            'strain_energy_sum_J':total,'native_ELSE_sum_J':native_total,
+            'sum_absolute_residual_J':abs(total-native_total),
+            'sum_acceptance_bound_J':math.fsum(row['acceptance_bound_J'] for row in rows),
+            'maximum_element_absolute_residual_J':max(row['absolute_residual_J'] for row in rows),
+            'limitations':['Restricted to the existing initially unstressed, no-thermal-strain linear-static C3D8I recipe',
+                           'No general material, nonlinear/history, nodal-strain reconstruction or physical validation',
+                           'No authentication against coordinated evidence rewriting; no default verifier behavior change',
+                           'Normal finite output/no-underflow is a conditional profile, not a fact proven by DAT',
+                           'The arithmetic allowance is a declared policy, not a formal native-binary error proof']}
+
+
+def verify_elastic_energy(directory):
+    """Opt-in fixed-recipe E/ELSE check; existing strict admission runs first.
+
+    Return a scoped report or raise ValueError for unsupported precision,
+    geometry, identity or per-element inconsistency. Never writes artifacts or
+    changes the default verifier. The no-underflow assumption and arithmetic
+    policy are explicit in the report; a pass is not scientific acceptance.
+    """
+    verify_structural_artifacts(directory)
+    root=Path(directory);nodes,cells,_=_mesh(root/'mesh')
+    data=parse_dat(root/'structural.dat')
+    budgets=_elastic_print_budgets(root/'structural.dat',data)
+    return _elastic_energy_report(nodes,cells,data,budgets)
+
+
 def compare_refinement(coarse_dir,refined_dir):
     """Verify both independent packs and the predeclared two-grid sensitivity."""
     coarse,refined=Path(coarse_dir),Path(refined_dir)

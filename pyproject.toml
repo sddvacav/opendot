@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opendot-engineering"
-version = "0.2.0a4"
+version = "0.2.0a5"
 description = "Bounded local artifact storage, callable execution, and engineering adapters"
 requires-python = ">=3.12"
 license = "Apache-2.0"

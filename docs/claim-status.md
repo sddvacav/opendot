@@ -1,11 +1,22 @@
 # OpenDot Engineering claim status
 
-> Historical package-candidate boundary: the “current” 1,066 author source
-> checks and 988-node hosted definition below refer to original 4075ac17.
-> The later [source-only delivery extension](delivery-workflows-verification.md)
-> retains the exact package payload but selects 1,192 local / 1,033 portable
-> cases; its exact outcomes are recorded in a separate delivery receipt.
-> The 78-point assessment remains historical and is not a score for the extension.
+> Current unreleased **0.2.0a5** candidate: the inherited
+> [CPU-ceiling minimum fix](solver-cpu-ceiling.md) and explicit optional
+> [elastic-energy API](structural-elastic-energy.md) are combined in a separate
+> candidate. [Exact a5 verification](a5-candidate-verification.md) records local author checks;
+> planned selections are 1,104 portable / 1,263 controlled local cases. Counts
+> identify scope and do not assert outcomes. Default verifier acceptance and
+> report bytes remain unchanged; no scientific or physical acceptance is added.
+
+> Historical boundaries: original a4 `4075ac17` owns the 1,066 source passes
+> and 988-node hosted definition. The later
+> [source-only delivery extension](delivery-workflows-verification.md) retained
+> that package payload and selected 1,192 local / 1,033 portable cases.
+> Its e5 record, the a189 CPU patch's 17 fake-resource passes, and the earlier
+> source-only energy candidate's 1,104 selected passes plus 49 subtests retain
+> their own scopes. None is exact-artifact acceptance for a5. The historical
+> 78-point assessment is not a score for a5. The proposed a4 structural
+> qualification under a 30-second hard CPU ceiling was blocked before launch.
 
 Snapshot: 2026-10-01 UTC. This is a claim-to-evidence map, not a release approval or full-platform test report. [Adapter source checks](verification-status.md) and [documentation integration checks](integration-review.md) and [source-admission integration checks](source-admission-verification.md) have separate scopes. The [historical provenance-integrated candidate record](provenance-integration-verification.md) and [earlier combined record](combined-candidate-verification.md) cover successive `0.1.0a1` source cuts without promoting either to a release.
 
@@ -42,13 +53,22 @@ accept a later candidate. The recorded
 [host-coordinated worktree development](host-development/README.md) does not establish
 a standalone autonomous scheduler, multiple hosts or durable recovery.
 
-The current unreleased `0.2.0a4` candidate tightens the shared declared CalculiX
-2.23 log gate, adds source-only bounded documentation checks, and pins setuptools
-84.0.0 as the build backend. **Current author source checks: 1,066 passed**, with
+The historical unreleased `0.2.0a4` candidate tightened the shared declared CalculiX
+2.23 log gate, added source-only bounded documentation checks, and pinned setuptools
+84.0.0 as the build backend. **Historical a4 author source checks: 1,066 passed**, with
 zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** Component reviews overlap this aggregate and are not additive. The
 988-node portable CI definition excludes 78 local Git cases; hosted CI has not run.
-See [current verification](verifier-ci-verification.md). No new physics, native
+See [historical a4 verification](verifier-ci-verification.md). No new physics, native
 execution, runtime/recovery, hosted-CI result or public release is established.
+
+The current `0.2.0a5` candidate integrates the CPU-minimum repair and opt-in
+per-element printed E/ELSE check. Its successful API status is
+`CONDITIONAL_ELASTIC_ENERGY_CONSISTENCY_PASS`; `scientific_accepted` stays false,
+no-underflow remains `ASSUMED_NOT_VERIFIED`, and the arithmetic bound is
+`NOT_PROVED`. Source selection, build identities, installed checks and guide
+execution must be recorded against a5 itself. No new native solve is included;
+rechecking an older pack is output-only evidence. The unchanged default
+numeric-field consistency gap and inherited file-size ceiling issue remain open.
 
 ## Claims and limits
 
@@ -63,10 +83,12 @@ execution, runtime/recovery, hosted-CI result or public release is established.
 | Optional source admission | Included; locally checked; narrow predecessor integration independently reviewed | Explicit root, independently reviewed manifest digest, flat pinned modules, and source-owned named exports; ordinary trusted Python authority | Review of each changed outgoing artifact; separate acceptance for each consumer; no inference of authorization, sandboxing, or complete code identity |
 | Synthetic qualification records | Included; locally checked | Invented fixture oracles can be checked; science/device flags stay false | Separate physical/scientific evidence for real qualification |
 | Optional simulated lab | Included; fake-only scope independently reviewed before combination | Internally constructed fake devices; finite fixed plan and strict pinned-document checks; runtime authority flags stay false | Exact combined-artifact review and separate evidence for any new platform or capability; no physical/scientific qualification |
-| Runnable examples | Predecessor checks recorded; current installed acceptance uses a separate receipt | README examples and help/installation commands have version-bound checks; a3 fresh journeys covered all eight blocks per language | Execute the current guide against the exact a4 artifact; source-only parity and predecessor execution do not approve it |
+| Runnable examples | Predecessor checks recorded; current installed acceptance uses a separate receipt | README examples and help/installation commands have version-bound checks; a3 fresh journeys covered all eight blocks per language | Execute the current guide against the exact a5 artifact; source-only parity and predecessor execution do not approve it |
 | Wheel identity and imports | Predecessor checks recorded; current artifact acceptance uses a separate receipt | Local wheel installation and isolated module checks retain their recorded version and artifact scope | Fresh exact-candidate checks, approved public distribution, supported platform matrix, and published release identity |
 | Optional CAD/CAE adapters | Included | Fixed deterministic contracts and separately installed backends | Native execution and dependency/license review for each claimed environment |
 | Shared CalculiX version-declaration gate | Included; component independently reviewed | One complete declared 2.23 header required; ambiguous and repeated declarations refused by both thermal and structural verifiers | Exact integrated and artifact review; declaration consistency does not authenticate a binary/log or validate new physics |
+| Solver-child CPU ceiling | Included; 17 fake-resource predecessor checks | Existing callback takes the minimum of 300 seconds and finite inherited soft/hard limits, including zero | Exact a5 checks and separate OS/native enforcement evidence; unchanged inherited file-size-limit issue is not repaired |
+| Optional structural E/ELSE consistency | Included; conditional opt-in API | Unchanged strict admission precedes per-element tensor-strain/whole-element-energy comparison under declared print and arithmetic assumptions | Exact a5 source/artifact checks; no-underflow is assumed, arithmetic bound is not proved, and default verifier numerical-consistency or scientific acceptance gaps remain open |
 | Source-only documentation checker | Included; component independently reviewed | Bounded local-link/fragment and explicit HTML-anchor checks; exactly eight nonempty literal-identical shell blocks in both installed guides | Exact integrated review and separate installed-journey execution; no complete Markdown, remote-link, source-truth or hosted-CI claim |
 | Pinned build backend | Included; predecessor repeatability recorded separately | setuptools 84.0.0 and a separate hash-pinned acquisition recipe; two-environment same-host evidence applies only to a59419b | Fresh candidate build identities and acceptance; no cross-platform, full-hermeticity or runtime-dependency claim |
 | Adapter Git provenance | Included; narrow repair independently reviewed before integration; [local combined checks](provenance-integration-verification.md) | Actual adapter path checked in local index/HEAD; inherited Git overrides discarded; uncertain context hash-only; new worktree field null | Exact successor artifact review; native evidence remains separate; no upstream authorship or atomic-snapshot claim |
@@ -85,4 +107,4 @@ For any stronger statement, record the exact artifact/configuration, evidence, r
 
 ## 中文摘要
 
-当前 a4 候选新增共享 CalculiX 2.23 日志版本声明门槛、纯源码文档检查和构建后端固定版本；本版作者源码检查 1,066 项通过，失败／错误／跳过均为零；组件复核与单独记录的最终精确产物／安装验收分别记录。组件数量不可叠加到总数，先前 a3 结果与评分不自动转移。本包已包含可运行的来源审计与合成资格记录示例，但检查范围有限。可选原生后端、完整智能体运行时、持久恢复、多机执行、科学验证和正式发布必须分别提供证据。许可证文本已保留；发布权利、对外文件与支持渠道仍需复核。
+当前独立未发布候选为 a5，整合既有 CPU 上限取最小值修复与可选逐单元 E／ELSE 交叉检查。计划选择 1,104 项可移植检查及 1,263 项受控本地检查；这是范围计数，不是 a5 通过结果。准确源码、离线构建、安装检查和双语教程实测分别记录，独立产物复核与发布验收仍须区分。默认验证与报告语义不变；科学接受保持 false，无下溢条件仍为假设，算术误差界限未证明。默认数值字段一致性缺口与既有文件大小上限问题未关闭，也没有新原生求解。历史 a4 的 1,066 项源码通过、e5 扩展、a189 修复和先前能量检查均保留各自范围，不自动批准 a5。完整智能体运行时、持久恢复、多机执行、科学验证和正式发布仍需独立证据；许可证文本与发布前复核要求保持不变。

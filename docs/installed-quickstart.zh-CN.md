@@ -9,17 +9,17 @@
 ## 1. 准备独立环境
 
 需要 Python 3.12+（含 `venv` 和 pip 支持）、可信 POSIX 环境，以及已保存到本地的
-经过单独复核的 `0.2.0a4` wheel。先前本地检查使用 Linux 和 CPython 3.12，不代表承诺支持所有平台。
+经过单独复核的 `0.2.0a5` wheel。先前本地检查使用 Linux 和 CPython 3.12，不代表承诺支持所有平台。
 以下命令假设 `/tmp` 适合作为你信任的临时父目录。
 
-该候选尚未发布。本文不构成 `0.2.0a4` wheel 的复核记录，先前版本的复核不批准本版本。
+该候选尚未发布。本文不构成 `0.2.0a5` wheel 的复核记录，先前版本的复核不批准本版本。
 请从同一份独立复核的交付记录取得 wheel 及其 SHA-256；本文没有
 声明任何公开软件源或下载地址。不要安装名字相似的软件包。摘要一致仅核对文件字节，
 不能证明作者身份、安全性或公开发布状态。
-[当前验收记录](verifier-ci-verification.md)记载 1,066 项作者源码检查通过；
-a4 精确产物与安装验收以单独交付回执为准。
-先前 a3 安装实测不批准本 wheel；[文档检查](documentation-checks.md)仅比较下方
-八个 shell 代码块，不执行这些命令。
+[a5 验证记录](a5-candidate-verification.md)将本候选的源码选择、离线构建、全新安装
+检查和双语操作实测分别记录。请查看该精确候选记录；先前 a3／a4 的产物或
+安装实测不批准本 wheel。[文档检查](documentation-checks.md)仅比较下方八个 shell
+代码块，不执行这些命令。
 
 运行前替换 `WHEEL` 和 `EXPECTED_WHEEL_SHA256`。若 Python 3.12+ 的可执行文件
 名称不同，也请修改 `PYTHON`。所有代码块在同一个 shell 会话运行。安装使用新环境，
@@ -28,7 +28,7 @@ a4 精确产物与安装验收以单独交付回执为准。
 ```sh
 set -eu
 PYTHON=python3.12
-WHEEL='/absolute/path/to/opendot_engineering-0.2.0a4-py3-none-any.whl'
+WHEEL='/absolute/path/to/opendot_engineering-0.2.0a5-py3-none-any.whl'
 EXPECTED_WHEEL_SHA256='paste-the-independently-reviewed-wheel-sha256'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
@@ -51,7 +51,7 @@ cd "$JOURNEY"
 "$PY" -I -B -c 'import importlib.metadata as m, opendot_engineering as p; print(m.version("opendot-engineering")); print(p.__file__)'
 ```
 
-应看到版本 `0.2.0a4` 和位于新环境 `site-packages` 内的导入路径。
+应看到版本 `0.2.0a5` 和位于新环境 `site-packages` 内的导入路径。
 无需激活环境或设置 `PYTHONPATH`；`-I` 忽略源码目录导入捷径，`-B` 避免写入 Python
 字节码。软件包没有名为 `opendot` 的独立控制台命令。
 
@@ -135,7 +135,7 @@ cp -R "$SOURCE/examples" "$JOURNEY/examples"
 ```
 
 应看到 `synthetic_software_assertions_passed: true` 和 `package_version:
-"0.2.0a4"`。三个场景的结果有意不同：
+"0.2.0a5"`。三个场景的结果有意不同：
 
 - `success`：`COMPLETED`、语义有效、字节通过独立哈希核对
 - `semantic_refusal`：`FAILED`，仍保留一个完整但**未获接受**的产物

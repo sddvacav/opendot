@@ -2,9 +2,15 @@
 
 [简体中文](CAPABILITIES.zh-CN.md) · [Overview](OVERVIEW.md) · [Research map](RESEARCH-MAP.md)
 
-Snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a4 source candidate and preserves the exact boundary of earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
+Snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a5 source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
 
-## Verification ledger
+**Current candidate: 0.2.0a5, unreleased.** It combines the inherited CPU-ceiling
+minimum fix with an explicit optional per-element E/ELSE consistency check.
+Default verification is unchanged; conditional consistency is not scientific
+acceptance. Current a5 source, build and installed outcomes are recorded separately.
+[Current a5 scope](docs/a5-candidate-verification.md)
+
+## Historical verification ledger
 
 | Evidence | Exact scope | Outcome and interpretation |
 | --- | --- | --- |
@@ -14,10 +20,10 @@ Snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a4 source ca
 | E4 | Historical 0.2.0a1 residue-reporting repair candidate; Linux, Python 3.12.14, Git 2.52.0; module hash pinned in [repair record](docs/git-workspaces-residue-fix.md) | Author: 773 passed =695 inherited +78 Git, zero failures/errors/skips. The real permission-loss counterexample independently passes at source level. Exact archive/wheel acceptance remains a separate review receipt. |
 | E5 | Historical 0.2.0a2 metadata candidate; Linux, CPython 3.12.14, Git 2.52.0 | Author: 805 selected source tests passed =773 inherited selection +32 metadata; zero failures/errors/skips. Installed metadata: the same 32 nodes passed separately. [Historical author record](docs/agent-contracts-verification.md); independent exact-artifact acceptance remains separate |
 | E6 | Historical 0.2.0a3 source candidate and final `a59419b` delivery | 899 source checks passed; final fresh installed journeys covered all eight shell blocks per language. Two clean build environments on the same host reproduced the exact predecessor wheel. [Source record](docs/parallel-development-verification.md) and [build experiment](docs/build-toolchain.md); these do not accept a4 or transfer a predecessor score |
-| E7 | Independently reviewed shared declared CalculiX 2.23 log gate; synthetic verifier evidence | 30 predeclared independent cases passed. A separate related selection had 192 passes, 81 native opt-in skips and two external-process deselections. Overlapping scopes, not additive coverage; no native solve or binary-authenticity proof. [Current component record](docs/verifier-ci-verification.md) |
-| E8 | Independently reviewed source-only documentation checker | Repaired checker passed the original 43 independent probes and eight separately predeclared HTML probes; the 74-case author selection was independently rerun. These scopes overlap. This checks bounded consistency, not executed guide commands or source truth. [Current component record](docs/verifier-ci-verification.md) |
+| E7 | Independently reviewed shared declared CalculiX 2.23 log gate; synthetic verifier evidence | 30 predeclared independent cases passed. A separate related selection had 192 passes, 81 native opt-in skips and two external-process deselections. Overlapping scopes, not additive coverage; no native solve or binary-authenticity proof. [Historical a4 component record](docs/verifier-ci-verification.md) |
+| E8 | Independently reviewed source-only documentation checker | Repaired checker passed the original 43 independent probes and eight separately predeclared HTML probes; the 74-case author selection was independently rerun. These scopes overlap. This checks bounded consistency, not executed guide commands or source truth. [Historical a4 component record](docs/verifier-ci-verification.md) |
 
-**Current author source aggregate: 1,066 passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** E7/E8 overlap this aggregate and are not additional unique coverage. The 988-node portable CI definition omits 78 local Git cases and is not a hosted run. Component or source passes do not approve the final wheel, installed journeys or release. See [current verification](docs/verifier-ci-verification.md).
+**Historical a4 author source aggregate: 1,066 passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** E7/E8 overlap this aggregate and are not additional unique coverage. The 988-node portable CI definition omits 78 local Git cases and is not a hosted run. Component or source passes do not approve the final wheel, installed journeys or release. See [historical a4 verification](docs/verifier-ci-verification.md).
 
 The historical `0.2.0a2` candidate added only [metadata contracts](docs/agent-contracts.md). E5 records its author checks; E1–E4 retain their earlier versions and scopes.
 
@@ -49,7 +55,7 @@ A passing selected software test is not a successful customer task. An artifact 
 This matrix assigns no aggregate readiness grade. It preserves evidence scope rather than converting test counts into a product score.
 
 
-## 0.2.0a4 verifier and CI update
+## Historical 0.2.0a4 verifier and CI update
 
 The [shared log gate](docs/solver-version-gate.md) rejects ambiguous or repeated CalculiX version declarations, including repeated identical headers. It checks a declared 2.23 version, not a binary identity or new physical model. The source-only [documentation helper](docs/documentation-checks.md) checks bounded local links/fragments, explicit HTML anchors, and exactly eight nonempty literal-identical shell blocks per installed-guide language; it executes none of them. The [build backend](docs/build-toolchain.md) is pinned to setuptools 84.0.0, without a new runtime dependency.
 
