@@ -28,14 +28,21 @@ class ArtifactStore:
 
     Atomic replacement is per file, not an object/metadata transaction. Paths
     follow symlinks; this store is not a sandbox or an access-control boundary.
+    read_only=True skips directory creation/chmod and refuses public puts; it
+    does not make the filesystem immutable. Missing objects fail on retrieval.
     See docs/canonical-artifacts.md for persistence and metadata limitations.
     """
 
-    def __init__(self, root: str | Path):
+    def __init__(self, root: str | Path, *, read_only: bool = False):
+        if not isinstance(read_only, bool):
+            raise TypeError("read_only must be bool")
         self.root = Path(root)
         self.objects = self.root / "objects"
         self.meta = self.root / "meta"
         self._write_lock = threading.RLock()
+        self._read_only = read_only
+        if read_only:
+            return
         self.objects.mkdir(parents=True, exist_ok=True)
         self.meta.mkdir(parents=True, exist_ok=True)
         for directory in (self.root, self.objects, self.meta):
@@ -43,6 +50,10 @@ class ArtifactStore:
                 os.chmod(directory, 0o700)
             except OSError:
                 pass
+
+    def _require_writable(self) -> None:
+        if self._read_only:
+            raise PermissionError("artifact store is read-only")
 
     @staticmethod
     def sha256(data: bytes) -> str:
@@ -95,6 +106,7 @@ class ArtifactStore:
         schema_version: str = "1.0.0",
         source_refs: tuple[str, ...] = (),
     ) -> ArtifactRef:
+        self._require_writable()
         if not isinstance(data, bytes):
             raise TypeError("artifact data must be bytes")
         with self._write_lock:
@@ -153,13 +165,16 @@ class ArtifactStore:
         return ref
 
     def put_text(self, text: str, **kwargs: Any) -> ArtifactRef:
+        self._require_writable()
         return self.put_bytes(text.encode("utf-8"), mime_type="text/plain; charset=utf-8", **kwargs)
 
     def put_json(self, value: Any, **kwargs: Any) -> ArtifactRef:
+        self._require_writable()
         data = json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False).encode("utf-8")
         return self.put_bytes(data, mime_type="application/json", **kwargs)
 
     def put_file(self, path: str | Path, **kwargs: Any) -> ArtifactRef:
+        self._require_writable()
         path = Path(path)
         mime = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
         return self.put_bytes(path.read_bytes(), mime_type=mime, **kwargs)
