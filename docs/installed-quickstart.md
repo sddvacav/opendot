@@ -1,4 +1,4 @@
-# First useful result from a reviewed local wheel
+# First result from the v0.2.0a6 alpha prerelease
 
 [简体中文](installed-quickstart.zh-CN.md) · [Source-only route](../README.md#run-the-synthetic-examples)
 
@@ -9,32 +9,30 @@ device. These are finite local software examples, not an autonomous agent runtim
 
 ## 1. Prepare one isolated environment
 
-You need Python 3.12+ with `venv` and pip support, a trusted POSIX environment,
-and a separately reviewed `0.2.0a6` wheel already on disk. Earlier local checks used Linux and
-CPython 3.12; this is not a general platform-support promise. Use a shell session
-in which `/tmp` is a suitable trusted temporary parent.
+You need Python 3.12+ with `venv` and pip support and a trusted POSIX environment.
+Linux/CPython 3.12 was reviewed; this is not a general platform-support promise.
+Use a shell where `/tmp` is a suitable trusted temporary parent.
 
-This candidate is unreleased. This guide does not establish review of a `0.2.0a6`
-wheel; earlier-version reviews do not approve it. Get the wheel and its SHA-256
-from the same independently reviewed delivery record; no public registry or download URL is
-asserted here. Do not substitute a similarly named package. A matching digest
-checks the supplied bytes, not their authorship, safety, or public release status.
-The [a6 verification record](a6-candidate-verification.md) separates this
-candidate's source selection, offline builds, fresh installed checks and bilingual
-journeys. Consult that exact-candidate ledger; earlier a3/a4/a5 artifact or
-journey results do not approve this wheel. The
-[documentation check](documentation-checks.md) compares the eight shell blocks
-below without executing them.
+Download the [reviewed wheel](https://github.com/sddvacav/opendot/releases/download/v0.2.0a6/opendot_engineering-0.2.0a6-py3-none-any.whl) from the
+[v0.2.0a6 ALPHA release](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) and retain its [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.2.0a6/SHA256SUMS).
+This guide installs that local file offline; it does not select a PyPI package.
+Set `WHEEL` to your downloaded file below. The pinned SHA-256 is already filled in;
+do not change it to make a different download pass. Change `PYTHON` if needed.
+Run all eight blocks in the same shell. No runtime dependency download is needed.
 
-Replace `WHEEL` and `EXPECTED_WHEEL_SHA256` below before running. If your Python
-3.12+ executable has another name, change `PYTHON` too. Run all blocks in the same
-shell. The setup creates a fresh environment and makes no dependency download.
+The release assets match source tree `8caa61849149a3f2d9bda59324fc064fadfcb114`
+at public commit `965ed8c49c47d7b79716ba1843462b84ff21a27f`.
+A matching digest checks expected bytes, not authorship or scientific quality.
+The [release notes](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) provide current publication/verification status;
+the [prepublication a6 ledger](a6-candidate-verification.md) retains its original
+scope. These newer `main` docs do not replace the tagged README or wheel metadata.
+Rebuilding `main` would change README metadata even with the same runtime version.
 
 ```sh
 set -eu
 PYTHON=python3.12
 WHEEL='/absolute/path/to/opendot_engineering-0.2.0a6-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='paste-the-independently-reviewed-wheel-sha256'
+EXPECTED_WHEEL_SHA256='6f0fa54af4d23591d9d0ae40c6c30ada8da1f1a3757c0abafd97b8b90ee25ca9'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
 import hashlib, pathlib, re, sys
@@ -42,7 +40,7 @@ if sys.version_info < (3, 12):
     raise SystemExit("Python 3.12 or newer is required")
 wheel, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
 if not re.fullmatch(r"[0-9a-f]{64}", expected):
-    raise SystemExit("Replace EXPECTED_WHEEL_SHA256 with the reviewed wheel SHA-256")
+    raise SystemExit("Expected wheel digest is malformed: restore the documented pinned value")
 if hashlib.sha256(wheel.read_bytes()).hexdigest() != expected:
     raise SystemExit("Wheel hash mismatch: stop and check the reviewed artifact")
 print("Reviewed wheel bytes match")
@@ -135,12 +133,26 @@ follows symlinks, and is not a transaction or recovery system.
 ## 3. Try success, refusal, and missing permission
 
 The wheel contains the Python package, not the example scripts or fixtures.
-For this step, obtain the matching reviewed source separately and replace
-`SOURCE`. The source directory is only used to copy public examples; imports
-continue to come from the installed wheel.
+Download the matching [full source archive](https://github.com/sddvacav/opendot/releases/download/v0.2.0a6/opendot-engineering-0.2.0a6-source.tar.gz) from the release assets.
+Use `opendot-engineering-0.2.0a6-source.tar.gz`, not the narrower sdist or an
+automatically generated GitHub archive. Set `SOURCE_ARCHIVE` below to that file;
+its pinned hash is checked before extraction into a new directory. Only public
+examples are copied; runtime imports continue to come from the installed wheel.
 
 ```sh
-SOURCE='/absolute/path/to/matching-reviewed-source'
+SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.2.0a6-source.tar.gz'
+"$PY" -I -B - "$SOURCE_ARCHIVE" "$JOURNEY/reviewed-source" <<'PYCODE'
+import hashlib, pathlib, sys, tarfile
+archive, destination = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+expected = "052608c0a751371428d2cbcbb9af93e61790e3d784135df8b9c6bedab7f1b71c"
+if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
+    raise SystemExit("Source archive hash mismatch: stop")
+destination.mkdir(exist_ok=False)
+with tarfile.open(archive) as source:
+    source.extractall(destination, filter="data")
+print("Reviewed source archive bytes match")
+PYCODE
+SOURCE="$JOURNEY/reviewed-source/opendot-engineering-0.2.0a6"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"

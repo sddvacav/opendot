@@ -10,19 +10,11 @@
 
 执行具有明确声明的 Python 工具，查看验收结果，再取回它产生的准确字节。OpenDot Engineering 将本地函数执行、按哈希寻址的产物、证据检查和受控 Git 工作区放进同一个软件包，面向开发者与科研工程人员。
 
-**当前候选：0.2.0a6，尚未发布；NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
-可选只读产物验证、可直接复制的双语测量复核教程，以及六项合成来源边界示例。
-默认 `read_only=False` 写入行为与既有执行／引用所有者保持不变。
-其余九项拟议协议仍为 `NOT_IMPLEMENTED`；不构成生产安全、科学验收、托管 CI
-结果或公开发布。[当前 a6 验证范围](docs/a6-candidate-verification.md)
+**0.2.0a6 ALPHA 预发布版已提供。** [下载](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) · [安装](docs/installed-quickstart.zh-CN.md) · [仓库](https://github.com/sddvacav/opendot) · [议题](https://github.com/sddvacav/opendot/issues)
 
-> **历史 0.2.0a4 源代码候选记录 · 2026 年 10 月 1 日**
->
-> 继承自 **0.2.0a2**：仅作描述、需显式校验的 `Capability` 与 `AgentManifest` 元数据契约；预算与权限不新增执行强制机制，也未迁移既有使用方。
->
-> 当时的 a4 候选收紧共享的 CalculiX 2.23 日志版本声明门槛，新增有限范围的纯源码文档检查，并将构建后端固定为 setuptools 84.0.0。**1,066 项指定作者源码检查通过**，失败／错误／跳过均为零。**最终精确产物与安装验收以单独交付回执为准**；组件复核保留各自且存在重叠的范围。[历史 a4 验证记录](docs/verifier-ci-verification.md)
->
-> 历史证据：**0.2.0a3** 通过 **899 项源码检查**；最终安装指南实测与[同主机构建重复性](docs/build-toolchain.md)仅适用于该前版。**0.2.0a1** Git 修复候选通过 **773 项作者检查**及独立源代码残留反例复验；**0.2.0a0** 函数与产物核心通过 **695 项独立可移植检查**。这些结果不构成 **0.2.0a4** 的测试总数或验收。持久恢复、模型驱动的自主智能体与大规模智能体性能仍属于未来工作。[证据与边界](CAPABILITIES.zh-CN.md)
+[标签对应源码](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f)通过 [1,183 项可移植 CI 检查](https://github.com/sddvacav/opendot/actions/runs/36885554336)，另行报告 49 项子测试。本工具仍处于实验阶段，不具备生产就绪承诺；这些检查不构成科学验收。
+
+当前 `main` 分支文档领先于发布版。已发布产物仍绑定标签源码及其原始 README 元数据；从 `main` 重建会改变这些元数据。[各版本证据与限制](CAPABILITIES.zh-CN.md)保留历史测试记录。
 
 ## 运行合成示例
 
@@ -45,7 +37,6 @@ JSON 应显示 `synthetic_software_assertions_passed: true`，并呈现三种结
 **准备安装 wheel？** 请使用[完整安装指南](docs/installed-quickstart.zh-CN.md)，按说明复制匹配的示例并核验安装后的导入位置。wheel 包含软件包，示例文件保留在源代码材料中。
 
 如需从 CSV 到统计结果的完整示例，请从[合成测量复核](examples/measurement-review/README.zh-CN.md)开始：运行 valid、wrong-mean、denied 三种案例，找到保留的结果字节，进行验证，并处理输出路径已存在的情况。
-
 
 六项有限的证据／来源／轨迹案例见[来源边界示例](examples/source-boundary/README.md)，其[历史研究语境](docs/research/demand-gap-20261001/README.md)另行标明。
 
@@ -86,4 +77,4 @@ OpenDot 的长期目标，是将科研与工程任务转化为可复核的成果
 
 [版本概览](OVERVIEW.zh-CN.md) · [变更记录](CHANGELOG.md) · [参与贡献](CONTRIBUTING.md) · [安全](SECURITY.md) · [支持](SUPPORT.md) · [发布门槛](docs/release-checklist.md)
 
-项目原始代码使用 [Apache-2.0](LICENSE)，另见 [NOTICE](NOTICE) 与独立的[品牌资源声明](assets/brand/NOTICE)。可选依赖保留各自义务。本快照尚未确立正式公开下载与支持地址。
+项目原始代码使用 [Apache-2.0](LICENSE)，另见 [NOTICE](NOTICE) 与独立的[品牌资源声明](assets/brand/NOTICE)。可选依赖保留各自义务。公开使用问题和合成错误复现可提交至 [GitHub 议题](https://github.com/sddvacav/opendot/issues)。不要公开机密或安全敏感细节；请阅读[安全说明](SECURITY.md)。不承诺响应时限。

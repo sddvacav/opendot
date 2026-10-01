@@ -10,21 +10,11 @@
 
 Run a declared Python tool, inspect its acceptance result, and retrieve the exact bytes it produced. OpenDot Engineering brings local callable execution, hash-addressed artifacts, evidence checks, and controlled Git workspaces into one package for developers and research engineers.
 
-**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
-adds optional read-only artifact verification, bilingual measurement walkthroughs,
-and a six-case synthetic source-boundary example to corrected a5. Default
-`read_only=False` writes and the canonical execution/reference owners are retained.
-Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
-scientific acceptance, a hosted-CI result, or a public release.
-[Current a6 verification scope](docs/a6-candidate-verification.md)
+**0.2.0a6 ALPHA prerelease is available.** [Download](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) · [Install](docs/installed-quickstart.md) · [Repository](https://github.com/sddvacav/opendot) · [Issues](https://github.com/sddvacav/opendot/issues)
 
-> **Historical 0.2.0a4 source-candidate record · 1 October 2026**
->
-> Inherited from **0.2.0a2**: metadata-only `Capability` and `AgentManifest`, with explicit validation and descriptive budgets/permissions. No execution enforcement or existing-consumer migration is added.
->
-> That a4 candidate tightens the shared declared CalculiX 2.23 log gate, adds bounded source-only documentation checks, and pins the build backend to setuptools 84.0.0. **1,066 selected author source checks passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt**; component reviews retain their separate, overlapping scopes. [Historical a4 verification](docs/verifier-ci-verification.md)
->
-> Historical evidence: **0.2.0a3** passed **899 source checks**; its final installed-guide journeys and [same-host build repeatability](docs/build-toolchain.md) remain bound to that predecessor. The **0.2.0a1** Git repair candidate passed **773 author checks** and its independent source-level residue reproduction; the **0.2.0a0** callable/artifact core passed **695 independent portable checks**. These results do not establish a test total or acceptance for **0.2.0a4**. Durable recovery, autonomous model-driven agents, and large-scale agent performance remain future work. [Evidence and limits](CAPABILITIES.md)
+The [tagged source](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f) passed [1,183 portable CI checks](https://github.com/sddvacav/opendot/actions/runs/36885554336), with 49 subtests reported separately. This is an experimental, non-production-ready toolkit; the checks do not establish scientific acceptance.
+
+These `main`-branch docs are ahead of the release. Published assets remain bound to the tagged source and its original README metadata; rebuilding `main` would change that metadata. [Version-bound evidence and limitations](CAPABILITIES.md) retain the historical test ledgers.
 
 ## Run the synthetic examples
 
@@ -47,7 +37,6 @@ These are deliberate synthetic software cases. The artifact store follows symlin
 **Installing a wheel instead?** Follow the [complete installed quickstart](docs/installed-quickstart.md), including how to copy the matching examples and verify installed imports. Wheels contain the package; examples remain source material.
 
 For a CSV-to-summary walkthrough, start with the [synthetic measurement review](examples/measurement-review/README.md): run valid, wrong-mean and denied cases, locate retained result bytes, verify them, and handle an existing output path.
-
 
 For six bounded evidence/source/trajectory cases, see the [source-boundary example](examples/source-boundary/README.md) and its [historical research context](docs/research/demand-gap-20261001/README.md).
 
@@ -89,4 +78,4 @@ OpenDot's longer-term goal is to turn science and engineering tasks into reviewa
 
 [Version overview](OVERVIEW.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Support](SUPPORT.md) · [Release gates](docs/release-checklist.md)
 
-Original project code is [Apache-2.0](LICENSE); see [NOTICE](NOTICE) and the separate [artwork notice](assets/brand/NOTICE). Optional dependencies retain their own obligations. Canonical public download/support destinations are not established in this snapshot.
+Original project code is [Apache-2.0](LICENSE); see [NOTICE](NOTICE) and the separate [artwork notice](assets/brand/NOTICE). Optional dependencies retain their own obligations. Public usage questions and synthetic bug reports belong in [GitHub Issues](https://github.com/sddvacav/opendot/issues). Do not post confidential or security-sensitive details; see [Security](SECURITY.md). No response SLA is promised.
