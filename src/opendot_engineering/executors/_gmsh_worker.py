@@ -62,7 +62,9 @@ def _runtime_identity(gmsh):
 
 def main():
     import resource
-    resource.setrlimit(resource.RLIMIT_FSIZE, (32*1024*1024, 32*1024*1024))
+    inherited_fsize=resource.getrlimit(resource.RLIMIT_FSIZE)
+    fsize_limit=min([32*1024*1024]+[limit for limit in inherited_fsize if limit!=resource.RLIM_INFINITY])
+    resource.setrlimit(resource.RLIMIT_FSIZE,(fsize_limit,fsize_limit))
     inherited_cpu=resource.getrlimit(resource.RLIMIT_CPU)
     cpu_limit=min([300]+[limit for limit in inherited_cpu if limit!=resource.RLIM_INFINITY])
     resource.setrlimit(resource.RLIMIT_CPU,(cpu_limit,cpu_limit))
