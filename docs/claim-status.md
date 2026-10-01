@@ -1,12 +1,13 @@
 # OpenDot Engineering claim status
 
-> Current unreleased **0.2.0a6** candidate; **NOT_SCORED**: corrected a5 plus
-> optional read-only artifact verification, bilingual measurement guides, and six
-> synthetic source-boundary protocols. The nine remaining proposals are
-> `NOT_IMPLEMENTED`; all 15 have no production enforcement. [Exact a6 scope](a6-candidate-verification.md)
-> declares 1,183 portable / 1,342 controlled-local nodes. These are selection
-> counts, not pass claims. Default writes, execution/reference owners, optional
-> energy-check limits, and scientific/physical non-acceptance are preserved.
+> Current unreleased **0.3.0a1** candidate; **NOT_SCORED**: the explicit
+> [structural v2 migration](structural-default-v2.md) requires conditional
+> per-element consistency by default, with schema 2 and false scientific authority.
+> Historical `artifact_v1` behavior is available only by explicit API selection.
+> Seven original synthetic source-boundary protocols are exercised; eight remain
+> unimplemented, with six synthetic parameter fixtures counted separately and
+> no production enforcement. [Exact successor scope](structural-v2-candidate-verification.md)
+> declares 1,309 portable / 1,468 controlled-local nodes, not pass claims.
 
 > Historical boundaries: original a4 `4075ac17` owns the 1,066 source passes
 > and 988-node hosted definition. The later
@@ -70,14 +71,16 @@ zero failures/errors/skips. **Exact final artifact and installed acceptance requ
 See [historical a4 verification](verifier-ci-verification.md). No new physics, native
 execution, runtime/recovery, hosted-CI result or public release is established.
 
-The historical `0.2.0a5` candidate introduced, and a6 retains, the CPU-minimum repair and opt-in
-per-element printed E/ELSE check. Its successful API status is
-`CONDITIONAL_ELASTIC_ENERGY_CONSISTENCY_PASS`; `scientific_accepted` stays false,
-no-underflow remains `ASSUMED_NOT_VERIFIED`, and the arithmetic bound is
-`NOT_PROVED`. Source selection, build identities, installed checks and guide
-execution must be recorded against a6 itself. No new native solve is included;
-rechecking an older pack is output-only evidence. The unchanged default
-numeric-field consistency gap and inherited file-size ceiling issue remain open.
+The historical `0.2.0a5` candidate introduced the CPU-minimum repair and optional
+per-element printed E/ELSE check, retained without result changes in this successor.
+`verify_elastic_energy` still returns `CONDITIONAL_ELASTIC_ENERGY_CONSISTENCY_PASS`.
+The new default structural profile requires that same conditional check and returns
+`CONDITIONAL_STRUCTURAL_CONSISTENCY_PASS`; scientific acceptance stays false,
+no-underflow remains `ASSUMED_NOT_VERIFIED`, and the arithmetic bound remains
+`NOT_PROVED`. This closes only the bounded declared-case default E/ELSE gap;
+explicit `artifact_v1` retains the historical gap. General material/physics
+qualification, native execution and the inherited file-size ceiling issue remain
+outside this change. Rechecking an older pack is output-only evidence.
 
 ## Claims and limits
 
@@ -92,12 +95,14 @@ numeric-field consistency gap and inherited file-size ceiling issue remain open.
 | Optional source admission | Included; locally checked; narrow predecessor integration independently reviewed | Explicit root, independently reviewed manifest digest, flat pinned modules, and source-owned named exports; ordinary trusted Python authority | Review of each changed outgoing artifact; separate acceptance for each consumer; no inference of authorization, sandboxing, or complete code identity |
 | Synthetic qualification records | Included; locally checked | Invented fixture oracles can be checked; science/device flags stay false | Separate physical/scientific evidence for real qualification |
 | Optional simulated lab | Included; fake-only scope independently reviewed before combination | Internally constructed fake devices; finite fixed plan and strict pinned-document checks; runtime authority flags stay false | Exact combined-artifact review and separate evidence for any new platform or capability; no physical/scientific qualification |
-| Runnable examples | Predecessor checks recorded; current installed acceptance uses a separate receipt | README examples and help/installation commands have version-bound checks; a3 fresh journeys covered all eight blocks per language | Execute the current guide against the exact a6 artifact; source-only parity and predecessor execution do not approve it |
+| Runnable examples | Predecessor checks recorded; current installed acceptance uses a separate receipt | README examples and help/installation commands have version-bound checks; a3 fresh journeys covered all eight blocks per language | Execute the current guide against the exact 0.3.0a1 artifact; source-only parity and predecessor execution do not approve it |
 | Wheel identity and imports | Predecessor checks recorded; current artifact acceptance uses a separate receipt | Local wheel installation and isolated module checks retain their recorded version and artifact scope | Fresh exact-candidate checks, approved public distribution, supported platform matrix, and published release identity |
 | Optional CAD/CAE adapters | Included | Fixed deterministic contracts and separately installed backends | Native execution and dependency/license review for each claimed environment |
 | Shared CalculiX version-declaration gate | Included; component independently reviewed | One complete declared 2.23 header required; ambiguous and repeated declarations refused by both thermal and structural verifiers | Exact integrated and artifact review; declaration consistency does not authenticate a binary/log or validate new physics |
-| Solver-child CPU ceiling | Included; 17 fake-resource predecessor checks | Existing callback takes the minimum of 300 seconds and finite inherited soft/hard limits, including zero | Exact a6 checks and separate OS/native enforcement evidence; unchanged inherited file-size-limit issue is not repaired |
-| Optional structural E/ELSE consistency | Included; conditional opt-in API | Unchanged strict admission precedes per-element tensor-strain/whole-element-energy comparison under declared print and arithmetic assumptions | Exact a6 source/artifact checks; no-underflow is assumed, arithmetic bound is not proved, and default verifier numerical-consistency or scientific acceptance gaps remain open |
+| Gmsh worker CPU ceiling | Included; 19 fake-only cases plus 44 separate subtests | Existing worker callback preserves lower finite inherited CPU soft/hard limits before Gmsh import | No native import or kernel-limit enforcement is tested; lower inherited FSIZE limitation and separate native-run authorization remain |
+| Solver-child CPU ceiling | Included; 17 fake-resource predecessor checks | Existing callback takes the minimum of 300 seconds and finite inherited soft/hard limits, including zero | Exact 0.3.0a1 checks and separate OS/native enforcement evidence; unchanged inherited file-size-limit issue is not repaired |
+| Default structural v2 | Included; intentional schema/status migration | Strict artifact admission plus the unchanged conditional per-element check; explicit historical `artifact_v1` only | Exact successor source/installed review; no generalized physics, proved arithmetic error bound, physical validation or scientific acceptance |
+| Optional structural E/ELSE consistency | Included; conditional opt-in API | Unchanged strict admission precedes per-element tensor-strain/whole-element-energy comparison under declared print and arithmetic assumptions | Exact 0.3.0a1 source/artifact checks; no-underflow is assumed, arithmetic bound is not proved; the new default requires this same check only within its declared case and grants no scientific acceptance |
 | Source-only documentation checker | Included; component independently reviewed | Bounded local-link/fragment and explicit HTML-anchor checks; exactly eight nonempty literal-identical shell blocks in both installed guides | Exact integrated review and separate installed-journey execution; no complete Markdown, remote-link, source-truth or hosted-CI claim |
 | Pinned build backend | Included; predecessor repeatability recorded separately | setuptools 84.0.0 and a separate hash-pinned acquisition recipe; two-environment same-host evidence applies only to a59419b | Fresh candidate build identities and acceptance; no cross-platform, full-hermeticity or runtime-dependency claim |
 | Adapter Git provenance | Included; narrow repair independently reviewed before integration; [local combined checks](provenance-integration-verification.md) | Actual adapter path checked in local index/HEAD; inherited Git overrides discarded; uncertain context hash-only; new worktree field null | Exact successor artifact review; native evidence remains separate; no upstream authorship or atomic-snapshot claim |
@@ -107,7 +112,7 @@ numeric-field consistency gap and inherited file-size ceiling issue remain open.
 | Optional simulation dependencies | Separately installed; direct versions and license texts checked in the reviewed lab environment | Bluesky 1.15.1, ophyd 1.11.2, event-model 1.24.0; no dependency code vendored | Transitive-license, vulnerability, and supply-chain review for the chosen distribution/environment |
 | Core license | Included | Existing Apache-2.0 text and NOTICE are retained | Distribution-rights and third-party obligations review before publication |
 | New artwork | Included | Six newly authored AI-assisted SVGs with an asset notice | Independent outgoing-artifact review and any required trademark decision |
-| Public repository, downloads, support/security channels | Blocked | Canonical destinations are not verified here | Verified ownership, access, and tested reporting routes |
+| Public repository and historical downloads | Verified a6 destinations; successor unreleased | [Repository](https://github.com/sddvacav/opendot), [Issues](https://github.com/sddvacav/opendot/issues) and [historical a6 release](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) are verified | Exact 0.3.0a1 publication/artifact review remains open; private security reporting and response SLA are not established |
 | Production readiness or support SLA | Unverified | No such promise | Defined operational/support scope and approved evidence or policy |
 
 ## Promotion rules
@@ -116,4 +121,4 @@ For any stronger statement, record the exact artifact/configuration, evidence, r
 
 ## 中文摘要
 
-当前独立未发布候选为 a6，NOT_SCORED。在修正后的 a5 上整合可选只读产物验证、双语测量教程与六项合成来源边界协议；其余九项拟议协议仍未实现，十五项均无生产强制机制。选择范围为 1,183 项可移植节点与 1,342 项受控本地节点，实际结果记录在单独精确产物回执中。默认写入行为、函数及引用所有者保持不变；只读模式仍需可信根目录，读取可能更新 atime。继承的可选能量检查不构成科学验收，数值一致性与文件大小上限的既有缺口未关闭。历史版本结果与评分不转移至 a6；未运行新原生求解、模型、设备、远程写入或托管 CI，也未公开发布。
+当前独立未发布候选为 0.3.0a1，NOT_SCORED。结构默认验证改为 schema 2，在声明的材料、历史与输出条件下要求逐单元能量一致性；科学验收仍为 false，无下溢仍为未验证假设，算术误差界限未证明。历史 artifact_v1 仅可显式选择，不自动回退。来源边界覆盖七项原始合成协议、八项未实现协议与另行计数的六个合成参数场景，仍无生产强制机制。预声明选择为 1,309 项可移植节点、1,468 项受控本地节点，结果由精确候选回执记录。历史 a6 字节与证据不变，不转移评分或验收；未新增原生求解、模型、设备、远程写入或托管 CI。
