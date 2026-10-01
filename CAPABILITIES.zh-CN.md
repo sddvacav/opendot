@@ -12,7 +12,7 @@
 [Gmsh CPU 回调](docs/gmsh-cpu-ceiling.md)保留较低的继承限制；合成资源检查不证明原生或内核强制执行。
 [当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-已发布安装包与当前发布状态见 [Releases](https://github.com/sddvacav/opendot/releases)；[已发布 a6 的安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其对应版本的固定产物与哈希。源码说明和本地构建记录不能代替发布产物的验收。
+[0.3.0a1 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其独立的版本固定值；先前版本的结果不构成本次产物的验收。
 
 ## 历史验证记录
 

@@ -6,11 +6,11 @@
   <img alt="OpenDot" src="assets/brand/opendot-readme-banner-light.svg" width="1280">
 </picture>
 
-[English](README.md) · [已发布 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md) · [0.3 本地 wheel 指南](docs/installed-quickstart.zh-CN.md) · [能力清单](CAPABILITIES.zh-CN.md) · [架构](docs/architecture.md)
+[English](README.md) · [安装 0.3.0a1](docs/installed-quickstart.zh-CN.md) · [能力清单](CAPABILITIES.zh-CN.md) · [架构](docs/architecture.md)
 
 执行具有明确声明的 Python 工具，查看验收结果，再取回它产生的准确字节。OpenDot Engineering 将本地函数执行、按哈希寻址的产物、证据检查和受控 Git 工作区放进同一个软件包，面向开发者与科研工程人员。
 
-**实验性 alpha 源码：0.3.0a1；NOT_SCORED。** 本源码整合
+**实验性 alpha 预发布版：0.3.0a1；NOT_SCORED。** 本源码整合
 [结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
@@ -18,7 +18,7 @@
 [Gmsh CPU 回调](docs/gmsh-cpu-ceiling.md)保留较低的继承限制；合成资源检查不证明原生或内核强制执行。
 [当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-已发布安装包与当前发布状态见 [Releases](https://github.com/sddvacav/opendot/releases)；[已发布 a6 的安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其对应版本的固定产物与哈希。源码说明和本地构建记录不能代替发布产物的验收。
+[0.3.0a1 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其独立的版本固定值；先前版本的结果不构成本次产物的验收。
 
 历史 [0.2.0a6 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)已另行提供。
 其[标签源码](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f)

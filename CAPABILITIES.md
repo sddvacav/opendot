@@ -15,7 +15,7 @@ The [Gmsh CPU callback](docs/gmsh-cpu-ceiling.md) preserves inherited lower
 ceilings; fake-resource checks do not establish native/kernel enforcement.
 [Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
-For published installation assets and current release status, see [Releases](https://github.com/sddvacav/opendot/releases). The [published a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) keeps its version-specific artifact pins. Source descriptions and local build records do not replace exact released-artifact acceptance.
+The [0.3.0a1 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1) is available. Follow the [version-pinned installation guide](docs/installed-quickstart.md) for its exact wheel, matching source examples and SHA-256 checks. The [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retains its separate version-specific pins; earlier-version results do not accept these artifacts.
 
 ## Historical verification ledger
 
