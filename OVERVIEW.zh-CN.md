@@ -1,16 +1,18 @@
 # OpenDot Engineering 版本概览
 
+**发布状态更新 · 2026 年 10 月 1 日：** [0.2.0a6 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)已提供。[已复核的安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)。下方候选状态与证据记录保留发布前快照，不能作为当前是否已发布的判断；公开发布不扩大已声明的运行时、安全或科学验收范围。
+
 [English](OVERVIEW.md) · [能力与证据](CAPABILITIES.zh-CN.md) · [研究与优先级](RESEARCH-MAP.zh-CN.md)
 
-**0.2.0a6 版本 · 尚未发布的源代码候选版本 · 证据截至 2026 年 10 月 1 日**
+**历史 0.2.0a6 源代码候选 · 发布前证据快照，2026 年 10 月 1 日**
 
 OpenDot Engineering 为本地工程工作提供一个便于检查的小型基础包：执行具有明确声明的 Python 工具、查看验收结果、按字节哈希保存产物，并为不同任务创建受控的 Git 工作区。它面向需要检查“执行了什么、产生了什么、哪些检查确实通过”的开发者和科研工程人员。
 
-**当前候选：0.2.0a6，尚未发布；NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
+**历史源码候选：0.2.0a6；在所记录的准备阶段尚未发布、NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
 可选只读产物验证、可直接复制的双语测量复核教程，以及六项合成来源边界示例。
 默认 `read_only=False` 写入行为与既有执行／引用所有者保持不变。
 其余九项拟议协议仍为 `NOT_IMPLEMENTED`；不构成生产安全、科学验收、托管 CI
-结果或公开发布。[当前 a6 验证范围](docs/a6-candidate-verification.md)
+结果或公开发布。[发布前 a6 验证范围](docs/a6-candidate-verification.md)
 
 历史 a4 候选要求热学与结构验证器共享的日志门槛仅接受一个明确的 CalculiX 2.23 版本声明。新增纯源码文档检查器，检查有限范围的本地链接、片段与 HTML 锚点，以及每种安装指南语言中恰好八个非空、逐字一致的 shell 代码块。构建后端固定为 setuptools 84.0.0。这些改动不新增物理模型、运行时、原生执行或公开发布。见[历史 a4 验证记录](docs/verifier-ci-verification.md)、[文档检查边界](docs/documentation-checks.md)和[构建配置](docs/build-toolchain.md)。
 

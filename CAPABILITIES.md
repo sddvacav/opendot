@@ -1,16 +1,18 @@
 # OpenDot Engineering capabilities and evidence
 
+**Publication update · 1 October 2026:** [0.2.0a6 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is available. [Reviewed installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md). The source-candidate statements and ledgers below describe the preserved prepublication snapshot, not current release availability. Publication does not broaden the stated runtime, security or scientific limits.
+
 [简体中文](CAPABILITIES.zh-CN.md) · [Overview](OVERVIEW.md) · [Research map](RESEARCH-MAP.md)
 
-Snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a6 source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
+Prepublication snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a6 source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
 
-**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
+**Historical source candidate: 0.2.0a6, unreleased and NOT_SCORED at the recorded preparation stage.** This separate integration
 adds optional read-only artifact verification, bilingual measurement walkthroughs,
 and a six-case synthetic source-boundary example to corrected a5. Default
 `read_only=False` writes and the canonical execution/reference owners are retained.
 Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
 scientific acceptance, a hosted-CI result, or a public release.
-[Current a6 verification scope](docs/a6-candidate-verification.md)
+[Prepublication a6 verification scope](docs/a6-candidate-verification.md)
 
 ## Historical verification ledger
 

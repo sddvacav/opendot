@@ -1,18 +1,20 @@
 # OpenDot Engineering release overview
 
+**Publication update · 1 October 2026:** [0.2.0a6 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is available. [Reviewed installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md). The source-candidate statements and ledgers below describe the preserved prepublication snapshot, not current release availability. Publication does not broaden the stated runtime, security or scientific limits.
+
 [简体中文](OVERVIEW.zh-CN.md) · [Capabilities and evidence](CAPABILITIES.md) · [Research and priorities](RESEARCH-MAP.md)
 
-**Version 0.2.0a6 · Unreleased source candidate · Evidence snapshot 1 October 2026**
+**Historical version 0.2.0a6 source candidate · Prepublication evidence snapshot, 1 October 2026**
 
 OpenDot Engineering provides a small, inspectable foundation for local engineering work: run a declared Python tool, inspect its acceptance result, store the output by its byte hash, and create controlled Git workspaces for separate tasks. The package is designed for developers and research engineers who need to examine what ran, what it produced, and which checks actually passed.
 
-**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
+**Historical source candidate: 0.2.0a6, unreleased and NOT_SCORED at the recorded preparation stage.** This separate integration
 adds optional read-only artifact verification, bilingual measurement walkthroughs,
 and a six-case synthetic source-boundary example to corrected a5. Default
 `read_only=False` writes and the canonical execution/reference owners are retained.
 Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
 scientific acceptance, a hosted-CI result, or a public release.
-[Current a6 verification scope](docs/a6-candidate-verification.md)
+[Prepublication a6 verification scope](docs/a6-candidate-verification.md)
 
 The historical a4 candidate requires an unambiguous single CalculiX 2.23 version declaration in logs checked by the shared thermal/structural gate. It adds a source-only documentation checker for bounded local links, fragments and HTML anchors, plus exactly eight nonempty, literal-identical shell blocks in each installed-guide language. The build backend is pinned to setuptools 84.0.0. These changes add no physics model, runtime, native execution or public release. See the [historical a4 verification record](docs/verifier-ci-verification.md), [documentation-checking boundary](docs/documentation-checks.md), and [build profile](docs/build-toolchain.md).
 
