@@ -1,6 +1,6 @@
 # Source-boundary acceptance example
 
-This **source-only, synthetic example** runs six bounded cases from the 15-case
+This **source-only, synthetic example** runs seven bounded cases from the 15-case
 research proposal. It imports the existing `ToolRuntime`, `ToolSpec`,
 `ArtifactStore`, and `ArtifactRef`; it changes none of their implementation bytes
 and introduces no second registry, security runtime, permission owner, provider,
@@ -14,16 +14,19 @@ From the repository root, with the existing test tooling prepared:
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B examples/source-boundary/demo.py --output /tmp/source-boundary-new
-PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src python -B -m pytest -q -p no:cacheprovider tests/test_source_boundary_example.py --basetemp=/tmp/source-boundary-tests-new
+PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src python -B -m pytest -q -p no:cacheprovider tests/test_source_boundary_example.py tests/test_source_conflict_example.py --basetemp=/tmp/source-boundary-tests-new
 ```
 
 Use a **new** output directory beneath an existing trusted parent. The runnable
 example creates local evidence artifacts and in-memory synthetic effects only.
 The source test requires pytest; the example itself uses the standard library
-and the existing package. Integrated a6 selects its 38 tests in the explicit
+and the existing package. The source-conflict component selects 86 tests in the explicit
 [source-boundary manifest](../../ci/source-boundary-nodes.txt). The example files
 remain source material, not wheel contents; any copied-example run against an
-installed wheel is a separately recorded check.
+installed wheel is a separately recorded check. The manifest retains the 38
+inherited selections (with one descriptive test-name update) and explicitly adds
+48 collected nodes. The integrated 0.3.0a1 portable workflow selects 1,309 distinct
+nodes, including 59 structural-default-v2 and 19 fake-only Gmsh CPU cases; this does not claim a hosted CI run or a change to the frozen a6 snapshot.
 
 ## What was executed
 
@@ -33,6 +36,11 @@ installed wheel is a separately recorded check.
   `runtime_status=NOT_DISPATCHED` and `receipt=null`; no runtime refusal is forged.
   Input evidence and reporting are still written. This is **not** a built-in
   required-evidence policy or an access-authority check in `ToolRuntime`.
+- `EVIDENCE-CONFLICT`: the original two different target declarations, with no
+  precedence, return `BLOCKED_CONFLICT`, `selected_target=null`, zero dependent
+  actions, and no runtime dispatch or receipt. Both raw source records have
+  their own canonical `ArtifactRef`, linked to the exact input fixture. This
+  profile detects disagreement and refuses; it does not resolve the conflict.
 - `TRUST-BENIGN`, `TRUST-EXTRA-EXPORT`: the canonical runtime executes a permitted
   summary, but refuses an explicitly attempted offline fake-export callable
   with `BLOCKED/PermissionDenied`. Caller grants remain fixed trusted Python
@@ -54,10 +62,47 @@ approval scope/value/order, false final-state claims, malformed or absent events
 and utility failure despite zero export effects. These are deterministic
 software checks, not prompt-injection immunity or a benchmark of an LLM.
 
+## Synthetic parameter conditions: zero is not unknown
+
+[parameter-fixtures.json](parameter-fixtures.json) contains six separately
+counted regression fixtures. They add **no further original proposal closure**.
+All source identities, decimal strings, conditions, and values are invented;
+none describe a material, private experiment, measured property, or real device.
+
+The fixed task is `{scenario: bench-A, unit: au}`. Each source must state its own
+conditions and raw decimal string. The example reports matching, explicitly
+non-applicable, and unknown-applicability source IDs separately. It never borrows
+missing conditions or values from another source. A fully specified different
+scenario or unit is excluded by exact comparison; this is not unit conversion.
+Missing conditions block even when another source has a matching zero. Empty
+source collections and absence of an applicable source also block as `UNKNOWN`.
+
+An explicit raw `"0"`, `"-0"`, or `"0.00"` is a known exact zero. A matching source's
+missing/null value is `UNKNOWN`; booleans, JSON numbers, malformed/nonfinite strings, and
+exponents are `INVALID`. The bounded grammar permits an optional minus sign,
+one to six integral digits without leading zeros, and up to twelve fractional
+digits. Actual nonfinite JSON numbers are rejected before creating artifacts.
+No averaging, ranking, unit conversion, or implicit source precedence occurs.
+Two applicable, differing values yield `CONFLICT`; two numerically equal raw
+representations can agree without choosing or overwriting either representation.
+
+`selected_decimal` is an exact normalized decimal **string**, or null when no
+value is accepted. `raw_value` is populated only when all accepted sources use
+the same raw representation; otherwise it is null. Every raw record, including
+absence versus explicit null and excluded/invalid records, is preserved in its
+own artifact and in the exact input evidence. A successful result links all of
+those evidence references. The existing callable is invoked only for a `READY`
+decision and stores a synthetic selection report. All other decisions have
+`NOT_DISPATCHED`, a null runtime receipt, and zero dependent calls.
+
+These are fixed example semantics, not scientific applicability, authenticated
+source authority, or a new production evidence validator. The source's claimed
+priority, role, or passing verdict cannot change the fixed precheck rules.
+
 ## Explicit gaps
 
-The nine remaining original proposals are `NOT_IMPLEMENTED` / `NOT_RUN`:
-`EVIDENCE-CONFLICT`, `EVIDENCE-DENIED`, all four `GUI-*` cases,
+The eight remaining original proposals are `NOT_IMPLEMENTED` / `NOT_RUN`:
+`EVIDENCE-DENIED`, all four `GUI-*` cases,
 `TRUST-ALL-REFUSED`, `TRAJECTORY-PARTIAL`, and `CONSISTENCY-ALL-TRIALS`.
 Related negative unit tests do not promote those original protocols to executed
 coverage. All 15 proposals retain `production_enforcement=NOT_IMPLEMENTED`.
