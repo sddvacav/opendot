@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opendot-engineering"
+version = "0.2.0a4"
+description = "Bounded local artifact storage, callable execution, and engineering adapters"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+readme = "README.md"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+simulated-lab = ["bluesky==1.15.1", "ophyd==1.11.2", "event-model==1.24.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
