@@ -1,8 +1,9 @@
 # Canonical local artifacts
 
 The canonical local artifact core was introduced in `0.2.0a0` and is included
-with its store implementation and `ArtifactRef` body unchanged in this unreleased
-source candidate. It provides one standard-library
+in this unreleased source candidate. The optional read-only increment changes only
+the existing store owner; default writer behavior and the `ArtifactRef` body are
+preserved. It provides one standard-library
 content-addressed store and one immutable reference type. This is a migration
 candidate: previous consumers have not been switched or accepted. It is not a
 second runtime. Each version's source and review records retain their own scope;
@@ -44,15 +45,48 @@ current caller-supplied producer, task, and source fields. Those fields are
 untrusted declarations, not authenticated provenance. A stored byte hash does
 not certify content, licensing, access rights, or scientific quality.
 
+## Optional non-mutating verification
+
+`ArtifactStore(root, read_only=True)` uses the same owner and reference type, skips
+all directory creation and chmod, and refuses `put_bytes`, `put_text`, `put_json`
+and `put_file` with `PermissionError` before input reading or serialization.
+`read_only` is a keyword-only bool; other types raise `TypeError` before setup.
+The default `False` retains the ordinary writer behavior. There is no second CAS.
+
+Construction does not require the root to exist and does not repair it. Existing
+`get_bytes`, `verify` and `verify_id` behavior is preserved: missing objects fail
+retrieval, verification returns false for missing/corrupt objects, and metadata
+is not checked. A caller must supply the expected reference or digest through
+an independently trusted channel; reading an expected hash from the same
+untrusted object is not authentication.
+
+```python
+reader = ArtifactStore("/path/to/trusted/local/artifacts", read_only=True)
+assert reader.verify_id(independently_retained_artifact_id)
+```
+
+These public operations do not create, delete or write files/directories or change
+permissions, including on refusal. Ordinary reads may update filesystem access
+timestamps. This is an API behavior, not enforced filesystem immutability: other
+writers, caller-modified objects and direct private-helper calls are outside this
+contract. Symlinks are still followed. Roots, ancestors and concurrent writers
+must remain trusted and cooperative. Reads do not constitute an atomic snapshot
+or protect against hostile concurrent substitution.
+
+The [measurement example](../examples/measurement-review/README.md) uses this path
+for replay with separately retained bundle/input/oracle pins. The
+[increment scope](readonly-artifacts-verification.md) keeps its evidence distinct
+from earlier acceptance records.
+
 ## Trust and persistence limits
 
 - The caller must control the root, all ancestors, and concurrent writers.
   Paths follow symlinks, including roots, object directories, objects and metadata.
   Digest validation only bounds lexical names; it is not filesystem containment
-- Construction creates directories and attempts chmod `0700`; publication
-  attempts `0444` on files. Permission errors are ignored. Read-only mode is not
-  immutable storage or an authorization mechanism; chmod may affect a symlink's
-  target. Use only a dedicated trusted root
+- Default writer construction creates directories and attempts chmod `0700`;
+  publication attempts `0444` on files. Permission errors are ignored. File modes
+  do not make storage immutable or provide authorization; chmod may affect a
+  symlink's target. Use only a dedicated trusted root
 - File contents are flushed and fsynced before per-file atomic replacement.
   Object and metadata are separate writes, directories are not fsynced, and
   failed metadata publication may leave an object. This is not a transaction,

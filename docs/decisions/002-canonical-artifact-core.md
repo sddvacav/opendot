@@ -49,3 +49,12 @@ The later [ADR 003](003-agent-metadata-contracts.md) admits only two descriptive
 metadata contracts into the same contract owner; it preserves ArtifactRef and
 this storage boundary. The historical sole-contract wording above describes
 the original artifact extraction, not an authorization for broader contracts.
+
+## Later optional read-only increment
+
+The optional `ArtifactStore(root, read_only=True)` path remains in this same
+owner. It skips setup writes and refuses public puts without changing default
+writer or ArtifactRef contracts. Measurement replay uses this option. This does
+not establish authentication, immutable storage, containment or atomic reads;
+see the [current contract](../canonical-artifacts.md#optional-non-mutating-verification).
+Historical extraction acceptance remains separate from this increment.

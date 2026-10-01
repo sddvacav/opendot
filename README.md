@@ -10,13 +10,13 @@
 
 Run a declared Python tool, inspect its acceptance result, and retrieve the exact bytes it produced. OpenDot Engineering brings local callable execution, hash-addressed artifacts, evidence checks, and controlled Git workspaces into one package for developers and research engineers.
 
-**Current unreleased candidate: 0.2.0a5.** This separate candidate combines the
-[CPU-ceiling minimum fix](docs/solver-cpu-ceiling.md) with an explicit, optional
-[per-element E/ELSE consistency API](docs/structural-elastic-energy.md). Default
-verification remains unchanged, and a conditional pass is not scientific
-acceptance. Exact a5 source, build and installed evidence is recorded
-separately; historical a4 results do not approve this candidate.
-[Current verification scope](docs/a5-candidate-verification.md)
+**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
+adds optional read-only artifact verification, bilingual measurement walkthroughs,
+and a six-case synthetic source-boundary example to corrected a5. Default
+`read_only=False` writes and the canonical execution/reference owners are retained.
+Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
+scientific acceptance, a hosted-CI result, or a public release.
+[Current a6 verification scope](docs/a6-candidate-verification.md)
 
 > **Historical 0.2.0a4 source-candidate record · 1 October 2026**
 >
@@ -45,6 +45,11 @@ The JSON should report `synthetic_software_assertions_passed: true` and show thr
 These are deliberate synthetic software cases. The artifact store follows symlinks and needs trusted roots; failed validation does not roll back effects. Use a new output path for each run. If this script reports `--output already exists` (exit 2), keep the earlier result and choose a fresh path. [Understand the example](examples/callable-artifacts/README.md)
 
 **Installing a wheel instead?** Follow the [complete installed quickstart](docs/installed-quickstart.md), including how to copy the matching examples and verify installed imports. Wheels contain the package; examples remain source material.
+
+For a CSV-to-summary walkthrough, start with the [synthetic measurement review](examples/measurement-review/README.md): run valid, wrong-mean and denied cases, locate retained result bytes, verify them, and handle an existing output path.
+
+
+For six bounded evidence/source/trajectory cases, see the [source-boundary example](examples/source-boundary/README.md) and its [historical research context](docs/research/demand-gap-20261001/README.md).
 
 ## Package help and version
 

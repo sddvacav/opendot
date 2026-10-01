@@ -2,13 +2,15 @@
 
 [简体中文](CAPABILITIES.zh-CN.md) · [Overview](OVERVIEW.md) · [Research map](RESEARCH-MAP.md)
 
-Snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a5 source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
+Snapshot: 1 October 2026. This matrix describes the unreleased 0.2.0a6 source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
 
-**Current candidate: 0.2.0a5, unreleased.** It combines the inherited CPU-ceiling
-minimum fix with an explicit optional per-element E/ELSE consistency check.
-Default verification is unchanged; conditional consistency is not scientific
-acceptance. Current a5 source, build and installed outcomes are recorded separately.
-[Current a5 scope](docs/a5-candidate-verification.md)
+**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
+adds optional read-only artifact verification, bilingual measurement walkthroughs,
+and a six-case synthetic source-boundary example to corrected a5. Default
+`read_only=False` writes and the canonical execution/reference owners are retained.
+Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
+scientific acceptance, a hosted-CI result, or a public release.
+[Current a6 verification scope](docs/a6-candidate-verification.md)
 
 ## Historical verification ledger
 

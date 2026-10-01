@@ -2,19 +2,21 @@
 
 [简体中文](OVERVIEW.zh-CN.md) · [Capabilities and evidence](CAPABILITIES.md) · [Research and priorities](RESEARCH-MAP.md)
 
-**Version 0.2.0a5 · Unreleased source candidate · Evidence snapshot 1 October 2026**
+**Version 0.2.0a6 · Unreleased source candidate · Evidence snapshot 1 October 2026**
 
 OpenDot Engineering provides a small, inspectable foundation for local engineering work: run a declared Python tool, inspect its acceptance result, store the output by its byte hash, and create controlled Git workspaces for separate tasks. The package is designed for developers and research engineers who need to examine what ran, what it produced, and which checks actually passed.
 
-**Current candidate: 0.2.0a5, unreleased.** It combines the inherited CPU-ceiling
-minimum fix with an explicit optional per-element E/ELSE consistency check.
-Default verification is unchanged; conditional consistency is not scientific
-acceptance. Current a5 source, build and installed outcomes are recorded separately.
-[Current a5 scope](docs/a5-candidate-verification.md)
+**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
+adds optional read-only artifact verification, bilingual measurement walkthroughs,
+and a six-case synthetic source-boundary example to corrected a5. Default
+`read_only=False` writes and the canonical execution/reference owners are retained.
+Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
+scientific acceptance, a hosted-CI result, or a public release.
+[Current a6 verification scope](docs/a6-candidate-verification.md)
 
 The historical a4 candidate requires an unambiguous single CalculiX 2.23 version declaration in logs checked by the shared thermal/structural gate. It adds a source-only documentation checker for bounded local links, fragments and HTML anchors, plus exactly eight nonempty, literal-identical shell blocks in each installed-guide language. The build backend is pinned to setuptools 84.0.0. These changes add no physics model, runtime, native execution or public release. See the [historical a4 verification record](docs/verifier-ci-verification.md), [documentation-checking boundary](docs/documentation-checks.md), and [build profile](docs/build-toolchain.md).
 
-Historical evidence remains version-bound: the **0.2.0a1** Git repair candidate passed **773 selected author checks**. Its inaccessible-residue fix passed an independent source-level permission-loss reproduction; see the [repair record](docs/git-workspaces-residue-fix.md). The **0.2.0a0** callable/artifact integration separately passed **695 independently rerun portable checks**. These results do not establish a test total or independent acceptance for **0.2.0a5**, a full-platform rating, or a public release.
+Historical evidence remains version-bound: the **0.2.0a1** Git repair candidate passed **773 selected author checks**. Its inaccessible-residue fix passed an independent source-level permission-loss reproduction; see the [repair record](docs/git-workspaces-residue-fix.md). The **0.2.0a0** callable/artifact integration separately passed **695 independently rerun portable checks**. These results do not establish a test total or independent acceptance for **0.2.0a6**, a full-platform rating, or a public release.
 
 **Historical a4 author source checks: 1,066 passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** Independent component results overlap and must not be added to that aggregate. The portable CI definition selects 988 cases and omits the 78 controlled-Git cases; it has not run on hosted CI.
 

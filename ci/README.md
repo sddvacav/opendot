@@ -1,6 +1,13 @@
 # Exact portable CI boundary
 
-The unreleased 0.2.0a5 selection adds the [explicit solver cross-check manifest](solver-crosscheck-nodes.txt): 17 fake-resource CPU-ceiling cases and 54 optional elastic-energy cases. The current portable union is **1,104 distinct nodes**; adding the separately supported 78 Git and 81 source-provenance nodes gives **1,263**. These are selected counts, not pass claims. [Exact a5 scope and results](../docs/a5-candidate-verification.md). Earlier counts below retain their historical boundaries.
+Current **0.2.0a6**, unreleased and **NOT_SCORED**, selects **1,183 distinct portable
+nodes**: corrected a5's 1,104, [41 read-only artifact cases](readonly-artifact-nodes.txt),
+and [38 source-boundary cases](source-boundary-nodes.txt). Adding the separately
+supported 78 Git and 81 source-provenance nodes gives **1,342** controlled-local
+nodes. These are selected counts, not outcomes; repeated installed tests and
+subtests are not extra unique nodes. [Current scope](../docs/a6-candidate-verification.md).
+
+The historical unreleased 0.2.0a5 selection added the [explicit solver cross-check manifest](solver-crosscheck-nodes.txt): 17 fake-resource CPU-ceiling cases and 54 optional elastic-energy cases. That a5 portable union was **1,104 distinct nodes**; adding the separately supported 78 Git and 81 source-provenance nodes gives **1,263**. These are selected counts, not pass claims. [Exact a5 scope and results](../docs/a5-candidate-verification.md). Earlier counts below retain their historical boundaries.
 
 The read-only Python 3.12 workflow installs pinned test tooling only. Checkout
 and setup actions remain pinned to full commits, credentials are not persisted,
@@ -49,11 +56,13 @@ mapfile -t agent_contract_nodes < ci/agent-contract-nodes.txt
 mapfile -t public_regression_nodes < ci/public-regression-nodes.txt
 mapfile -t delivery_workflow_nodes < ci/delivery-workflow-nodes.txt
 mapfile -t solver_crosscheck_nodes < ci/solver-crosscheck-nodes.txt
+mapfile -t readonly_artifact_nodes < ci/readonly-artifact-nodes.txt
+mapfile -t source_boundary_nodes < ci/source-boundary-nodes.txt
 CHECK_OUTPUT=$(mktemp -d /tmp/opendot-check.XXXXXX)
 PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src \
   OPENDOT_TEST_SOURCE_ROOT="$PWD/src" python -B -m pytest -q -ra -p no:cacheprovider \
   "${portable_nodes[@]}" "${callable_nodes[@]}" "${composition_nodes[@]}" \
-  "${agent_contract_nodes[@]}" "${public_regression_nodes[@]}" "${delivery_workflow_nodes[@]}" "${solver_crosscheck_nodes[@]}" \
+  "${agent_contract_nodes[@]}" "${public_regression_nodes[@]}" "${delivery_workflow_nodes[@]}" "${solver_crosscheck_nodes[@]}" "${readonly_artifact_nodes[@]}" "${source_boundary_nodes[@]}" \
   --basetemp="$CHECK_OUTPUT/pytest" --junitxml="$CHECK_OUTPUT/results.xml"
 ```
 

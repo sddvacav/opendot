@@ -123,3 +123,13 @@ serialization helper, runtime harness, private source identity, original source
 manifest, operational data, or consumer implementation is bundled. No consumer
 migration, execution enforcement, or publication is claimed. See
 [ADR 003](decisions/003-agent-metadata-contracts.md).
+
+## Optional read-only artifact verification increment
+
+This later source increment adds an explicit `read_only` constructor option and
+public-put refusal checks in the existing `core.artifacts.ArtifactStore` owner.
+Its default writer behavior, ArtifactRef body and canonical re-exports are
+preserved. Measurement replay now opts into that mode. Tests and documentation
+are newly authored Apache-2.0 project material. No private runtime, evidence
+receipt, registry or second storage owner is included. Earlier byte-preservation
+statements above describe their original extractions, not this later change.
