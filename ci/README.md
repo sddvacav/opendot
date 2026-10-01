@@ -1,11 +1,19 @@
 # Exact portable CI boundary
 
-Current **0.2.0a6**, unreleased and **NOT_SCORED**, selects **1,183 distinct portable
+Current **0.3.0a1**, unreleased and **NOT_SCORED**, selects **1,309 distinct
+portable nodes**: a6's 1,183 plus 59 [structural-v2 cases](solver-crosscheck-nodes.txt)
+and 48 new [source-conflict cases](source-boundary-nodes.txt), plus 19 fake-only
+[Gmsh CPU ceiling cases](solver-crosscheck-nodes.txt). The existing nine
+workflow manifests select each node exactly once. Adding 78 Git and 81 source-
+provenance cases gives **1,468 controlled-local nodes**. These are selected counts,
+not outcomes. [Exact successor scope](../docs/structural-v2-candidate-verification.md).
+
+The frozen **0.2.0a6** local candidate record selected **1,183 distinct portable
 nodes**: corrected a5's 1,104, [41 read-only artifact cases](readonly-artifact-nodes.txt),
 and [38 source-boundary cases](source-boundary-nodes.txt). Adding the separately
 supported 78 Git and 81 source-provenance nodes gives **1,342** controlled-local
 nodes. These are selected counts, not outcomes; repeated installed tests and
-subtests are not extra unique nodes. [Current scope](../docs/a6-candidate-verification.md).
+subtests are not extra unique nodes. [Historical a6 scope](../docs/a6-candidate-verification.md).
 
 The historical unreleased 0.2.0a5 selection added the [explicit solver cross-check manifest](solver-crosscheck-nodes.txt): 17 fake-resource CPU-ceiling cases and 54 optional elastic-energy cases. That a5 portable union was **1,104 distinct nodes**; adding the separately supported 78 Git and 81 source-provenance nodes gives **1,263**. These are selected counts, not pass claims. [Exact a5 scope and results](../docs/a5-candidate-verification.md). Earlier counts below retain their historical boundaries.
 
