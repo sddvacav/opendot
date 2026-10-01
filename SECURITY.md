@@ -1,6 +1,6 @@
 # Security and responsible reporting
 
-This is an unreleased bounded adapter package. Narrow local checks exist, but no comprehensive security audit, sandbox guarantee, supported-release policy, or private reporting destination is asserted.
+This is an alpha-stage bounded adapter package. Narrow local checks exist, but no comprehensive security audit, sandbox guarantee, supported-release policy, or private reporting destination is asserted.
 
 ## Reporting a vulnerability
 

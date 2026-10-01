@@ -1,6 +1,6 @@
 # Contributing to OpenDot Engineering
 
-Focus contributions on the bounded adapter package, reproducible synthetic examples, and clear documentation. The canonical submission destination and maintainer governance are not verified here. Do not infer them from the project name or submit confidential material to an unverified channel.
+Focus contributions on the bounded adapter package, reproducible synthetic examples, and clear documentation. Use the verified [public repository](https://github.com/sddvacav/opendot) and [GitHub Issues](https://github.com/sddvacav/opendot/issues) for non-sensitive proposals and minimal synthetic reports. Maintainer governance and private reporting arrangements are separate open items; do not submit confidential material publicly.
 
 ## Start with the current boundary
 
@@ -37,4 +37,4 @@ Maintainers must confirm ownership, review policy, supported versions, conduct p
 
 ## 中文摘要
 
-贡献范围是独立适配器、合成示例与文档。先阅读实际模块边界和经过审查的测试选择，再执行有限范围的检查。分别报告通过、失败、跳过和未执行的项目；修改能力声明时同步更新中英文 README。保留许可与归属声明，不公开私密回执或未经复核的文件。正式提交渠道和治理规则仍需确认。
+贡献范围是独立适配器、合成示例与文档。先阅读实际模块边界和经过审查的测试选择，再执行有限范围的检查。分别报告通过、失败、跳过和未执行的项目；修改能力声明时同步更新中英文 README。保留许可与归属声明，不公开私密回执或未经复核的文件。公开议题使用上方已核实的 GitHub 仓库；治理规则和私密报告安排仍需确认。
