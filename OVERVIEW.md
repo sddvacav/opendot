@@ -2,15 +2,21 @@
 
 [简体中文](OVERVIEW.zh-CN.md) · [Capabilities and evidence](CAPABILITIES.md) · [Research and priorities](RESEARCH-MAP.md)
 
-**Version 0.2.0a4 · Unreleased source candidate · Evidence snapshot 1 October 2026**
+**Version 0.2.0a5 · Unreleased source candidate · Evidence snapshot 1 October 2026**
 
 OpenDot Engineering provides a small, inspectable foundation for local engineering work: run a declared Python tool, inspect its acceptance result, store the output by its byte hash, and create controlled Git workspaces for separate tasks. The package is designed for developers and research engineers who need to examine what ran, what it produced, and which checks actually passed.
 
-The current candidate requires an unambiguous single CalculiX 2.23 version declaration in logs checked by the shared thermal/structural gate. It adds a source-only documentation checker for bounded local links, fragments and HTML anchors, plus exactly eight nonempty, literal-identical shell blocks in each installed-guide language. The build backend is pinned to setuptools 84.0.0. These changes add no physics model, runtime, native execution or public release. See the [current verification record](docs/verifier-ci-verification.md), [documentation-checking boundary](docs/documentation-checks.md), and [build profile](docs/build-toolchain.md).
+**Current candidate: 0.2.0a5, unreleased.** It combines the inherited CPU-ceiling
+minimum fix with an explicit optional per-element E/ELSE consistency check.
+Default verification is unchanged; conditional consistency is not scientific
+acceptance. Current a5 source, build and installed outcomes are recorded separately.
+[Current a5 scope](docs/a5-candidate-verification.md)
 
-Historical evidence remains version-bound: the **0.2.0a1** Git repair candidate passed **773 selected author checks**. Its inaccessible-residue fix passed an independent source-level permission-loss reproduction; see the [repair record](docs/git-workspaces-residue-fix.md). The **0.2.0a0** callable/artifact integration separately passed **695 independently rerun portable checks**. These results do not establish a test total or independent acceptance for **0.2.0a4**, a full-platform rating, or a public release.
+The historical a4 candidate requires an unambiguous single CalculiX 2.23 version declaration in logs checked by the shared thermal/structural gate. It adds a source-only documentation checker for bounded local links, fragments and HTML anchors, plus exactly eight nonempty, literal-identical shell blocks in each installed-guide language. The build backend is pinned to setuptools 84.0.0. These changes add no physics model, runtime, native execution or public release. See the [historical a4 verification record](docs/verifier-ci-verification.md), [documentation-checking boundary](docs/documentation-checks.md), and [build profile](docs/build-toolchain.md).
 
-**Current author source checks: 1,066 passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** Independent component results overlap and must not be added to that aggregate. The portable CI definition selects 988 cases and omits the 78 controlled-Git cases; it has not run on hosted CI.
+Historical evidence remains version-bound: the **0.2.0a1** Git repair candidate passed **773 selected author checks**. Its inaccessible-residue fix passed an independent source-level permission-loss reproduction; see the [repair record](docs/git-workspaces-residue-fix.md). The **0.2.0a0** callable/artifact integration separately passed **695 independently rerun portable checks**. These results do not establish a test total or independent acceptance for **0.2.0a5**, a full-platform rating, or a public release.
+
+**Historical a4 author source checks: 1,066 passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** Independent component results overlap and must not be added to that aggregate. The portable CI definition selects 988 cases and omits the 78 controlled-Git cases; it has not run on hosted CI.
 
 Historical **0.2.0a3** source checks passed **899** cases with zero failures/errors/skips. Its final `a59419b` receipt covered fresh installed journeys through all eight shell blocks per language; two clean build environments on the same host reproduced its exact wheel. Those results and any predecessor score do not transfer to this candidate. The [earlier development record](docs/parallel-development-verification.md) describes host-coordinated work, not an autonomous scheduler. Historical 0.2.0a2 author checks passed 805 selected source tests; its independent metadata review passed 410 cases on source and the same 410 on its installed wheel. These remain predecessor evidence.
 
@@ -60,9 +66,9 @@ The next useful milestone is a narrow workflow that a new user can reproduce and
 
 [Public-source research](docs/research/README.md) informs this direction. It supplies product hypotheses, not institutional endorsements, customer commitments, or proof that a feature is complete. The original project code retains its [Apache-2.0 license](LICENSE) and [notices](NOTICE); optional dependencies retain their own obligations.
 
-## Source-only delivery extension
+## Historical a4 source-only delivery extension
 
-The package payload remains the accepted 0.2.0a4 version. A new
+That extension retained the accepted 0.2.0a4 package payload. Its
 [worked measurement-review workflow and delivery tooling](docs/delivery-workflows-verification.md)
 adds a concrete synthetic user journey, test dependency hashes, source inventory
 and dated research/benchmark annexes. Its integrated acceptance is recorded

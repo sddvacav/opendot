@@ -10,11 +10,19 @@
 
 Run a declared Python tool, inspect its acceptance result, and retrieve the exact bytes it produced. OpenDot Engineering brings local callable execution, hash-addressed artifacts, evidence checks, and controlled Git workspaces into one package for developers and research engineers.
 
-> **0.2.0a4 · Unreleased source candidate · 1 October 2026**
+**Current unreleased candidate: 0.2.0a5.** This separate candidate combines the
+[CPU-ceiling minimum fix](docs/solver-cpu-ceiling.md) with an explicit, optional
+[per-element E/ELSE consistency API](docs/structural-elastic-energy.md). Default
+verification remains unchanged, and a conditional pass is not scientific
+acceptance. Exact a5 source, build and installed evidence is recorded
+separately; historical a4 results do not approve this candidate.
+[Current verification scope](docs/a5-candidate-verification.md)
+
+> **Historical 0.2.0a4 source-candidate record · 1 October 2026**
 >
 > Inherited from **0.2.0a2**: metadata-only `Capability` and `AgentManifest`, with explicit validation and descriptive budgets/permissions. No execution enforcement or existing-consumer migration is added.
 >
-> This candidate tightens the shared declared CalculiX 2.23 log gate, adds bounded source-only documentation checks, and pins the build backend to setuptools 84.0.0. **1,066 selected author source checks passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt**; component reviews retain their separate, overlapping scopes. [Current verification](docs/verifier-ci-verification.md)
+> That a4 candidate tightens the shared declared CalculiX 2.23 log gate, adds bounded source-only documentation checks, and pins the build backend to setuptools 84.0.0. **1,066 selected author source checks passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt**; component reviews retain their separate, overlapping scopes. [Historical a4 verification](docs/verifier-ci-verification.md)
 >
 > Historical evidence: **0.2.0a3** passed **899 source checks**; its final installed-guide journeys and [same-host build repeatability](docs/build-toolchain.md) remain bound to that predecessor. The **0.2.0a1** Git repair candidate passed **773 author checks** and its independent source-level residue reproduction; the **0.2.0a0** callable/artifact core passed **695 independent portable checks**. These results do not establish a test total or acceptance for **0.2.0a4**. Durable recovery, autonomous model-driven agents, and large-scale agent performance remain future work. [Evidence and limits](CAPABILITIES.md)
 

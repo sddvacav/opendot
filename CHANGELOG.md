@@ -1,15 +1,26 @@
 # Changelog
 
+## 0.2.0a5 — unreleased CPU-ceiling and optional energy-check candidate (2026-10-01)
+
+- Integrate the existing solver-child CPU-ceiling minimum fix from `a189ecf`: preserve finite inherited soft/hard CPU limits, including zero, with the existing 300-second maximum
+- Add explicit `verify_elastic_energy(directory)` in the existing structural owner, after unchanged strict artifact admission; compare printed E tensor strain and whole-element ELSE separately for every element
+- Report `CONDITIONAL_ELASTIC_ENERGY_CONSISTENCY_PASS`, `scientific_accepted = false`, no-underflow `ASSUMED_NOT_VERIFIED` and arithmetic bound `NOT_PROVED`; no new solver run or scientific acceptance is implied
+- Preserve default verifier bodies, reports, tolerances and CLI behavior; the default numeric-field consistency gap and inherited file-size-limit issue remain open
+- Plan explicit 1,104-case portable selection (1,033 inherited + 17 CPU + 54 energy) and 1,263-case controlled local selection (adding 159 Git cases); these are selection sizes, not a5 pass results
+- Refresh both installed guides for the a5 wheel, preserving eight literal-identical shell blocks per language. Exact a5 source, offline build, 71-case installed and bilingual-journey results have separately scoped local author records; independent artifact review and release acceptance remain separate
+
+See [a5 verification and evidence boundaries](docs/a5-candidate-verification.md), [CPU-limit contract](docs/solver-cpu-ceiling.md) and [conditional energy-check scope](docs/structural-elastic-energy.md). Historical a4/e5/a189 evidence and earlier source-only energy checks do not accept a5 artifacts. No remote publication is performed.
+
 ## 0.2.0a4 — unreleased verifier and documentation CI candidate (2026-10-01)
 
 - Tighten the shared thermal/structural CalculiX log gate to require one complete declared 2.23 header; reject missing, wrong, embedded, malformed, contradictory and repeated declarations, including identical repeats
 - Add a source-only bounded documentation checker using the existing source-audit helpers: local inline links/fragments, supported explicit HTML anchors, and exactly eight nonempty literal-identical shell blocks per installed-guide language
 - Pin the build backend to setuptools 84.0.0 and provide a separate hash-pinned controlled-build recipe; the recorded two-environment same-host experiment remains bound to the a3 predecessor
 - Preserve existing physical models, runtime owners and scientific/device authority boundaries; no new native execution, runtime recovery, hosted CI result or public release is claimed
-- Current selected author source run: 1,066 passed, zero failures/errors/skips; component results overlap and are not added to that total. The portable CI definition selects 988 cases, excluding 78 local Git cases, and has not run on hosted CI
+- Historical a4 selected author source run: 1,066 passed, zero failures/errors/skips; component results overlap and are not added to that total. The portable CI definition selects 988 cases, excluding 78 local Git cases, and has not run on hosted CI
 - Exact final artifact and installed acceptance remain pending; source and component passes do not close those gates
 
-See [current verification and exclusions](docs/verifier-ci-verification.md), [declared-version gate](docs/solver-version-gate.md), [documentation checks](docs/documentation-checks.md), and [build profile](docs/build-toolchain.md). Earlier test totals, installed journeys, artifact acceptance and scores do not transfer to this candidate.
+See [historical a4 verification and exclusions](docs/verifier-ci-verification.md), [declared-version gate](docs/solver-version-gate.md), [documentation checks](docs/documentation-checks.md), and [build profile](docs/build-toolchain.md). Earlier test totals, installed journeys, artifact acceptance and scores do not transfer to this candidate.
 
 ## 0.2.0a3 — unreleased usability and research candidate (2026-10-01)
 
