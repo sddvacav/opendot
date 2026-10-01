@@ -1,12 +1,16 @@
 # Exact portable CI boundary
 
-Current **0.3.0a1**, unreleased and **NOT_SCORED**, selects **1,309 distinct
+The current source-only follow-on to **0.3.0a1**, unreleased and **NOT_SCORED**,
+selects **1,325 distinct
 portable nodes**: a6's 1,183 plus 59 [structural-v2 cases](solver-crosscheck-nodes.txt)
-and 48 new [source-conflict cases](source-boundary-nodes.txt), plus 19 fake-only
-[Gmsh CPU ceiling cases](solver-crosscheck-nodes.txt). The existing nine
+and 48 new [source-conflict cases](source-boundary-nodes.txt), plus 35 fake-only
+[Gmsh resource-ceiling cases](solver-crosscheck-nodes.txt). The existing nine
 workflow manifests select each node exactly once. Adding 78 Git and 81 source-
-provenance cases gives **1,468 controlled-local nodes**. These are selected counts,
+provenance cases gives **1,484 controlled-local nodes**. These are selected counts,
 not outcomes. [Exact successor scope](../docs/structural-v2-candidate-verification.md).
+The file-size follow-on adds 16 net Gmsh nodes to the prior 1,309-node portable
+selection. It is unreleased source work; existing v0.3.0a1 assets and their
+receipts retain their original hashes and scope.
 
 The frozen **0.2.0a6** local candidate record selected **1,183 distinct portable
 nodes**: corrected a5's 1,104, [41 read-only artifact cases](readonly-artifact-nodes.txt),
