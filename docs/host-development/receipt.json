@@ -1,0 +1,313 @@
+{
+  "schema": "opendot-host-development-receipt/v1",
+  "date_utc": "2026-10-01",
+  "status": "WORKER_CHANGES_INTEGRATED_RELEASE_ACCEPTANCE_PENDING",
+  "scope": "Host-orchestrated development of three public-code changes on one physical host.",
+  "package": {
+    "name": "opendot-engineering",
+    "installed_version": "0.2.0a2",
+    "source_commit": "65b6a53e6fc75410a61b31262b42627cf9c6641b"
+  },
+  "base_commit": "05f70828f6ec927b85bc5591a5bee1e0a84f7ebf",
+  "orchestration": {
+    "controller": "external host",
+    "physical_hosts": 1,
+    "workspace_manager": "OpenDot GitWorkspaceManager",
+    "actual_operations": [
+      "create",
+      "status",
+      "diff"
+    ],
+    "created_worktrees": 3,
+    "creation_sequence": {
+      "initial_tasks": [
+        "demo-errors",
+        "cli-help"
+      ],
+      "initial_provisioning_utc": "2026-10-01T08:05:30Z",
+      "later_task": "research-index",
+      "later_provisioning_utc": "2026-10-01T08:13:49Z"
+    },
+    "isolation": "Distinct Git branches and worktrees at the common exact base; file-scope compliance checked after work. No OS sandbox claim.",
+    "manager_diff_scope": "Tracked unstaged changes only; excludes staged and untracked files. New-file bytes were separately inventoried and sealed.",
+    "manifests": "Descriptive capability, scope and budget metadata; not runtime enforcement."
+  },
+  "content_addressed_evidence": {
+    "store": "OpenDot ArtifactStore",
+    "algorithm": "SHA-256",
+    "input_inventory_sha256": "f56dae48062b6c1f0bfa489fce5e8ad8b0e0b5c553cabe0b83843051bbc47e9e",
+    "input_inventory_size_bytes": 14550,
+    "sealed_at_utc": "2026-10-01T08:36:33.219650+00:00",
+    "sealed_monotonic_ns": 58500795153241,
+    "verification_at_seal": "Output artifact hashes matched independent review, CAS verification passed, and retrieved output bytes matched source bytes. Manager-observation objects were also CAS-verified.",
+    "reference_note": "Hashes identify recorded evidence; they are not public download URLs."
+  },
+  "tasks": [
+    {
+      "task": "demo-errors",
+      "branch": "agent/demo-errors",
+      "purpose": "Concise CLI rejection of existing demo output paths, preserving existing artifacts.",
+      "interval": {
+        "start_utc": "2026-10-01T08:07:01.996647+00:00",
+        "end_utc": "2026-10-01T08:10:23.271796+00:00",
+        "start_monotonic_ns": 56729572131151,
+        "end_monotonic_ns": 56930847279367,
+        "duration_seconds": 201.275148216,
+        "scope": "Implementation and validation; initial read-only orientation excluded."
+      },
+      "files": [
+        {
+          "path": "examples/canonical-artifacts/roundtrip.py",
+          "sha256": "3f6e4f3a974df5b002a3e0cff034caf5c87d67c5c815a916ba5275d15a4f45ed",
+          "size_bytes": 3266
+        },
+        {
+          "path": "examples/callable-artifacts/demo.py",
+          "sha256": "5796099bec60bb4cf9a3c46fce5b74c8ddf068572fecb7237e41a27df49b00d8",
+          "size_bytes": 4898
+        },
+        {
+          "path": "tests/test_demo_output_errors.py",
+          "sha256": "84c328678d60599531f3141fa6c2043761bab93957ed7a1eabea02f8f1b1113c",
+          "size_bytes": 6818
+        }
+      ],
+      "manager_observations_sha256": "0f0cfe9a7d5e6aea34326fae51274aaef6087b02c6b2c0ca8cc9ceb9a14b4e51",
+      "manager_status_summary": {
+        "modified": 2,
+        "untracked": 1
+      },
+      "tracked_unstaged_diff_empty": false,
+      "commit": "041bc5f7812d8acafd805fb50f1da2830801b57b",
+      "base_commit": "05f70828f6ec927b85bc5591a5bee1e0a84f7ebf",
+      "manager_status_returncode": 0,
+      "manager_diff_returncode": 0,
+      "head_equal_base_at_seal": true,
+      "index_empty_at_seal": true,
+      "unowned_tracked_files_equal_baseline_at_seal": true,
+      "source_caches_absent_at_seal": true
+    },
+    {
+      "task": "cli-help",
+      "branch": "agent/cli-help",
+      "purpose": "Read-only namespaced module help and version entrypoint.",
+      "interval": {
+        "start_utc": "2026-10-01T08:07:17.258449+00:00",
+        "end_utc": "2026-10-01T08:11:59.378928+00:00",
+        "start_monotonic_ns": 56744833933181,
+        "end_monotonic_ns": 57026954413820,
+        "duration_seconds": 282.120480639,
+        "scope": "Implementation, validation and receipt creation; initial read-only inspection excluded."
+      },
+      "files": [
+        {
+          "path": "src/opendot_engineering/__main__.py",
+          "sha256": "c510cbf6e274721ce2d18e47fe99e46530c85feb762276a61b86a2833e18bcce",
+          "size_bytes": 2840
+        },
+        {
+          "path": "tests/test_module_cli.py",
+          "sha256": "fa48023d629f400863ae68fe737533d08aa40dd0704c9c5d6370442fc942fdfb",
+          "size_bytes": 6430
+        },
+        {
+          "path": "docs/module-cli.md",
+          "sha256": "f00a322e60fbf46b9f97cfecbe6ce90d91c182f76b10103e9c5f0294175acbf4",
+          "size_bytes": 2752
+        }
+      ],
+      "manager_observations_sha256": "e51ebe6cfd795212b80fefb830aef2fcc2a29572d3a8d56daf7fbd25465376ff",
+      "manager_status_summary": {
+        "modified": 0,
+        "untracked": 3
+      },
+      "tracked_unstaged_diff_empty": true,
+      "commit": "c46ee21090ef6409c88deff5390575be7ea6d328",
+      "base_commit": "05f70828f6ec927b85bc5591a5bee1e0a84f7ebf",
+      "manager_status_returncode": 0,
+      "manager_diff_returncode": 0,
+      "head_equal_base_at_seal": true,
+      "index_empty_at_seal": true,
+      "unowned_tracked_files_equal_baseline_at_seal": true,
+      "source_caches_absent_at_seal": true
+    },
+    {
+      "task": "research-index",
+      "branch": "agent/research-index",
+      "purpose": "Offline structural consistency checks for research source and proposal mappings.",
+      "interval": {
+        "start_utc": "2026-10-01T08:17:13.903269+00:00",
+        "end_utc": "2026-10-01T08:22:24.511184+00:00",
+        "start_monotonic_ns": 57341478753925,
+        "end_monotonic_ns": 57652086666570,
+        "duration_seconds": 310.607912645,
+        "scope": "Recorded worker implementation and validation interval."
+      },
+      "files": [
+        {
+          "path": "tests/test_research_index.py",
+          "sha256": "6c4db38b2d35822c7401693adb47be440ee247c106094bc5ac37752e4a31f6b5",
+          "size_bytes": 14210
+        }
+      ],
+      "manager_observations_sha256": "4c10834cf2afadf4e6ea9efa52020b41a44bf4a7f8d615e9e386d4cdbf619f57",
+      "manager_status_summary": {
+        "modified": 0,
+        "untracked": 1
+      },
+      "tracked_unstaged_diff_empty": true,
+      "commit": "dce8122d65ee095055783c2f1ac6105ec4c5ef71",
+      "base_commit": "05f70828f6ec927b85bc5591a5bee1e0a84f7ebf",
+      "manager_status_returncode": 0,
+      "manager_diff_returncode": 0,
+      "head_equal_base_at_seal": true,
+      "index_empty_at_seal": true,
+      "unowned_tracked_files_equal_baseline_at_seal": true,
+      "source_caches_absent_at_seal": true
+    }
+  ],
+  "timing": {
+    "clock": "monotonic nanoseconds on the same host; UTC timestamps retained for readability",
+    "parallel_pair": [
+      "demo-errors",
+      "cli-help"
+    ],
+    "overlap_formula": "max(0, min(end_A, end_B) - max(start_A, start_B))",
+    "overlap_start_monotonic_ns": 56744833933181,
+    "overlap_end_monotonic_ns": 56930847279367,
+    "overlap_nanoseconds": 186013346186,
+    "overlap_seconds": 186.013346186,
+    "pair_envelope_seconds": 297.382282669,
+    "later_task": "research-index",
+    "later_task_overlapped_pair": false,
+    "gap_from_pair_end_to_later_task_start_seconds": 314.524340105,
+    "meaning": "Overlapping measured worker implementation/validation intervals only; no inference-concurrency or speedup measurement."
+  },
+  "independent_acceptance": {
+    "decision": "ACCEPT_FOR_HOST_INTEGRATION",
+    "release_acceptance": false,
+    "ab_sequence": "Acceptance cases and probes were frozen from provisioning and fixed-base public code before inspecting stopped workers' implementations.",
+    "predeclared_acceptance_sha256": "0cce5c4d051d02d388f140e69002b0e1714067379beff502bdbe8bd00185d40a",
+    "independent_probes_sha256": "12a72884bd2f2d4682e2d9fb4edd29a758cb40edca2423eaa8811a982884e303",
+    "module_guard_sha256": "a7a9126ac544e63853ded72841dca36a00d7dd3e9d2364084516e6efb9317bea",
+    "results": [
+      {
+        "scope": "demo-errors independent baseline probes",
+        "passed": 10,
+        "expected_failures": 8
+      },
+      {
+        "scope": "demo-errors independent changed-source probes",
+        "passed": 18
+      },
+      {
+        "scope": "demo-errors reviewer rerun of focused tests",
+        "passed": 80
+      },
+      {
+        "scope": "cli-help independent source probes",
+        "passed": 7
+      },
+      {
+        "scope": "cli-help reviewer rerun of source tests",
+        "passed": 20
+      },
+      {
+        "scope": "cli-help independent installed-wheel probes",
+        "passed": 7,
+        "repeats_source_behavioral_coverage": true
+      },
+      {
+        "scope": "research-index reviewer rerun of selected tests",
+        "passed": 44,
+        "skipped": 0
+      },
+      {
+        "scope": "research-index additional independent invalid-fixture mutations",
+        "rejected": 10
+      }
+    ],
+    "cli_author_validation_wheel": {
+      "version": "0.2.0a2",
+      "sha256": "89b1b5f9f95ccd61923373dce9644ec398f62fcf8c47cee9f404bdde7fe143e8",
+      "entrypoint_bytes_match_reviewed_source": true,
+      "is_integrated_release_wheel": false
+    },
+    "research_review_sequence": "Supplemental review after implementation; not included in the A/B implementation-blind probe claim.",
+    "research_fixture_counts": {
+      "documents": 7,
+      "sources": 16,
+      "proposal_mappings": 18
+    },
+    "coverage_note": "Counts cover different scopes and include repeated behavioral coverage; they are not summed as unique cases.",
+    "limitations": [
+      "Existing-output preflight improves diagnostics but is non-atomic and not hostile-concurrency or symlink-safe admission.",
+      "CLI passivity checks cover reviewed commands and source, not arbitrary hostile Python.",
+      "Research-index checks establish offline structural consistency, not source truth, fresh web verification, link reachability, endorsement or executed feature acceptance."
+    ]
+  },
+  "integration": {
+    "mechanism": "Integrator performed ordinary Git commits and merges after the live-manager seal; not a GitWorkspaceManager commit or merge API.",
+    "commit": "1a5cb108ca264349dfc9f0775d4749ab70cbd797",
+    "recorded_dirty_state": "",
+    "aggregate_release_tests": "pending",
+    "rebuilt_integrated_wheel_acceptance": "pending",
+    "pending_checks": [
+      "Validate exact aggregate release commit and rebuilt artifacts.",
+      "Confirm sealed worker bytes survive integration and identify separately owned release changes.",
+      "Run aggregate release tests and isolated installed-artifact acceptance."
+    ]
+  },
+  "claim_boundaries": {
+    "standalone_opendot_orchestrator_demonstrated": false,
+    "simultaneous_model_inference_demonstrated": false,
+    "speedup_demonstrated": false,
+    "multi_host_operation_demonstrated": false,
+    "durable_recovery_tested": false,
+    "os_sandbox_demonstrated": false,
+    "runtime_budget_enforcement": false,
+    "model_identity": null,
+    "token_usage": null,
+    "host_model_cost": null,
+    "quota_consumption": null,
+    "final_release_acceptance": false
+  },
+  "source_record_fingerprints": [
+    {
+      "record": "initial provisioning",
+      "sha256": "e6d5ee78991ce655e688959c8e4c6ba36a73ce371f549c2cfef18a2ad322bf93"
+    },
+    {
+      "record": "revised provisioning",
+      "sha256": "cf690ac9cd84aa7989c28f530f53ea0650c59fa6524c7b0b7c5c572721798b22"
+    },
+    {
+      "record": "pre-integration seal",
+      "sha256": "022521db1429946bae8e352d1f5bfc618f99a2725e4b31071797e033a1f4db39"
+    },
+    {
+      "record": "host integration",
+      "sha256": "edf805b7abce8914e5986572520cbbe7a6e0c3bea86e9e6f41a973a8839878a1"
+    },
+    {
+      "record": "demo-errors worker receipt",
+      "sha256": "dfb046bd2931ed7b8941b9c43e88299c5b13d3dc2aaeed498a7a672da220a80d"
+    },
+    {
+      "record": "cli-help worker receipt",
+      "sha256": "3641afb0e716d545e61efeb7f8e3e4610f3b5ecd7dc3ece807342f334539624b"
+    },
+    {
+      "record": "research-index completion",
+      "sha256": "666b3c6b4e65d1da85c78a3a24ab3299d86fc4bb5beee1b0237d053247ad05bc"
+    },
+    {
+      "record": "independent worker review",
+      "sha256": "243d4cb74a0b54d510a343c0ac9da776e573640d1d570a1d9c23d43bea7a8fd2"
+    },
+    {
+      "record": "research-index independent review",
+      "sha256": "323a0f3695af964ad1f7b00998a0e72444bca406fcc6addfe0031c4d6f2d4ffc"
+    }
+  ]
+}

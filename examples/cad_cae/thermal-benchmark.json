@@ -1,0 +1,13 @@
+{
+  "recipe": "thermal.synthetic_bar.dc3d8.v1",
+  "description": "Fixed synthetic numerical verification contract; informational example, not arbitrary solver-deck input",
+  "conductivity_W_mK": 10.0,
+  "temperature_x_min_K": 300.0,
+  "temperature_x_max_K": 400.0,
+  "other_faces": "adiabatic",
+  "volumetric_heat_source_W_m3": 0.0,
+  "solver": "User-configured existing CalculiX 2.23 executable",
+  "mesh": "Verified mesh.synthetic_beam.hex8.v1 artifact directory",
+  "physical_validation": "NOT_PERFORMED",
+  "mesh_independence": "NOT_EVALUATED"
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "checked_date_utc": "2026-10-01",
+  "file_allowlist_match": true,
+  "files_count": 15,
+  "json_documents_parsed": 6,
+  "missing_local_links": [],
+  "unresolved_local_fragments": [],
+  "structural_sensitive_pattern_findings": [],
+  "contextual_review": "Curated prose, synthetic fixture and compact public-source metadata inspected; no raw reports, environment paths, personal contact details or credentials included. Pattern checks are bounded, not proof of universal absence.",
+  "external_links": "Previously inspected official source links retained; no new download or external action in projection",
+  "all_selected_checks_passed": true,
+  "projection_revision": 2,
+  "nonfile_local_links": [],
+  "frozen_oracle_bytes_unchanged_from_revision_1": true,
+  "documentation_only_link_repair": true
+}

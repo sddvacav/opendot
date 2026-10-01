@@ -1,0 +1,1325 @@
+{
+  "schema_version": "1.0",
+  "index_id": "opendot-public-source-needs-20261001",
+  "composed_date": "2026-10-01",
+  "research_as_of": "2026-10-01",
+  "scope": "Compact public-source research index; product proposals only.",
+  "date_policy": {
+    "publication_date": "所列版本或页面发布日；动态首页未知填null。X日期保留文档记录的本地显示日期，不猜UTC。",
+    "composition_date": "仅在原记录明确区分文件成文日时填写；否则null。",
+    "access_date": "2026-10-01为原研究记载的核查访问日，不代表索引生成时重新联网抓取。"
+  },
+  "provenance_policy": "旧来源继承文档内核验记录；Siemens三页在本轮先前步骤直接读取正文。生成索引时不重复联网核验。 新增两条活动方发布的来源已在2026-10-01补充研究中直接读取正文；准备片段与本次候选集成时未重新浏览。",
+  "priority_definitions": {
+    "P0": "专业任务或真实数据试点前的可靠性、安全与评测基础",
+    "P1": "单一领域试点中的集成、交付、比较或用户验证",
+    "P2": "可靠基线之后的优化"
+  },
+  "global_limitations": [
+    "公开观点与政策不构成OpenDot订单、投资、背书、资格或认证",
+    "没有功能实现或执行验收在本索引中被验证；全部implementation_status为PROPOSED",
+    "未执行厂商或学术基准，不移植性能数字",
+    "原有高瓴机构首页与校园活动条目仍为有限间接背景；新增具名公开发言同样不构成OpenDot采购或采用需求证据"
+  ],
+  "documents": [
+    {
+      "document_id": "README",
+      "file_name": "README.md",
+      "logical_location": "docs/research/README.md",
+      "sha256": "e4b2458ed8b38a5ba953a4f9a2884825d9e69c2fa6e7333dc1e5bd6dfba78977",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注研究截止或核查日；不将其自动当作原始来源的成文日期"
+    },
+    {
+      "document_id": "academic-needs",
+      "file_name": "academic-needs.md",
+      "logical_location": "docs/research/academic-needs.md",
+      "sha256": "32c4265723aa88e95d1e5bfd5567174c2f1d69ee3fd70ba2fba46c61d355e9cb",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注研究截止或核查日；不将其自动当作原始来源的成文日期"
+    },
+    {
+      "document_id": "hillhouse-industry",
+      "file_name": "hillhouse-industry.md",
+      "logical_location": "docs/research/hillhouse-industry.md",
+      "sha256": "8ef3b5b8418d5897f3e651e1e5a37a1335ae5482b0897856f49daedeeb2faa74",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注研究截止或核查日；不将其自动当作原始来源的成文日期"
+    },
+    {
+      "document_id": "industry-cases",
+      "file_name": "industry-cases.md",
+      "logical_location": "docs/research/industry-cases.md",
+      "sha256": "144009ede34e5028d7039c7061a0f19453ca92b99bebf195dfa9db58763a9fd7",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注研究截止或核查日；不将其自动当作原始来源的成文日期"
+    },
+    {
+      "document_id": "lidang",
+      "file_name": "lidang.md",
+      "logical_location": "docs/research/lidang.md",
+      "sha256": "18e6211d65ba65f8da36fe7ee4bd599495800afd576fea9d84eea5a14e402d3c",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注研究截止或核查日；不将其自动当作原始来源的成文日期"
+    },
+    {
+      "document_id": "official-strategy",
+      "file_name": "official-strategy.md",
+      "logical_location": "docs/research/official-strategy.md",
+      "sha256": "eba63f5ced64624d007a54ec860accfe34af445077232ed2fece155d590fe737",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注研究截止或核查日；不将其自动当作原始来源的成文日期"
+    },
+    {
+      "document_id": "sequoia-hongshan",
+      "file_name": "sequoia-hongshan.md",
+      "logical_location": "docs/research/sequoia-hongshan.md",
+      "sha256": "1f1669f008a276b98e4d54e34ef276386cb096fca986f58970f9c74e68013518",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注研究截止或核查日；不将其自动当作原始来源的成文日期"
+    },
+    {
+      "document_id": "hillhouse-primary-addendum",
+      "file_name": "hillhouse-primary-addendum.zh-CN.md",
+      "logical_location": "docs/research/hillhouse-primary-addendum.zh-CN.md",
+      "sha256": "be16381bffdf7a78f94226fbf2de8d53307a3ec6102c391d73dac8c5dff7de80",
+      "declared_research_as_of": "2026-10-01",
+      "publication_date": null,
+      "composition_date": null,
+      "index_read_date": "2026-10-01",
+      "composition_date_note": "文档标注核查日；未单列公开发布日或成文日，不将核查日自动用作这些日期。"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "cn-state-council-ai-plus-2025-11",
+      "family": "STATE_COUNCIL",
+      "title": "国务院关于深入实施人工智能加行动的意见",
+      "original_url": "https://wap.miit.gov.cn/xwfb/szyw/art/2025/art_f8bd63905b384841a84e643c1b9455c7.html",
+      "source_type": "OFFICIAL_REPUBLICATION",
+      "publication_date": "2025-08-26",
+      "composition_date": "2025-08-21",
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "official-strategy",
+          "line": 17,
+          "text_anchor": "### A. 国务院"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "依据官方转载核验全文；中国政府网原地址在原研究中返回403",
+        "政策背景不构成OpenDot资格、合规、采购或背书"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "url_relation": "OFFICIAL_REPUBLICATION",
+      "original_publisher": "国务院",
+      "document_number": "国发〔2025〕11号"
+    },
+    {
+      "source_id": "cn-miit-ai-software-2026-209",
+      "family": "MIIT",
+      "title": "人工智能加软件专项行动实施方案",
+      "original_url": "https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2026/art_49783ce685f042029111c8b6e94f0f30.html",
+      "source_type": "OFFICIAL_POLICY",
+      "publication_date": "2026-09-11",
+      "composition_date": "2026-09-02",
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "official-strategy",
+          "line": 26,
+          "text_anchor": "### B. “人工智能+软件”"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "全文阅读范围为商务部官方转载附件；工信部原附件直链未读取成功",
+        "未验证两个附件副本的字节一致性；产品映射不是原文要求"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "document_number": "工信部信发〔2026〕209号",
+      "supporting_urls": [
+        "https://picpolicy.mofcom.gov.cn/file/20260918/20260918154335288.pdf"
+      ]
+    },
+    {
+      "source_id": "cn-miit-nda-model-data-2026-193",
+      "family": "MIIT_NDA",
+      "title": "2026年模数共振行动通知",
+      "original_url": "https://www.nda.gov.cn/sjj/zwgk/tzgg/0428/20260428215540161552208_pc.html",
+      "source_type": "OFFICIAL_POLICY",
+      "publication_date": "2026-04-28",
+      "composition_date": "2026-04-24",
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "official-strategy",
+          "line": 43,
+          "text_anchor": "### D. 2026年"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "通知面向指定主体；不可推断OpenDot已适格或已有申报窗口",
+        "不得把转载日期写成首发日期"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "document_number": "工信厅联科函〔2026〕193号"
+    },
+    {
+      "source_id": "x-lidang-2096078265534292180",
+      "family": "LIDANG",
+      "title": "多agent独立质疑与测试观点",
+      "original_url": "https://x.com/lidangzzz/status/2096078265534292180",
+      "source_type": "PUBLIC_SOCIAL_POST",
+      "publication_date": "2026-09-04",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "lidang",
+          "line": 21,
+          "text_anchor": "### 1 结果是否可信"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "原站显示9月4日20:29，界面时区未标示；未归一化为UTC",
+        "为个人公开观点，未独立复现其数量或性能表达"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "publication_date_basis": "BROWSER_DISPLAY_DATE_TIMEZONE_UNSPECIFIED"
+    },
+    {
+      "source_id": "x-lidang-2098672784754819562",
+      "family": "LIDANG",
+      "title": "The Last Math Competition发布规则",
+      "original_url": "https://x.com/lidangzzz/status/2098672784754819562",
+      "source_type": "PUBLIC_SOCIAL_POST",
+      "publication_date": "2026-09-12",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "lidang",
+          "line": 45,
+          "text_anchor": "### 4 科学工作需要完整成果链"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "原站显示9月12日0:19，界面时区未标示；未归一化为UTC",
+        "竞赛规则不证明规模已实现、科学突破或OpenDot需求"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "publication_date_basis": "BROWSER_DISPLAY_DATE_TIMEZONE_UNSPECIFIED"
+    },
+    {
+      "source_id": "sequoia-own-intelligence-20260819",
+      "family": "SEQUOIA",
+      "title": "Own Your Intelligence",
+      "original_url": "https://sequoiacap.com/article/own-your-intelligence-a-how-to-guide",
+      "source_type": "INVESTOR_OFFICIAL_ARTICLE",
+      "publication_date": "2026-08-19",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "sequoia-hongshan",
+          "line": 11,
+          "text_anchor": "Sequoia：Own Your Intelligence"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "机构观点不是独立效果验证",
+        "不能推断需要自行训练基础模型或替换所有闭源模型"
+      ],
+      "endorsement_or_procurement_evidence": false
+    },
+    {
+      "source_id": "sequoia-air-supply-chain-20260901",
+      "family": "SEQUOIA",
+      "title": "Partnering with Air Securing the AI Supply Chain",
+      "original_url": "https://sequoiacap.com/article/partnering-with-air-securing-the-ai-supply-chain",
+      "source_type": "INVESTOR_PORTFOLIO_ARTICLE",
+      "publication_date": "2026-09-01",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "sequoia-hongshan",
+          "line": 12,
+          "text_anchor": "Sequoia：Air"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "为投资说明，存在投资关系背景",
+        "原研究未复现文中安全研究；不是OpenDot安全认证"
+      ],
+      "endorsement_or_procurement_evidence": false
+    },
+    {
+      "source_id": "hongshan-harnesseval-20260818",
+      "family": "HONGSHAN",
+      "title": "HarnessEval评测文章",
+      "original_url": "https://www.hongshan.com/article/harnesseval%EF%BC%9A%E5%BC%80%E5%90%AFrsi%E6%97%B6%E4%BB%A3%E7%9A%84%E6%96%B0%E8%AF%84%E6%B5%8B%E8%8C%83%E5%BC%8F/",
+      "source_type": "INVESTOR_OFFICIAL_ARTICLE",
+      "publication_date": "2026-08-18",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "sequoia-hongshan",
+          "line": 14,
+          "text_anchor": "HongShan：HarnessEval"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "世界模型评测案例不能直接等同工程仿真或科学发现验收",
+        "Sequoia与HongShan是分别记录的来源家族"
+      ],
+      "endorsement_or_procurement_evidence": false
+    },
+    {
+      "source_id": "hongshan-early-users-20260710",
+      "family": "HONGSHAN",
+      "title": "早期用户与目标市场",
+      "original_url": "https://www.hongshan.com/article/%E6%97%A9%E6%9C%9F%E7%94%A8%E6%88%B7%E2%89%A0%E7%9B%AE%E6%A0%87%E5%B8%82%E5%9C%BA%EF%BC%9Aai%E5%88%9B%E4%B8%9A%E8%80%85%E9%A1%BB%E8%AD%A6%E6%83%95%E7%9A%84%E9%99%B7%E9%98%B1/",
+      "source_type": "INVESTOR_OFFICIAL_ARTICLE",
+      "publication_date": "2026-07-10",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "sequoia-hongshan",
+          "line": 15,
+          "text_anchor": "HongShan：早期用户与目标市场"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "官网分享书中观点，不是机构对OpenDot的市场调研"
+      ],
+      "endorsement_or_procurement_evidence": false
+    },
+    {
+      "source_id": "hillhouse-institution-home",
+      "family": "HILLHOUSE",
+      "title": "Hillhouse Investment机构首页",
+      "original_url": "https://www.hillhouseinvestment.com/",
+      "source_type": "INSTITUTIONAL_WEBSITE",
+      "publication_date": null,
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "hillhouse-industry",
+          "line": 7,
+          "text_anchor": "1. **机构自身长期表述**"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "首页没有对应近期AI演讲日期",
+        "只能说明一般长期取向；弱需求证据，非买方访谈或采购意向"
+      ],
+      "endorsement_or_procurement_evidence": false
+    },
+    {
+      "source_id": "ruc-glventures-ai-salon-20260918",
+      "family": "HILLHOUSE",
+      "title": "人大高瓴人工智能学院与GL Ventures活动回顾",
+      "original_url": "https://ai.ruc.edu.cn/xwgg/xyxw/635f4ab35d9b45518b03d944acf58904.htm",
+      "source_type": "UNIVERSITY_OFFICIAL_EVENT_REPORT",
+      "publication_date": "2026-09-18",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "hillhouse-industry",
+          "line": 8,
+          "text_anchor": "2. **近期联合活动**"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "主办方报道，不是演讲全文；活动主要面向人才、职业发展和创业交流",
+        "受邀企业观点不能全部归为高瓴；不能由参会推定投资或采购",
+        "弱需求证据，未确认OpenDot支付意愿或部署需求"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "event_date": "2026-09-16",
+      "need_evidence_strength": "LIMITED_INDIRECT"
+    },
+    {
+      "source_id": "astabench-2510-21652-v2",
+      "family": "ACADEMIC",
+      "title": "AstaBench v2",
+      "original_url": "https://arxiv.org/abs/2510.21652v2",
+      "source_type": "RESEARCH_PAPER_PREPRINT",
+      "publication_date": "2026-04-21",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "academic-needs",
+          "line": 10,
+          "text_anchor": "[AstaBench]"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "继承阅读范围为摘要及元数据；原记录称条目注明ICLR2026",
+        "未运行论文实验或基准；产品映射为研究建议"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "version": "v2"
+    },
+    {
+      "source_id": "scienceagentbench-2410-05080-v3",
+      "family": "ACADEMIC",
+      "title": "ScienceAgentBench v3",
+      "original_url": "https://arxiv.org/abs/2410.05080v3",
+      "source_type": "RESEARCH_PAPER_PREPRINT",
+      "publication_date": "2025-03-31",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "INHERITED_DOCUMENT_VERIFICATION",
+        "reviewed_document_locator": {
+          "document_id": "academic-needs",
+          "line": 12,
+          "text_anchor": "[ScienceAgentBench]"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "所列发布日期为v3更新；首次提交另列，不混用",
+        "继承阅读范围为摘要及官方仓库核验；未运行基准"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "version": "v3",
+      "first_publication_date": "2024-10-07"
+    },
+    {
+      "source_id": "siemens-fuse-launch-20260316",
+      "family": "SIEMENS_EDA",
+      "title": "Siemens launches Fuse EDA AI Agent",
+      "original_url": "https://news.siemens.com/en-us/siemens-fuse-eda-ai-agent/",
+      "source_type": "VENDOR_PRESS_RELEASE",
+      "publication_date": "2026-03-16",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "DIRECT_WEB_TEXT_VERIFIED_THIS_RESEARCH_ROUND",
+        "reviewed_document_locator": {
+          "document_id": "industry-cases",
+          "line": 15,
+          "text_anchor": "### S1"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "厂商发布主张，不是独立性能验证或OpenDot兼容性证据",
+        "不据此确定每项能力普遍可用；不构成合作或背书"
+      ],
+      "endorsement_or_procurement_evidence": false
+    },
+    {
+      "source_id": "siemens-self-verifying-blog-20260729",
+      "family": "SIEMENS_EDA",
+      "title": "Self-verifying long-running EDA AI agents",
+      "original_url": "https://blogs.sw.siemens.com/cicv/2026/07/29/self-verifying-eda-ai-agents/",
+      "source_type": "VENDOR_PRODUCT_BLOG",
+      "publication_date": "2026-07-29",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "DIRECT_WEB_TEXT_VERIFIED_THIS_RESEARCH_ROUND",
+        "reviewed_document_locator": {
+          "document_id": "industry-cases",
+          "line": 25,
+          "text_anchor": "### S2"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "作者为Siemens EDA产品市场经理，属于厂商叙述",
+        "阅读页面正文，未观看或复现演示；无人值守不取消签核责任",
+        "概括性生产运行表述不足以确定全部扩展功能可用性"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "author": "Emma-Jane Crozier"
+    },
+    {
+      "source_id": "siemens-nvidia-dac-20260726",
+      "family": "SIEMENS_EDA",
+      "title": "Siemens advances self-verifying agentic AI workflows",
+      "original_url": "https://news.siemens.com/en-us/siemens-nvidia-dac-2026/",
+      "source_type": "VENDOR_PRESS_RELEASE",
+      "publication_date": "2026-07-26",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "DIRECT_WEB_TEXT_VERIFIED_THIS_RESEARCH_ROUND",
+        "reviewed_document_locator": {
+          "document_id": "industry-cases",
+          "line": 35,
+          "text_anchor": "### S3"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "性能倍数为厂商自述，缺完整独立复现协议",
+        "Availability称扩展能力将在后续版本提供；部分客户引语为计划测试",
+        "不可将厂商数字迁移为OpenDot性能、ROI或已实现能力"
+      ],
+      "endorsement_or_procurement_evidence": false
+    },
+    {
+      "source_id": "glventures-wangbei-waves-20260624",
+      "family": "HILLHOUSE",
+      "title": "王蓓在WAVES 2026圆桌的发言整理稿",
+      "original_url": "https://www.36kr.com/p/3866900608701449",
+      "source_type": "EVENT_ORGANIZER_EDITED_TRANSCRIPT",
+      "publication_date": "2026-06-24",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "DIRECT_WEB_TEXT_VERIFIED_THIS_RESEARCH_ROUND",
+        "reviewed_document_locator": {
+          "document_id": "hillhouse-primary-addendum",
+          "line": 13,
+          "text_anchor": "### S1 王蓓在 WAVES 2026 的圆桌发言"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "发言归属限于高瓴创投合伙人王蓓的回答；主办方36氪整理编辑，不是高瓴官网声明或全机构统一政策",
+        "未核对未经剪辑的原始录像；不归入同台其他嘉宾或主持人的判断及数字",
+        "页面显示2026-06-24 16:17，时区未标明；活动为2026-06-16上午，不能混用发表日与活动日",
+        "具名公开观点可直接核对，但对OpenDot用户需求仍仅有间接参考价值；没有采购、采用、投资或合作证据"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "event_date": "2026-06-16",
+      "need_evidence_strength": "LIMITED_INDIRECT",
+      "original_publisher": "36氪",
+      "author": "未来一氪",
+      "supporting_urls": [
+        "https://eu.36kr.com/zh/p/3866900608701449",
+        "https://www.36kr.com/p/3865226824389892",
+        "https://topics.36kr.com/topic/waves2026"
+      ]
+    },
+    {
+      "source_id": "hillhouse-liliang-zgc-20260330",
+      "family": "HILLHOUSE",
+      "title": "李良在中关村论坛AI未来论坛的发言报道",
+      "original_url": "https://www.chinaventure.com.cn/news/80-20260330-390728.html",
+      "source_type": "EVENT_ORGANIZER_ORIGINAL_REPORT",
+      "publication_date": "2026-03-30",
+      "composition_date": null,
+      "access_date": "2026-10-01",
+      "date_precision": "day",
+      "publication_timezone": null,
+      "verification_provenance": {
+        "mode": "DIRECT_WEB_TEXT_VERIFIED_THIS_RESEARCH_ROUND",
+        "reviewed_document_locator": {
+          "document_id": "hillhouse-primary-addendum",
+          "line": 21,
+          "text_anchor": "### S2 李良在中关村论坛的发言报道"
+        },
+        "recorded_verification_date": "2026-10-01",
+        "reopened_for_this_index": false
+      },
+      "limitations": [
+        "仅采用明确归于高瓴创始合伙人李良的发言；不作为高瓴全机构统一政策",
+        "活动方网站原创报道包含作者转述及少量引语，不是完整逐字稿；证据强度低于逐人整理稿",
+        "页面显示2026-03-30 17:32:37，时区未标明；活动为2026-03-29下午，不能混用发表日与活动日",
+        "只提供组织采用的间接研究线索，不证明任何具体部署架构、软件采购要求或OpenDot合作意向"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "event_date": "2026-03-29",
+      "need_evidence_strength": "LIMITED_INDIRECT",
+      "original_publisher": "投中网",
+      "author": "张楠",
+      "supporting_urls": [
+        "https://www.chinaventure.com.cn/meeting/live/23.html"
+      ]
+    }
+  ],
+  "needs": [
+    {
+      "need_id": "synthesis-reviewed-outcomes",
+      "source_ids": [
+        "x-lidang-2096078265534292180",
+        "cn-miit-ai-software-2026-209"
+      ],
+      "document_locator": {
+        "document_id": "README",
+        "line": 13,
+        "text_anchor": "## 汇总后的产品决策建议"
+      },
+      "paraphrased_need": "任务完成需要可核对的结果和失败说明",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "任务验收项、成果及失败回执",
+      "acceptance_evidence": {
+        "oracle": "独立检查路径验收成功案例，并在冻结错误集中拒绝不合格成果；报告错误接受和未知状态",
+        "expected_artifacts": [
+          "成果清单",
+          "独立验收回执",
+          "负例结果"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": []
+    },
+    {
+      "need_id": "policy-durable-execution",
+      "source_ids": [
+        "cn-miit-ai-software-2026-209"
+      ],
+      "document_locator": {
+        "document_id": "official-strategy",
+        "line": 61,
+        "text_anchor": "### 1. 可靠完成复杂任务"
+      },
+      "paraphrased_need": "复杂任务需要可恢复执行和清楚的中断状态",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "检查点、受控重试、取消传播、外部副作用对账",
+      "acceptance_evidence": {
+        "oracle": "在预先登记任务集中注入中断，记录恢复成功率、重复副作用及取消后残留任务",
+        "expected_artifacts": [
+          "故障注入记录",
+          "恢复回执",
+          "任务分母与成本"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": []
+    },
+    {
+      "need_id": "policy-industrial-adapter",
+      "source_ids": [
+        "cn-miit-ai-software-2026-209"
+      ],
+      "document_locator": {
+        "document_id": "official-strategy",
+        "line": 78,
+        "text_anchor": "### 3. CAD/CAE"
+      },
+      "paraphrased_need": "工程工具融合需要保持单位、参数、版本与失败语义",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "版本化CAD/CAE连接器和领域验收合同",
+      "acceptance_evidence": {
+        "oracle": "在声明的解析基准上测误差与网格收敛，拒绝单位错配；真实后端与合成fixture分开列示",
+        "expected_artifacts": [
+          "输入配置",
+          "工具版本",
+          "解析对照结果",
+          "拒绝案例"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": []
+    },
+    {
+      "need_id": "policy-science-evidence",
+      "source_ids": [
+        "cn-state-council-ai-plus-2025-11"
+      ],
+      "document_locator": {
+        "document_id": "official-strategy",
+        "line": 87,
+        "text_anchor": "### 4. 支持科研到工程实现"
+      },
+      "paraphrased_need": "科研到工程应用需要关联来源、假设、计算与结论",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "假设卡、来源审计、复算入口及反例记录",
+      "acceptance_evidence": {
+        "oracle": "独立复算已声明结果，检查每条结论的证据覆盖；生成内容不能自动提升为实验结果",
+        "expected_artifacts": [
+          "来源清单",
+          "参数清单",
+          "复算回执",
+          "结论证据映射"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": []
+    },
+    {
+      "need_id": "policy-data-boundaries",
+      "source_ids": [
+        "cn-miit-nda-model-data-2026-193"
+      ],
+      "document_locator": {
+        "document_id": "official-strategy",
+        "line": 114,
+        "text_anchor": "### 7. 数据协作"
+      },
+      "paraphrased_need": "跨主体数据协作需要限定用途、范围和责任",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "数据用途声明、访问范围、保留期限及导出审批",
+      "acceptance_evidence": {
+        "oracle": "跨项目隔离、撤权后拒绝及禁止导出字段检出测试；只用授权或合成样本",
+        "expected_artifacts": [
+          "数据流说明",
+          "隔离测试",
+          "撤权回执"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "数据审计组件不能自称可信数据空间认证"
+      ]
+    },
+    {
+      "need_id": "lidang-independent-verification",
+      "source_ids": [
+        "x-lidang-2096078265534292180"
+      ],
+      "document_locator": {
+        "document_id": "lidang",
+        "line": 21,
+        "text_anchor": "### 1 结果是否可信"
+      },
+      "paraphrased_need": "大量agent产出仍需独立检查才能建立信任",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "可执行验收器、独立复核及明确失败状态",
+      "acceptance_evidence": {
+        "oracle": "验证者读取原始产物，在冻结负例中检出已知错误；展示未通过项和仍未知项",
+        "expected_artifacts": [
+          "验证日志",
+          "原始产物",
+          "失败说明"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "个人观点不是支付或采用意愿"
+      ]
+    },
+    {
+      "need_id": "lidang-artifact-chain",
+      "source_ids": [
+        "x-lidang-2098672784754819562"
+      ],
+      "document_locator": {
+        "document_id": "lidang",
+        "line": 45,
+        "text_anchor": "### 4 科学工作需要完整成果链"
+      },
+      "paraphrased_need": "协作研究需要可评审的成果包与质量反馈",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "按任务组织报告、源文件、验证项目及评审状态",
+      "acceptance_evidence": {
+        "oracle": "自有示例从任务进入到成果包交付可重放，记录拒收原因与未完成项",
+        "expected_artifacts": [
+          "成果包",
+          "评审回执",
+          "重放说明"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "不向原竞赛自动提交内容；竞赛发布不等于已实现规模"
+      ]
+    },
+    {
+      "need_id": "sequoia-domain-evaluation",
+      "source_ids": [
+        "sequoia-own-intelligence-20260819"
+      ],
+      "document_locator": {
+        "document_id": "sequoia-hongshan",
+        "line": 25,
+        "text_anchor": "4. **模型和工具可替换**"
+      },
+      "paraphrased_need": "后端选择应由领域质量、成本与速度的共同评测支持",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "版本化评测协议与后端比较",
+      "acceptance_evidence": {
+        "oracle": "相同任务、验收标准及权限下比较全部尝试；失败进入分母",
+        "expected_artifacts": [
+          "冻结协议",
+          "版本清单",
+          "质量成本耗时报告"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": []
+    },
+    {
+      "need_id": "sequoia-supply-chain",
+      "source_ids": [
+        "sequoia-air-supply-chain-20260901"
+      ],
+      "document_locator": {
+        "document_id": "sequoia-hongshan",
+        "line": 40,
+        "text_anchor": "| 安全与隐私页"
+      },
+      "paraphrased_need": "agent技能与插件引入需要管理的供应链风险",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "依赖及技能来源清单、许可记录和权限审查",
+      "acceptance_evidence": {
+        "oracle": "检查来源、版本、许可与权限字段；越权和恶意输入测试单独报告",
+        "expected_artifacts": [
+          "供应链清单",
+          "许可清单",
+          "权限测试"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "哈希一致不能证明安全或授权；投资文章不是认证"
+      ]
+    },
+    {
+      "need_id": "hongshan-oracle-boundaries",
+      "source_ids": [
+        "hongshan-harnesseval-20260818"
+      ],
+      "document_locator": {
+        "document_id": "sequoia-hongshan",
+        "line": 23,
+        "text_anchor": "2. **执行与验证各有职责**"
+      },
+      "paraphrased_need": "评测需要适合任务的工具和明确的评测者边界",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "任务专用验证器与证据关联",
+      "acceptance_evidence": {
+        "oracle": "对已知正例、错误和超范围输入检验验证器，能力不足返回未知",
+        "expected_artifacts": [
+          "验证器资格结果",
+          "证据关联",
+          "未知案例"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "世界模型评测经验不能直接当作工程验证结论"
+      ]
+    },
+    {
+      "need_id": "hongshan-market-validation",
+      "source_ids": [
+        "hongshan-early-users-20260710"
+      ],
+      "document_locator": {
+        "document_id": "sequoia-hongshan",
+        "line": 29,
+        "text_anchor": "8. **商业验证独立进行**"
+      },
+      "paraphrased_need": "早期科技爱好者热情不足以代表目标市场",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "分人群访谈及真实任务试点协议",
+      "acceptance_evidence": {
+        "oracle": "取得经同意的真实任务、验收负责人和持续使用观察；无访谈不记作需求验证",
+        "expected_artifacts": [
+          "访谈记录模板",
+          "试点验收协议",
+          "持续使用记录"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "本轮未开展访谈、招募或外部联络"
+      ]
+    },
+    {
+      "need_id": "hillhouse-industry-hypothesis",
+      "source_ids": [
+        "hillhouse-institution-home",
+        "ruc-glventures-ai-salon-20260918"
+      ],
+      "document_locator": {
+        "document_id": "hillhouse-industry",
+        "line": 12,
+        "text_anchor": "## 对OpenDot的可操作推断"
+      },
+      "paraphrased_need": "长期行业价值值得用可复现案例与实际流程效果检验",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "一个范围清楚的工程演示和后续用户验证计划",
+      "acceptance_evidence": {
+        "oracle": "外部使用者按公开数据重放；真实企业需求另立访谈及验收，不以机构文章或活动代替",
+        "expected_artifacts": [
+          "公开重放包",
+          "验证计划"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "LIMITED_INDIRECT：机构一般表述与职业创业活动报道只提供弱背景",
+        "没有高瓴或GL Ventures采购、采用、投资或合作证据"
+      ]
+    },
+    {
+      "need_id": "academic-controlled-benchmark",
+      "source_ids": [
+        "astabench-2510-21652-v2",
+        "scienceagentbench-2410-05080-v3"
+      ],
+      "document_locator": {
+        "document_id": "academic-needs",
+        "line": 23,
+        "text_anchor": "## 三、最小公开科研评测包提案"
+      },
+      "paraphrased_need": "科研agent评测需要控制工具与预算并评价可复现实物结果",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "冻结数据、工具权限、预算和全部尝试分母的评测包",
+      "acceptance_evidence": {
+        "oracle": "相同任务协议比较人工或脚本、单agent和并行agent；保留失败及成本，独立重放",
+        "expected_artifacts": [
+          "基线协议",
+          "任务分母",
+          "独立重放",
+          "成本账"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "论文基准未运行；采用前需核验许可及污染风险"
+      ]
+    },
+    {
+      "need_id": "eda-continuous-verification",
+      "source_ids": [
+        "siemens-self-verifying-blog-20260729"
+      ],
+      "document_locator": {
+        "document_id": "industry-cases",
+        "line": 53,
+        "text_anchor": "| 专业结果需要外部判据"
+      },
+      "paraphrased_need": "专业工程中间结果需要由领域工具检查",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "执行、产物、领域验证、人工批准分层状态",
+      "acceptance_evidence": {
+        "oracle": "冻结合法、错误、缺证据和超时输入；未知不能被合并为通过",
+        "expected_artifacts": [
+          "分层回执",
+          "正负例矩阵"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "不是芯片签核能力证明"
+      ]
+    },
+    {
+      "need_id": "eda-recovery-reconciliation",
+      "source_ids": [
+        "siemens-fuse-launch-20260316"
+      ],
+      "document_locator": {
+        "document_id": "industry-cases",
+        "line": 54,
+        "text_anchor": "| 长任务必须能从失败中恢复"
+      },
+      "paraphrased_need": "长时编排需要可控恢复",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "检查点、持久状态与外部作业对账",
+      "acceptance_evidence": {
+        "oracle": "在提交前及提交后未记账时注入中断；不能确认作业身份时暂停，不盲目重复增加成本",
+        "expected_artifacts": [
+          "中断记录",
+          "作业身份",
+          "对账及恢复回执"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": []
+    },
+    {
+      "need_id": "eda-ip-governance",
+      "source_ids": [
+        "siemens-fuse-launch-20260316"
+      ],
+      "document_locator": {
+        "document_id": "industry-cases",
+        "line": 55,
+        "text_anchor": "| 设计 IP 需要明确边界"
+      },
+      "paraphrased_need": "设计IP需要可审计的访问和执行边界",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "任务权限、工具白名单、网络出口策略与敏感值遮蔽",
+      "acceptance_evidence": {
+        "oracle": "阻断越界文件与未授权出口，日志不得含测试密钥；离线能力限定到实测流程",
+        "expected_artifacts": [
+          "权限拒绝证据",
+          "日志脱敏检查",
+          "离线测试"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "未做隔离测试不得宣称气隙或安全认证"
+      ]
+    },
+    {
+      "need_id": "eda-tool-contracts",
+      "source_ids": [
+        "siemens-fuse-launch-20260316"
+      ],
+      "document_locator": {
+        "document_id": "industry-cases",
+        "line": 57,
+        "text_anchor": "| 多工具、多格式会造成语义丢失"
+      },
+      "paraphrased_need": "异构专业工具需要保留数据语义",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "版本化工具契约、原生格式连接器及单位约束",
+      "acceptance_evidence": {
+        "oracle": "检查产物可读、参数传递和版本兼容；拒绝错误单位、过期格式及缺依赖输入",
+        "expected_artifacts": [
+          "连接器契约",
+          "版本矩阵",
+          "负例记录"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": []
+    },
+    {
+      "need_id": "eda-fair-performance",
+      "source_ids": [
+        "siemens-nvidia-dac-20260726"
+      ],
+      "document_locator": {
+        "document_id": "industry-cases",
+        "line": 60,
+        "text_anchor": "| 提速与降成本必须有公平基线"
+      },
+      "paraphrased_need": "效率主张应在相同结果质量门槛下比较",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "固定评测协议、全量成本账及耗时分解",
+      "acceptance_evidence": {
+        "oracle": "冻结任务、工具、硬件、模型和预算；统计失败，分别列人工、排队、工具和模型耗时",
+        "expected_artifacts": [
+          "基线协议",
+          "全部尝试成本",
+          "质量门槛",
+          "阶段耗时"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "厂商倍数不移植为OpenDot性能；扩展功能可用性仍有限定"
+      ]
+    },
+    {
+      "need_id": "hillhouse-wangbei-reliable-execution",
+      "source_ids": [
+        "glventures-wangbei-waves-20260624"
+      ],
+      "document_locator": {
+        "document_id": "hillhouse-primary-addendum",
+        "line": 34,
+        "text_anchor": "| S1 可靠性讨论 |"
+      },
+      "paraphrased_need": "长任务中断后，用户需要判断结果是否有效、是否可恢复",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "持久任务状态、检查点、失败分类与受控恢复；执行状态和结果验收分开",
+      "acceptance_evidence": {
+        "oracle": "固定同一工作流，注入进程退出、依赖超时和输出拒收；未验收结果不得报成功。恢复须证明外部副作用不会重复提交，无法确认时转人工",
+        "expected_artifacts": [
+          "冻结工作流及故障注入协议",
+          "恢复前后事件记录",
+          "结果验收回执",
+          "副作用核对或人工接管记录"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "王蓓的可靠性观点未指定检查点、重试或对账方案；这些均是OpenDot设计推断",
+        "未实现持久恢复或证明幂等执行；不以元数据声明代替运行时保障"
+      ]
+    },
+    {
+      "need_id": "hillhouse-wangbei-domain-validity",
+      "source_ids": [
+        "glventures-wangbei-waves-20260624"
+      ],
+      "document_locator": {
+        "document_id": "hillhouse-primary-addendum",
+        "line": 35,
+        "text_anchor": "| S1 科学与产业约束 |"
+      },
+      "paraphrased_need": "工程结果需要按明确领域标准复核",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "版本化输入与求解器、单位及适用范围校验、独立领域判定接口",
+      "acceptance_evidence": {
+        "oracle": "公开可重放的有界算例附参考解或明确基准与预先声明的容差；错误单位、越界参数及不收敛样本应被拒收",
+        "expected_artifacts": [
+          "版本化输入及求解器清单",
+          "参考解或基准与容差",
+          "独立重放结果",
+          "拒收样本及回执"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "从王蓓关于科学与产业物理约束的观点推断，非其提出的具体软件规格",
+        "软件通过与字节一致不等于实物、科学结论或真实工程部件被验证"
+      ]
+    },
+    {
+      "need_id": "hillhouse-wangbei-full-delivery-cost",
+      "source_ids": [
+        "glventures-wangbei-waves-20260624"
+      ],
+      "document_locator": {
+        "document_id": "hillhouse-primary-addendum",
+        "line": 36,
+        "text_anchor": "| S1 经济效果讨论 |"
+      },
+      "paraphrased_need": "用户需要比较一个合格成果的完整交付成本",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "同任务基线与结果账本，记录全部尝试、失败、复核、运行资源和接入工作量",
+      "acceptance_evidence": {
+        "oracle": "相同输入和验收口径下，列全人工时间、总耗时、运行费用和合格结果数；公开失败分母与一次性接入成本",
+        "expected_artifacts": [
+          "冻结基线与验收协议",
+          "全部尝试及失败分母",
+          "人工及运行成本账",
+          "合格成果清单"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "从王蓓对经济效果的讨论推断验收方案，非机构要求的ROI模型",
+        "本轮没有成本或利润提升实测；小样本不得外推为持续ROI"
+      ]
+    },
+    {
+      "need_id": "hillhouse-liliang-human-handoff",
+      "source_ids": [
+        "hillhouse-liliang-zgc-20260330"
+      ],
+      "document_locator": {
+        "document_id": "hillhouse-primary-addendum",
+        "line": 37,
+        "text_anchor": "| S2 组织采用讨论 |"
+      },
+      "paraphrased_need": "人员需要把新流程接入日常职责并在出错时接管",
+      "inference": true,
+      "inference_scope": "Need-to-OpenDot feature, acceptance protocol and priority are research proposals, not a source-authored procurement requirement.",
+      "proposed_feature": "可配置任务负责人、审批点、人工接管和交接记录，限定一个明确流程",
+      "acceptance_evidence": {
+        "oracle": "经授权的试点用户独立完成首次任务与一次失败接管；记录培训、维护和复核负担，由用户确认责任分工",
+        "expected_artifacts": [
+          "用户授权及试点范围",
+          "首次任务和失败接管记录",
+          "培训维护复核负担",
+          "责任分工确认"
+        ],
+        "execution_status": "NOT_RUN"
+      },
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "limitations": [
+        "从报道中的李良组织协作观点推断，审批点和接管机制并非原文产品规格",
+        "本轮未访谈、招募或外部联络；模拟演示不能代替真实采用、留存或付费证据"
+      ]
+    }
+  ],
+  "integration_note": "Document hashes bind this source snapshot; index navigation was added to the research overview during integration. Original-source verification provenance remains as recorded."
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "opendot.local-evidence.v1",
+  "source_id": "synthetic-material",
+  "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "access": "public",
+  "content_kind": "synthetic",
+  "observations": [
+    {
+      "quantity": "demo_strength",
+      "unit": "MPa",
+      "condition": "synthetic fixture only; no physical specimen",
+      "evidence_role": "synthetic",
+      "value_state": "known",
+      "value": 123.4,
+      "uncertainty": null,
+      "reason": null
+    },
+    {
+      "quantity": "demo_elongation",
+      "unit": "percent",
+      "condition": "synthetic fixture only; no measurement",
+      "evidence_role": "synthetic",
+      "value_state": "unknown",
+      "value": null,
+      "uncertainty": null,
+      "reason": "Not present in the synthetic source"
+    }
+  ]
+}

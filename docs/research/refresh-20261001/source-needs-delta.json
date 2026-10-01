@@ -1,0 +1,325 @@
+{
+  "schema_version": "1.0",
+  "recordset_type": "UNMERGED_PUBLIC_RESEARCH_DELTA",
+  "cutoff_date": "2026-10-01",
+  "retrieval_window_utc": {
+    "start": "2026-10-01T11:30:43Z",
+    "end": "2026-10-01T11:33:29Z"
+  },
+  "baseline": {
+    "indexed_sources": 18,
+    "indexed_needs": 22,
+    "comparison_scope": "Historical public-source snapshot: 18 indexed sources and 22 indexed needs remain unchanged. This UNMERGED annex is not an aggregate index.",
+    "snapshot_kind": "HISTORICAL_UNCHANGED"
+  },
+  "counts": {
+    "source_records": 4,
+    "sources_new_to_research_collection": 3,
+    "known_document_coverage_upgrades": 1,
+    "proposed_need_records": 4,
+    "new_specific_hypotheses": 2,
+    "refinements_of_existing_hypotheses": 2
+  },
+  "global_limits": [
+    "All proposed functions are PROPOSED and all acceptance protocols are NOT_RUN.",
+    "No interviews, outreach, procurement, endorsements, policy compliance assessment, experiments or production integrations were performed.",
+    "Sequoia Capital and HongShan are separate source families.",
+    "Source dates are page-displayed dates; unspecified timezones are not normalized.",
+    "This is a bounded refresh, not an exhaustive census or proof of market demand."
+  ],
+  "sources": [
+    {
+      "source_id": "hongshan-workbuddy-feedback-20260920",
+      "family": "HONGSHAN",
+      "title": "红杉中国成员企业走进腾讯WorkBuddy，共探AI Agent开放生态",
+      "url": "https://www.hongshan.com/article/%E7%BA%A2%E6%9D%89%E4%B8%AD%E5%9B%BD%E6%88%90%E5%91%98%E4%BC%81%E4%B8%9A%E8%B5%B0%E8%BF%9B%E8%85%BE%E8%AE%AFworkbuddy%EF%BC%8C%E5%85%B1%E6%8E%A2ai-agent%E5%BC%80%E6%94%BE%E7%94%9F%E6%80%81/",
+      "delta_type": "NEW_TO_RESEARCH_COLLECTION",
+      "source_type": "ORGANIZER_OFFICIAL_EVENT_REPORT",
+      "publication_date": "2026-09-20",
+      "composition_date": null,
+      "event_date": null,
+      "event_date_precision": "UNKNOWN_RECENTLY_ON_PAGE",
+      "retrieval_status": "DIRECT_OFFICIAL_TEXT_READ",
+      "locator": "圆桌对谈；讯兔科技代表讨论接入后的诉求；正文段落始于“但李婷真正关心的是接入之后的事”",
+      "short_quote": "用户在哪一步卡住了？",
+      "source_observation": "主办方报道中，已接入平台的伙伴提出了解使用阻塞点和技能调用情况的需要；平台方回应将逐步提供相关能力。",
+      "limitations": [
+        "活动报道，不是逐字录像核验；需求归于报道中的伙伴发言，不归为HongShan全机构意见。",
+        "平台的将来承诺不是已经可用的能力；未核实其后续上线状态。",
+        "不是本项目用户访谈、普遍市场统计、采用承诺或独立性能证据。"
+      ],
+      "retrieval_date": "2026-10-01",
+      "publication_timezone": null,
+      "endorsement_or_procurement_evidence": false,
+      "source_snapshot_bytes_archived": false
+    },
+    {
+      "source_id": "sequoia-empirik-change-context-20260901",
+      "family": "SEQUOIA",
+      "title": "Partnering with Empirik Building the Autonomous Infrastructure Engineer",
+      "url": "https://sequoiacap.com/article/partnering-with-empirik-building-the-autonomous-infrastructure-engineer",
+      "delta_type": "NEW_TO_RESEARCH_COLLECTION",
+      "source_type": "INVESTOR_PORTFOLIO_ARTICLE",
+      "publication_date": "2026-09-01",
+      "composition_date": null,
+      "event_date": null,
+      "event_date_precision": "NOT_APPLICABLE",
+      "retrieval_status": "DIRECT_OFFICIAL_TEXT_READ",
+      "locator": "Why change, and why now；Building the infrastructure compiler，元数据和运行状态段落",
+      "short_quote": "what changed, who changed it",
+      "source_observation": "文章将基础设施实际状态、变化和依赖关系作为执行判断的上下文，并区别声明状态与实际运行状态。",
+      "limitations": [
+        "投资机构介绍投资对象；产品和客户效果属于机构自述，未独立复现。",
+        "不据此声称完整依赖图能自动证明因果、安全或授权。",
+        "提出的有界状态新鲜度检查是本研究设计，不是原文给出的软件接口。"
+      ],
+      "retrieval_date": "2026-10-01",
+      "publication_timezone": null,
+      "endorsement_or_procurement_evidence": false,
+      "source_snapshot_bytes_archived": false
+    },
+    {
+      "source_id": "cn-miit-ai-service-providers-2026-414",
+      "family": "MIIT",
+      "title": "工业和信息化部办公厅关于开展人工智能应用服务商培育专项行动的通知",
+      "url": "https://wap.miit.gov.cn/jgsj/kjs/wjfb/art/2026/art_331b6f1d28ad410aa9df711acf42dbfe.html",
+      "delta_type": "NEW_TO_RESEARCH_COLLECTION",
+      "source_type": "OFFICIAL_POLICY",
+      "document_number": "工信厅科函〔2026〕414号",
+      "publication_date": "2026-08-31",
+      "publication_time_displayed": "10:50",
+      "composition_date": "2026-08-27",
+      "event_date": null,
+      "event_date_precision": "NOT_APPLICABLE",
+      "retrieval_status": "DIRECT_ISSUER_TEXT_READ",
+      "locator": "二、重点任务，任务二、任务三、任务四；三、工作安排（一）",
+      "short_quote": "模块化、标准化解决方案产品包",
+      "source_observation": "正式通知涉及可复用场景的模块化交付、研发到应用过程中的风险管理及现场落地服务。",
+      "limitations": [
+        "政策导向不是本项目的采购、资助、入池资格或合规证明。",
+        "2026-12-01报送节点面向地方主管部门；不能表述为本项目已获得的报名窗口。",
+        "本轮阅读通知正文，没有阅读其5个表格附件；未提交或联系任何机构。"
+      ],
+      "retrieval_date": "2026-10-01",
+      "publication_timezone": null,
+      "endorsement_or_procurement_evidence": false,
+      "source_snapshot_bytes_archived": false
+    },
+    {
+      "source_id": "cn-miit-ai-manufacturing-2025-279",
+      "family": "MIIT_MULTI_AGENCY",
+      "title": "人工智能加制造专项行动实施意见及附件2制造业企业人工智能应用指南",
+      "url": "https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2026/art_01010414608a4226b30687773bb21bdf.html",
+      "readable_text_url": "https://sjj.sjz.gov.cn/columns/d3426a1d-930b-4b41-abe0-519a987eeab2/202601/13/8e4cf98c-1465-43e8-a96f-25fe2d938260.html",
+      "delta_type": "KNOWN_DOCUMENT_COVERAGE_UPGRADE",
+      "source_type": "OFFICIAL_POLICY_WITH_OFFICIAL_REPUBLICATION",
+      "document_number": "工信部联科〔2025〕279号",
+      "publication_date": "2026-01-07",
+      "publication_time_displayed": "16:43",
+      "composition_date": "2025-12-25",
+      "republication_date": "2026-01-13",
+      "event_date": null,
+      "event_date_precision": "NOT_APPLICABLE",
+      "retrieval_status": "ISSUER_NOTICE_AND_OFFICIAL_REPUBLICATION_READ",
+      "locator": "附件2，五（十三）量化场景关键指标、五（十四）结合业务选定模型、六（十八）验证模型性能、七（二十）评估应用能力水平",
+      "short_quote": "方案采纳比率",
+      "source_observation": "附件2按场景列评价维度，设计生成数量与采纳比率分列，并要求结合场景做模型选择、试运行及持续评估。",
+      "limitations": [
+        "工信部原PDF未能读取；读到的是石家庄市数据局官方转载全文（页面标注来源国家数据局），未证明附件副本字节一致。",
+        "原文件与日期已出现在已有研究正文，本次是阅读范围补足，不能称为新出台政策。",
+        "只用已读章节作设计参考；不把指南转为本项目已完成测试、行业资格或法律合规结论。"
+      ],
+      "retrieval_date": "2026-10-01",
+      "publication_timezone": null,
+      "endorsement_or_procurement_evidence": false,
+      "source_snapshot_bytes_archived": false
+    }
+  ],
+  "needs": [
+    {
+      "need_id": "hongshan-opt-in-skill-feedback",
+      "source_ids": [
+        "hongshan-workbuddy-feedback-20260920"
+      ],
+      "delta_type": "NEW_SPECIFIC_HYPOTHESIS",
+      "related_existing_need_ids": [
+        "hongshan-market-validation"
+      ],
+      "paraphrased_need": "接入工具后，维护者需要知道使用者在哪一步放弃、哪些技能有效，而非只见总调用量。",
+      "inference": true,
+      "inference_scope": "功能、优先级和验收协议均为研究建议；不是来源向本项目提出的规格。",
+      "proposed_feature": "获授权的最小化任务阶段事件和技能版本统计；区分开始、拒绝、中断、完成、验收及用户主动放弃。",
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "acceptance_evidence": {
+        "execution_status": "NOT_RUN",
+        "oracle": "用合成会话注入重复事件、缺失终态、拒绝、取消和重试；校验唯一任务分母、独立尝试分母及未知状态，不能将调用次数计作合格任务。禁用采集时不得导出；检查导出无原始任务文本或个人标识。",
+        "expected_artifacts": [
+          "事件语义说明",
+          "合成轨迹与预期计数",
+          "启停及导出边界测试",
+          "经授权试点的反馈记录"
+        ]
+      },
+      "limitations": [
+        "目前没有用户行为数据或留存结论；合成事件测试只验证计数，不验证需求强度。",
+        "遥测或第三方数据传输需要另行授权；本研究没有采集真实使用者数据。"
+      ]
+    },
+    {
+      "need_id": "sequoia-bounded-context-freshness",
+      "source_ids": [
+        "sequoia-empirik-change-context-20260901"
+      ],
+      "delta_type": "NEW_SPECIFIC_HYPOTHESIS",
+      "related_existing_need_ids": [
+        "eda-recovery-reconciliation",
+        "policy-data-boundaries"
+      ],
+      "paraphrased_need": "执行依赖于外部状态时，操作者需要知道旧计划或旧证据是否仍适用。",
+      "inference": true,
+      "inference_scope": "功能、优先级和验收协议均为研究建议；不是来源向本项目提出的规格。",
+      "proposed_feature": "为一个明确工具记录观察到的状态版本、时间和覆盖范围；关键前提变化或不可读时，暂停依赖该前提的动作并重新评估。",
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "acceptance_evidence": {
+        "execution_status": "NOT_RUN",
+        "oracle": "先固定一个只读可重放场景，分别改变依赖版本、权限和外部作业状态；旧观察不得作为当前成功证据。不可读须标未知；未覆盖资源不得标已检查。测试期间不自动回滚或修改生产系统。",
+        "expected_artifacts": [
+          "前提与覆盖范围清单",
+          "状态变更正负例",
+          "旧证据失效回执",
+          "未知状态暂停记录"
+        ]
+      },
+      "limitations": [
+        "不要求先构建全企业知识图；完整性、新鲜度、因果和授权是不同问题。",
+        "状态元数据不是实时监控、权限执行或安全保障的实现证据。"
+      ]
+    },
+    {
+      "need_id": "policy-modular-delivery-handoff",
+      "source_ids": [
+        "cn-miit-ai-service-providers-2026-414"
+      ],
+      "delta_type": "REFINE_EXISTING_DELIVERY_HYPOTHESIS",
+      "related_existing_need_ids": [
+        "hillhouse-liliang-human-handoff",
+        "hillhouse-industry-hypothesis"
+      ],
+      "paraphrased_need": "一个可复用方案需要说明怎么接入、运行、排错和交接，才能检验部署负担。",
+      "inference": true,
+      "inference_scope": "功能、优先级和验收协议均为研究建议；不是来源向本项目提出的规格。",
+      "proposed_feature": "围绕一个有界流程提供版本化方案包：依赖、配置输入、权限要求、验收脚本、故障分类及负责人交接模板。",
+      "priority": "P1",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "acceptance_evidence": {
+        "execution_status": "NOT_RUN",
+        "oracle": "由获授权的试点操作者在干净环境独立重放；预先列出支持环境，演练缺失依赖及一次失败接管；逐项记录接入、运行、维护和复核时间，保留失败样本。",
+        "expected_artifacts": [
+          "方案包清单",
+          "支持环境与依赖版本",
+          "独立首次运行回执",
+          "故障接管记录",
+          "全部尝试成本"
+        ]
+      },
+      "limitations": [
+        "这是交付研究，不是服务商认证或申报材料。",
+        "无真实试点时只能验收技术重放，不能宣称运营价值、采用或付费。"
+      ]
+    },
+    {
+      "need_id": "policy-scenario-acceptance-denominators",
+      "source_ids": [
+        "cn-miit-ai-manufacturing-2025-279"
+      ],
+      "delta_type": "REFINE_EXISTING_EVALUATION_HYPOTHESIS",
+      "related_existing_need_ids": [
+        "policy-industrial-adapter",
+        "eda-fair-performance",
+        "academic-controlled-benchmark"
+      ],
+      "paraphrased_need": "工程工作流应按任务用途设定指标，并分开输出量、被审查量与被接受量。",
+      "inference": true,
+      "inference_scope": "功能、优先级和验收协议均为研究建议；不是来源向本项目提出的规格。",
+      "proposed_feature": "为一个窄工程场景冻结评价卡，分别报告任务数、尝试数、候选产物数、审查覆盖与采纳结果，并明确采纳者及判据。",
+      "priority": "P0",
+      "priority_origin": "RESEARCH_RECOMMENDATION",
+      "implementation_status": "PROPOSED",
+      "implementation_evidence": [],
+      "acceptance_evidence": {
+        "execution_status": "NOT_RUN",
+        "oracle": "提交重复候选、单位错误、未审查及被拒样本；只按预先声明单位计算分母，并单列待审查。由独立领域评审或适当参考解判断，不能把退出码、生成数或自我评分当作科学采纳。",
+        "expected_artifacts": [
+          "冻结场景评价卡",
+          "分母及去重规则",
+          "候选到审查到采纳追踪",
+          "独立领域判断和失败证据"
+        ]
+      },
+      "limitations": [
+        "各项采纳比率的分母由本研究预先定义，不能假称政策指定公式。",
+        "无需照搬所有行业指标；本次未运行任何制造现场试验。"
+      ]
+    }
+  ],
+  "coverage": [
+    {
+      "family": "LIDANG",
+      "status": "NO_NEW_ORIGINAL_VERIFIED",
+      "checked_urls": [
+        "https://x.com/lidangzzz",
+        "https://x.com/lidangzzz/status/2103804274777936034"
+      ],
+      "finding": "账号页返回403；一个搜索发现的候选原帖未返回正文。没有新增引语、发表日期或需求映射。",
+      "limit": "搜索摘要或转载只作发现线索；不意味着没有新帖。既有原帖记录未在本轮全量重验。"
+    },
+    {
+      "family": "HILLHOUSE",
+      "status": "NO_NEW_USABLE_PRIMARY_EVIDENCE",
+      "checked_urls": [
+        "https://www.hillhouseinvestment.com/news/"
+      ],
+      "finding": "本轮官网资讯页及针对近期AI公开表态的检索，没有取得可补入的具体新一手需求材料。",
+      "limit": "只是在本次范围内未发现，不是机构没有近期观点；不重复计入已有6月圆桌及3月活动材料。"
+    },
+    {
+      "family": "STATE_COUNCIL",
+      "status": "EXISTING_OFFICIAL_REPUBLICATION_RECHECKED",
+      "checked_urls": [
+        "https://wap.miit.gov.cn/xwfb/szyw/art/2025/art_f8bd63905b384841a84e643c1b9455c7.html"
+      ],
+      "finding": "重新打开国发〔2025〕11号的工信部官方转载；本轮没有补入新的国务院正式文件。",
+      "limit": "该源成文2025-08-21，发布2025-08-26；重新读取不算新政策。范围性检索不是完整政策审计。"
+    },
+    {
+      "family": "MIIT",
+      "status": "ONE_NEW_SOURCE_ONE_COVERAGE_UPGRADE",
+      "source_ids": [
+        "cn-miit-ai-service-providers-2026-414",
+        "cn-miit-ai-manufacturing-2025-279"
+      ]
+    },
+    {
+      "family": "SEQUOIA",
+      "status": "ONE_NEW_SOURCE",
+      "source_ids": [
+        "sequoia-empirik-change-context-20260901"
+      ]
+    },
+    {
+      "family": "HONGSHAN",
+      "status": "ONE_NEW_SOURCE",
+      "source_ids": [
+        "hongshan-workbuddy-feedback-20260920"
+      ]
+    }
+  ]
+}

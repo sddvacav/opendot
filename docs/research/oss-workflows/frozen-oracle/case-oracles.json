@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "frozen_before_implementation_results": true,
+  "frozen_at_utc": "2026-10-01T11:33:13Z",
+  "scope": "SYNTHETIC_SOFTWARE_EXAMPLE_ONLY",
+  "cases": [
+    {"id": "valid", "expected_status": "COMPLETED", "handler_calls": 1, "semantic_valid": true, "cas_integrity": true, "accepted_delivery": true},
+    {"id": "wrong-mean", "mutation": "Report A.mean=3 instead of 2 without altering the declared source", "expected_status": "FAILED", "handler_calls": 1, "semantic_valid": false, "cas_integrity": true, "retained_unaccepted_ref": true, "accepted_delivery": false},
+    {"id": "missing-permission", "expected_status": "BLOCKED", "error_type": "PermissionDenied", "handler_calls": 0, "generated_result_objects": 0, "accepted_delivery": false},
+    {"id": "corrupt-result", "mutation": "Change stored result bytes without updating its expected digest", "fresh_verification": "REFUSED", "reason": "artifact_integrity", "accepted_delivery": false},
+    {"id": "changed-input", "mutation": "Change any source CSV byte while retaining trusted expected source digest", "fresh_verification": "REFUSED", "reason": "input_binding", "accepted_delivery": false},
+    {"id": "changed-validator", "mutation": "Change validator ID or oracle digest while retaining trusted expected identity", "fresh_verification": "REFUSED", "reason": "validator_binding", "accepted_delivery": false},
+    {"id": "fresh-process-valid", "fresh_verification": "ACCEPTED", "scope": "Read and verify saved exact bytes against independently supplied expected pins; no execution restart or recovery claim"}
+  ],
+  "requirements": [
+    "The validator must use these separately authored expected counts, sums and means; never derive the oracle by calling the generator summarizer.",
+    "Expected input and oracle pins originate in trusted code or explicitly trusted command-line arguments, not solely inside the bundle being checked.",
+    "Refuse duplicate condition/replicate keys, missing expected rows, nonfinite numbers, unexpected condition IDs and unit values other than au. Additional negative fixtures may be authored before testing.",
+    "Report each case separately. These seven scoped checks do not measure general error-detection accuracy, user time savings or scientific validity.",
+    "Retain effect evidence separately from acceptance; failed semantic validation must not erase already written artifacts.",
+    "Treat CAS producer/task/source fields and runtime permissions as caller assertions; no signed provenance, hostile-code sandbox or authentication claim."
+  ]
+}

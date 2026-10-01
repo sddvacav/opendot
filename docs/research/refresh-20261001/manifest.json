@@ -1,0 +1,15 @@
+{
+  "files": [
+    {
+      "file": "README.zh-CN.md",
+      "bytes": 4298,
+      "sha256": "28ad58d64aaf5d81a1ef54470f6931eb28f0b6d21239bb065dbcd69633fb68bd"
+    },
+    {
+      "file": "source-needs-delta.json",
+      "bytes": 16749,
+      "sha256": "75adc941dab8a7a0c0134aba25d330915ad2f302df7adc29bcc11c9541dbabe9"
+    }
+  ],
+  "purpose": "Local integrity inventory only; not a signature or external source authentication."
+}

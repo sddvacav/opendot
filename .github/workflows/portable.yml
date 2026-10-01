@@ -1,0 +1,53 @@
+name: Portable source checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+concurrency:
+  group: portable-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  portable:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12'
+      - name: Install test tooling only
+        run: PIP_CONFIG_FILE=/dev/null python -B -m pip --isolated install --disable-pip-version-check --no-cache-dir --no-compile --require-hashes --only-binary=':all:' --index-url https://pypi.org/simple -r ci/requirements.txt
+      - name: Parse source without bytecode
+        run: python -B -c "import ast, pathlib; [ast.parse(p.read_text(encoding='utf-8'), filename=str(p)) for p in pathlib.Path('src').rglob('*.py')]"
+      - name: Check offline documentation and bilingual commands
+        env:
+          PYTHONPATH: src
+        run: python -B ci/check_docs.py --root .
+      - name: Test exact integrated portable boundary
+        env:
+          PYTHONPATH: src
+          OPENDOT_TEST_SOURCE_ROOT: ${{ github.workspace }}/src
+        shell: bash
+        run: |
+          mapfile -t portable_nodes < ci/portable-nodes.txt
+          mapfile -t callable_nodes < ci/callable-nodes.txt
+          mapfile -t composition_nodes < ci/composition-nodes.txt
+          mapfile -t agent_contract_nodes < ci/agent-contract-nodes.txt
+          mapfile -t public_regression_nodes < ci/public-regression-nodes.txt
+          mapfile -t delivery_workflow_nodes < ci/delivery-workflow-nodes.txt
+          python -B -m pytest -q -ra -p no:cacheprovider \
+            "${portable_nodes[@]}" "${callable_nodes[@]}" "${composition_nodes[@]}" \
+            "${agent_contract_nodes[@]}" "${public_regression_nodes[@]}" "${delivery_workflow_nodes[@]}" \
+            --basetemp="$RUNNER_TEMP/opendot-integrated" \
+            --junitxml="$RUNNER_TEMP/opendot-integrated-results.xml"
+      - name: Report actual passes and optional skips separately
+        if: always()
+        run: python -B ci/summarize_tests.py "$RUNNER_TEMP/opendot-integrated-results.xml" >> "$GITHUB_STEP_SUMMARY"

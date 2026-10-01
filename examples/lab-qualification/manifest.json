@@ -1,0 +1,10 @@
+{
+  "schema": "opendot.synthetic-qualification.v1",
+  "source_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "access": "public",
+  "fixture": {
+    "path": "fixture.json",
+    "sha256": "791516f90df6c8b004e02706752114f6628911396756ac86f6c19258a037f979",
+    "git_blob_sha1": "79850e0f604742a2556519457f1b03de6f640321"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "opendot.local-source-audit.v1",
+  "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "access": "public",
+  "sources": [
+    {
+      "source_id": "synthetic-material",
+      "path": "sources/synthetic.json",
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sha256": "d65f012d4b80a52bf3fdb01c19e4efecd0e5ec09df5854659b6d3e3767ebe781",
+      "git_blob_sha1": "3c49677cf0d0b8f11a17f8ade3602f29961a7f82",
+      "access": "public"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "known-demo",
+      "source_id": "synthetic-material",
+      "locator": "/observations/0",
+      "evidence_role": "synthetic",
+      "value_state": "known",
+      "quantity": "demo_strength",
+      "unit": "MPa"
+    },
+    {
+      "claim_id": "unknown-demo",
+      "source_id": "synthetic-material",
+      "locator": "/observations/1",
+      "evidence_role": "synthetic",
+      "value_state": "unknown",
+      "quantity": "demo_elongation",
+      "unit": "percent"
+    }
+  ]
+}

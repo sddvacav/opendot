@@ -1,0 +1,10 @@
+{
+  "schema_version": "measurement-review-result/v1",
+  "validator_id": "measurement-review/v1",
+  "unit": "au",
+  "rows": 6,
+  "conditions": {
+    "A": {"count": 3, "sum": 6, "mean": 2},
+    "B": {"count": 3, "sum": 12, "mean": 4}
+  }
+}
