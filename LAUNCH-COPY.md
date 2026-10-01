@@ -4,11 +4,13 @@ Draft for a project update about an unreleased candidate. No publication or publ
 
 ## English
 
-**Current candidate: 0.2.0a5, unreleased.** It combines the inherited CPU-ceiling
-minimum fix with an explicit optional per-element E/ELSE consistency check.
-Default verification is unchanged; conditional consistency is not scientific
-acceptance. Current a5 source, build and installed outcomes are recorded separately.
-[Current a5 scope](docs/a5-candidate-verification.md)
+**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
+adds optional read-only artifact verification, bilingual measurement walkthroughs,
+and a six-case synthetic source-boundary example to corrected a5. Default
+`read_only=False` writes and the canonical execution/reference owners are retained.
+Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
+scientific acceptance, a hosted-CI result, or a public release.
+[Current a6 verification scope](docs/a6-candidate-verification.md)
 
 ### Historical a4 draft
 
@@ -20,9 +22,11 @@ The predecessor's 899 source passes, final installed journeys and same-host buil
 
 ## 简体中文
 
-**当前候选：0.2.0a5，尚未发布。** 本版整合继承的 CPU 上限取最小值修复与
-显式可选的逐单元 E／ELSE 一致性检查。默认验证不变，条件一致性不构成科学验收。
-a5 准确源码、构建与安装结果分别记录。[当前 a5 范围](docs/a5-candidate-verification.md)
+**当前候选：0.2.0a6，尚未发布；NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
+可选只读产物验证、可直接复制的双语测量复核教程，以及六项合成来源边界示例。
+默认 `read_only=False` 写入行为与既有执行／引用所有者保持不变。
+其余九项拟议协议仍为 `NOT_IMPLEMENTED`；不构成生产安全、科学验收、托管 CI
+结果或公开发布。[当前 a6 验证范围](docs/a6-candidate-verification.md)
 
 ### 历史 a4 草稿
 

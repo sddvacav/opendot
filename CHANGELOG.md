@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0a6 — unreleased evidence-workflow integration (2026-10-01)
+
+- Separate corrected-a5 successor; NOT_SCORED and not published
+- Retain one artifact owner; add optional `read_only: bool = False`, skipping setup writes and refusing public puts when true. Trusted-root/symlink/metadata limits remain; access timestamps are outside the non-mutating contract
+- Use that mode for measurement replay and bilingual copyable retrieval guidance; retain independent bundle/input/oracle pins and exact existing exit semantics
+- Add six synthetic source-boundary protocols and 38 explicit portable cases, leaving nine original protocols NOT_IMPLEMENTED and all production enforcement NOT_IMPLEMENTED
+- Include only the reviewed public-source research annex, with its historical proposal status preserved
+- Select 1,183 portable / 1,342 controlled-local distinct nodes; source, build, installed and bilingual journey results require separate exact-a6 receipts
+- Preserve canonical execution/reference owners, pinned tooling, quoted YAML binary-only argument, licenses and historical version-bound evidence; no native/model/GPU/device/browser/remote execution or hosted-CI claim
+
+
 ## 0.2.0a5 — unreleased CPU-ceiling and optional energy-check candidate (2026-10-01)
 
 - Integrate the existing solver-child CPU-ceiling minimum fix from `a189ecf`: preserve finite inherited soft/hard CPU limits, including zero, with the existing 300-second maximum

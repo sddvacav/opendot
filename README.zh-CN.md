@@ -10,11 +10,11 @@
 
 执行具有明确声明的 Python 工具，查看验收结果，再取回它产生的准确字节。OpenDot Engineering 将本地函数执行、按哈希寻址的产物、证据检查和受控 Git 工作区放进同一个软件包，面向开发者与科研工程人员。
 
-**当前未发布候选：0.2.0a5。** 本独立候选整合
-[CPU 上限取最小值修复](docs/solver-cpu-ceiling.md)与显式可选的
-[逐单元 E／ELSE 一致性 API](docs/structural-elastic-energy.md)。默认验证行为不变，
-条件通过不构成科学验收。a5 准确源码、构建和安装检查分别记录；历史 a4 结果
-不批准本候选。[当前验证范围](docs/a5-candidate-verification.md)
+**当前候选：0.2.0a6，尚未发布；NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
+可选只读产物验证、可直接复制的双语测量复核教程，以及六项合成来源边界示例。
+默认 `read_only=False` 写入行为与既有执行／引用所有者保持不变。
+其余九项拟议协议仍为 `NOT_IMPLEMENTED`；不构成生产安全、科学验收、托管 CI
+结果或公开发布。[当前 a6 验证范围](docs/a6-candidate-verification.md)
 
 > **历史 0.2.0a4 源代码候选记录 · 2026 年 10 月 1 日**
 >
@@ -43,6 +43,11 @@ JSON 应显示 `synthetic_software_assertions_passed: true`，并呈现三种结
 这些是刻意构造的软件检查案例。产物存储会跟随符号链接，因此必须使用可信根目录；验收失败不会回滚已发生的作用。每次运行都选择新输出路径。若该脚本报告 `--output already exists`（退出码 2），保留之前的结果并选择新路径。[了解示例](examples/callable-artifacts/README.md)
 
 **准备安装 wheel？** 请使用[完整安装指南](docs/installed-quickstart.zh-CN.md)，按说明复制匹配的示例并核验安装后的导入位置。wheel 包含软件包，示例文件保留在源代码材料中。
+
+如需从 CSV 到统计结果的完整示例，请从[合成测量复核](examples/measurement-review/README.zh-CN.md)开始：运行 valid、wrong-mean、denied 三种案例，找到保留的结果字节，进行验证，并处理输出路径已存在的情况。
+
+
+六项有限的证据／来源／轨迹案例见[来源边界示例](examples/source-boundary/README.md)，其[历史研究语境](docs/research/demand-gap-20261001/README.md)另行标明。
 
 ## 软件包帮助与版本
 
