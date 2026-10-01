@@ -6,15 +6,33 @@
   <img alt="OpenDot" src="assets/brand/opendot-readme-banner-light.svg" width="1280">
 </picture>
 
-[English](README.md) · [安装与运行](docs/installed-quickstart.zh-CN.md) · [能力清单](CAPABILITIES.zh-CN.md) · [架构](docs/architecture.md)
+[English](README.md) · [已发布 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md) · [0.3 本地 wheel 指南](docs/installed-quickstart.zh-CN.md) · [能力清单](CAPABILITIES.zh-CN.md) · [架构](docs/architecture.md)
 
 执行具有明确声明的 Python 工具，查看验收结果，再取回它产生的准确字节。OpenDot Engineering 将本地函数执行、按哈希寻址的产物、证据检查和受控 Git 工作区放进同一个软件包，面向开发者与科研工程人员。
 
-**0.2.0a6 ALPHA 预发布版已提供。** [下载](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) · [安装](docs/installed-quickstart.zh-CN.md) · [仓库](https://github.com/sddvacav/opendot) · [议题](https://github.com/sddvacav/opendot/issues)
+**实验性 alpha 源码：0.3.0a1；NOT_SCORED。** 本源码整合
+[结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
+返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
+来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
+没有新增生产策略。既有执行／引用所有者及可选能量 API 返回结果保持不变。
+[Gmsh CPU 回调](docs/gmsh-cpu-ceiling.md)保留较低的继承限制；合成资源检查不证明原生或内核强制执行。
+[当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-[标签对应源码](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f)通过 [1,183 项可移植 CI 检查](https://github.com/sddvacav/opendot/actions/runs/36885554336)，另行报告 49 项子测试。本工具仍处于实验阶段，不具备生产就绪承诺；这些检查不构成科学验收。
+已发布安装包与当前发布状态见 [Releases](https://github.com/sddvacav/opendot/releases)；[已发布 a6 的安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其对应版本的固定产物与哈希。源码说明和本地构建记录不能代替发布产物的验收。
 
-当前 `main` 分支文档领先于发布版。已发布产物仍绑定标签源码及其原始 README 元数据；从 `main` 重建会改变这些元数据。[各版本证据与限制](CAPABILITIES.zh-CN.md)保留历史测试记录。
+历史 [0.2.0a6 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)已另行提供。
+其[标签源码](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f)
+通过 [1,183 项可移植 CI 检查](https://github.com/sddvacav/opendot/actions/runs/36885554336)，另计 49 项子测试。
+这些结果与下载产物不构成 0.3.0a1 的验收或安装材料。
+[公开仓库](https://github.com/sddvacav/opendot) · [议题](https://github.com/sddvacav/opendot/issues)
+
+> **历史 0.2.0a4 源代码候选记录 · 2026 年 10 月 1 日**
+>
+> 继承自 **0.2.0a2**：仅作描述、需显式校验的 `Capability` 与 `AgentManifest` 元数据契约；预算与权限不新增执行强制机制，也未迁移既有使用方。
+>
+> 当时的 a4 候选收紧共享的 CalculiX 2.23 日志版本声明门槛，新增有限范围的纯源码文档检查，并将构建后端固定为 setuptools 84.0.0。**1,066 项指定作者源码检查通过**，失败／错误／跳过均为零。**最终精确产物与安装验收以单独交付回执为准**；组件复核保留各自且存在重叠的范围。[历史 a4 验证记录](docs/verifier-ci-verification.md)
+>
+> 历史证据：**0.2.0a3** 通过 **899 项源码检查**；最终安装指南实测与[同主机构建重复性](docs/build-toolchain.md)仅适用于该前版。**0.2.0a1** Git 修复候选通过 **773 项作者检查**及独立源代码残留反例复验；**0.2.0a0** 函数与产物核心通过 **695 项独立可移植检查**。这些结果不构成 **0.2.0a4** 的测试总数或验收。持久恢复、模型驱动的自主智能体与大规模智能体性能仍属于未来工作。[证据与边界](CAPABILITIES.zh-CN.md)
 
 ## 运行合成示例
 
@@ -38,7 +56,8 @@ JSON 应显示 `synthetic_software_assertions_passed: true`，并呈现三种结
 
 如需从 CSV 到统计结果的完整示例，请从[合成测量复核](examples/measurement-review/README.zh-CN.md)开始：运行 valid、wrong-mean、denied 三种案例，找到保留的结果字节，进行验证，并处理输出路径已存在的情况。
 
-六项有限的证据／来源／轨迹案例见[来源边界示例](examples/source-boundary/README.md)，其[历史研究语境](docs/research/demand-gap-20261001/README.md)另行标明。
+
+七项原始合成协议与另行计数的六个参数场景见[来源边界示例](examples/source-boundary/README.md)，其[历史研究语境](docs/research/demand-gap-20261001/README.md)另行标明。
 
 ## 软件包帮助与版本
 

@@ -4,13 +4,16 @@ Draft for a project update about an unreleased candidate. No publication or publ
 
 ## English
 
-**Current candidate: 0.2.0a6, unreleased; NOT_SCORED.** This separate integration
-adds optional read-only artifact verification, bilingual measurement walkthroughs,
-and a six-case synthetic source-boundary example to corrected a5. Default
-`read_only=False` writes and the canonical execution/reference owners are retained.
-Nine proposed protocols remain `NOT_IMPLEMENTED`; this is not production security,
-scientific acceptance, a hosted-CI result, or a public release.
-[Current a6 verification scope](docs/a6-candidate-verification.md)
+**Current candidate: 0.3.0a1, unreleased; NOT_SCORED.** This separate successor
+integrates [structural default verification v2](docs/structural-default-v2.md):
+conditional per-element energy consistency, schema 2 and explicit historical
+`artifact_v1` compatibility. Scientific acceptance remains false. The source-boundary
+example covers seven original synthetic protocols, eight unimplemented proposals,
+and six separately counted synthetic parameter fixtures; no production policy is added.
+Canonical execution/reference owners and optional energy-API results are unchanged.
+The [Gmsh CPU callback](docs/gmsh-cpu-ceiling.md) preserves inherited lower
+ceilings; fake-resource checks do not establish native/kernel enforcement.
+[Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
 ### Historical a4 draft
 
@@ -22,11 +25,13 @@ The predecessor's 899 source passes, final installed journeys and same-host buil
 
 ## 简体中文
 
-**当前候选：0.2.0a6，尚未发布；NOT_SCORED。** 本独立整合版在修正后的 a5 上新增
-可选只读产物验证、可直接复制的双语测量复核教程，以及六项合成来源边界示例。
-默认 `read_only=False` 写入行为与既有执行／引用所有者保持不变。
-其余九项拟议协议仍为 `NOT_IMPLEMENTED`；不构成生产安全、科学验收、托管 CI
-结果或公开发布。[当前 a6 验证范围](docs/a6-candidate-verification.md)
+**当前候选：0.3.0a1，尚未发布；NOT_SCORED。** 本独立后继版本整合
+[结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
+返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
+来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
+没有新增生产策略。既有执行／引用所有者及可选能量 API 返回结果保持不变。
+[Gmsh CPU 回调](docs/gmsh-cpu-ceiling.md)保留较低的继承限制；合成资源检查不证明原生或内核强制执行。
+[当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
 ### 历史 a4 草稿
 

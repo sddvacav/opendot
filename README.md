@@ -6,15 +6,37 @@
   <img alt="OpenDot" src="assets/brand/opendot-readme-banner-light.svg" width="1280">
 </picture>
 
-[简体中文](README.zh-CN.md) · [Install and run](docs/installed-quickstart.md) · [Capabilities](CAPABILITIES.md) · [Architecture](docs/architecture.md)
+[简体中文](README.zh-CN.md) · [Released a6 install guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) · [0.3 local-wheel guide](docs/installed-quickstart.md) · [Capabilities](CAPABILITIES.md) · [Architecture](docs/architecture.md)
 
 Run a declared Python tool, inspect its acceptance result, and retrieve the exact bytes it produced. OpenDot Engineering brings local callable execution, hash-addressed artifacts, evidence checks, and controlled Git workspaces into one package for developers and research engineers.
 
-**0.2.0a6 ALPHA prerelease is available.** [Download](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) · [Install](docs/installed-quickstart.md) · [Repository](https://github.com/sddvacav/opendot) · [Issues](https://github.com/sddvacav/opendot/issues)
+**Experimental alpha source: 0.3.0a1; NOT_SCORED.** This source
+integrates [structural default verification v2](docs/structural-default-v2.md):
+conditional per-element energy consistency, schema 2 and explicit historical
+`artifact_v1` compatibility. Scientific acceptance remains false. The source-boundary
+example covers seven original synthetic protocols, eight unimplemented proposals,
+and six separately counted synthetic parameter fixtures; no production policy is added.
+Canonical execution/reference owners and optional energy-API results are unchanged.
+The [Gmsh CPU callback](docs/gmsh-cpu-ceiling.md) preserves inherited lower
+ceilings; fake-resource checks do not establish native/kernel enforcement.
+[Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
-The [tagged source](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f) passed [1,183 portable CI checks](https://github.com/sddvacav/opendot/actions/runs/36885554336), with 49 subtests reported separately. This is an experimental, non-production-ready toolkit; the checks do not establish scientific acceptance.
+For published installation assets and current release status, see [Releases](https://github.com/sddvacav/opendot/releases). The [published a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) keeps its version-specific artifact pins. Source descriptions and local build records do not replace exact released-artifact acceptance.
 
-These `main`-branch docs are ahead of the release. Published assets remain bound to the tagged source and its original README metadata; rebuilding `main` would change that metadata. [Version-bound evidence and limitations](CAPABILITIES.md) retain the historical test ledgers.
+The historical [0.2.0a6 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)
+is available separately. Its [tagged source](https://github.com/sddvacav/opendot/commit/965ed8c49c47d7b79716ba1843462b84ff21a27f)
+passed [1,183 portable CI checks](https://github.com/sddvacav/opendot/actions/runs/36885554336),
+with 49 subtests reported separately. Those results and downloads do not accept
+or install 0.3.0a1 artifacts. [Repository](https://github.com/sddvacav/opendot)
+· [Issues](https://github.com/sddvacav/opendot/issues)
+
+> **Historical 0.2.0a4 source-candidate record · 1 October 2026**
+>
+> Inherited from **0.2.0a2**: metadata-only `Capability` and `AgentManifest`, with explicit validation and descriptive budgets/permissions. No execution enforcement or existing-consumer migration is added.
+>
+> That a4 candidate tightens the shared declared CalculiX 2.23 log gate, adds bounded source-only documentation checks, and pins the build backend to setuptools 84.0.0. **1,066 selected author source checks passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt**; component reviews retain their separate, overlapping scopes. [Historical a4 verification](docs/verifier-ci-verification.md)
+>
+> Historical evidence: **0.2.0a3** passed **899 source checks**; its final installed-guide journeys and [same-host build repeatability](docs/build-toolchain.md) remain bound to that predecessor. The **0.2.0a1** Git repair candidate passed **773 author checks** and its independent source-level residue reproduction; the **0.2.0a0** callable/artifact core passed **695 independent portable checks**. These results do not establish a test total or acceptance for **0.2.0a4**. Durable recovery, autonomous model-driven agents, and large-scale agent performance remain future work. [Evidence and limits](CAPABILITIES.md)
 
 ## Run the synthetic examples
 
@@ -38,7 +60,8 @@ These are deliberate synthetic software cases. The artifact store follows symlin
 
 For a CSV-to-summary walkthrough, start with the [synthetic measurement review](examples/measurement-review/README.md): run valid, wrong-mean and denied cases, locate retained result bytes, verify them, and handle an existing output path.
 
-For six bounded evidence/source/trajectory cases, see the [source-boundary example](examples/source-boundary/README.md) and its [historical research context](docs/research/demand-gap-20261001/README.md).
+
+For seven original synthetic protocols and six separately counted parameter fixtures, see the [source-boundary example](examples/source-boundary/README.md) and its [historical research context](docs/research/demand-gap-20261001/README.md).
 
 ## Package help and version
 
