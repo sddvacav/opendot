@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install test tooling only
-        run: PIP_CONFIG_FILE=/dev/null python -B -m pip --isolated install --disable-pip-version-check --no-cache-dir --no-compile --require-hashes --only-binary=:all: --index-url https://pypi.org/simple -r ci/requirements.txt
+        run: PIP_CONFIG_FILE=/dev/null python -B -m pip --isolated install --disable-pip-version-check --no-cache-dir --no-compile --require-hashes --only-binary=':all:' --index-url https://pypi.org/simple -r ci/requirements.txt
       - name: Parse source without bytecode
         run: python -B -c "import ast, pathlib; [ast.parse(p.read_text(encoding='utf-8'), filename=str(p)) for p in pathlib.Path('src').rglob('*.py')]"
       - name: Check offline documentation and bilingual commands
