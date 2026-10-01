@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="asset-title asset-description">
+  <title id="asset-title">OpenDot connected-dot mark</title>
+  <desc id="asset-description">Three connected dots forming a triangular network. Dark-surface version with a transparent background.</desc>
+<g fill="none" stroke="#74D2D9" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 16,46 L 32,18 L 48,46 Z"/>
+    </g>
+    <g fill="#74D2D9">
+      <circle cx="32" cy="18" r="6.5"/>
+      <circle cx="16" cy="46" r="6.5"/>
+      <circle cx="48" cy="46" r="6.5"/>
+    </g>
+</svg>

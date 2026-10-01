@@ -1,0 +1,24 @@
+# OpenDot Engineering contributors
+
+- Keep this package bounded to the canonical local artifact store, bounded callable-only execution, descriptive Capability/AgentManifest metadata, controlled local Git create/status/diff, local source auditing, synthetic qualification-record checks, optional explicit operator-reviewed source admission, optional deterministic CAD/CAE adapters, and bounded fake-only lab simulation
+- Source admission is limited to the reviewed flat-module `SourceLock` adapter: explicit approved root, independently reviewed manifest digest, listed module pins, and named exports; no discovery, default backend, automatic retry, or new runtime owner
+- Reuse the canonical source-audit filesystem/JSON helpers; do not fork their implementation. Preserve the source-admission limits in `docs/decisions/001-source-admission.md`
+- Keep `opendot_engineering` as the import namespace and `opendot-engineering` as the distribution; use namespaced Python module entrypoints; a read-only package-root help/version entrypoint is also admitted, without dispatch, setup, or runtime startup
+- The callable-only profile reuses `tool_runtime.py` as one owner; preserve its exact implementation bytes, six contracts, and deny-only guard. Do not connect it to orchestration, cancellation backends, native lifetime, or recovery-event protocols
+- Do not add a scheduler, model-driven agent runtime, mission kernel, database, or second content-addressed implementation. The only storage exception is the reviewed `core.artifacts` and `core.contracts.ArtifactRef` closure in `docs/decisions/002-canonical-artifact-core.md`
+- Preserve canonical storage behavior and reference identity. Only the reviewed artifact closure, callable-only extraction, and Capability/AgentManifest metadata closure in `docs/decisions/003-agent-metadata-contracts.md` are admitted; do not copy broader contracts, execution harnesses, compatibility patches, other private source, research data, licensed solver binaries, model weights, credentials, or generated private receipts into this repository
+- Treat the CAS root and its ancestors as trusted and caller-controlled: symlinks are followed, permissions are best effort, and object/metadata writes are not a transaction. Do not claim sandboxing, crash recovery, multi-process locking, or completed consumer migration
+- Preserve the Apache license, copyright, and required third-party attribution
+- Hashes and declared access labels establish bounded consistency, not authorship, scientific validity, physical qualification, or authorization
+- Retain explicit false/NOT_EVALUATED scientific, device-control, and independent-review status fields
+- Review test selection before running it; run portable synthetic checks separately from explicitly configured native integration checks
+- Generate acceptance artifacts outside the source tree and inspect provenance before sharing; new adapter Git context requires actual source membership and omits worktree paths, while other native fields and historical packs may retain absolute paths
+- Publication requires a verified destination and accepted outgoing-artifact gates; honor existing explicit authorization without inventing another consent gate
+- Model calls, native backend installation, and physical-device actions require authorization for those specific actions
+- Simulated lab execution must remain finite and local, with internally constructed fake devices and a fixed plan only; retain SIMULATED_ONLY, false scientific/device authority, and NOT_EVALUATED owner-integration/review fields
+- Reuse the canonical source-audit helpers for simulation verification; do not add arbitrary devices, plans, transports, resume, or another orchestration owner
+- Composition examples must distinguish tool status/semantic validity from stored-byte integrity. Failed validation may leave unaccepted artifacts or other effects; no rollback or scientific acceptance is implied
+
+- The modified GitWorkspaceManager owner is limited to trusted cooperative local POSIX primary checkouts and Git >= 2.52.0; keep fixed OID creation, controlled environment, executable/feature refusals, and per-call ownership checks. Do not expose commit/remove, retries, cleanup, credentials, network, or a second scheduler/permission/recovery system. No hostile-concurrent-mutation or OS-sandbox claim
+
+- Keep Capability and AgentManifest in the existing `core.contracts` owner with canonical re-exports. Preserve their declared field order/defaults and ArtifactRef behavior; metadata validation is explicit and stricter for invalid inputs. Do not add a DotManifest alias, registry, scheduler, provider integration, or permission/budget enforcement; frozen dataclasses are shallow, not an OS security boundary

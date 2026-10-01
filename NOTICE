@@ -1,0 +1,34 @@
+OpenDot Engineering
+Copyright 2026 OpenDot Engineering contributors
+
+This repository's original integration code is licensed under Apache-2.0.
+The optional source-admission adapter is a modified derivative of the original
+Apache-2.0 integration code, with its source-audit helper owner retained unchanged.
+See docs/PROVENANCE.md for public attribution and modification scope.
+Referenced third-party projects and separately installed backends retain their
+own licenses. The callable-only profile reuses the OpenDot project execution
+owner as a modified bounded extraction; see docs/callable-execution.md for changes.
+No third-party runtime implementation is vendored in this source.
+The canonical local artifact closure retains its existing project implementation
+under the project Apache-2.0 authorization. Extraction and documentation changes
+are identified in docs/PROVENANCE.md; broader runtime and orchestration code is not included.
+OpenDot Engineering is an independent project and is not an official product of
+OpenAI, xAI, or the unrelated terminal agent distributed as `opendot` on PyPI.
+
+Optional simulated-lab integration references separately installed:
+- Bluesky 1.15.1: BSD-3-Clause; Copyright 2015 Brookhaven National Laboratory
+- ophyd 1.11.2: BSD-3-Clause; Copyright 2014 Brookhaven National Laboratory
+- event-model 1.24.0: BSD-3-Clause; Copyright 2015 Brookhaven National Laboratory
+No Bluesky, ophyd, or transitive dependency implementation is vendored here.
+See docs/simulated-lab.md for the simulation-only boundary and upstream sources.
+
+The controlled local Git workspace profile is a modified extraction of the
+project GitWorkspaceManager under the project Apache-2.0 authorization.
+Execution controls, refusal policy, fixed-base creation, and ownership checks
+are changed; commit/remove are omitted. See docs/PROVENANCE.md.
+Git is invoked as a separately installed system executable and is not bundled.
+
+The Capability and AgentManifest metadata contracts are a modified extraction
+of existing project dataclasses under the project Apache-2.0 authorization.
+Their declared fields/defaults are retained; explicit validation is stricter for
+invalid inputs. See docs/PROVENANCE.md and docs/agent-contracts.md.

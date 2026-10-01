@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="asset-title asset-description">
+  <title id="asset-title">OpenDot</title>
+  <desc id="asset-description">OpenDot project banner on a dark background. A three-dot connected mark accompanies the name; a fine horizontal line extends the layout.</desc>
+<rect width="1280" height="360" fill="#132332"/>
+      <path d="M 64,296 H 1216" fill="none" stroke="#2B4254" stroke-width="1"/>
+      <g transform="translate(65 113) scale(2.15)"><g fill="none" stroke="#74D2D9" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 16,46 L 32,18 L 48,46 Z"/>
+    </g>
+    <g fill="#74D2D9">
+      <circle cx="32" cy="18" r="6.5"/>
+      <circle cx="16" cy="46" r="6.5"/>
+      <circle cx="48" cy="46" r="6.5"/>
+    </g></g>
+      <g transform="translate(258 128) scale(1.72)"><g fill="none" stroke="#F4F8FB" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 22,0 C 7,0 1,9 1,24 C 1,39 7,48 22,48 C 37,48 43,39 43,24 C 43,9 37,0 22,0 Z"/>
+      <path d="M 57,16 V 62 M 57,25 C 60,18 65,16 72,16 C 83,16 89,22 89,32 C 89,42 83,48 73,48 C 65,48 60,44 57,39"/>
+      <path d="M 133,41 C 129,46 124,48 117,48 C 106,48 100,42 100,32 C 100,22 106,16 117,16 C 128,16 134,23 134,32 H 100"/>
+      <path d="M 148,48 V 16 M 148,27 C 151,20 156,16 163,16 C 172,16 177,21 177,30 V 48"/>
+      <path d="M 194,0 V 48 H 210 C 226,48 234,40 234,24 C 234,8 226,0 210,0 Z"/>
+      <path d="M 262,16 C 251,16 245,22 245,32 C 245,42 251,48 262,48 C 273,48 279,42 279,32 C 279,22 273,16 262,16 Z"/>
+      <path d="M 297,6 V 38 C 297,45 300,48 306,48 H 311 M 287,16 H 310"/>
+    </g></g>
+      <path d="M 902,184 H 1216" fill="none" stroke="#2B4254" stroke-width="1"/>
+      <circle cx="902" cy="184" r="3" fill="#74D2D9"/>
+</svg>
