@@ -132,7 +132,7 @@ def run_case(output, data, *, grant=True, wrong_mean=False):
 
 def replay(output, *, bundle_sha256, input_sha256, oracle_sha256):
     # Caller-supplied expected hashes must come from a trusted separate channel.
-    # CAS construction may create directories/change permissions; no read-only claim.
+    # No setup writes or puts; trusted paths/cooperative writers are still required.
     output = Path(output)
     raw = read_small(output / 'bundle.json')
     if sha(raw) != bundle_sha256:
@@ -152,7 +152,7 @@ def replay(output, *, bundle_sha256, input_sha256, oracle_sha256):
     source_fields['source_refs'] = tuple(source_fields['source_refs'])
     result_fields['source_refs'] = tuple(result_fields['source_refs'])
     source, result = ArtifactRef(**source_fields), ArtifactRef(**result_fields)
-    store = ArtifactStore(output / 'artifacts')
+    store = ArtifactStore(output / 'artifacts', read_only=True)
     if not store.verify(source) or not store.verify(result):
         raise ValueError('ARTIFACT_INTEGRITY_FAILED')
     data = store.get_bytes(source)
