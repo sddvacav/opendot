@@ -43,9 +43,10 @@ jobs:
           mapfile -t agent_contract_nodes < ci/agent-contract-nodes.txt
           mapfile -t public_regression_nodes < ci/public-regression-nodes.txt
           mapfile -t delivery_workflow_nodes < ci/delivery-workflow-nodes.txt
+          mapfile -t solver_crosscheck_nodes < ci/solver-crosscheck-nodes.txt
           python -B -m pytest -q -ra -p no:cacheprovider \
             "${portable_nodes[@]}" "${callable_nodes[@]}" "${composition_nodes[@]}" \
-            "${agent_contract_nodes[@]}" "${public_regression_nodes[@]}" "${delivery_workflow_nodes[@]}" \
+            "${agent_contract_nodes[@]}" "${public_regression_nodes[@]}" "${delivery_workflow_nodes[@]}" "${solver_crosscheck_nodes[@]}" \
             --basetemp="$RUNNER_TEMP/opendot-integrated" \
             --junitxml="$RUNNER_TEMP/opendot-integrated-results.xml"
       - name: Report actual passes and optional skips separately
