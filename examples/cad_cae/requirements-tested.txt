@@ -1,0 +1,21 @@
+# Optional, separately installed CAD environment only; not core requirements.
+# Retained historical Linux/Python 3.12 pins; not reinstalled or validated for this cut.
+# This is a direct-dependency pin set, not a full hash-locked transitive SBOM.
+build123d==0.10.0
+cadquery-ocp==7.8.1.1.post1
+vtk==9.3.1
+numpy==2.3.5
+typing_extensions==4.16.0
+svgpathtools==1.7.2
+anytree==2.13.0
+ezdxf==1.4.4
+ipython==9.16.1
+lib3mf==2.5.0
+ocpsvg==0.5.0
+ocp_gordon==0.1.18
+trianglesolver==1.2
+sympy==1.14.0
+scipy==1.17.0
+webcolors==24.8.0
+# Optional compatibility reader; not needed for build123d geometry generation:
+# cadquery==2.7.0

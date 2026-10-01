@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-10-01",
+  "status": "RESEARCH_PROPOSALS_ONLY",
+  "sources": [
+    {
+      "id": "A1",
+      "title": "AiiDA 1.0, a scalable computational infrastructure for automated reproducible workflows and data provenance",
+      "source_type": "peer-reviewed original research",
+      "url": "https://www.nature.com/articles/s41597-020-00638-4",
+      "published_date": "2020-09-08",
+      "accessed_date": "2026-10-01",
+      "existing_research_duplicate": false,
+      "reading_scope": [
+        "abstract",
+        "architecture",
+        "processes/workchains",
+        "provenance model"
+      ],
+      "need": "Trace how a result was generated and distinguish recorded functions from durable workchains",
+      "proposed_function": "Bind source, result and independent validator identity; separately design a durable owner for restart claims",
+      "acceptance_oracle": "Frozen source/output/validator mutations must refuse stale acceptance; separately inject crashes at effect/receipt boundaries",
+      "priority": "P0 for binding; P1 for separately authorized runtime",
+      "limitations": "Historical AiiDA findings are not OpenDot throughput, recovery or scientific validation",
+      "tickets": [
+        "T1",
+        "T2",
+        "T7"
+      ]
+    },
+    {
+      "id": "A2",
+      "title": "Software Developed at Brookhaven Lab Could Advance Synchrotron Science Worldwide",
+      "source_type": "first-party national-laboratory operational account",
+      "url": "https://www.bnl.gov/newsroom/news.php?a=212470",
+      "published_date": "2017-10-02",
+      "accessed_date": "2026-10-01",
+      "existing_research_duplicate": false,
+      "reading_scope": [
+        "complete article"
+      ],
+      "need": "Interoperate with domain tools and observe real scientists' workflow constraints",
+      "proposed_function": "One bounded adapter workflow and an actual observed unaided-user comparison",
+      "acceptance_oracle": "Same accepted-output quality in both workflows; preserve assistance, all attempts, active effort and elapsed time when real sessions occur",
+      "priority": "P1",
+      "limitations": "First-party account, not a controlled study; no transferred OpenDot adoption or ROI",
+      "tickets": [
+        "T1",
+        "T5",
+        "T6"
+      ]
+    },
+    {
+      "id": "A3",
+      "title": "SLSA v1.2 Build: Provenance",
+      "source_type": "industry-consensus specification",
+      "url": "https://slsa.dev/spec/v1.2/build-provenance",
+      "release_date": "2025-11-24",
+      "release_date_source": "https://slsa.dev/blog/2025/11/announce-slsa-v1.2",
+      "individual_page_last_updated": null,
+      "accessed_date": "2026-10-01",
+      "existing_research_duplicate": false,
+      "reading_scope": [
+        "purpose",
+        "model",
+        "schema",
+        "verification"
+      ],
+      "need": "Verify artifact delivery identity and distinguish trusted identity from self-declared metadata",
+      "proposed_function": "Exact source/artifact/builder binding with independently established expected pins and authorized provenance verification",
+      "acceptance_oracle": "Reject wrong source, subject digest, builder identity and missing required trusted expectations",
+      "priority": "P0",
+      "limitations": "No SLSA-level claim, signed provenance, complete SBOM or scientific acceptance from an unsigned local manifest",
+      "tickets": [
+        "T3",
+        "T4"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "schema": "opendot.synthetic-qualification.v1",
+  "source_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "access": "public",
+  "content_kind": "synthetic",
+  "cases": [
+    {
+      "case_id": "valid-synthetic",
+      "record": {
+        "sensor_id": "synthetic-sensor",
+        "configuration_id": "synthetic-config",
+        "reference_id": "synthetic-reference",
+        "observable": "engineering_strain",
+        "load_state": "loaded",
+        "strain_unit": "fraction",
+        "target_kind": "peak_total",
+        "trigger_value": 0.037,
+        "limits": {
+          "max_force_N": 50.0,
+          "max_travel_mm": 1.0,
+          "max_signal_gap_s": 0.2,
+          "max_stop_error_fraction": 0.0007
+        },
+        "protocol_structure_status": "READY_FOR_HUMAN_EXECUTION"
+      },
+      "evidence": {
+        "calibration": {
+          "sensor_id": "synthetic-sensor",
+          "configuration_id": "synthetic-config",
+          "reference_id": "synthetic-reference",
+          "evidence_id": "synthetic-calibration",
+          "content_kind": "synthetic",
+          "valid": true,
+          "valid_from_s": 0.0,
+          "valid_until_s": 10.0,
+          "uncertainty": {
+            "value_state": "known",
+            "value": 0.00011,
+            "unit": "fraction"
+          }
+        },
+        "stop_response": {
+          "sensor_id": "synthetic-sensor",
+          "configuration_id": "synthetic-config",
+          "reference_id": "synthetic-reference",
+          "evidence_id": "synthetic-stop-response",
+          "content_kind": "synthetic",
+          "latency": {
+            "value_state": "known",
+            "value": 0.15,
+            "unit": "s"
+          },
+          "signal_loss_protection_verified": true,
+          "clock_mapping_verified": true
+        }
+      },
+      "trace": {
+        "sensor_id": "synthetic-sensor",
+        "configuration_id": "synthetic-config",
+        "reference_id": "synthetic-reference",
+        "observable": "engineering_strain",
+        "load_state": "loaded",
+        "strain_unit": "fraction",
+        "samples": [
+          {
+            "time_s": 0.0,
+            "sample_time_s": 0.0,
+            "strain": 0.0,
+            "force_N": 1.0,
+            "travel_mm": 0.01,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.02,
+            "sample_time_s": 0.02,
+            "strain": 0.02,
+            "force_N": 2.0,
+            "travel_mm": 0.02,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.04,
+            "sample_time_s": 0.04,
+            "strain": 0.037,
+            "force_N": 3.0,
+            "travel_mm": 0.03,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.06,
+            "sample_time_s": 0.06,
+            "strain": 0.0372,
+            "force_N": 4.0,
+            "travel_mm": 0.04,
+            "signal_valid": true,
+            "stop_ack": true
+          }
+        ]
+      },
+      "oracle": {
+        "qualification_result": "SYNTHETIC_PASS",
+        "reason_codes": []
+      }
+    },
+    {
+      "case_id": "residual-plan-refused",
+      "record": {
+        "sensor_id": "synthetic-sensor",
+        "configuration_id": "synthetic-config",
+        "reference_id": "synthetic-reference",
+        "observable": "engineering_strain",
+        "load_state": "loaded",
+        "strain_unit": "fraction",
+        "target_kind": "residual_plan",
+        "trigger_value": 0.037,
+        "limits": {
+          "max_force_N": 50.0,
+          "max_travel_mm": 1.0,
+          "max_signal_gap_s": 0.2,
+          "max_stop_error_fraction": 0.0007
+        },
+        "protocol_structure_status": "READY_FOR_HUMAN_EXECUTION"
+      },
+      "evidence": {
+        "calibration": {
+          "sensor_id": "synthetic-sensor",
+          "configuration_id": "synthetic-config",
+          "reference_id": "synthetic-reference",
+          "evidence_id": "synthetic-calibration",
+          "content_kind": "synthetic",
+          "valid": true,
+          "valid_from_s": 0.0,
+          "valid_until_s": 10.0,
+          "uncertainty": {
+            "value_state": "known",
+            "value": 0.00011,
+            "unit": "fraction"
+          }
+        },
+        "stop_response": {
+          "sensor_id": "synthetic-sensor",
+          "configuration_id": "synthetic-config",
+          "reference_id": "synthetic-reference",
+          "evidence_id": "synthetic-stop-response",
+          "content_kind": "synthetic",
+          "latency": {
+            "value_state": "known",
+            "value": 0.15,
+            "unit": "s"
+          },
+          "signal_loss_protection_verified": true,
+          "clock_mapping_verified": true
+        }
+      },
+      "trace": {
+        "sensor_id": "synthetic-sensor",
+        "configuration_id": "synthetic-config",
+        "reference_id": "synthetic-reference",
+        "observable": "engineering_strain",
+        "load_state": "loaded",
+        "strain_unit": "fraction",
+        "samples": [
+          {
+            "time_s": 0.0,
+            "sample_time_s": 0.0,
+            "strain": 0.0,
+            "force_N": 1.0,
+            "travel_mm": 0.01,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.02,
+            "sample_time_s": 0.02,
+            "strain": 0.02,
+            "force_N": 2.0,
+            "travel_mm": 0.02,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.04,
+            "sample_time_s": 0.04,
+            "strain": 0.037,
+            "force_N": 3.0,
+            "travel_mm": 0.03,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.06,
+            "sample_time_s": 0.06,
+            "strain": 0.0372,
+            "force_N": 4.0,
+            "travel_mm": 0.04,
+            "signal_valid": true,
+            "stop_ack": true
+          }
+        ]
+      },
+      "oracle": {
+        "qualification_result": "HOLD",
+        "reason_codes": [
+          "TARGET_IS_NOT_PEAK_TOTAL"
+        ]
+      }
+    },
+    {
+      "case_id": "unknown-latency-refused",
+      "record": {
+        "sensor_id": "synthetic-sensor",
+        "configuration_id": "synthetic-config",
+        "reference_id": "synthetic-reference",
+        "observable": "engineering_strain",
+        "load_state": "loaded",
+        "strain_unit": "fraction",
+        "target_kind": "peak_total",
+        "trigger_value": 0.037,
+        "limits": {
+          "max_force_N": 50.0,
+          "max_travel_mm": 1.0,
+          "max_signal_gap_s": 0.2,
+          "max_stop_error_fraction": 0.0007
+        },
+        "protocol_structure_status": "READY_FOR_HUMAN_EXECUTION"
+      },
+      "evidence": {
+        "calibration": {
+          "sensor_id": "synthetic-sensor",
+          "configuration_id": "synthetic-config",
+          "reference_id": "synthetic-reference",
+          "evidence_id": "synthetic-calibration",
+          "content_kind": "synthetic",
+          "valid": true,
+          "valid_from_s": 0.0,
+          "valid_until_s": 10.0,
+          "uncertainty": {
+            "value_state": "known",
+            "value": 0.00011,
+            "unit": "fraction"
+          }
+        },
+        "stop_response": {
+          "sensor_id": "synthetic-sensor",
+          "configuration_id": "synthetic-config",
+          "reference_id": "synthetic-reference",
+          "evidence_id": "synthetic-stop-response",
+          "content_kind": "synthetic",
+          "latency": {
+            "value_state": "unknown",
+            "value": null,
+            "unit": "s"
+          },
+          "signal_loss_protection_verified": true,
+          "clock_mapping_verified": true
+        }
+      },
+      "trace": {
+        "sensor_id": "synthetic-sensor",
+        "configuration_id": "synthetic-config",
+        "reference_id": "synthetic-reference",
+        "observable": "engineering_strain",
+        "load_state": "loaded",
+        "strain_unit": "fraction",
+        "samples": [
+          {
+            "time_s": 0.0,
+            "sample_time_s": 0.0,
+            "strain": 0.0,
+            "force_N": 1.0,
+            "travel_mm": 0.01,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.02,
+            "sample_time_s": 0.02,
+            "strain": 0.02,
+            "force_N": 2.0,
+            "travel_mm": 0.02,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.04,
+            "sample_time_s": 0.04,
+            "strain": 0.037,
+            "force_N": 3.0,
+            "travel_mm": 0.03,
+            "signal_valid": true,
+            "stop_ack": false
+          },
+          {
+            "time_s": 0.06,
+            "sample_time_s": 0.06,
+            "strain": 0.0372,
+            "force_N": 4.0,
+            "travel_mm": 0.04,
+            "signal_valid": true,
+            "stop_ack": true
+          }
+        ]
+      },
+      "oracle": {
+        "qualification_result": "HOLD",
+        "reason_codes": [
+          "UNKNOWN_LATENCY"
+        ]
+      }
+    }
+  ]
+}

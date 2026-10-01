@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "repository": "OpenHands/OpenHands",
+      "url": "https://github.com/OpenHands/OpenHands",
+      "metadata_url": "https://api.github.com/repos/OpenHands/OpenHands",
+      "observed_date_utc": "2026-10-01",
+      "observed_window_utc": "11:31–11:34",
+      "stars": 89697,
+      "default_branch": "main",
+      "head": "a8c05584ec6bb063a0857460b9cbff48e136919f",
+      "head_commit_date": "2026-10-01T04:55:42Z",
+      "pushed_at": "2026-10-01T11:28:35Z",
+      "archived": false,
+      "license_metadata": "MIT",
+      "license_text_observed": "MIT",
+      "license_url": "https://github.com/OpenHands/OpenHands/blob/a8c05584ec6bb063a0857460b9cbff48e136919f/LICENSE",
+      "readme_url": "https://github.com/OpenHands/OpenHands/blob/a8c05584ec6bb063a0857460b9cbff48e136919f/README.md",
+      "latest_non_prerelease": {
+        "tag": "v1.24.0",
+        "published_at": "2026-09-25T15:09:26Z",
+        "url": "https://github.com/OpenHands/OpenHands/releases/tag/v1.24.0",
+        "target_commitish": "7dc6805406ea3c76cb4a3ce407c3c72d481b0ac6",
+        "assets_count": 4
+      },
+      "scope": "Official GitHub metadata and pinned repository documentation inspected. Installations, runtime, support responsiveness, security and release signatures not tested."
+    },
+    {
+      "repository": "temporalio/temporal",
+      "url": "https://github.com/temporalio/temporal",
+      "metadata_url": "https://api.github.com/repos/temporalio/temporal",
+      "observed_date_utc": "2026-10-01",
+      "observed_window_utc": "11:31–11:34",
+      "stars": 23397,
+      "default_branch": "main",
+      "head": "fc4372605ce23f333b7e1a43eef303ff002c2ef1",
+      "head_commit_date": "2026-10-01T00:58:12Z",
+      "pushed_at": "2026-10-01T06:14:01Z",
+      "archived": false,
+      "license_metadata": "MIT",
+      "license_text_observed": "MIT",
+      "license_url": "https://github.com/temporalio/temporal/blob/fc4372605ce23f333b7e1a43eef303ff002c2ef1/LICENSE",
+      "readme_url": "https://github.com/temporalio/temporal/blob/fc4372605ce23f333b7e1a43eef303ff002c2ef1/README.md",
+      "latest_non_prerelease": {
+        "tag": "v1.32.0",
+        "published_at": "2026-09-11T16:10:29Z",
+        "url": "https://github.com/temporalio/temporal/releases/tag/v1.32.0",
+        "target_commitish": "release/v1.32.x",
+        "assets_count": 7
+      },
+      "scope": "Official GitHub metadata and pinned repository documentation inspected. Installations, runtime, support responsiveness, security and release signatures not tested."
+    },
+    {
+      "repository": "treeverse/dvc",
+      "url": "https://github.com/treeverse/dvc",
+      "metadata_url": "https://api.github.com/repos/treeverse/dvc",
+      "observed_date_utc": "2026-10-01",
+      "observed_window_utc": "11:31–11:34",
+      "stars": 15895,
+      "default_branch": "main",
+      "head": "56e59829512ff134aa269099a2099587b810b4dd",
+      "head_commit_date": "2026-08-06T04:17:40Z",
+      "pushed_at": "2026-09-28T19:13:12Z",
+      "archived": false,
+      "license_metadata": "Apache-2.0",
+      "license_text_observed": "Apache-2.0",
+      "license_url": "https://github.com/treeverse/dvc/blob/56e59829512ff134aa269099a2099587b810b4dd/LICENSE",
+      "readme_url": "https://github.com/treeverse/dvc/blob/56e59829512ff134aa269099a2099587b810b4dd/README.rst",
+      "latest_non_prerelease": {
+        "tag": "3.67.1",
+        "published_at": "2026-03-31T05:06:44Z",
+        "url": "https://github.com/treeverse/dvc/releases/tag/3.67.1",
+        "target_commitish": "main",
+        "assets_count": 0
+      },
+      "scope": "Official GitHub metadata and pinned repository documentation inspected. Installations, runtime, support responsiveness, security and release signatures not tested."
+    },
+    {
+      "repository": "aiidateam/aiida-core",
+      "url": "https://github.com/aiidateam/aiida-core",
+      "metadata_url": "https://api.github.com/repos/aiidateam/aiida-core",
+      "observed_date_utc": "2026-10-01",
+      "observed_window_utc": "11:31–11:34",
+      "stars": 591,
+      "default_branch": "main",
+      "head": "9a9cf9591785ba45eea7355ae3f716bce8decd95",
+      "head_commit_date": "2026-09-30T14:20:20Z",
+      "pushed_at": "2026-10-01T01:55:36Z",
+      "archived": false,
+      "license_metadata": "NOASSERTION",
+      "license_text_observed": "MIT",
+      "license_url": "https://github.com/aiidateam/aiida-core/blob/9a9cf9591785ba45eea7355ae3f716bce8decd95/LICENSE.txt",
+      "readme_url": "https://github.com/aiidateam/aiida-core/blob/9a9cf9591785ba45eea7355ae3f716bce8decd95/README.md",
+      "latest_non_prerelease": {
+        "tag": "v2.9.2",
+        "published_at": "2026-09-03T08:10:13Z",
+        "url": "https://github.com/aiidateam/aiida-core/releases/tag/v2.9.2",
+        "target_commitish": "main",
+        "assets_count": 0
+      },
+      "scope": "Official GitHub metadata and pinned repository documentation inspected. Installations, runtime, support responsiveness, security and release signatures not tested."
+    },
+    {
+      "repository": "bluesky/bluesky",
+      "url": "https://github.com/bluesky/bluesky",
+      "metadata_url": "https://api.github.com/repos/bluesky/bluesky",
+      "observed_date_utc": "2026-10-01",
+      "observed_window_utc": "11:31–11:34",
+      "stars": 241,
+      "default_branch": "main",
+      "head": "4b53ff3a1420fee87c8af671fb2b86a976ad9d7d",
+      "head_commit_date": "2026-09-29T20:49:28Z",
+      "pushed_at": "2026-09-29T20:49:28Z",
+      "archived": false,
+      "license_metadata": "BSD-3-Clause",
+      "license_text_observed": "BSD-3-Clause",
+      "license_url": "https://github.com/bluesky/bluesky/blob/4b53ff3a1420fee87c8af671fb2b86a976ad9d7d/LICENSE",
+      "readme_url": "https://github.com/bluesky/bluesky/blob/4b53ff3a1420fee87c8af671fb2b86a976ad9d7d/README.md",
+      "latest_non_prerelease": {
+        "tag": "v1.15.1",
+        "published_at": "2026-05-06T14:05:20Z",
+        "url": "https://github.com/bluesky/bluesky/releases/tag/v1.15.1",
+        "target_commitish": "main",
+        "assets_count": 4
+      },
+      "scope": "Official GitHub metadata and pinned repository documentation inspected. Installations, runtime, support responsiveness, security and release signatures not tested."
+    }
+  ],
+  "cautions": [
+    "GitHub stars are a mutable attention gauge, not quality, runtime validation or users.",
+    "AiiDA and Bluesky are domain-relevant references, not described as high-star projects.",
+    "OpenHands main is Agent Canvas; SDK and automation ownership belong to separately named repositories.",
+    "DVC formerly iterative/dvc now redirects to treeverse/dvc; fresh owner was verified before metadata lookup.",
+    "Default-branch HEAD and latest-release tag are separate observations, not asserted equal.",
+    "GitHub NOASSERTION for AiiDA was not silently treated as absent license: pinned LICENSE.txt was inspected and states MIT."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "recipe": "mesh.synthetic_beam.hex8.v2",
+  "input": "verified geometry.synthetic_beam.v1 artifact directory",
+  "divisions": [20, 4, 2],
+  "timeout_s": 60,
+  "step_unit": "mm",
+  "mesh_unit": "m",
+  "gmsh_version": "4.15.2",
+  "element_family": "hexahedron",
+  "element_order": 1,
+  "solver_execution": "NOT_PERFORMED",
+  "mesh_independence": "NOT_EVALUATED"
+}

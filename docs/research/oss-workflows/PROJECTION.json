@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "scope": "Curated public-source benchmark, synthetic protocol and bounded independent summary",
+  "observation_date_utc": "2026-10-01",
+  "publication_status": "NOT_PUBLISHED",
+  "files": [
+    "README.md",
+    "BENCHMARK.md",
+    "PRIMARY-SOURCES.md",
+    "TICKETS.md",
+    "WORKFLOW-SPEC.md",
+    "INDEPENDENT-REVIEW.md",
+    "evidence/repository-snapshot.json",
+    "evidence/source-needs-additions.json",
+    "frozen-oracle/measurements.csv",
+    "frozen-oracle/expected-summary.json",
+    "frozen-oracle/case-oracles.json",
+    "frozen-oracle/SHA256SUMS",
+    "PROJECTION.json",
+    "VALIDATION.json",
+    "SHA256SUMS"
+  ],
+  "excluded_categories": [
+    "Absolute execution paths",
+    "Raw reviewer logs",
+    "Raw execution bundles and CAS stores",
+    "Reviewer harness with execution-environment paths",
+    "Personal identifiers and contact details"
+  ],
+  "review_counting": {
+    "author_reported_pytest_tests": 35,
+    "independent_source_checks": 30,
+    "independent_installed_checks": 30,
+    "same_check_set_repeated": true,
+    "independent_failed_checks": 0,
+    "aggregate_test_total_claimed": false
+  },
+  "boundaries": [
+    "No human user study or ROI result",
+    "No full-platform/runtime/native equivalence",
+    "No new wheel acceptance",
+    "No automatic permission to publish"
+  ],
+  "projection_revision": 2,
+  "supersedes_projection_revision": 1,
+  "revision_change": "Documentation integration fix only: replace the WORKFLOW-SPEC directory link with the exact frozen expected-summary file link. Oracle bytes unchanged."
+}
