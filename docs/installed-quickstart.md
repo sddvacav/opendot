@@ -10,18 +10,18 @@ device. These are finite local software examples, not an autonomous agent runtim
 ## 1. Prepare one isolated environment
 
 You need Python 3.12+ with `venv` and pip support, a trusted POSIX environment,
-and a separately reviewed `0.2.0a5` wheel already on disk. Earlier local checks used Linux and
+and a separately reviewed `0.2.0a6` wheel already on disk. Earlier local checks used Linux and
 CPython 3.12; this is not a general platform-support promise. Use a shell session
 in which `/tmp` is a suitable trusted temporary parent.
 
-This candidate is unreleased. This guide does not establish review of a `0.2.0a5`
+This candidate is unreleased. This guide does not establish review of a `0.2.0a6`
 wheel; earlier-version reviews do not approve it. Get the wheel and its SHA-256
 from the same independently reviewed delivery record; no public registry or download URL is
 asserted here. Do not substitute a similarly named package. A matching digest
 checks the supplied bytes, not their authorship, safety, or public release status.
-The [a5 verification record](a5-candidate-verification.md) separates this
+The [a6 verification record](a6-candidate-verification.md) separates this
 candidate's source selection, offline builds, fresh installed checks and bilingual
-journeys. Consult that exact-candidate ledger; earlier a3/a4 artifact or
+journeys. Consult that exact-candidate ledger; earlier a3/a4/a5 artifact or
 journey results do not approve this wheel. The
 [documentation check](documentation-checks.md) compares the eight shell blocks
 below without executing them.
@@ -33,7 +33,7 @@ shell. The setup creates a fresh environment and makes no dependency download.
 ```sh
 set -eu
 PYTHON=python3.12
-WHEEL='/absolute/path/to/opendot_engineering-0.2.0a5-py3-none-any.whl'
+WHEEL='/absolute/path/to/opendot_engineering-0.2.0a6-py3-none-any.whl'
 EXPECTED_WHEEL_SHA256='paste-the-independently-reviewed-wheel-sha256'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
@@ -56,7 +56,7 @@ cd "$JOURNEY"
 "$PY" -I -B -c 'import importlib.metadata as m, opendot_engineering as p; print(m.version("opendot-engineering")); print(p.__file__)'
 ```
 
-Expect version `0.2.0a5` and an import path inside the new environment's
+Expect version `0.2.0a6` and an import path inside the new environment's
 `site-packages`. No shell activation or `PYTHONPATH` is needed. `-I` ignores
 source-directory import shortcuts; `-B` avoids Python bytecode writes. There is
 no `opendot` console command.
@@ -147,7 +147,7 @@ cp -R "$SOURCE/examples" "$JOURNEY/examples"
 ```
 
 Expect `synthetic_software_assertions_passed: true` and `package_version:
-"0.2.0a5"`. The three cases deliberately have different outcomes:
+"0.2.0a6"`. The three cases deliberately have different outcomes:
 
 - `success`: `COMPLETED`, semantic-valid, independently hash-verified bytes
 - `semantic_refusal`: `FAILED` with one intact **unaccepted** artifact retained

@@ -1,7 +1,8 @@
 # 0.2.0a5 candidate verification boundary
 
 Date: 1 October 2026 UTC. Version: **0.2.0a5**, separate and unreleased.
-This page identifies the current candidate and its evidence requirements.
+This historical page identifies the a5 candidate and its evidence requirements.
+The current integration is [a6](a6-candidate-verification.md); these results remain a5-only.
 The local author checks below have separate source, installed and guide scopes.
 Final source/artifact hashes and independent acceptance are recorded in the
 external delivery receipts; predecessor evidence is not promoted to a5 acceptance.

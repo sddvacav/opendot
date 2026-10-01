@@ -1,6 +1,6 @@
 # Optional structural elastic-energy consistency API
 
-The separate unreleased `0.2.0a5` candidate includes
+The historical unreleased `0.2.0a5` candidate introduced, and a6 retains,
 `opendot_engineering.executors.structural_beam.verify_elastic_energy(directory)`.
 It first requires the existing strict `verify_structural_artifacts(directory)`
 to pass, then compares each element's raw printed E tensor strain with raw
@@ -128,10 +128,12 @@ wrong-shear-factor, incomplete-IP, unsupported-precision, inverted-geometry,
 warped/IP-varying geometry, signed-cancellation and resealed-pack negatives.
 The complete synthetic-pack checks traverse the unchanged strict admission
 path. No native solver, build, install or publication is performed by them.
-The a5 explicit portable selection deliberately adds 54 energy cases and 17
+The historical a5 explicit portable selection deliberately added 54 energy cases and 17
 CPU-ceiling cases to the 1,033 inherited cases; selection counts are not pass
 results. See the [a5 verification record](a5-candidate-verification.md) for the
-separate current source, build and installed-check scopes. The earlier
+separate historical source, build and installed-check scopes. The current
+[a6 integration record](a6-candidate-verification.md) retains those cases and
+requires new exact-candidate receipts. The earlier
 source-only energy candidate's author run of 1,104 selected tests plus 49
 subtests is historical evidence, not exact a5 artifact acceptance.
 
@@ -140,5 +142,6 @@ output-only integration scope, separately recorded from synthetic tests. It
 cannot qualify a new native execution or close the unchanged default
 verifier's missing constitutive-energy cross-check or other numeric-field
 consistency gaps. The inherited file-size-limit issue is also unchanged.
-The a5 version identifies a separate unreleased candidate; it does not imply
+The historical a5 version identifies a separate unreleased candidate; neither
+that version nor the current a6 integration implies
 release approval or public distribution.
