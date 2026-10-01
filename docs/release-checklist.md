@@ -1,8 +1,8 @@
 # OpenDot release checklist
 
-Current release disposition for **0.3.0a1**: **unreleased; NOT_SCORED**. The
+Current source-only follow-on to **0.3.0a1**: **unreleased; NOT_SCORED**. The
 [successor verification scope](structural-v2-candidate-verification.md) declares
-1,309 portable / 1,468 controlled-local nodes. Actual source, offline build,
+1,325 portable / 1,484 controlled-local nodes. Actual source, offline build,
 installed and independent outcomes require exact-candidate external receipts.
 No successor hosted run or publication is established. Frozen a6 evidence remains
 version-bound and is not an acceptance of the changed default schema/profile.

@@ -11,8 +11,10 @@ conditional per-element energy consistency, schema 2 and explicit historical
 example covers seven original synthetic protocols, eight unimplemented proposals,
 and six separately counted synthetic parameter fixtures; no production policy is added.
 Canonical execution/reference owners and optional energy-API results are unchanged.
-The [Gmsh CPU callback](docs/gmsh-cpu-ceiling.md) preserves inherited lower
-ceilings; fake-resource checks do not establish native/kernel enforcement.
+The [Gmsh resource-limit setup](docs/gmsh-cpu-ceiling.md) preserves inherited lower
+CPU and per-file ceilings; fake-resource checks do not establish native/kernel enforcement.
+The file-size repair is an unreleased source-only follow-on; existing v0.3.0a1
+release assets do not contain it and retain their original hashes.
 [Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
 ### Historical a4 draft
@@ -30,7 +32,8 @@ The predecessor's 899 source passes, final installed journeys and same-host buil
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
 没有新增生产策略。既有执行／引用所有者及可选能量 API 返回结果保持不变。
-[Gmsh CPU 回调](docs/gmsh-cpu-ceiling.md)保留较低的继承限制；合成资源检查不证明原生或内核强制执行。
+[Gmsh 资源限制设置](docs/gmsh-cpu-ceiling.md)保留较低的继承 CPU 与单文件大小限制；合成资源检查不证明原生或内核强制执行。
+文件大小修复仅属于尚未发布的源码后续变更；现有 v0.3.0a1 发布产物不含此修复，原有哈希保持不变。
 [当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
 ### 历史 a4 草稿

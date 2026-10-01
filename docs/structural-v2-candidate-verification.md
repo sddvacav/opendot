@@ -1,5 +1,39 @@
 # 0.3.0a1 candidate verification boundary
 
+## Unreleased source-only file-size follow-on
+
+The current source adds only inherited Gmsh file-size preservation to the frozen
+resource-qualified predecessor described below. Before importing Gmsh, the
+worker now takes the minimum of 32 MiB and finite inherited file-size soft/hard
+limits, including zero. CPU setup and the separate solver-child file-size
+assignment are unchanged. See [exact resource policy](gmsh-cpu-ceiling.md).
+
+The updated manifest selects 35 fake-resource Gmsh nodes, 16 net additional
+nodes: **1,325 portable / 1,484 controlled-local** distinct nodes. These are
+selections, not pass counts; subtests are not additional nodes. A future changed
+artifact's proposed installed selection would be 347 nodes, but no package
+build, installed check, kernel enforcement or native execution is performed for
+this component. Existing v0.3.0a1 release assets do not contain this repair.
+Their receipts, outputs and hashes retain their exact predecessor scope.
+
+### Subtest attribution erratum
+
+The retained predecessor text below labels 49 subtests as "energy". Those 49
+belong to `tests/test_solver_cpu_ceiling.py` (`SolverCpuCeilingTests`): eight
+alternate-sentinel, 36 finite-boundary and five wall-timeout subtests. The other
+44 predecessor subtests belong to `tests/test_gmsh_cpu_ceiling.py`; none of
+these 93 subtests comes from the structural elastic-energy test module.
+This is an attribution correction only; historical totals, packets and hashes
+are unchanged. The current focused resource tests have 49 solver CPU plus 92
+Gmsh resource subtests (141 total), separate from their 52 test nodes.
+
+## Frozen predecessor scope (retained)
+
+The original prepublication record below describes the prior 1,309 / 1,468-node
+source and its separate artifacts. Its file-size limitation is superseded only
+for Gmsh in the unreleased source follow-on above. It is not acceptance of that
+follow-on, and its installed/build/guide selections are not new executions.
+
 Date: 1 October 2026 UTC. Version: **0.3.0a1**, separate and **unreleased**.
 Overall assessment: **NOT_SCORED**. Declared selections are not pass receipts.
 Exact source identity, artifact hashes, executed outcomes and independent review

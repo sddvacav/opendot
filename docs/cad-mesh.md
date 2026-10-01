@@ -33,7 +33,10 @@ identity = native_provenance(verified)
 The three subdivisions are integers from 1 to 100 with product at most 100,000.
 The default yields 160 HEX8 cells, 315 nodes and 256 boundary QUAD4 cells. Timeout
 is 1–300 seconds. New generation is Linux-only (`resource` and `/proc/self/maps`), bounds each output file to
-32 MiB and CPU time to 300 seconds, and uses one Gmsh thread. The parent imposes
+at most 32 MiB and CPU time to at most 300 seconds, preserving any lower finite
+inherited soft/hard cap for each resource, and uses one Gmsh thread. These
+[resource-policy changes](gmsh-cpu-ceiling.md) have fake-resource checks only;
+real kernel/native enforcement is not established by them. The parent imposes
 wall time, kills/waits for the worker on timeout, writes logs directly to a file,
 and rejects oversized input/output artifacts. These bounds are not a memory
 sandbox or hostile-child process-tree isolation. The helper itself launches no

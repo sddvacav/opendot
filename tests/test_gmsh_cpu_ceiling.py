@@ -24,16 +24,21 @@ class FakeResource:
         self.RLIM_INFINITY = infinity
         self.fail_at = fail_at
         self.error = error
-        self.inherited_fsize = inherited_fsize
+        self.inherited_fsize = ((infinity, infinity) if inherited_fsize is None
+                                else inherited_fsize)
         self.calls = []
 
     def getrlimit(self, which):
         self.calls.append(('get', which))
-        if which != self.RLIMIT_CPU:
-            raise AssertionError('Only CPU limits are queried')
-        if self.fail_at == 'get':
-            raise self.error
-        return self.inherited
+        if which == self.RLIMIT_CPU:
+            if self.fail_at == 'get':
+                raise self.error
+            return self.inherited
+        if which == self.RLIMIT_FSIZE:
+            if self.fail_at == 'file-size-get':
+                raise self.error
+            return self.inherited_fsize
+        raise AssertionError('Unexpected resource query')
 
     def setrlimit(self, which, limits):
         self.calls.append(('set', which, limits))
@@ -45,8 +50,10 @@ class FakeResource:
                     if inherited != self.RLIM_INFINITY and value > inherited:
                         raise AssertionError('Attempted to raise an inherited CPU cap')
         elif which == self.RLIMIT_FSIZE:
-            if self.inherited_fsize is not None and max(limits) > self.inherited_fsize:
-                raise ValueError('Existing FSIZE set exceeds fake inherited hard cap')
+            for value in limits:
+                for inherited in self.inherited_fsize:
+                    if inherited != self.RLIM_INFINITY and value > inherited:
+                        raise AssertionError('Attempted to raise an inherited file-size cap')
         else:
             raise AssertionError('Unexpected resource operation')
 
@@ -88,11 +95,14 @@ class GmshCpuCeilingTests(unittest.TestCase):
         finally:
             self.assertEqual(imports, ['resource'])
 
-    def check_limits(self, inherited, expected, *, infinity=-1):
-        resource = FakeResource(inherited, infinity=infinity)
+    def check_limits(self, inherited, expected, *, infinity=-1,
+                     inherited_fsize=None, expected_fsize=MAX_BYTES):
+        resource = FakeResource(inherited, infinity=infinity,
+                                inherited_fsize=inherited_fsize)
         self.invoke(resource)
         self.assertEqual(resource.calls, [
-            ('set', resource.RLIMIT_FSIZE, (MAX_BYTES, MAX_BYTES)),
+            ('get', resource.RLIMIT_FSIZE),
+            ('set', resource.RLIMIT_FSIZE, (expected_fsize, expected_fsize)),
             ('get', resource.RLIMIT_CPU),
             ('set', resource.RLIMIT_CPU, (expected, expected)),
             ('before-gmsh',),
@@ -165,6 +175,7 @@ class GmshCpuCeilingTests(unittest.TestCase):
             self.invoke(resource)
         self.assertIs(caught.exception, error)
         self.assertEqual(resource.calls, [
+            ('get', resource.RLIMIT_FSIZE),
             ('set', resource.RLIMIT_FSIZE, (MAX_BYTES, MAX_BYTES)),
             ('get', resource.RLIMIT_CPU),
         ])
@@ -176,28 +187,99 @@ class GmshCpuCeilingTests(unittest.TestCase):
             self.invoke(resource)
         self.assertIs(caught.exception, error)
         self.assertEqual(resource.calls, [
+            ('get', resource.RLIMIT_FSIZE),
             ('set', resource.RLIMIT_FSIZE, (MAX_BYTES, MAX_BYTES)),
             ('get', resource.RLIMIT_CPU),
             ('set', resource.RLIMIT_CPU, (10, 10)),
         ])
 
     def test_existing_file_size_failure_propagates_before_cpu_work(self):
-        error = OSError('injected file-size set failure')
-        resource = FakeResource((10, 30), fail_at='file-size', error=error)
-        with self.assertRaises(OSError) as caught:
-            self.invoke(resource)
-        self.assertIs(caught.exception, error)
-        self.assertEqual(resource.calls, [
-            ('set', resource.RLIMIT_FSIZE, (MAX_BYTES, MAX_BYTES)),
-        ])
+        for error in (OSError('injected file-size set failure'),
+                      ValueError('injected file-size set refusal')):
+            with self.subTest(error=type(error).__name__):
+                resource = FakeResource((10, 30), fail_at='file-size', error=error,
+                                        inherited_fsize=(0, MAX_BYTES))
+                with self.assertRaises(type(error)) as caught:
+                    self.invoke(resource)
+                self.assertIs(caught.exception, error)
+                self.assertEqual(resource.calls, [
+                    ('get', resource.RLIMIT_FSIZE),
+                    ('set', resource.RLIMIT_FSIZE, (0, 0)),
+                ])
 
-    def test_lower_file_size_hard_cap_remains_an_unchanged_limitation(self):
-        resource = FakeResource((-1, -1), inherited_fsize=MAX_BYTES-1)
-        with self.assertRaisesRegex(ValueError, 'FSIZE set exceeds'):
-            self.invoke(resource)
-        self.assertEqual(resource.calls, [
-            ('set', resource.RLIMIT_FSIZE, (MAX_BYTES, MAX_BYTES)),
-        ])
+    def check_file_limits(self, inherited, expected, *, infinity=-1):
+        self.check_limits((infinity, infinity), 300, infinity=infinity,
+                          inherited_fsize=inherited, expected_fsize=expected)
+
+    def test_lower_file_size_hard_cap_is_never_raised(self):
+        self.check_file_limits((MAX_BYTES-1, MAX_BYTES-1), MAX_BYTES-1)
+
+    def test_file_size_both_unlimited_use_existing_32_mib_cap(self):
+        self.check_file_limits((-1, -1), MAX_BYTES)
+
+    def test_lower_file_size_soft_cap_is_never_raised(self):
+        self.check_file_limits((10, 30), 10)
+
+    def test_file_size_unlimited_soft_does_not_hide_finite_hard(self):
+        # Defensive synthetic pair; not a claimed valid kernel configuration.
+        self.check_file_limits((-1, 30), 30)
+
+    def test_file_size_unlimited_hard_does_not_hide_finite_soft(self):
+        self.check_file_limits((10, -1), 10)
+
+    def test_file_size_zero_soft_remains_numerically_zero(self):
+        self.check_file_limits((0, 30), 0)
+
+    def test_file_size_zero_hard_remains_numerically_zero(self):
+        # Synthetic input; no kernel zero-limit semantics are implied.
+        self.check_file_limits((-1, 0), 0)
+
+    def test_file_size_both_zero_remain_numerically_zero(self):
+        self.check_file_limits((0, 0), 0)
+
+    def test_larger_file_size_caps_keep_existing_32_mib_cap(self):
+        self.check_file_limits((MAX_BYTES+1, MAX_BYTES*2), MAX_BYTES)
+
+    def test_equal_32_mib_file_size_caps_are_preserved(self):
+        self.check_file_limits((MAX_BYTES, MAX_BYTES), MAX_BYTES)
+
+    def test_large_finite_file_size_values_are_not_assumed_unlimited(self):
+        self.check_file_limits((2**63-2, 2**63-1), MAX_BYTES)
+
+    def test_file_size_unlimited_is_compared_to_the_resource_constant(self):
+        for infinity in (-1, 2**64-1):
+            for inherited, expected in [
+                ((infinity, infinity), MAX_BYTES), ((infinity, 30), 30),
+                ((10, infinity), 10), ((0, infinity), 0),
+            ]:
+                with self.subTest(infinity=infinity, inherited=inherited):
+                    self.check_file_limits(inherited, expected, infinity=infinity)
+
+    def test_neither_file_size_cap_can_increase_across_finite_boundary_matrix(self):
+        for soft in (0, 1, 10, 30, MAX_BYTES-1, MAX_BYTES, MAX_BYTES+1, MAX_BYTES*2):
+            for hard in (0, 1, 10, 30, MAX_BYTES-1, MAX_BYTES, MAX_BYTES+1, MAX_BYTES*2):
+                if soft > hard:
+                    continue
+                with self.subTest(soft=soft, hard=hard):
+                    self.check_file_limits((soft, hard), min(MAX_BYTES, soft, hard))
+
+    def test_file_size_finite_hard_minimum_is_defensively_preserved(self):
+        # Synthetic reversed pair; not a claimed valid kernel configuration.
+        self.check_file_limits((30, 10), 10)
+
+    def test_file_size_and_cpu_inherited_caps_are_independent(self):
+        self.check_limits((10, 30), 10, inherited_fsize=(1024, 2048),
+                          expected_fsize=1024)
+
+    def test_file_size_get_failure_propagates_without_set_cpu_or_gmsh_boundary(self):
+        for error in (OSError('injected file-size get failure'),
+                      ValueError('injected file-size get refusal')):
+            with self.subTest(error=type(error).__name__):
+                resource = FakeResource((10, 30), fail_at='file-size-get', error=error)
+                with self.assertRaises(type(error)) as caught:
+                    self.invoke(resource)
+                self.assertIs(caught.exception, error)
+                self.assertEqual(resource.calls, [('get', resource.RLIMIT_FSIZE)])
 
     def test_cpu_policy_is_the_accepted_solver_policy_ast(self):
         module = ast.parse(SOLVER_SOURCE.read_text(), filename=str(SOLVER_SOURCE))
@@ -206,10 +288,20 @@ class GmshCpuCeilingTests(unittest.TestCase):
         limits, = (node for node in execute.body
                    if isinstance(node, ast.FunctionDef) and node.name == 'limits')
         prefix = worker_prefix()
-        self.assertEqual(len(prefix), 5)
+        self.assertEqual(len(prefix), 7)
         self.assertEqual(ast.dump(prefix[0]), ast.dump(ast.parse('import resource').body[0]))
-        self.assertEqual([ast.dump(node) for node in prefix[2:]],
+        self.assertEqual([ast.dump(node) for node in prefix[4:]],
                          [ast.dump(node) for node in limits.body[1:]])
+
+    def test_file_size_policy_matches_accepted_cpu_minimum_policy_ast(self):
+        prefix = worker_prefix()
+        file_policy = ast.unparse(ast.Module(body=prefix[1:4], type_ignores=[]))
+        cpu_policy = (file_policy.replace('inherited_fsize', 'inherited_cpu')
+                      .replace('fsize_limit', 'cpu_limit')
+                      .replace('RLIMIT_FSIZE', 'RLIMIT_CPU')
+                      .replace('32 * 1024 * 1024', '300'))
+        self.assertEqual([ast.dump(node) for node in ast.parse(cpu_policy).body],
+                         [ast.dump(node) for node in prefix[4:]])
 
 
 if __name__ == '__main__':

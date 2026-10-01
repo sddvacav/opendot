@@ -25,8 +25,8 @@ and the existing package. The source-conflict component selects 86 tests in the 
 remain source material, not wheel contents; any copied-example run against an
 installed wheel is a separately recorded check. The manifest retains the 38
 inherited selections (with one descriptive test-name update) and explicitly adds
-48 collected nodes. The integrated 0.3.0a1 portable workflow selects 1,309 distinct
-nodes, including 59 structural-default-v2 and 19 fake-only Gmsh CPU cases; this does not claim a hosted CI run or a change to the frozen a6 snapshot.
+48 collected nodes. The integrated 0.3.0a1 portable workflow selects 1,325 distinct
+nodes, including 59 structural-default-v2 and 35 fake-only Gmsh resource-ceiling cases; this does not claim a hosted CI run or a change to the frozen a6 snapshot.
 
 ## What was executed
 

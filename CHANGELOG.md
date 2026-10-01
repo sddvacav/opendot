@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased Gmsh file-size source follow-on (2026-10-01)
+
+- Preserve lower finite inherited Gmsh file-size soft/hard limits, including zero, using the existing CPU minimum policy; solver-child file-size setup is unchanged
+- Select 35 fake-resource Gmsh nodes, 16 net additional nodes: 1,325 portable / 1,484 controlled-local selected nodes; selection is not a pass or native-enforcement claim
+- Existing v0.3.0a1 release assets, receipts, outputs and hashes remain unchanged and do not contain this repair; no package rebuild, new release or native launch is included
+
 ## 0.3.0a1 — unreleased conditional structural default (2026-10-01)
 
 - Intentionally change default structural verification and refinement results to schema 2 with conditional statuses and explicit false scientific authority; see [migration](docs/structural-default-v2.md)

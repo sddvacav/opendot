@@ -15,7 +15,8 @@
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
 没有新增生产策略。既有执行／引用所有者及可选能量 API 返回结果保持不变。
-[Gmsh CPU 回调](docs/gmsh-cpu-ceiling.md)保留较低的继承限制；合成资源检查不证明原生或内核强制执行。
+[Gmsh 资源限制设置](docs/gmsh-cpu-ceiling.md)保留较低的继承 CPU 与单文件大小限制；合成资源检查不证明原生或内核强制执行。
+文件大小修复仅属于尚未发布的源码后续变更；现有 v0.3.0a1 发布产物不含此修复，原有哈希保持不变。
 [当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
 [0.3.0a1 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其独立的版本固定值；先前版本的结果不构成本次产物的验收。

@@ -1,13 +1,13 @@
 # OpenDot Engineering claim status
 
-> Current unreleased **0.3.0a1** candidate; **NOT_SCORED**: the explicit
+> Current unreleased source-only follow-on to **0.3.0a1**; **NOT_SCORED**: the explicit
 > [structural v2 migration](structural-default-v2.md) requires conditional
 > per-element consistency by default, with schema 2 and false scientific authority.
 > Historical `artifact_v1` behavior is available only by explicit API selection.
 > Seven original synthetic source-boundary protocols are exercised; eight remain
 > unimplemented, with six synthetic parameter fixtures counted separately and
 > no production enforcement. [Exact successor scope](structural-v2-candidate-verification.md)
-> declares 1,309 portable / 1,468 controlled-local nodes, not pass claims.
+> declares 1,325 portable / 1,484 controlled-local nodes, not pass claims.
 
 > Historical boundaries: original a4 `4075ac17` owns the 1,066 source passes
 > and 988-node hosted definition. The later
@@ -79,8 +79,8 @@ The new default structural profile requires that same conditional check and retu
 no-underflow remains `ASSUMED_NOT_VERIFIED`, and the arithmetic bound remains
 `NOT_PROVED`. This closes only the bounded declared-case default E/ELSE gap;
 explicit `artifact_v1` retains the historical gap. General material/physics
-qualification, native execution and the inherited file-size ceiling issue remain
-outside this change. Rechecking an older pack is output-only evidence.
+qualification, native execution and the solver-child inherited file-size ceiling
+issue remain outside this change. Rechecking an older pack is output-only evidence.
 
 ## Claims and limits
 
@@ -99,7 +99,7 @@ outside this change. Rechecking an older pack is output-only evidence.
 | Wheel identity and imports | Predecessor checks recorded; current artifact acceptance uses a separate receipt | Local wheel installation and isolated module checks retain their recorded version and artifact scope | Fresh exact-candidate checks, approved public distribution, supported platform matrix, and published release identity |
 | Optional CAD/CAE adapters | Included | Fixed deterministic contracts and separately installed backends | Native execution and dependency/license review for each claimed environment |
 | Shared CalculiX version-declaration gate | Included; component independently reviewed | One complete declared 2.23 header required; ambiguous and repeated declarations refused by both thermal and structural verifiers | Exact integrated and artifact review; declaration consistency does not authenticate a binary/log or validate new physics |
-| Gmsh worker CPU ceiling | Included; 19 fake-only cases plus 44 separate subtests | Existing worker callback preserves lower finite inherited CPU soft/hard limits before Gmsh import | No native import or kernel-limit enforcement is tested; lower inherited FSIZE limitation and separate native-run authorization remain |
+| Gmsh worker resource ceilings | Included; 35 fake-only cases; subtests are not extra nodes | Existing worker setup takes the minimum of each existing ceiling (32 MiB per file, 300 CPU seconds) and its finite inherited soft/hard limits, including zero, before Gmsh import | No native import or kernel-limit enforcement is tested; the separate solver-child FSIZE limitation and native-run authorization remain |
 | Solver-child CPU ceiling | Included; 17 fake-resource predecessor checks | Existing callback takes the minimum of 300 seconds and finite inherited soft/hard limits, including zero | Exact 0.3.0a1 checks and separate OS/native enforcement evidence; unchanged inherited file-size-limit issue is not repaired |
 | Default structural v2 | Included; intentional schema/status migration | Strict artifact admission plus the unchanged conditional per-element check; explicit historical `artifact_v1` only | Exact successor source/installed review; no generalized physics, proved arithmetic error bound, physical validation or scientific acceptance |
 | Optional structural E/ELSE consistency | Included; conditional opt-in API | Unchanged strict admission precedes per-element tensor-strain/whole-element-energy comparison under declared print and arithmetic assumptions | Exact 0.3.0a1 source/artifact checks; no-underflow is assumed, arithmetic bound is not proved; the new default requires this same check only within its declared case and grants no scientific acceptance |
@@ -121,4 +121,4 @@ For any stronger statement, record the exact artifact/configuration, evidence, r
 
 ## 中文摘要
 
-当前独立未发布候选为 0.3.0a1，NOT_SCORED。结构默认验证改为 schema 2，在声明的材料、历史与输出条件下要求逐单元能量一致性；科学验收仍为 false，无下溢仍为未验证假设，算术误差界限未证明。历史 artifact_v1 仅可显式选择，不自动回退。来源边界覆盖七项原始合成协议、八项未实现协议与另行计数的六个合成参数场景，仍无生产强制机制。预声明选择为 1,309 项可移植节点、1,468 项受控本地节点，结果由精确候选回执记录。历史 a6 字节与证据不变，不转移评分或验收；未新增原生求解、模型、设备、远程写入或托管 CI。
+当前为 0.3.0a1 的独立未发布源码后续变更，NOT_SCORED。结构默认验证改为 schema 2，在声明的材料、历史与输出条件下要求逐单元能量一致性；科学验收仍为 false，无下溢仍为未验证假设，算术误差界限未证明。历史 artifact_v1 仅可显式选择，不自动回退。来源边界覆盖七项原始合成协议、八项未实现协议与另行计数的六个合成参数场景，仍无生产强制机制。预声明选择为 1,325 项可移植节点、1,484 项受控本地节点，结果由精确候选回执记录。历史 a6 字节与证据不变，不转移评分或验收；未新增原生求解、模型、设备、远程写入或托管 CI。

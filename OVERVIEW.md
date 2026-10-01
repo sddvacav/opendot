@@ -13,8 +13,10 @@ conditional per-element energy consistency, schema 2 and explicit historical
 example covers seven original synthetic protocols, eight unimplemented proposals,
 and six separately counted synthetic parameter fixtures; no production policy is added.
 Canonical execution/reference owners and optional energy-API results are unchanged.
-The [Gmsh CPU callback](docs/gmsh-cpu-ceiling.md) preserves inherited lower
-ceilings; fake-resource checks do not establish native/kernel enforcement.
+The [Gmsh resource-limit setup](docs/gmsh-cpu-ceiling.md) preserves inherited lower
+CPU and per-file ceilings; fake-resource checks do not establish native/kernel enforcement.
+The file-size repair is an unreleased source-only follow-on; existing v0.3.0a1
+release assets do not contain it and retain their original hashes.
 [Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
 The [0.3.0a1 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1) is available. Follow the [version-pinned installation guide](docs/installed-quickstart.md) for its exact wheel, matching source examples and SHA-256 checks. The [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retains its separate version-specific pins; earlier-version results do not accept these artifacts.
