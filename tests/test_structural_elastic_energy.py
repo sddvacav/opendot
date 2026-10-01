@@ -148,7 +148,7 @@ def test_nonaffine_actual_jacobians_and_distinct_ip_order():
 
 def test_existing_strict_verifier_runs_first(tmp_path,monkeypatch):
     def reject(directory):raise ValueError('baseline gate reached')
-    monkeypatch.setattr(s,'verify_structural_artifacts',reject)
+    monkeypatch.setattr(s,'_verify_structural_artifacts_v1',reject)
     monkeypatch.setattr(s,'_mesh',lambda *a:pytest.fail('must not inspect mesh after failed admission'))
     with pytest.raises(ValueError,match='baseline gate reached'):s.verify_elastic_energy(tmp_path)
 
@@ -180,9 +180,9 @@ def refresh(root):
 @pytest.mark.parametrize('synthetic_pack',['structural'],indirect=True)
 def test_optin_api_and_unchanged_default_receipt(optional_pack):
     root=optional_pack;before={p.relative_to(root):p.read_bytes() for p in root.rglob('*') if p.is_file()}
-    receipt=s.verify_structural_artifacts(root);report=s.verify_elastic_energy(root)
+    receipt=s.verify_structural_artifacts(root,profile='artifact_v1');report=s.verify_elastic_energy(root)
     assert report['status']=='CONDITIONAL_ELASTIC_ENERGY_CONSISTENCY_PASS' and report['elements']==160
-    assert receipt==s.verify_structural_artifacts(root)
+    assert receipt==s.verify_structural_artifacts(root,profile='artifact_v1')
     assert before=={p.relative_to(root):p.read_bytes() for p in root.rglob('*') if p.is_file()}
 
 
@@ -210,5 +210,5 @@ def test_resealed_synthetic_pack_counterexamples(optional_pack,change):
         with pytest.raises(ValueError,match='identity'):s.verify_elastic_energy(root)
     else:
         refresh(root)
-        assert s.verify_structural_artifacts(root)['status']=='STRUCTURAL_BENCHMARK_PASS'
+        assert s.verify_structural_artifacts(root,profile='artifact_v1')['status']=='STRUCTURAL_BENCHMARK_PASS'
         with pytest.raises(ValueError,match='mismatch|precision'):s.verify_elastic_energy(root)

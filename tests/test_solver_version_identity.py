@@ -87,14 +87,14 @@ def _reseal(root, module):
                       for name in module.FILES}})
 
 
-def _synthetic_mesh(root, cad):
+def _synthetic_mesh(root, cad, *, divisions=(20, 4, 2)):
     root.mkdir()
     for target, source in [('beam.step', 'beam.step'), ('cad-receipt.json', 'receipt.json'),
                            ('cad-parameters.json', 'parameters.json'),
                            ('cad-manifest.json', 'manifest.json')]:
         shutil.copyfile(cad/source, root/target)
     dims = [.2, .02, .003]
-    nx, ny, nz = 20, 4, 2
+    nx, ny, nz = divisions
     nodes, ids, cells, faces = {}, {}, {}, []
     for k, j, i in itertools.product(range(nz+1), range(ny+1), range(nx+1)):
         n = len(nodes)+1
@@ -249,7 +249,8 @@ def synthetic_pack(tmp_path, cad_pack, request):
                        mesh_native_identity='NOT_VERIFIED', mesh_runtime=None)
         report, parsed = structural.oracle(root, nodes, cells, ends)
         figures = structural.figures(nodes, cells, ends, parsed)
-        verify = structural.verify_structural_artifacts
+        # Historical v1 log/admission fixture; retain its original assertions.
+        verify = lambda directory: structural.verify_structural_artifacts(directory, profile="artifact_v1")
     _write(root/'recipe.json', recipe)
     _write(root/'receipt.json', receipt)
     _write(root/'oracle.json', report)
