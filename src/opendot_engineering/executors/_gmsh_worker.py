@@ -63,7 +63,9 @@ def _runtime_identity(gmsh):
 def main():
     import resource
     resource.setrlimit(resource.RLIMIT_FSIZE, (32*1024*1024, 32*1024*1024))
-    resource.setrlimit(resource.RLIMIT_CPU, (300,300))
+    inherited_cpu=resource.getrlimit(resource.RLIMIT_CPU)
+    cpu_limit=min([300]+[limit for limit in inherited_cpu if limit!=resource.RLIM_INFINITY])
+    resource.setrlimit(resource.RLIMIT_CPU,(cpu_limit,cpu_limit))
     import gmsh  # GPL tool loaded only in this explicitly selected subprocess
     out = Path(sys.argv[1])
     recipe = json.loads((out / 'recipe.json').read_text())

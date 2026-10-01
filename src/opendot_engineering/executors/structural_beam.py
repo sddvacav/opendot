@@ -263,7 +263,7 @@ def run_structural(mesh_dir,output_dir,*,solver_executable,timeout_s=60,element=
         raise
 
 
-def verify_structural_artifacts(directory):
+def _verify_structural_artifacts_v1(directory):
     root=Path(directory)
     if any(p.is_symlink() for p in [root,*root.parents]):raise ValueError('Symlinked artifact directory')
     manifest=shared._verify_manifest(root,FILES,label='structural')
@@ -297,9 +297,37 @@ def verify_structural_artifacts(directory):
     return r
 
 
-# Optional output-only cross-check. These frozen constants do not change the
-# default verifier or its serialized report/receipt. See the source derivation
-# and uncertainty assumptions in docs/structural-elastic-energy.md.
+def _structural_verification_profile(profile):
+    if type(profile) is not str or profile not in ('conditional_elastic_v2','artifact_v1'):
+        raise ValueError('Unsupported structural verification profile')
+    return profile
+
+
+def verify_structural_artifacts(directory,*,profile='conditional_elastic_v2'):
+    """Require conditional elastic consistency by default; never rewrite a pack.
+
+    The explicit artifact_v1 profile preserves historical admission/receipt
+    behavior. It does not establish v2 consistency or scientific acceptance.
+    Unsupported cases raise ValueError; no historical fallback is automatic.
+    """
+    _structural_verification_profile(profile)
+    receipt=_verify_structural_artifacts_v1(directory)
+    if profile=='artifact_v1':return receipt
+    energy=_checked_elastic_energy(directory)
+    return {'schema_version':'2','verification_profile':'conditional_elastic_v2',
+            'status':'CONDITIONAL_STRUCTURAL_CONSISTENCY_PASS',
+            'artifact_schema_version':'1','artifact_receipt':receipt,'elastic_energy':energy,
+            'scientific_accepted':False,'physical_validation':'NOT_PERFORMED',
+            'independent_review':'NOT_EVALUATED','mesh_independence':'NOT_ESTABLISHED',
+            'conditional_assumptions':{
+                'model':'Fixed initially unstressed, no-thermal-strain, zero-history isotropic linear-static C3D8I recipe',
+                'no_subnormal_or_underflow':energy['print_profile']['no_subnormal_or_underflow'],
+                'formal_arithmetic_error_bound':energy['arithmetic_policy']['formal_error_bound']}}
+
+
+# The numerical contract is unchanged. The default v2 profile and the optional
+# API reuse this same kernel after one canonical strict-admission implementation.
+# See docs/structural-elastic-energy.md for the source-frozen uncertainty scope.
 _ELASTIC_CONTRACT = 'structural.elastic_energy.ccx223.e13_6.v1'
 _ELASTIC_GAUSS = tuple((x*0.577350269189626,y*0.577350269189626,z*0.577350269189626)
                        for z in (-1,1) for y in (-1,1) for x in (-1,1))
@@ -421,25 +449,30 @@ def _elastic_energy_report(nodes,cells,data,budgets):
                            'The arithmetic allowance is a declared policy, not a formal native-binary error proof']}
 
 
-def verify_elastic_energy(directory):
-    """Opt-in fixed-recipe E/ELSE check; existing strict admission runs first.
-
-    Return a scoped report or raise ValueError for unsupported precision,
-    geometry, identity or per-element inconsistency. Never writes artifacts or
-    changes the default verifier. The no-underflow assumption and arithmetic
-    policy are explicit in the report; a pass is not scientific acceptance.
-    """
-    verify_structural_artifacts(directory)
+def _checked_elastic_energy(directory):
+    """Shared energy entry point; the caller must first perform strict admission."""
     root=Path(directory);nodes,cells,_=_mesh(root/'mesh')
     data=parse_dat(root/'structural.dat')
     budgets=_elastic_print_budgets(root/'structural.dat',data)
     return _elastic_energy_report(nodes,cells,data,budgets)
 
 
-def compare_refinement(coarse_dir,refined_dir):
-    """Verify both independent packs and the predeclared two-grid sensitivity."""
+def verify_elastic_energy(directory):
+    """Return the existing scoped energy report after canonical strict admission.
+
+    This optional API preserves its report and numerical/error contract while
+    the default structural v2 profile requires the same energy kernel. A pass
+    remains conditional and does not establish scientific acceptance.
+    """
+    _verify_structural_artifacts_v1(directory)
+    return _checked_elastic_energy(directory)
+
+
+def compare_refinement(coarse_dir,refined_dir,*,profile='conditional_elastic_v2'):
+    """Require v2 for both grids; artifact_v1 is explicit historical comparison."""
+    _structural_verification_profile(profile)
     coarse,refined=Path(coarse_dir),Path(refined_dir)
-    for root in (coarse,refined):verify_structural_artifacts(root)
+    verified=[verify_structural_artifacts(root,profile=profile) for root in (coarse,refined)]
     divisions=[shared._json(root/'mesh/recipe.json')['divisions'] for root in (coarse,refined)]
     if divisions!=[[20,4,2],[40,8,4]]:raise ValueError('Expected distinct frozen coarse then refined grids')
     receipts=[shared._json(root/'receipt.json') for root in (coarse,refined)]
@@ -448,12 +481,19 @@ def compare_refinement(coarse_dir,refined_dir):
     reports=[shared._json(root/'oracle.json') for root in (coarse,refined)]
     u,v=[r['weighted_tip_displacement_m'] for r in reports];change=abs(u-v)/abs(v)
     if change>TOLERANCES['refinement_tip_relative']:raise ValueError('Refinement sensitivity criterion failed')
-    return {'status':'STRUCTURAL_REFINEMENT_PASS','relative_tip_change':change,
+    result={'status':'STRUCTURAL_REFINEMENT_PASS','relative_tip_change':change,
             'tolerance':TOLERANCES['refinement_tip_relative'],'coarse_tip_m':u,'refined_tip_m':v,
             'coarse_receipt_sha256':geometry.sha256(shared._read(coarse/'receipt.json')),
             'refined_receipt_sha256':geometry.sha256(shared._read(refined/'receipt.json')),
             'mesh_independence':'NOT_ESTABLISHED','physical_validation':'NOT_PERFORMED',
             'mesh_native_identity':{name:r['mesh_native_identity'] for name,r in zip(('coarse','refined'),receipts)}}
+    if profile=='conditional_elastic_v2':
+        result.update(schema_version='2',verification_profile='conditional_elastic_v2',
+                      status='CONDITIONAL_STRUCTURAL_REFINEMENT_PASS',scientific_accepted=False,
+                      independent_review='NOT_EVALUATED',
+                      conditional_assumptions=dict(verified[0]['conditional_assumptions']),
+                      input_verification_status={name:r['status'] for name,r in zip(('coarse','refined'),verified)})
+    return result
 
 
 def main(argv=None):
