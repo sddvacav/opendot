@@ -14,10 +14,11 @@ diff_receipt = manager.diff(workspace)
 
 Run the [self-contained disposable example](../examples/git-workspaces/README.md)
 first. This profile was introduced in `0.2.0a1` and is included unchanged in the
-unreleased source candidate. It is deliberately narrower than general Git;
-earlier review records retain their own version-bound scope. See the
-[Git review record](git-workspaces-verification.md), [residue repair](git-workspaces-residue-fix.md),
-and [current candidate record](verifier-ci-verification.md).
+package. It is deliberately narrower than general Git; earlier review records
+retain their own version-bound scope. See the [Git review record](git-workspaces-verification.md),
+[residue repair](git-workspaces-residue-fix.md), and [historical a4 record](verifier-ci-verification.md).
+The [current overview](../OVERVIEW.md) and [installed guide](installed-quickstart.md)
+provide release status and version-pinned installation.
 
 ## Supported domain and responsibility
 

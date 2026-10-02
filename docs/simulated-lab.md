@@ -3,12 +3,14 @@
 This optional adapter executes a finite plan on **internally constructed,
 pure-Python ophyd simulated instruments** using the official Bluesky RunEngine.
 This optional adapter was introduced in `0.1.0a1` and is included unchanged
-in this unreleased source candidate. It is not a physical lab controller.
-Earlier fake-only reviews retain their original scope; the current
-[capability ledger](../CAPABILITIES.md) identifies which version was exercised.
-The [earlier combined record](combined-candidate-verification.md) remains historical;
-the [current candidate record](verifier-ci-verification.md) adds no fake-device
-or native-execution acceptance.
+in this package. It is not a physical lab controller. See the
+[current overview](../OVERVIEW.md) and [installed guide](installed-quickstart.md)
+for release status and version-pinned installation; the default guide does not
+prepare or run the optional simulation. Earlier fake-only reviews retain their
+original scope; the [capability ledger](../CAPABILITIES.md) identifies which
+version was exercised. The [earlier combined record](combined-candidate-verification.md)
+and [a4 candidate record](verifier-ci-verification.md) remain historical;
+the latter adds no fake-device or native-execution acceptance.
 
 ## Scope and capabilities
 

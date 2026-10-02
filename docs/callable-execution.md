@@ -1,9 +1,11 @@
 # Callable-only execution profile
 
 This profile was introduced in `opendot-engineering` **0.2.0a0** and is included
-unchanged in this unreleased source candidate. Each version's source and review
-records retain their own scope; see the [current candidate record](verifier-ci-verification.md)
-and the [profile verification record](callable-execution-verification.md). The single owner is
+unchanged in this package. See the [current overview](../OVERVIEW.md) and
+[installed guide](installed-quickstart.md) for release status and version-pinned
+installation. Each version's source and review records retain their own scope;
+the [historical a4 record](verifier-ci-verification.md) and
+[profile verification record](callable-execution-verification.md) remain version-bound. The single owner is
 `opendot_engineering.tool_runtime.ToolRuntime`; this is a Python API, with no
 separate distribution, console entrypoint, or automatic integration.
 
@@ -15,7 +17,7 @@ From the source root:
 PYTHONPATH=src python -B examples/callable-execution/demo.py
 ```
 
-After installing this candidate into an environment, run the same example with
+After installing the reviewed release into an environment, run the same example with
 that environment's Python. It imports the installed module and invokes actual
 pure Python functions. No model, external service, native backend, or device is
 used. The JSON reports five checked scenarios:

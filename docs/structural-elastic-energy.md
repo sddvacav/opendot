@@ -1,6 +1,6 @@
 # Optional structural elastic-energy consistency API
 
-> Historical optional-only a5/a6 contract below. The unreleased 0.3.0a1 [default-v2 profile](structural-default-v2.md) requires the same unchanged kernel in its default profile; the optional API result remains compatible. Frozen a5/a6 source and evidence are unchanged.
+> Historical optional-only a5/a6 contract below. The current [default-v2 profile](structural-default-v2.md) requires the same unchanged kernel in its default profile; the optional API result remains compatible. See the [overview](../OVERVIEW.md) for current release status. Frozen a5/a6 source and evidence, including the version-specific statements below, are unchanged.
 
 The historical unreleased `0.2.0a5` candidate introduced, and a6 retains,
 `opendot_engineering.executors.structural_beam.verify_elastic_energy(directory)`.

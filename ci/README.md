@@ -1,16 +1,17 @@
 # Exact portable CI boundary
 
-The current source-only follow-on to **0.3.0a1**, unreleased and **NOT_SCORED**,
-selects **1,325 distinct
+The [overview](../OVERVIEW.md) and [claim status](../docs/claim-status.md) identify the current release and its separate evidence scopes; **NOT_SCORED** remains unchanged. The portable manifests select **1,325 distinct
 portable nodes**: a6's 1,183 plus 59 [structural-v2 cases](solver-crosscheck-nodes.txt)
 and 48 new [source-conflict cases](source-boundary-nodes.txt), plus 35 fake-only
 [Gmsh resource-ceiling cases](solver-crosscheck-nodes.txt). The existing nine
 workflow manifests select each node exactly once. Adding 78 Git and 81 source-
 provenance cases gives **1,484 controlled-local nodes**. These are selected counts,
-not outcomes. [Exact successor scope](../docs/structural-v2-candidate-verification.md).
-The file-size follow-on adds 16 net Gmsh nodes to the prior 1,309-node portable
-selection. It is unreleased source work; existing v0.3.0a1 assets and their
-receipts retain their original hashes and scope.
+not outcomes. The [historical successor scope](../docs/structural-v2-candidate-verification.md) retains its original checkpoint.
+The file-size follow-on added 16 net Gmsh nodes to the prior 1,309-node portable
+selection; the repair is now packaged as described in the current overview.
+Existing v0.3.0a1 assets and their receipts retain their original hashes and scope.
+Later predecessor sections preserve their historical selections and no-hosted-run
+statements; they are not the current release disposition.
 
 The frozen **0.2.0a6** local candidate record selected **1,183 distinct portable
 nodes**: corrected a5's 1,104, [41 read-only artifact cases](readonly-artifact-nodes.txt),
@@ -24,8 +25,7 @@ The historical unreleased 0.2.0a5 selection added the [explicit solver cross-che
 The read-only Python 3.12 workflow installs pinned test tooling only. Checkout
 and setup actions remain pinned to full commits, credentials are not persisted,
 bytecode/plugin autoload/cache are disabled, and JUnit/temp files stay outside
-source. The definition has not run on hosted CI for this cut; no hosted success
-is claimed.
+source. Released-source hosted outcomes are linked from [current claim status](../docs/claim-status.md); those exact-revision checks do not accept a changed checkout or substitute for installed-artifact checks.
 
 ## Deduplicated inherited integration selection
 

@@ -1,17 +1,20 @@
 # OpenDot release checklist
 
-Current source-only follow-on to **0.3.0a1**: **unreleased; NOT_SCORED**. The
-[successor verification scope](structural-v2-candidate-verification.md) declares
+Current release, 2 October 2026: **[0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2); NOT_SCORED**. The [released source commit](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045) and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md) bind the exact assets to their separately scoped source, build, installed and independent checks. The [a2 main portable run](https://github.com/sddvacav/opendot/actions/runs/36964156448) and [a2 PR Temporal run](https://github.com/sddvacav/opendot/actions/runs/36963928744) are distinct source checks; the latter tested a PR merge revision with the same source tree, not the later main commit. The five named public release downloads were checked against the accepted bytes. This does not establish production readiness, scientific acceptance or a supported-platform matrix.
+
+Historical pre-release checkpoint for the source-only follow-on to **0.3.0a1**:
+**unreleased; NOT_SCORED** at that checkpoint. The
+[historical successor verification scope](structural-v2-candidate-verification.md) declares
 1,325 portable / 1,484 controlled-local nodes. Actual source, offline build,
 installed and independent outcomes require exact-candidate external receipts.
-No successor hosted run or publication is established. Frozen a6 evidence remains
+No successor hosted run or publication was established at that checkpoint. Frozen a6 evidence remains
 version-bound and is not an acceptance of the changed default schema/profile.
 
 Historical release disposition for `0.2.0a4`: **unreleased source candidate; 1,066 selected author source checks passed with zero failures/errors/skips. Exact final outgoing-artifact and installed acceptance require separate receipts, and a publication destination remains unverified.** Separately accepted solver-gate and documentation-checker component reviews overlap the source selection; they are not additional unique coverage and do not accept the final artifacts. The 988-node portable CI definition excludes 78 local Git cases and has not run on hosted CI. See [historical a4 verification](verifier-ci-verification.md).
 
 Predecessor source-admission, fake-only simulation, combined-artifact and Git-provenance repair reviews retain their narrow scopes. The historical a3 [source record](parallel-development-verification.md), final `a59419b` installed journeys through all eight blocks per language, and [same-host build experiment](build-toolchain.md) do not transfer to a4. Earlier scores are not reassigned to this candidate. Local [source checks](verification-status.md), [integration checks](integration-review.md), [artifact/callable checks](execution-core-verification.md), [Git residue repair](git-workspaces-residue-fix.md), [provenance-integrated checks](provenance-integration-verification.md) and [earlier combined record](combined-candidate-verification.md) remain version-bound.
 
-This checklist does not create a new consent gate or revoke prior authorization; local integration and public publication remain distinct actions. Checkboxes below are release-decision gates, not a claim that no local work exists; none is automatically closed by component or predecessor checks.
+This checklist does not create a new consent gate or revoke prior authorization; local integration and public publication remain distinct actions. The reusable checkboxes below are review prompts for a specific future release, not the status record for the published a2 assets. They are not automatically closed by component or predecessor checks; the exact a2 disposition is linked above.
 
 ## Source and integration
 

@@ -1,13 +1,13 @@
 # Gmsh worker inherited resource ceilings
 
-The inherited CPU component was integrated into a separately frozen
-resource-qualified **0.3.0a1** successor. This source-only follow-on also preserves
-lower inherited file-size limits in the existing Gmsh worker, with no
-package-version, default-verifier, numerical-tolerance, or solver-policy change.
-It has no new installed-artifact, kernel-enforcement, or native acceptance.
-Existing v0.3.0a1 release assets do not contain this unreleased file-size repair.
-The [current verification scope](structural-v2-candidate-verification.md) records
-new source/artifact identities; prior accepted artifacts are retained unchanged.
+The [0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) includes the inherited CPU and file-size ceiling setup described below. The
+[released worker source](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/src/opendot_engineering/executors/_gmsh_worker.py) and
+[release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md) bind the packaged repair to exact a2 assets and scoped software checks. The file-size repair changes neither the default verifier, numerical tolerances nor the separate solver policy. It establishes no new kernel-enforcement or native acceptance.
+
+Historical boundary: the CPU component was integrated into the resource-qualified
+**0.3.0a1** successor; unchanged v0.3.0a1 release assets do not contain the later
+file-size repair. The [historical verification scope](structural-v2-candidate-verification.md)
+retains its earlier source/artifact identities; prior assets and receipts are unchanged.
 
 Before importing Gmsh, the worker reads its inherited CPU soft and hard limits
 and sets both to the minimum of 300 seconds and all finite inherited values.

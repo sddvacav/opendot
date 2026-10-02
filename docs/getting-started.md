@@ -28,7 +28,7 @@ PYTHONPATH=src python -B -m opendot_engineering.adapters.lab_qualification \
 - For both synthetic examples, POSIX descriptor-relative no-symlink file reads; unsupported platforms fail closed
 - No model key, network service, native CAD backend, or solver is needed for these two examples
 
-The default package has no required runtime Python dependencies. This is an unreleased source candidate, not an advertised registry download. Do not install a similarly named package or guess a repository URL. A verified public release destination and support matrix remain release gates.
+The default package has no required runtime Python dependencies. The [v0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) provides verified public wheel and matching source downloads; use the [installed guide](installed-quickstart.md) and its exact SHA-256 pins. No PyPI publication or broader supported-platform matrix is claimed. Do not install a similarly named package or guess a repository URL.
 
 ## What to inspect
 

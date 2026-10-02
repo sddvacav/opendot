@@ -1,12 +1,14 @@
 # Canonical agent metadata contracts
 
-Introduced in `0.2.0a2` and retained unchanged in this unreleased source candidate,
+Introduced in `0.2.0a2` and retained unchanged in this package,
 `Capability` and `AgentManifest` belong to the
 existing `opendot_engineering.core.contracts` owner. `core` re-exports the same
 class objects. There is no `DotManifest` alias or second contract owner.
 The [metadata review record](agent-contracts-verification.md) and
-[current candidate record](verifier-ci-verification.md) retain separate
-version-bound scopes; earlier acceptance does not approve a successor.
+[historical a4 record](verifier-ci-verification.md) retain separate
+version-bound scopes; earlier acceptance does not approve a successor. See the
+[current overview](../OVERVIEW.md) and [installed guide](installed-quickstart.md)
+for release status and version-pinned installation.
 
 These are descriptive frozen dataclasses, not an executable agent API. A manifest
 does not register capabilities, resolve schemas or tools, invoke a provider,
