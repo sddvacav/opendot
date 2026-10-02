@@ -1729,17 +1729,12 @@ def test_real_recorder_failure_closes_independently_without_missing_event_succes
         owner._reserve_submission("sync")
 
 
-def _real_original_fixture(tmp_path):
+def _real_activity_response(runner, job):
     from dataclasses import replace
     from temporalio.testing import ActivityEnvironment
     from temporalio.common import RetryPolicy
     from opendot_engineering.adapters import temporal_activity as production
     from opendot_engineering.tool_runtime import ToolRuntime
-    root = tmp_path / "runner"
-    for name in ("cas", "private", "audit"):
-        (root / name).mkdir(parents=True)
-    runner = m.BatchRunner(root, root / "temporal", {"candidate_revision": "a" * 40}, m.DiagnosticState("a" * 40))
-    job = _real_reserve(runner.admission, runner.observed)
     env = ActivityEnvironment()
     env.info = replace(env.info, workflow_id=job["workflow_id"], workflow_run_id=_batch_ack(job)["run_id"],
         activity_id=m.ACTIVITY_ID, activity_type=m.ACTIVITY_TYPE, namespace="default", task_queue=m.QUEUE,
@@ -1763,7 +1758,16 @@ def _real_original_fixture(tmp_path):
         runner.observed.exit_activity(identity, response, True)
     finally:
         m._BATCH_INVOCATION.reset(token)
-    return runner, job, response
+    return response
+
+
+def _real_original_fixture(tmp_path):
+    root = tmp_path / "runner"
+    for name in ("cas", "private", "audit"):
+        (root / name).mkdir(parents=True)
+    runner = m.BatchRunner(root, root / "temporal", {"candidate_revision": "a" * 40}, m.DiagnosticState("a" * 40))
+    job = _real_reserve(runner.admission, runner.observed)
+    return runner, job, _real_activity_response(runner, job)
 
 
 def test_real_original_canonical_receipt_and_bounded_cas_binding(tmp_path):
@@ -1849,14 +1853,15 @@ def test_real_live_runner_uses_no_execution_delays_or_recovery_calls():
                     assert call.func.attr not in {"sleep", "cancel", "kill", "terminate", "reset_workflow_execution", "signal"}
 
 
-async def _real_history_fixture(runner, job, response):
+async def _real_history_fixture(runner, job, response, *, bind=True):
     from temporalio.api.history.v1 import HistoryEvent
     from temporalio.api.enums.v1 import EventType
     from temporalio.client import WorkflowHistory
     from temporalio.converter import DataConverter
     converter = DataConverter.default
-    runner.client = _RealNamespace(data_converter=converter)
-    runner.responses[job["job_id"]] = response
+    if bind:
+        runner.client = _RealNamespace(data_converter=converter)
+        runner.responses[job["job_id"]] = response
     inputs = await converter.encode([runner.requests[job["job_id"]]])
     outputs = await converter.encode([response])
     run_id = _batch_ack(job)["run_id"]
@@ -2119,4 +2124,244 @@ def test_real_public_interceptor_closes_info_gap_and_preserves_original_control(
         assert caught.value is original
         assert owner.snapshot()["uncertainty_latched"] and observed.observation_uncertain
         assert m._BATCH_INVOCATION.get() is None
+    _real_asyncio.run(exercise())
+
+
+# Composed local consumer controls, not hosted/agent-scale acceptance. Keep the
+# real loop, observer, original CAS/receipt validation and history validator.
+class _RealControlledResultHandle:
+    def __init__(self, job, response, history):
+        self.id, self.run_id = job["workflow_id"], _batch_ack(job)["run_id"]
+        self.response, self.history = response, history
+        loop = _real_asyncio.get_running_loop()
+        self.result_ready, self.history_ready = loop.create_future(), loop.create_future()
+        self.result_entered, self.history_entered = loop.create_future(), loop.create_future()
+        self.result_calls, self.history_calls = [], []
+
+    async def result(self, **kwargs):
+        self.result_calls.append(kwargs)
+        assert len(self.result_calls) == 1
+        self.result_entered.set_result(None)
+        return await self.result_ready
+
+    async def fetch_history(self, **kwargs):
+        self.history_calls.append(kwargs)
+        assert len(self.history_calls) == 1
+        self.history_entered.set_result(None)
+        return await self.history_ready
+
+    def release_remaining(self):
+        if not self.result_ready.done():
+            self.result_ready.set_result(self.response)
+        if not self.history_ready.done():
+            self.history_ready.set_result(self.history)
+
+
+class _RealSaturatedConsumer:
+    def __init__(self, tmp_path):
+        from temporalio.converter import DataConverter
+        root = tmp_path / "runner"
+        for name in ("cas", "private", "audit"):
+            (root / name).mkdir(parents=True)
+        self.runner = m.BatchRunner(root, root / "unused-cli", {"candidate_revision": "a" * 40},
+                                    m.DiagnosticState("a" * 40))
+        self.handles, self.starts, self.peaks, self.stops, self.reads = {}, [], [], [], []
+        self.started = {n: _real_asyncio.get_running_loop().create_future() for n in (16, 17)}
+        self.data_converter = DataConverter.default
+        self.runner.client = self
+        async def no_start(*args): pass
+        async def stop_workers(): self.stops.append("workers")
+        async def stop_server(): self.stops.append("server")
+        self.runner.start_server = self.runner.start_worker = no_start
+        self.runner.stop_workers, self.runner.stop_server = stop_workers, stop_server
+        original_read = self.runner.store.get_bytes
+        def read(ref, **kwargs):
+            self.reads.append((ref.artifact_id, kwargs))
+            return original_read(ref, **kwargs)
+        self.runner.store.get_bytes = read
+        self.run = _real_asyncio.create_task(self.runner.run_cases())
+
+    async def start_workflow(self, method, request, **kwargs):
+        runner = self.runner
+        job = next(j for j in runner.plan["jobs"] if j["workflow_id"] == kwargs["id"])
+        assert request == runner.requests[job["job_id"]]
+        assert kwargs["request_eager_start"] is False and kwargs["retry_policy"].maximum_attempts == 1
+        assert len(self.starts) < 17
+        self.starts.append(job["job_id"])
+        self.peaks.append(runner.admission.snapshot()["outstanding"])
+        assert len(runner.pending) <= 16
+        response = _real_activity_response(runner, job)
+        history, _ = await _real_history_fixture(runner, job, response, bind=False)
+        self.handles[job["job_id"]] = _RealControlledResultHandle(job, response, history)
+        if len(self.starts) in self.started:
+            self.started[len(self.starts)].set_result(None)
+        return _RealNamespace(id=job["workflow_id"], first_execution_run_id=_batch_ack(job)["run_id"])
+
+    def get_workflow_handle(self, workflow_id, *, run_id):
+        handle = next(h for h in self.handles.values() if h.id == workflow_id)
+        assert handle.run_id == run_id
+        return handle
+
+    async def wait(self, *tasks):
+        if not tasks:
+            return
+        done, pending = await _real_asyncio.wait(tasks, timeout=3)
+        assert not pending, "controlled observer transition did not complete"
+        for task in done:
+            task.result()
+
+    async def saturated(self):
+        await self.wait(self.started[16])
+        await self.wait(*(h.result_entered for h in self.handles.values()))
+        state = self.runner.admission.snapshot()
+        assert (len(self.starts), state["outstanding"], state["validated_terminal"]) == (16, 16, 0)
+        assert len(self.runner.pending) == len(self.runner.result_operations) == 16
+        assert not self.runner.outcomes and not self.runner.histories
+        assert all(not h.history_calls for h in self.handles.values())
+
+    async def result_before_history(self, job_id):
+        handle = self.handles[job_id]
+        handle.result_ready.set_result(handle.response)
+        await self.wait(handle.history_entered)
+        assert not handle.history_ready.done()
+        return handle
+
+    def check_single_reads(self, history_count):
+        assert len(self.starts) == len(set(self.starts))
+        assert max(self.peaks) == self.runner.admission.snapshot()["peak_outstanding"] == 16
+        assert sum(len(h.history_calls) for h in self.handles.values()) == history_count
+        for handle in self.handles.values():
+            assert handle.result_calls == [{"follow_runs": False, "rpc_timeout": timedelta(seconds=2)}]
+            assert handle.history_calls in ([], [{"rpc_timeout": timedelta(seconds=2)}])
+        result_ids = {h.response["result_ref"]["artifact_id"] for h in self.handles.values()}
+        assert all(kwargs == {"max_bytes": 16384} for ref, kwargs in self.reads if ref in result_ids)
+        assert len({ref for ref, _ in self.reads if ref in result_ids}) == history_count
+
+    async def finish_owned_tasks(self):
+        # End only this fixture's finite prefix through the existing deadline.
+        # Resolve retained local reads, including after a failed assertion; never
+        # cancel or replace a result observer to manufacture quiescence.
+        self.runner.deadline = 0
+        for handle in self.handles.values():
+            handle.release_remaining()
+        tasks = {self.run, *self.runner.pending.values(), *self.runner.result_operations.values()}
+        done, pending = await _real_asyncio.wait(tasks, timeout=3)
+        assert not pending, "controlled fixture left an owned Task unresolved"
+        for task in done:
+            task.exception()
+
+
+def test_real_saturated_consumer_waits_for_bound_history_before_one_slot_refill(tmp_path):
+    async def exercise():
+        control = _RealSaturatedConsumer(tmp_path)
+        runner = control.runner
+        try:
+            await control.saturated()
+            last = await control.result_before_history("batch-015")
+            first = await control.result_before_history("batch-000")
+            state = runner.admission.snapshot()
+            assert (len(control.starts), state["outstanding"], state["validated_terminal"]) == (16, 16, 0)
+            assert runner.observed.total("workflow_result") == 2
+            assert not runner.outcomes and not runner.histories
+            assert not runner.admission._outcomes
+            result_reads = [(ref, kwargs) for ref, kwargs in control.reads if kwargs == {"max_bytes": 16384}]
+            assert {ref for ref, _ in result_reads} == {
+                last.response["result_ref"]["artifact_id"], first.response["result_ref"]["artifact_id"]}
+            assert len(result_reads) == 2
+            last.history_ready.set_result(last.history)
+            await control.wait(control.started[17])
+            await control.wait(control.handles["batch-016"].result_entered)
+            state = runner.admission.snapshot()
+            assert (len(control.starts), state["outstanding"], state["validated_terminal"]) == (17, 16, 1)
+            assert state["jobs"]["batch-015"]["validated_terminal"]
+            assert not state["jobs"]["batch-000"]["validated_terminal"]
+            assert not first.history_ready.done() and len(runner.pending) == 16
+            assert [row["terminal"]["job_id"] for row in runner.outcomes] == ["batch-015"]
+            assert [row["job_id"] for row in runner.histories] == ["batch-015"]
+            runner.deadline = 0
+            for handle in control.handles.values():
+                handle.release_remaining()
+            with pytest.raises(m.GateRunError, match="GATE_DEADLINE"):
+                await control.wait(control.run)
+            # Expiry can precede the next loop sweep of already-finished reads.
+            await control.wait(*runner.pending.values())
+            runner._consume_done()
+            state = runner.admission.snapshot()
+            assert (state["attempts_consumed"], state["validated_terminal"], state["outstanding"]) == (17, 17, 0)
+            assert not state["uncertainty_latched"] and state["unsubmitted"] == 183
+            assert not runner.pending and not runner.result_operations
+            terminals = [row["job_id"] for row in runner.observed.counters if row["event"] == "validated_terminal"]
+            assert terminals[0] == "batch-015" and len(set(terminals)) == len(terminals) == 17
+            assert control.starts == [f"batch-{i:03d}" for i in range(17)]
+            control.check_single_reads(17)
+            cleanup = await runner.cleanup()
+            assert cleanup["cleanup_status"] == "PASS" and cleanup["all_reservations_accounted"]
+            assert control.stops == ["workers", "server"]
+        finally:
+            await control.finish_owned_tasks()
+    _real_asyncio.run(exercise())
+
+
+@pytest.mark.parametrize("fault", ["swapped_result", "invalid_history", "result_exception"])
+def test_real_saturated_consumer_fault_stays_closed_after_late_valid_results(tmp_path, fault):
+    async def exercise():
+        control = _RealSaturatedConsumer(tmp_path)
+        runner = control.runner
+        try:
+            await control.saturated()
+            late = await control.result_before_history("batch-015")
+            failed = control.handles["batch-000"]
+            expected, message = m.GateRunError, "RESULT_REFERENCE"
+            if fault == "swapped_result":
+                failed.result_ready.set_result(control.handles["batch-001"].response)
+            elif fault == "invalid_history":
+                await control.result_before_history("batch-000")
+                failed.history.events[0].workflow_execution_started_event_attributes.original_execution_run_id = (
+                    "00000000-0000-0000-0000-111111111111")
+                failed.history_ready.set_result(failed.history)
+                message = "UNEXPECTED_NEW_RUN"
+            else:
+                expected, message = RuntimeError, "controlled result observation failure"
+                failed.result_ready.set_exception(RuntimeError(message))
+            with pytest.raises(expected, match=message):
+                await control.wait(control.run)
+            state = runner.admission.snapshot()
+            assert (len(control.starts), state["attempts_consumed"], state["outstanding"],
+                    state["validated_terminal"]) == (16, 16, 16, 0)
+            assert state["uncertainty_latched"] and state["jobs"]["batch-000"]["uncertain"]
+            assert state["reasons"] == ["INVALID_TERMINAL"]
+            assert not runner.outcomes and not runner.histories and not runner.admission._outcomes
+            assert not list((runner.root / "private").iterdir())
+            late.history_ready.set_result(late.history)
+            await control.wait(runner.pending["batch-015"])
+            state = runner.admission.snapshot()
+            assert (state["outstanding"], state["validated_terminal"]) == (15, 1)
+            assert state["uncertainty_latched"] and len(control.starts) == 16
+            for handle in control.handles.values():
+                handle.release_remaining()
+            await control.wait(*runner.pending.values())
+            runner._consume_done()
+            runner._ensure_observers()
+            state = runner.admission.snapshot()
+            assert (state["attempts_consumed"], state["validated_terminal"], state["outstanding"]) == (16, 15, 1)
+            assert state["uncertainty_latched"] and state["unsubmitted"] == 184
+            assert not state["jobs"]["batch-000"]["validated_terminal"]
+            assert len(runner.outcomes) == len(runner.histories) == len(runner.admission._outcomes) == 15
+            assert {row["terminal"]["job_id"] for row in runner.outcomes} == set(control.starts) - {"batch-000"}
+            assert runner.observed.total("validated_terminal") == 15
+            # Invoke the real refusal core without changing the one-producer
+            # identity enforced by submit_next_async; no callback can enter.
+            with pytest.raises(m.GateRunError, match="BATCH_ADMISSION_STOPPED"):
+                runner.admission._call_submission(lambda _: pytest.fail("post-closure client entry"),
+                                                 runner.plan["jobs"][16])
+            cleanup = await runner.cleanup()
+            assert cleanup["cleanup_status"] == "UNCONFIRMED" and not cleanup["all_reservations_accounted"]
+            assert cleanup["unresolved_result_operations"] == 0
+            assert not control.stops and not runner.quiescent()
+            assert not runner.pending and not runner.result_operations
+            assert runner._observer_started == set(control.starts)
+            assert len(control.starts) == 16 and runner.admission.snapshot()["uncertainty_latched"]
+            control.check_single_reads(16 if fault == "invalid_history" else 15)
+        finally:
+            await control.finish_owned_tasks()
     _real_asyncio.run(exercise())
