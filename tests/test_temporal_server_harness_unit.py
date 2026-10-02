@@ -126,7 +126,22 @@ def test_public_workflow_has_readonly_permissions_and_private_logs():
     assert "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065" in source
     assert 'opendot-temporal-pytest-private.log" 2>&1' in source
     assert "--force-reinstall --report" in source and "--require-hashes" in source
-    assert "uses: actions/upload-artifact" not in source and "secrets." not in source
+    # The whole reviewed workflow has a closed byte contract: alternate YAML
+    # spelling, extra actions or broader conditions cannot evade this guard.
+    from verify_temporal_server_gate import validate_public_batch_workflow
+    validate_public_batch_workflow(source.encode("utf-8"))
+    # Narrow retention exception: one explicit manual batch-only public export.
+    assert source.count("uses: actions/upload-artifact") == 1 and "secrets." not in source
+    upload = source.split("      - name: Retain only validated batch public projection\n", 1)[1]
+    assert "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a" in upload
+    assert "github.event_name == 'workflow_dispatch'" in upload
+    assert "inputs.qualification == 'batch200'" in upload and "inputs.retain_public_evidence" in upload
+    assert "success() && !cancelled()" in upload and "steps.batch_evidence.outcome == 'success'" in upload
+    assert "path: ${{ runner.temp }}/opendot-temporal-batch200-public\n" in upload
+    assert "retention-days: 30" in upload and "if-no-files-found: error" in upload
+    assert "overwrite: false" in upload and "include-hidden-files: false" in upload
+    assert 'opendot-temporal-batch200-gate/audit' not in upload and 'private.log' not in upload
+    assert "uses: actions/upload-artifact" not in source.split("      - name: Assert separate manually selected 200-job batch", 1)[0]
 
 
 def test_quiescence_requires_independent_handler_return():
