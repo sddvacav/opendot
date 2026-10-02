@@ -144,7 +144,10 @@ def _fabricated_records():
     return {"activity-metadata.jsonl": metadata, "invocation-counters.jsonl": counters,
             "outcomes.json": {"schema_version": gate.PREFIX + "outcomes.v1", "scenarios": outcomes},
             "history-projection.json": {"schema_version": gate.PREFIX + "history.v1", "snapshots": histories},
-            "replay.json": replay, "cleanup.json": cleanup}
+            "replay.json": replay, "cleanup.json": cleanup,
+            "diagnostic.json": {"schema_version": gate.PREFIX + "diagnostic.v1", "requested_revision": REVISION,
+                                "status": "COMPLETE", "primary_failure": None, "cleanup_failure": None,
+                                "audit_failure": None}}
 
 
 @pytest.fixture
@@ -679,3 +682,326 @@ def test_shared_junit_parser_rejects_multiple_statuses_without_identity_validati
     path.write_text('<testsuite><testcase classname="unit.fixture" name="test_unit"><error/><failure/></testcase></testsuite>')
     with pytest.raises(gate.GateError, match="INVALID_JUNIT"):
         gate.parse_junit(path)
+
+
+def _failure(phase="sdk_binding", reason="TYPE_ERROR", category="type_error"):
+    return {"phase": phase, "reason_code": reason, "exception_category": category}
+
+
+def _diagnostic(**changes):
+    value = {"schema_version": gate.PREFIX + "diagnostic.v1", "requested_revision": REVISION,
+             "status": "FAILED", "primary_failure": _failure(), "cleanup_failure": None,
+             "audit_failure": None}
+    value.update(changes)
+    return value
+
+
+def test_diagnostic_builder_validates_and_returns_fresh_fixed_records():
+    failure = _failure()
+    result = gate.build_diagnostic(REVISION, status="FAILED", primary_failure=failure)
+    assert result == _diagnostic() and result["primary_failure"] is not failure
+    failure["reason_code"] = "PRIVATE_CANARY"
+    assert result["primary_failure"]["reason_code"] == "TYPE_ERROR"
+    assert gate.build_diagnostic(REVISION, status="COMPLETE") == _diagnostic(status="COMPLETE", primary_failure=None)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("schema_version", "PRIVATE_CANARY"), ("requested_revision", "b" * 40),
+    ("requested_revision", None), ("requested_revision", REVISION.upper()),
+    ("requested_revision", "a" * 41), ("requested_revision", True),
+    ("status", "PASS"), ("status", "PRIVATE_CANARY"), ("status", True),
+    ("primary_failure", "PRIVATE_CANARY"), ("primary_failure", True), ("primary_failure", []),
+    ("cleanup_failure", False), ("audit_failure", 0),
+])
+def test_diagnostic_rejects_invalid_top_level_values(field, value):
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(_diagnostic(**{field: value}), REVISION)
+
+
+@pytest.mark.parametrize("field", ("primary_failure", "cleanup_failure", "audit_failure"))
+@pytest.mark.parametrize("key", ("phase", "reason_code", "exception_category"))
+def test_diagnostic_rejects_private_values_in_every_failure_field(field, key):
+    failure = _failure("audit_write" if field == "audit_failure" else "cleanup" if field == "cleanup_failure" else "sdk_binding")
+    failure[key] = "PRIVATE_CANARY_NOT_FOR_OUTPUT /private/path token=private"
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(_diagnostic(**{field: failure}), REVISION)
+
+
+@pytest.mark.parametrize("field", (None, "primary_failure", "cleanup_failure", "audit_failure"))
+def test_diagnostic_rejects_every_extra_private_capable_field(field):
+    value = _diagnostic(cleanup_failure=_failure("cleanup"), audit_failure=_failure("audit_write"))
+    target = value if field is None else value[field]
+    target["exception_text"] = "PRIVATE_CANARY_NOT_FOR_OUTPUT"
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(value, REVISION)
+
+
+@pytest.mark.parametrize("field", ("phase", "reason_code", "exception_category"))
+@pytest.mark.parametrize("value", (True, 1, None, [], {}, "x" * 4097))
+def test_diagnostic_failure_fields_are_exact_bounded_enums(field, value):
+    diagnostic = _diagnostic()
+    diagnostic["primary_failure"][field] = value
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(diagnostic, REVISION)
+
+
+@pytest.mark.parametrize("failure", [
+    _failure("complete"), _failure(reason="TYPE_ERROR", category="gate_refusal"),
+    _failure(reason="SDK_REPLAY", category="type_error"),
+    _failure(reason="VALUE_ERROR", category="type_error"),
+    _failure(reason="NOT_A_REVIEWED_CODE", category="gate_refusal"),
+])
+def test_diagnostic_rejects_unknown_or_inconsistent_failure_codes(failure):
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(_diagnostic(primary_failure=failure), REVISION)
+
+
+@pytest.mark.parametrize("category,reason", tuple(gate.DIAGNOSTIC_GENERIC_REASONS.items()))
+def test_diagnostic_admits_only_matching_fixed_generic_category_and_code(category, reason):
+    value = _diagnostic(primary_failure=_failure(reason=reason, category=category))
+    assert gate.validate_diagnostic(value, REVISION) == value
+
+
+def test_diagnostic_admits_all_reviewed_gate_codes_without_arbitrary_text():
+    for reason in gate.DIAGNOSTIC_GATE_REASONS:
+        value = _diagnostic(primary_failure=_failure(reason=reason, category="gate_refusal"))
+        assert gate.validate_diagnostic(value, REVISION) == value
+
+
+@pytest.mark.parametrize("field,phase", [
+    ("cleanup_failure", "cleanup"), ("cleanup_failure", "worker_shutdown"),
+    ("cleanup_failure", "server_shutdown"), ("audit_failure", "audit_write"),
+])
+def test_diagnostic_can_record_cleanup_or_audit_failure_without_primary(field, phase):
+    value = _diagnostic(primary_failure=None, **{field: _failure(phase)})
+    assert gate.validate_diagnostic(value, REVISION) == value
+
+
+@pytest.mark.parametrize("field,phase", [("cleanup_failure", "sdk_binding"), ("audit_failure", "cleanup")])
+def test_diagnostic_secondary_slots_have_fixed_phase_scope(field, phase):
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(_diagnostic(**{field: _failure(phase)}), REVISION)
+
+
+@pytest.mark.parametrize("field", ("primary_failure", "cleanup_failure", "audit_failure"))
+def test_diagnostic_forged_complete_with_any_failure_is_rejected(field):
+    phase = "cleanup" if field == "cleanup_failure" else "audit_write" if field == "audit_failure" else "sdk_binding"
+    value = _diagnostic(status="COMPLETE", primary_failure=None)
+    value[field] = _failure(phase)
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(value, REVISION)
+
+
+def test_diagnostic_failed_without_any_failure_is_rejected():
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(_diagnostic(primary_failure=None), REVISION)
+
+
+@pytest.mark.parametrize("field", tuple(_diagnostic()))
+def test_diagnostic_requires_every_top_level_field(field):
+    value = _diagnostic()
+    del value[field]
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(value, REVISION)
+
+
+@pytest.mark.parametrize("field", tuple(_failure()))
+def test_diagnostic_requires_every_nested_failure_field(field):
+    value = _diagnostic()
+    del value["primary_failure"][field]
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(value, REVISION)
+
+
+def test_diagnostic_null_revision_only_represents_missing_preflight_configuration():
+    value = _diagnostic(requested_revision=None,
+                        primary_failure=_failure("preflight", "KEY_ERROR", "key_error"))
+    assert gate.validate_diagnostic(value, None) == value
+    assert gate.build_diagnostic(None, status="FAILED", primary_failure=value["primary_failure"]) == value
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(value, REVISION)
+
+
+@pytest.mark.parametrize("change", ({"status": "COMPLETE", "primary_failure": None},
+    {"primary_failure": _failure("sdk_binding", "KEY_ERROR", "key_error")},
+    {"primary_failure": _failure("preflight", "VALUE_ERROR", "value_error")},
+    {"primary_failure": None, "audit_failure": _failure("audit_write")},
+    {"requested_revision": REVISION}))
+def test_diagnostic_cannot_erase_revision_binding_for_other_failures(change):
+    value = _diagnostic(requested_revision=None,
+                        primary_failure=_failure("preflight", "KEY_ERROR", "key_error"))
+    value.update(change)
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(value, None)
+
+
+@pytest.mark.parametrize("expected", (True, 0, [], {}, "PRIVATE_CANARY", "b" * 40, "A" * 40))
+def test_diagnostic_rejects_wrong_or_nonexact_expected_revision(expected):
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(_diagnostic(), expected)
+
+
+@pytest.mark.parametrize("mutation", ("record", "failure", "key", "nested_key", "revision", "schema", "status", "phase", "reason", "category", "expected"))
+def test_diagnostic_rejects_builtin_subclass_impersonation(mutation):
+    class String(str):
+        pass
+
+    class Mapping(dict):
+        pass
+
+    value = _diagnostic()
+    expected = REVISION
+    if mutation == "record":
+        value = Mapping(value)
+    elif mutation == "failure":
+        value["primary_failure"] = Mapping(value["primary_failure"])
+    elif mutation in {"key", "nested_key"}:
+        target, key = (value, "status") if mutation == "key" else (value["primary_failure"], "phase")
+        original = target.pop(key)
+        target[String(key)] = original
+    elif mutation == "expected":
+        expected = String(expected)
+    else:
+        key = {"revision": "requested_revision", "schema": "schema_version", "reason": "reason_code",
+               "category": "exception_category"}.get(mutation, mutation)
+        target = value if mutation in {"revision", "schema", "status"} else value["primary_failure"]
+        target[key] = String(target[key])
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_INVALID$"):
+        gate.validate_diagnostic(value, expected)
+
+
+@pytest.mark.parametrize("raw", (
+    b'', b'{"status":"FAILED","status":"COMPLETE"}', b'{"value":NaN}', b'{"value":Infinity}',
+    b'{"value":-Infinity}', b'{"value":', b'\xff', b'{}\n{}\n', b' ' * (gate.DIAGNOSTIC_MAX_BYTES + 1),
+    b'{"exception_text":"PRIVATE_CANARY_NOT_FOR_OUTPUT"}',
+))
+def test_safe_diagnostic_reader_rejects_invalid_bytes_without_echo(tmp_path, raw):
+    (tmp_path / "diagnostic.json").write_bytes(raw)
+    report = gate.read_safe_diagnostic(tmp_path, REVISION)
+    assert report == {"schema_version": gate.PREFIX + "diagnostic-report.v1", "validation": "INVALID",
+                      "reason_code": "DIAGNOSTIC_INVALID", "diagnostic": None}
+    assert "PRIVATE_CANARY" not in gate._encode(report)
+
+
+def test_safe_diagnostic_reader_enforces_exact_4096_byte_cap(tmp_path):
+    raw = json.dumps(_diagnostic()).encode()
+    path = tmp_path / "diagnostic.json"
+    path.write_bytes(raw + b' ' * (gate.DIAGNOSTIC_MAX_BYTES - len(raw)))
+    assert gate.read_safe_diagnostic(tmp_path, REVISION)["validation"] == "VALID"
+    path.write_bytes(path.read_bytes() + b' ')
+    assert gate.read_safe_diagnostic(tmp_path, REVISION)["reason_code"] == "DIAGNOSTIC_INVALID"
+
+
+@pytest.mark.parametrize("mutation", ("missing_directory", "missing_file", "read_error", "unexpected_error", "file_symlink", "directory_symlink"))
+def test_safe_diagnostic_reader_has_fixed_unavailable_or_invalid_reports(tmp_path, monkeypatch, mutation):
+    audit = tmp_path / "audit"
+    audit.mkdir()
+    _write(audit / "diagnostic.json", _diagnostic())
+    expected = "DIAGNOSTIC_UNAVAILABLE"
+    if mutation == "missing_directory":
+        audit = tmp_path / "absent"
+    elif mutation == "missing_file":
+        (audit / "diagnostic.json").unlink()
+    elif mutation in {"read_error", "unexpected_error"}:
+        def fail(*args, **kwargs):
+            raise (OSError if mutation == "read_error" else RuntimeError)("PRIVATE_CANARY")
+        monkeypatch.setattr(gate, "read_bytes", fail)
+        if mutation == "unexpected_error":
+            expected = "DIAGNOSTIC_INVALID"
+    elif mutation == "file_symlink":
+        target = tmp_path / "private.json"
+        (audit / "diagnostic.json").rename(target)
+        (audit / "diagnostic.json").symlink_to(target)
+        expected = "DIAGNOSTIC_INVALID"
+    else:
+        link = tmp_path / "link"
+        link.symlink_to(audit, target_is_directory=True)
+        audit = link
+        expected = "DIAGNOSTIC_INVALID"
+    report = gate.read_safe_diagnostic(audit, REVISION)
+    assert report["reason_code"] == expected and report["diagnostic"] is None
+    assert "PRIVATE_CANARY" not in gate._encode(report) and str(tmp_path) not in gate._encode(report)
+
+
+def test_failed_partial_audit_exposes_only_safe_diagnostic_and_preserves_failure(unit_bundle, tmp_path, capsys):
+    audit, _, source = unit_bundle
+    failure = _diagnostic()
+    _write(audit / "diagnostic.json", failure)
+    (audit / "activity-metadata.jsonl").write_bytes(b'')
+    junit = _junit(tmp_path / "unit.xml", ['<error>PRIVATE_CANARY</error>'] * 7)
+    summary = tmp_path / "summary.txt"
+    assert gate.main(_main_args(audit, source, junit, summary)) == 1
+    output = capsys.readouterr().out
+    acceptance, report = [json.loads(line) for line in output.splitlines()]
+    assert acceptance["acceptance"] == "FAIL" and acceptance["counts"]["ERROR"] == 7
+    assert {"SIZE_LIMIT", "TEST_ERROR", "DIAGNOSTIC_FAILED"} <= set(acceptance["reason_codes"])
+    assert not acceptance["evidence_complete"] and not acceptance["cleanup_verified"]
+    assert report["validation"] == "VALID" and report["diagnostic"] == failure
+    assert "PRIVATE_CANARY" not in output + summary.read_text()
+    assert str(tmp_path) not in output + summary.read_text()
+    assert json.loads(summary.read_text().splitlines()[-1]) == report
+    assert set(acceptance) == {"schema_version", "candidate_revision", "required_node_count", "collected_node_count",
+        "nodes", "counts", "evidence_complete", "privacy_check", "cleanup_verified", "acceptance", "reason_codes"}
+
+
+def test_failed_diagnostic_cannot_pass_otherwise_complete_unit_audit(unit_bundle, tmp_path, capsys):
+    audit, _, source = unit_bundle
+    _write(audit / "diagnostic.json", _diagnostic())
+    with pytest.raises(gate.GateError, match="^DIAGNOSTIC_FAILED$"):
+        gate.validate_audit(audit, REVISION, gate.REQUIRED_NODES)
+    assert gate.main(_main_args(audit, source, _junit(tmp_path / "unit.xml"))) == 1
+    acceptance, report = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    assert acceptance["acceptance"] == "FAIL" and report["diagnostic"]["status"] == "FAILED"
+
+
+@pytest.mark.parametrize("mutation", ("missing_receipt", "empty_rows", "incomplete_rows", "malformed_rows", "cleanup", "junit"))
+def test_complete_diagnostic_cannot_override_any_partial_or_failed_gate(unit_bundle, tmp_path, capsys, mutation):
+    audit, records, source = unit_bundle
+    junit = _junit(tmp_path / "unit.xml")
+    if mutation == "missing_receipt":
+        (audit / "replay.json").unlink()
+    elif mutation == "empty_rows":
+        (audit / "activity-metadata.jsonl").write_bytes(b'')
+    elif mutation == "incomplete_rows":
+        _write(audit / "activity-metadata.jsonl", records["activity-metadata.jsonl"][:1])
+    elif mutation == "malformed_rows":
+        (audit / "activity-metadata.jsonl").write_bytes(b'{"private":"PRIVATE_CANARY"\n')
+    elif mutation == "cleanup":
+        records["cleanup.json"]["cleanup_status"] = "UNCONFIRMED"
+        _write(audit / "cleanup.json", records["cleanup.json"])
+    else:
+        _junit(junit, ['<error>PRIVATE_CANARY</error>'] + [""] * 6)
+    assert gate.main(_main_args(audit, source, junit)) == 1
+    output = capsys.readouterr().out
+    acceptance, report = [json.loads(line) for line in output.splitlines()]
+    assert acceptance["acceptance"] == "FAIL"
+    assert report["validation"] == "VALID" and report["diagnostic"]["status"] == "COMPLETE"
+    assert '"audit_file"' not in output and "PRIVATE_CANARY" not in output
+
+
+@pytest.mark.parametrize("mutation", ("missing", "private_field", "private_category", "wrong_revision", "oversized"))
+def test_missing_or_invalid_diagnostic_never_prints_untrusted_fields(unit_bundle, tmp_path, capsys, mutation):
+    audit, _, source = unit_bundle
+    value = _diagnostic()
+    expected = "DIAGNOSTIC_INVALID"
+    if mutation == "missing":
+        (audit / "diagnostic.json").unlink()
+        expected = "DIAGNOSTIC_UNAVAILABLE"
+    elif mutation == "oversized":
+        (audit / "diagnostic.json").write_bytes(b'PRIVATE_CANARY' * 4096)
+    else:
+        if mutation == "private_field":
+            value["traceback"] = "PRIVATE_CANARY_NOT_FOR_OUTPUT"
+        elif mutation == "private_category":
+            value["primary_failure"]["exception_category"] = "PRIVATE_CANARY_NOT_FOR_OUTPUT"
+        else:
+            value["requested_revision"] = "b" * 40
+        _write(audit / "diagnostic.json", value)
+    summary = tmp_path / "summary.txt"
+    assert gate.main(_main_args(audit, source, _junit(tmp_path / "unit.xml"), summary)) == 1
+    output = capsys.readouterr().out
+    acceptance, report = [json.loads(line) for line in output.splitlines()]
+    assert acceptance["acceptance"] == "FAIL" and expected in acceptance["reason_codes"]
+    assert report["reason_code"] == expected and report["diagnostic"] is None
+    assert "PRIVATE_CANARY" not in output + summary.read_text()
+    assert '"audit_file"' not in output
