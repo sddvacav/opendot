@@ -1,0 +1,379 @@
+{
+  "schema_version": "opendot.ci-evidence.receipt.v1",
+  "recorded_on": "2026-10-02",
+  "evidence_kind": "allowlisted_public_ci_projection_summary",
+  "source_binding": {
+    "repository_url": "https://github.com/sddvacav/opendot",
+    "pull_request_url": "https://github.com/sddvacav/opendot/pull/23",
+    "pull_request_number": 23,
+    "pr_head_sha": "3a00cd17d4f99eb4c432ff13d4069b74019bd912",
+    "pr_head_url": "https://github.com/sddvacav/opendot/commit/3a00cd17d4f99eb4c432ff13d4069b74019bd912",
+    "tested_pr_merge_sha": "2459aa7ac50420cd910f8a934428ca666feb3460",
+    "tested_pr_merge_url": "https://github.com/sddvacav/opendot/commit/2459aa7ac50420cd910f8a934428ca666feb3460",
+    "tested_pr_merge_parents": [
+      "92140babccd65eca4879a39e2c437a3bfdf94a87",
+      "3a00cd17d4f99eb4c432ff13d4069b74019bd912"
+    ],
+    "git_tree_sha": "6f2f8bdad9ab1dc7ff1c311fe3c581a5eec71634",
+    "head_and_tested_revision_have_same_tree": true,
+    "source_tree_recomputed": true,
+    "source_file_count": 242,
+    "selected_source_file_sha256": {
+      ".github/workflows/portable.yml": "da9562010e96c78ac26158d3304052a7f8f12f70f249b1ad306ae1f8db9632a1",
+      ".github/workflows/temporal-server.yml": "0e747f2fb64d6b84a2bf7fd9fae79cd0065b41fa8615a50c539ee664a3fa5016",
+      "ci/acquire_temporal_cli.py": "4283fe5927703ef8b9bbbfedd4a911e824cf4eb3888a80b78dfbe0c6c60779fb",
+      "ci/agent-contract-nodes.txt": "130b15599401b90a10d387c0b945cc44a48f57f2750a950e28bbf1037ce54d23",
+      "ci/callable-nodes.txt": "132e7a9448eb315fe400b818ad6b4aa8b870415d1cd93437906720140217b026",
+      "ci/composition-nodes.txt": "e8c1e8b4bde9422d376026863802a3444e70cb33d5ed35eb91d2b59713e09106",
+      "ci/delivery-workflow-nodes.txt": "a9dab10d0546604e923b9c8c77d3c5f2b86b00b83d3c9460c174d3ea7b29d70c",
+      "ci/portable-nodes.txt": "5487ce415fda1190c04064be52f20b224b8937160c296e3efb1d67fd773bfefd",
+      "ci/public-regression-nodes.txt": "0ff13bb8eefbfa9be744da77897f40e90495794690d5f16b7d7b9cb4d57abecd",
+      "ci/readonly-artifact-nodes.txt": "3352ae15611cf43e9501a9cfd61decceb54f0573dc8cb0e3b820759512646089",
+      "ci/requirements.txt": "d4a40a3a0837215c3ab557d110437034fc36e3de888a3720301ab7d40e433600",
+      "ci/run_temporal_server_gate.py": "cf186e51674f63899d35d8204e745c1f98aeabbef1f29dcec1200f40300d825e",
+      "ci/solver-crosscheck-nodes.txt": "e8c801dc458f171865a567d0faac7f9f4d2aa79527e86f5419b8f6a7a4c75430",
+      "ci/source-boundary-nodes.txt": "43f1ee20eeb2aa69d9e8671c5d7951da15b1817b1b9feb4672df430195beaf8d",
+      "ci/temporal-sdk-requirements.txt": "f8ea76390c3f260bf48aa68ed64c4e80cf52e00bfb675d09be4eedd123748d89",
+      "ci/temporal-server-nodes.txt": "315d557eda272ea471ca85b4e32b432d2c059b72ae6082bee529a54003acd37f",
+      "ci/verify_temporal_server_gate.py": "2b1efef87c0d90e3087119daa343fe5d9b1e9f37ef10fb6b791aa822320f5079",
+      "src/opendot_engineering/adapters/temporal_activity.py": "cd2c277266239e57c10cb5aab743052f3322acf75be1d48156d715cef6fae5ae",
+      "src/opendot_engineering/adapters/temporal_workflow.py": "d9307d0e78e4a925d92f021c5316a0515040bb091013182419bc6ccbb6a5ea38",
+      "src/opendot_engineering/core/artifacts.py": "4606b7b11a81044267b30fee332d9b6fd6540d862726a9579655ee27c7d9a883",
+      "src/opendot_engineering/core/contracts.py": "9462415baf84668825ad2c8cfc3f4f3df68332f65d1f1f4b301fbf01cf8537ca",
+      "src/opendot_engineering/tool_runtime.py": "7c5011e02b2cf07e5f15ad7854905ce0738271e167b873bad9256a8ed169199c",
+      "tests/acceptance/temporal_server_gate.py": "5167765cba580fb0e5bc0c1af77239e24c52b87c4c235443174b0aa33771273d",
+      "tests/test_bounded_artifact_reads.py": "32085875a7783af30586f4118a23fc00b94c380d194db815027417f1e73784d2",
+      "tests/test_temporal_cli_acquisition.py": "a94e0125dcc9c43087b79da790a1dc56e62e755b21c66b64d1b7ae95ea63e1aa",
+      "tests/test_temporal_server_gate_verifier.py": "c8b700b8f1d1659ce577796fb4070439916699447ca565e198ecfcdc5ff4948e",
+      "tests/test_temporal_server_harness_unit.py": "b325e4d895d25e4b1798a1afdca9bc217e70d123959aac87fa24d88e4ea34a7e"
+    },
+    "harness_composite_sha256": "a55aef37b2ef4bf7537df8d2ee42d1138eaeef98532908e30a1bcd4a57c76f72",
+    "harness_composite_method": "SHA-256 of ASCII compact JSON sorted [relative_path, file_sha256] pairs using the tested verifier HARNESS_SOURCE_PATHS",
+    "hosted_source_digests_match_recovered_source": true
+  },
+  "runs": {
+    "portable": {
+      "id": 36969592297,
+      "name": "Portable source checks",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "3a00cd17d4f99eb4c432ff13d4069b74019bd912",
+      "run_started_at": "2026-10-02T05:35:06Z",
+      "updated_at": "2026-10-02T05:35:55Z",
+      "html_url": "https://github.com/sddvacav/opendot/actions/runs/36969592297",
+      "job_id": 110720570715,
+      "job_url": "https://github.com/sddvacav/opendot/actions/runs/36969592297/job/110720570715",
+      "checked_out_revision": "2459aa7ac50420cd910f8a934428ca666feb3460",
+      "downloadable_artifact_count_at_review": 0
+    },
+    "temporal": {
+      "id": 36969592211,
+      "name": "Optional Temporal real-server gate",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "3a00cd17d4f99eb4c432ff13d4069b74019bd912",
+      "run_started_at": "2026-10-02T05:35:06Z",
+      "updated_at": "2026-10-02T05:35:36Z",
+      "html_url": "https://github.com/sddvacav/opendot/actions/runs/36969592211",
+      "job_id": 110720570185,
+      "job_url": "https://github.com/sddvacav/opendot/actions/runs/36969592211/job/110720570185",
+      "checked_out_revision": "2459aa7ac50420cd910f8a934428ca666feb3460",
+      "downloadable_artifact_count_at_review": 0
+    }
+  },
+  "results": {
+    "portable": {
+      "passed_nodes": 1382,
+      "separate_passed_subtests": 141,
+      "distinct_selected_nodes": 1382,
+      "bounded_read_selected_nodes": 57,
+      "test_duration_seconds": 35.2,
+      "count_source": "public pytest terminal summary; selection independently recomputed from nine source manifests"
+    },
+    "temporal_unit": {
+      "schema_version": "opendot.temporal.unit-gate.v1",
+      "acceptance": "PASS",
+      "collected_node_count": 818,
+      "executed_node_count": 818,
+      "expected_node_count": 818,
+      "passed_count": 818,
+      "failed_count": 0,
+      "error_count": 0,
+      "skipped_count": 0,
+      "collection_exit_code": 0,
+      "test_exit_code": 0,
+      "collection_sha256": "f9e98cdb23ada1f6c0c43f638365978d9c07b90460ba87910b13679b6f151f01"
+    },
+    "temporal_server": {
+      "schema_version": "opendot.temporal.server-gate.acceptance.v1",
+      "acceptance": "PASS",
+      "candidate_revision": "2459aa7ac50420cd910f8a934428ca666feb3460",
+      "required_node_count": 7,
+      "collected_node_count": 7,
+      "cleanup_verified": true,
+      "evidence_complete": true,
+      "privacy_check": "PASS",
+      "reason_codes": [
+        "OK"
+      ],
+      "counts": {
+        "ERROR": 0,
+        "FAIL": 0,
+        "NOT_RUN": 0,
+        "PASS": 7,
+        "SKIP": 0
+      },
+      "nodes": [
+        {
+          "node_id": "tests/acceptance/temporal_server_gate.py::test_real_received_metadata_and_valid_output",
+          "outcome": "PASS",
+          "reason_code": "OK"
+        },
+        {
+          "node_id": "tests/acceptance/temporal_server_gate.py::test_queued_activity_survives_graceful_server_restart",
+          "outcome": "PASS",
+          "reason_code": "OK"
+        },
+        {
+          "node_id": "tests/acceptance/temporal_server_gate.py::test_recorded_result_replays_without_handler_reentry",
+          "outcome": "PASS",
+          "reason_code": "OK"
+        },
+        {
+          "node_id": "tests/acceptance/temporal_server_gate.py::test_completed_null_output_is_preserved",
+          "outcome": "PASS",
+          "reason_code": "OK"
+        },
+        {
+          "node_id": "tests/acceptance/temporal_server_gate.py::test_blocked_tool_is_not_promoted_to_success",
+          "outcome": "PASS",
+          "reason_code": "OK"
+        },
+        {
+          "node_id": "tests/acceptance/temporal_server_gate.py::test_failed_tool_is_not_promoted_to_success",
+          "outcome": "PASS",
+          "reason_code": "OK"
+        },
+        {
+          "node_id": "tests/acceptance/temporal_server_gate.py::test_input_failure_is_transport_failure_without_dispatch",
+          "outcome": "PASS",
+          "reason_code": "OK"
+        }
+      ]
+    },
+    "temporal_diagnostic": {
+      "validation": "VALID",
+      "status": "COMPLETE",
+      "primary_failure": null,
+      "audit_failure": null,
+      "cleanup_failure": null
+    },
+    "offline_documentation": {
+      "schema": "opendot.documentation-checks.v1",
+      "accepted": true,
+      "counts": {
+        "failures": 0,
+        "heading_fragments": 96,
+        "local_links": 784,
+        "markdown_files": 109,
+        "remote_links_skipped": 307,
+        "sh_blocks_en": 8,
+        "sh_blocks_zh": 8
+      }
+    },
+    "counts_are_separate_overlapping_scopes": true
+  },
+  "public_projection_observations": {
+    "qualification_profile": "synthetic.bounded_sum.v1",
+    "environment": {
+      "python_version": "3.12.14",
+      "platform": "linux-x86_64",
+      "sdk_version": "1.34.0",
+      "cli_version": "1.9.1",
+      "server_version": "1.32.0",
+      "preflight_status": "PASS"
+    },
+    "activity_metadata": {
+      "observed_entries": 5,
+      "is_local": false,
+      "attempt": 1,
+      "maximum_attempts": 1,
+      "start_to_close_seconds": 10,
+      "schedule_to_close_seconds": 60
+    },
+    "replay": {
+      "activity_schedule_count_before": 1,
+      "activity_schedule_count_after": 1,
+      "handler_count_before": 1,
+      "handler_count_after_live_replay": 1,
+      "handler_count_after_sdk_replay": 1,
+      "counter_sequence_before": 4,
+      "counter_sequence_after_live_replay": 4,
+      "counter_sequence_after_sdk_replay": 4,
+      "activity_worker_present_during_replay": false,
+      "fresh_workflow_worker": true,
+      "same_completion_event_after_restart": true,
+      "cas_reverified": true,
+      "sdk_replay_failure": null
+    },
+    "cleanup": {
+      "cleanup_status": "PASS",
+      "cleanup_code": "OK",
+      "all_activity_calls_observed_terminal": true,
+      "forced_termination_used": false,
+      "in_flight_shutdown_attempted": false,
+      "same_cas_across_restarts": true,
+      "same_sqlite_across_restarts": true,
+      "server_generation_count": 3,
+      "all_server_exit_codes_zero": true,
+      "all_server_exits_observed_graceful": true,
+      "shutdown_requested_signal": "SIGINT",
+      "completed_worker_shutdown_count": 12,
+      "whole_fixture_elapsed_seconds": 5.893617
+    },
+    "outcomes": [
+      {
+        "scenario": "durability_replay",
+        "activity_transport_status": "COMPLETED",
+        "workflow_transport_status": "COMPLETED",
+        "tool_status": "COMPLETED",
+        "execute_count": 1,
+        "handler_count": 1,
+        "output_kind": "integer",
+        "output_integer": 5,
+        "semantic_valid": true,
+        "result_ref_present": true,
+        "scientific_validity": false,
+        "device_control_authority": false,
+        "owner_integration": "NOT_EVALUATED",
+        "independent_review": "NOT_EVALUATED"
+      },
+      {
+        "scenario": "null",
+        "activity_transport_status": "COMPLETED",
+        "workflow_transport_status": "COMPLETED",
+        "tool_status": "COMPLETED",
+        "execute_count": 1,
+        "handler_count": 1,
+        "output_kind": "null",
+        "output_integer": null,
+        "semantic_valid": true,
+        "result_ref_present": true,
+        "scientific_validity": false,
+        "device_control_authority": false,
+        "owner_integration": "NOT_EVALUATED",
+        "independent_review": "NOT_EVALUATED"
+      },
+      {
+        "scenario": "blocked",
+        "activity_transport_status": "COMPLETED",
+        "workflow_transport_status": "COMPLETED",
+        "tool_status": "BLOCKED",
+        "execute_count": 1,
+        "handler_count": 0,
+        "output_kind": "null",
+        "output_integer": null,
+        "semantic_valid": false,
+        "result_ref_present": true,
+        "scientific_validity": false,
+        "device_control_authority": false,
+        "owner_integration": "NOT_EVALUATED",
+        "independent_review": "NOT_EVALUATED"
+      },
+      {
+        "scenario": "failed_validation",
+        "activity_transport_status": "COMPLETED",
+        "workflow_transport_status": "COMPLETED",
+        "tool_status": "FAILED",
+        "execute_count": 1,
+        "handler_count": 1,
+        "output_kind": "null",
+        "output_integer": null,
+        "semantic_valid": false,
+        "result_ref_present": true,
+        "scientific_validity": false,
+        "device_control_authority": false,
+        "owner_integration": "NOT_EVALUATED",
+        "independent_review": "NOT_EVALUATED"
+      },
+      {
+        "scenario": "missing_input",
+        "activity_transport_status": "FAILED",
+        "workflow_transport_status": "FAILED",
+        "tool_status": null,
+        "execute_count": 0,
+        "handler_count": 0,
+        "output_kind": null,
+        "output_integer": null,
+        "semantic_valid": null,
+        "result_ref_present": false,
+        "scientific_validity": null,
+        "device_control_authority": null,
+        "owner_integration": null,
+        "independent_review": null
+      }
+    ]
+  },
+  "review_scope": {
+    "public_projection_schema_and_crosslink_review": "PASS",
+    "reviewed_projection_types": [
+      "environment.json",
+      "activity-metadata.jsonl",
+      "history-projection.json",
+      "invocation-counters.jsonl",
+      "outcomes.json",
+      "replay.json",
+      "cleanup.json"
+    ],
+    "pinned_verifier_sha256": "2b1efef87c0d90e3087119daa343fe5d9b1e9f37ef10fb6b791aa822320f5079",
+    "packet_preparation_checks": [
+      "complete source Git tree recomputed",
+      "selected source SHA-256 and harness composite compared with public environment projection",
+      "public run and commit bindings compared",
+      "source manifests counted and required server node IDs matched",
+      "two retained extractions of public audit rows compared",
+      "closed-key JSON schema and packet checksums validated"
+    ],
+    "service_rerun_during_packet_preparation": false,
+    "full_hosted_audit_reverification": "NOT_PERFORMED"
+  },
+  "evidence_availability": {
+    "included": "selected public CI summaries, source digests, run bindings and projected observations",
+    "historical_local_oracle_and_test_logs": "UNAVAILABLE_NOT_RECONSTRUCTED",
+    "historical_local_results_reverified": false,
+    "raw_hosted_history_cas_junit_collection_install_and_acquisition_files": "NOT_AVAILABLE_AS_DOWNLOADABLE_RUN_ARTIFACTS",
+    "raw_history_hashes_recomputed_from_raw_bytes": false,
+    "raw_logs_included": false,
+    "installed_release_wheel_qualified_by_this_packet": false
+  },
+  "limits": [
+    "Public projected observations and the pinned hosted verifier result do not reproduce the complete hosted audit directory.",
+    "Separate portable, unit and server scopes overlap; subtests are not extra unique test nodes.",
+    "Qualification covers the exact tested source tree and existing finite synthetic reference profile only.",
+    "The opt-in read contract bounds caller-selected Python object-byte acquisition under trusted regular local-file assumptions; this is not a constant-memory, RSS, kernel-I/O, wall-time, hostile-filesystem or OS-sandbox guarantee.",
+    "Graceful observed-quiescent restarts and recorded-result replay do not establish crash recovery, in-flight recovery, arbitrary tools or global exactly-once execution.",
+    "This packet does not qualify released artifacts, grant scientific or device authority, or change owner-integration or independent-review NOT_EVALUATED fields.",
+    "SHA-256 and Git identities support byte consistency, not authorship, authorization or independent scientific validation."
+  ],
+  "post_merge_portable": {
+    "main_merge_commit_sha": "26e301795bcd6bf2ad26274e25fed7c8fc2106a8",
+    "main_merge_commit_url": "https://github.com/sddvacav/opendot/commit/26e301795bcd6bf2ad26274e25fed7c8fc2106a8",
+    "git_tree_sha": "6f2f8bdad9ab1dc7ff1c311fe3c581a5eec71634",
+    "source_tree_matches_pr_tested_tree": true,
+    "run_id": 36970944225,
+    "job_id": 110724587760,
+    "run_url": "https://github.com/sddvacav/opendot/actions/runs/36970944225",
+    "job_url": "https://github.com/sddvacav/opendot/actions/runs/36970944225/job/110724587760",
+    "checked_out_revision": "26e301795bcd6bf2ad26274e25fed7c8fc2106a8",
+    "conclusion": "success",
+    "all_steps_success": true,
+    "passed_nodes": 1382,
+    "separate_passed_subtests": 141,
+    "test_duration_seconds": 42.97,
+    "scope": "post-merge portable source checks; no additional Temporal server run"
+  }
+}
