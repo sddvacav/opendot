@@ -1,10 +1,11 @@
-# Structural default verification v2: unreleased component
+# Structural default verification v2
 
-This default profile is integrated into the separate, **unreleased 0.3.0a1**
-successor. Its intentional result-schema/status change is not backported to the
-frozen **0.2.0a6** source or artifacts. Integration, installed acceptance and
-independent review require the [exact successor record](structural-v2-candidate-verification.md).
-Do not treat earlier a6 evidence as acceptance of this candidate.
+Current release status, 2 October 2026: this default profile is retained in the
+[0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2); it predates a2. The
+[released source](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045) and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md) bind the exact a2 assets to scoped source, installed and independent checks.
+Its intentional result-schema/status change is not backported to the frozen
+**0.2.0a6** source or artifacts. The [historical successor record](structural-v2-candidate-verification.md)
+retains the earlier pre-release scope; earlier a6 evidence does not accept a2.
 
 ## What the default now checks
 
@@ -56,7 +57,7 @@ must be described as historical admission, not current v2 acceptance. It is
 never chosen automatically. This makes the breaking default change explicit
 instead of silently attaching stronger claims to an old receipt.
 
-Migration for this successor candidate:
+Migration to the current default profile:
 
 ```python
 from opendot_engineering.executors.structural_beam import verify_structural_artifacts
@@ -118,5 +119,6 @@ the original default generator behavior.
 
 Any cached genuine native pack replay is output-only and separately recorded;
 it does not establish a new solve. Author tests, independent review, installed
-acceptance, successor integration and publication remain separate scopes. No
-score transfer or public release is implied by this integration.
+acceptance, successor integration and publication remain separate scopes. The
+actual a2 release disposition is linked above; this profile implies no score
+transfer or broader scientific/native acceptance.

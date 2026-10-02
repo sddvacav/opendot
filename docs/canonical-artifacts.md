@@ -1,14 +1,16 @@
 # Canonical local artifacts
 
 The canonical local artifact core was introduced in `0.2.0a0` and is included
-in this unreleased source candidate. The optional read-only increment changes only
+in this package. The optional read-only increment changes only
 the existing store owner; default writer behavior and the `ArtifactRef` body are
 preserved. It provides one standard-library
 content-addressed store and one immutable reference type. This is a migration
 candidate: previous consumers have not been switched or accepted. It is not a
 second runtime. Each version's source and review records retain their own scope;
-the [current candidate record](verifier-ci-verification.md) does not inherit
-acceptance from earlier artifact receipts.
+neither the [historical a4 record](verifier-ci-verification.md) nor a changed
+release inherits acceptance from earlier artifact receipts. See the
+[current overview](../OVERVIEW.md) and [installed guide](installed-quickstart.md)
+for release status and version-pinned installation.
 
 ```python
 from opendot_engineering.core import ArtifactStore

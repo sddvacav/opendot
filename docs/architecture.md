@@ -10,6 +10,7 @@ This document describes the bounded `opendot-engineering` package and separates 
 | Canonical local artifact core | `opendot_engineering.core.artifacts` and `core.contracts.ArtifactRef` | One extracted SHA-256 owner; trusted local roots, per-file replacement, no transactions or consumer migration |
 | Local source audit | `opendot_engineering.adapters.source_audit` | Read-only local-byte and declared-metadata checks; no scientific decision, storage service, or access-control service |
 | Callable-only execution | `opendot_engineering.tool_runtime` | Existing bounded callable owner, six contracts, in-memory health and deny-only guard; no model, durable recovery, sandbox, or automatic consumer integration |
+| Optional synthetic Temporal transport | `opendot_engineering.adapters.temporal_activity.ReferenceActivity` and `adapters.temporal_workflow.execute_reference` | External Temporal owns scheduling/history for fixed `synthetic.bounded_sum.v1`; worker-local grants, one trusted host, one local CAS writer and one concurrent profile Activity; existing callable/CAS/contracts owners remain canonical. See the [bounded transport](temporal-reference-transport.md) and [ADR 004](decisions/004-temporal-reference-transport.md); no general durability or new runtime owner |
 | Optional source admission | `opendot_engineering.adapters.source_admission` | Explicit operator-reviewed flat-module byte capture and named exports; ordinary trusted Python execution, no authorization service or sandbox |
 | Synthetic qualification records | `opendot_engineering.adapters.lab_qualification` | Compare invented fixture outcomes with declared oracles; no instrument simulator, device authorization, or physical qualification |
 | Optional simulated lab | `opendot_engineering.adapters.simulated_lab` and internal `_simulated_lab_worker` | A finite fixed Bluesky plan using internally constructed ophyd fake devices; strict offline verification; no real-device control, resume, service, or scientific qualification |
@@ -60,7 +61,7 @@ Future work may address coordination, durable state, human approvals, runtime in
 
 A future integration should state versions and licenses; input and output types; units and tolerances; permissions and data destinations; timeout, retry, cancellation, cleanup, and idempotency semantics; structured errors; and evidence fields. Tests should include public/synthetic successes and deliberate failures. Domain tools retain responsibility for calculations and formats; their invocation is not independent scientific review.
 
-[OpenHands, Temporal, and build123d](peer-benchmark.md) are documentation references. Naming them does not establish runtime integration, inherited guarantees, partnership, or endorsement.
+[OpenHands, Temporal, and build123d](peer-benchmark.md) are documentation references; naming them alone establishes no integration, inherited guarantees, partnership or endorsement. Temporal has the separately implemented and qualified optional adapter listed above; its finite scope does not establish general orchestration, in-flight crash recovery, cancellation safety or global exactly-once effects.
 
 ## Questions for future runtime work
 
