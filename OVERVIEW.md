@@ -1,12 +1,12 @@
 # OpenDot Engineering release overview
 
-## Current 0.3.0a5 release preparation
+## Current experimental release · 0.3.0a5
 
-**ALPHA / NOT_SCORED; candidate preparation, not a publication receipt.**
+**ALPHA / NOT_SCORED; [published prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5).**
 Use the [a5 installed guide](docs/installed-quickstart.md) only with its matching
 reviewed five-file bundle and independently accepted external SHA256SUMS digest.
 Exact source, installed and guide qualification require separate external receipts;
-no a4 acceptance transfers to this candidate.
+no a4 acceptance transfers to a5.
 
 - Wheel: callable/artifact APIs, bounded reads, read-only help and the optional
   explicit-import [HTTPS exchange](docs/a2a-http-transport.md); default runtime
@@ -21,7 +21,7 @@ no a4 acceptance transfers to this candidate.
 - HTTPS has finite mocked qualification only; live transport/worker/provider/model
   interoperability is `NOT_RUN`. [A2A](docs/a2a-worker-turn.md) still returns an
   `UNACCEPTED` candidate. Real O3 remains `PROPOSED / NOT_RUN`; measured effort is `UNKNOWN`
-- This preparation adds no native or service run. Full CAD/thermal native execution
+- Installing the default wheel starts no native backend or service. Full CAD/thermal native execution
   is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review `NOT_EVALUATED`,
   mesh independence `NOT_ESTABLISHED`. Scientific/device authority stays false;
   historical Temporal evidence and the [a3 inventory](docs/release-inventory/v0.3.0a3/README.md)
@@ -97,7 +97,7 @@ The [disposable example](examples/git-workspaces/README.md) creates two worktree
 
 The distribution is `opendot-engineering`; its Python import namespace is `opendot_engineering`. The default installation has no required runtime Python dependencies and needs Python 3.12 or newer. Several file-checking APIs require POSIX operations. The optional `temporal` extra pins `temporalio==1.34.0`; its dependencies need separate approval and preparation, and installation never starts a server. Simulation execution has an optional, pinned dependency set; native CAD/CAE execution requires its own backend environment. There is no registered console command.
 
-Start with the [0.3.0a5 candidate installed quickstart](docs/installed-quickstart.md) for offline hash verification and a first result. For source use, see [Getting started](docs/getting-started.md) and the [small callable/artifact example](examples/callable-artifacts/README.md). Use the [Git example](examples/git-workspaces/README.md) only on an eligible local host. The [public repository](https://github.com/sddvacav/opendot) and [issues](https://github.com/sddvacav/opendot/issues) are verified. The [historical a6 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is separate; use [Releases](https://github.com/sddvacav/opendot/releases) to verify the available artifacts and their exact version before installation.
+Start with the [0.3.0a5 installed quickstart](docs/installed-quickstart.md) for offline hash verification and a first result. For source use, see [Getting started](docs/getting-started.md) and the [small callable/artifact example](examples/callable-artifacts/README.md). Use the [Git example](examples/git-workspaces/README.md) only on an eligible local host. The [public repository](https://github.com/sddvacav/opendot) and [issues](https://github.com/sddvacav/opendot/issues) are verified. The [historical a6 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is separate; use [Releases](https://github.com/sddvacav/opendot/releases) to verify the available artifacts and their exact version before installation.
 
 ## The boundary that remains
 

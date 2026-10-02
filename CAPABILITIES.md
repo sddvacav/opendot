@@ -1,12 +1,12 @@
 # OpenDot Engineering capabilities and evidence
 
-## Current 0.3.0a5 release preparation
+## Current experimental release · 0.3.0a5
 
-**ALPHA / NOT_SCORED; candidate preparation, not a publication receipt.**
+**ALPHA / NOT_SCORED; [published prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5).**
 Use the [a5 installed guide](docs/installed-quickstart.md) only with its matching
 reviewed five-file bundle and independently accepted external SHA256SUMS digest.
 Exact source, installed and guide qualification require separate external receipts;
-no a4 acceptance transfers to this candidate.
+no a4 acceptance transfers to a5.
 
 - Wheel: callable/artifact APIs, bounded reads, read-only help and the optional
   explicit-import [HTTPS exchange](docs/a2a-http-transport.md); default runtime
@@ -21,7 +21,7 @@ no a4 acceptance transfers to this candidate.
 - HTTPS has finite mocked qualification only; live transport/worker/provider/model
   interoperability is `NOT_RUN`. [A2A](docs/a2a-worker-turn.md) still returns an
   `UNACCEPTED` candidate. Real O3 remains `PROPOSED / NOT_RUN`; measured effort is `UNKNOWN`
-- This preparation adds no native or service run. Full CAD/thermal native execution
+- Installing the default wheel starts no native backend or service. Full CAD/thermal native execution
   is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review `NOT_EVALUATED`,
   mesh independence `NOT_ESTABLISHED`. Scientific/device authority stays false;
   historical Temporal evidence and the [a3 inventory](docs/release-inventory/v0.3.0a3/README.md)
