@@ -49,9 +49,10 @@ def rig(tmp_path, monkeypatch):
         request = {"schema_version": "opendot.temporal.request.v1",
                    "input_ref": {**asdict(ref), "source_refs": []}}
         original_get, original_put, original_execute = store.get_bytes, store.put_json, runtime.execute
-        def get(ref):
+        def get(ref, *, max_bytes=None):
             counts["get"].append(ref)
-            return original_get(ref)
+            assert type(max_bytes) is int and max_bytes == 256
+            return original_get(ref, max_bytes=max_bytes)
         def put(value, **kwargs):
             counts["put"].append((value, kwargs))
             return original_put(value, **kwargs)
@@ -242,10 +243,29 @@ def test_canonical_input_failures_no_dispatch(rig, monkeypatch, fault):
     r = rig()
     if fault == "size": r.request["input_ref"]["size_bytes"] -= 1
     elif fault == "oversized":
-        big = r.store.put_bytes(b" " * 257, mime_type="application/json", producer="test", task_id="test")
+        big = r.store.put_bytes(b" " * 1024 * 1024, mime_type="application/json", producer="test", task_id="test")
         r.request["input_ref"] = {**asdict(big), "source_refs": [], "size_bytes": 256}
+        from pathlib import Path
+        original_open = Path.open
+        observed = []
+        class Reader:
+            def __init__(self, raw): self.raw = raw
+            def __enter__(self): return self
+            def __exit__(self, *args): self.raw.close()
+            def read(self, size):
+                assert 0 < size <= 257 - sum(observed)
+                data = self.raw.read(size)
+                observed.append(len(data))
+                return data
+        def opened(path, mode="r", *args, **kwargs):
+            assert mode == "rb" and not args and kwargs == {"buffering": 0}
+            return Reader(original_open(path, mode, **kwargs))
+        monkeypatch.setattr(Path, "open", opened)
+        monkeypatch.setattr(r.store, "sha256", lambda _: pytest.fail("oversize hashed"))
+        monkeypatch.setattr(m, "_decode", lambda _: pytest.fail("oversize decoded"))
     else:
-        def broken(_):
+        def broken(_, *, max_bytes=None):
+            assert max_bytes == 256
             r.counts["get"].append(_)
             if fault == "missing": raise FileNotFoundError("private path")
             from opendot_engineering.core.artifacts import ArtifactIntegrityError
@@ -254,6 +274,9 @@ def test_canonical_input_failures_no_dispatch(rig, monkeypatch, fault):
     error = rejected(r, "TemporalInputRejected")
     assert "private" not in str(error)
     assert len(r.counts["get"]) == 1 and not r.counts["execute"] and not r.counts["put"]
+    assert not r.counts["handler"]
+    if fault == "oversized":
+        assert sum(observed) == 257
 
 
 @pytest.mark.parametrize("null", [False, True])

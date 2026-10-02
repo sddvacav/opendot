@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "src/opendot_engineering"
 OWNERS = {
     "tool_runtime.py": "7c5011e02b2cf07e5f15ad7854905ce0738271e167b873bad9256a8ed169199c",
-    "core/artifacts.py": "91fde8d32f6f7498fc96c0e883b9ba658440e95b0cc92f69f172e4de3d7b7856",
+    "core/artifacts.py": "4606b7b11a81044267b30fee332d9b6fd6540d862726a9579655ee27c7d9a883",
     "core/contracts.py": "9462415baf84668825ad2c8cfc3f4f3df68332f65d1f1f4b301fbf01cf8537ca",
 }
 
@@ -92,6 +92,9 @@ def test_run_has_ordered_gates_one_read_and_one_put():
     names = [node.func.attr for node in calls]
     assert names.count("_admit") == names.count("get_bytes") == names.count("execute") == names.count("put_json") == 1
     assert names.index("_admit") < names.index("get_bytes") < names.index("execute") < names.index("put_json")
+    read = next(node for node in calls if node.func.attr == "get_bytes")
+    assert ast.unparse(read.func) == "self.store.get_bytes"
+    assert {keyword.arg: ast.unparse(keyword.value) for keyword in read.keywords} == {"max_bytes": "256"}
     assert not any(isinstance(node, (ast.For, ast.While, ast.AsyncFor)) for node in ast.walk(run))
     # No catch encompasses the actual owner execute boundary.
     for node in ast.walk(run):
