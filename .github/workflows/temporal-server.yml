@@ -88,8 +88,9 @@ jobs:
               "tests/test_temporal_cli_acquisition.py",
               "tests/test_temporal_server_gate_verifier.py",
               "tests/test_temporal_server_harness_unit.py",
+              "tests/test_temporal_dag_recovery.py",
           )
-          expected = 1164
+          expected = 1484
           temporary = Path(os.environ["RUNNER_TEMP"])
           collection = temporary / "opendot-temporal-unit-collection.log"
           junit = temporary / "opendot-temporal-unit-results.xml"
