@@ -2,9 +2,9 @@
 
 [English](CAPABILITIES.md) · [版本概览](OVERVIEW.zh-CN.md) · [研究映射](RESEARCH-MAP.zh-CN.md)
 
-截至 2026 年 10 月 2 日。本表描述实验性 0.3.0a2 alpha 边界，并保留 a4 及更早证据的精确范围。这是可追溯性映射，不是评分。“已实现”表示代码存在；前一版独立通过不会自动批准后继改动。
+截至 2026 年 10 月 2 日。本表描述冻结的实验性 0.3.0a3 发布版边界，并保留 a4 及更早证据的精确范围。这是可追溯性映射，不是评分。“已实现”表示代码存在；前一版独立通过不会自动批准后继改动。
 
-**实验性 alpha：0.3.0a2；NOT_SCORED。** 本版本整合
+**实验性 alpha：0.3.0a3；NOT_SCORED。** 本版本整合
 [结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
@@ -13,7 +13,25 @@
 文件大小修复与可选 Temporal 传输已打包进 0.3.0a2；未改动的 v0.3.0a1 发布产物不含这两项新增内容，原有哈希保持不变。
 [历史 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-[0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
+[0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)现已提供。[精确产物安装指南](docs/installed-quickstart.zh-CN.md)固定其已发布 wheel 与配套完整源码。[历史 0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)及其既有证据保持不变。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
+
+## 0.3.0a3 已发布产物范围
+
+已发布产物对应[提交 `30610de43da81801e7b88517459fbdf0f667ca2d`](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d)，
+源码树为 `95ca23d9d36558680c809f2382bef188c6fc2ae4`。
+本次文档后续更新不重建或替换这些产物。后续 `main` 改动及 CI 不会改变或验收这些
+冻结产物；a3 仍只包含纯软件批量准备。产物包含已合入的
+[有限读取 API](docs/canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment)，
+完整源码还包含[纯软件有限批量准备](docs/temporal-batch-qualification.md)。
+API 页面标题中的“unreleased”是先前源码检查点，不表示固定 a3 wheel 缺少此 API。
+指定精确非负整数 N 后，读取最多取得 N+1 个实际对象字节并拒绝超限输入；
+省略参数或传入 `None` 仍读取整个对象。可信普通文件与符号链接前提保持不变。
+这不是峰值内存、时间、沙箱或整个执行过程的限制。
+
+批量准备仅供测试：精确 200 个固定合成任务、16 个已预留或已提交但尚未通过终态验证
+的工作流、八个外部 Activity 槽位与八个执行器 worker。先预留再提交，不确定性会
+关闭后续准入。纯软件夹具不证明实际 200 任务服务执行、实测并发、智能体数量、吞吐量
+或新增生产调度器。下方先前服务证据保留原版本与七场景范围。
 
 ## 可选 Temporal 资格验证与 0.3.0a2 证据
 
@@ -66,7 +84,7 @@ E2/E3 独立结果概括了另行复核的证据包，完整材料保留在源�
 | 编号 | 能力与使用价值 | 当前状态 | 验收证据 | 重要边界 |
 | --- | --- | --- | --- | --- |
 | C1 | [函数与产物组合](examples/callable-artifacts/README.md)：把工具结果连接到可检查的保存字节 | 已实现；前一版通过独立复核 | E2；695 项基线中含 7 项组合测试；安装后探针分别检查接受、拒绝和权限阻断 | 语义失败可能保留未接受产物；不提供回滚或科学认可 |
-| C2 | [统一本地产物存储](docs/canonical-artifacts.md)：按哈希写入、取回并独立检查字节 | 已实现；保留前一版唯一实现 | E2；合成写读、引用身份、损坏拒绝；E1 保留核心实现字节 | 可信根目录；跟随符号链接；锁只属于单个实例；对象与元数据不作事务发布；无大小或流式限制 |
+| C2 | [统一本地产物存储](docs/canonical-artifacts.md)：按哈希写入、取回并独立检查字节 | 已实现；a3 在同一所有者中加入可选有限读取 | E2 保留历史范围；[有限读取源码证据](docs/pr23-ci-evidence.json)与精确 a3 安装检查另行记录 | 可信普通本地对象／根目录；跟随符号链接；单实例锁；无事务；`max_bytes=N` 最多取得 N+1 字节，默认／None 读取、`put_file` 与 verify 仍完整读取；无恒定内存或执行级限制 |
 | C3 | [仅限可调用函数的执行](docs/callable-execution.md)：将声明权限、重试与语义验收用于 Python 函数 | 已实现；保留前一版唯一实现 | E2；指定函数测试与安装后示例；E1 复跑未变化的继承测试 | 状态在内存；权限与幂等性由调用方声明；无沙箱，也不保证任意函数已经停止 |
 | C4 | [受控本地 Git 工作区](docs/git-workspaces.md)：从固定起始提交创建不同工作副本并观察状态 | 已实现；R1 已修复并独立复验；最终产物另行复核 | E4；78 项 Git 测试；E1 保留历史例证、源代码与安装后的真实一次性双工作树示例、索引字节/修改时间与拒绝哨兵检查 | 仅 create/status/diff；可信协作式 POSIX 主 SHA-1 仓库与系统 Git >=2.52.0；HEAD 固定；仅已跟踪未暂存 diff；无清理、重试或远程操作 |
 | C5 | [本地来源审计](docs/local-source-audit.md)：检查固定输入、声明证据角色与精确观测定位 | 已实现；继承指定可移植检查 | E1/E2 可移植选择；公开合成清单哈希与安装后夹具检查 | 声明访问类别不等于访问控制；字节身份不证明真实性、作者或权利 |
@@ -77,7 +95,8 @@ E2/E3 独立结果概括了另行复核的证据包，完整材料保留在源�
 | C10 | [适配器来源信息](docs/git-provenance-verification.md)：让新适配器来源记录对应真实本地源文件成员关系 | 已实现；继承有限范围检查 | E1/E2 中的指定来源回归；Git 上下文不确定时保留源码哈希 | 不证明上游作者或原子快照；其他原生字段与历史证据仍可能含路径 |
 | C11 | [持久任务与智能体规模执行](docs/research/README.md)：恢复长任务并测量有用的并行交付 | 通用能力仍是提案 | 没有获接受的执行中崩溃恢复、真实模型或多机实验；C13 是单独的有限传输资格验证 | 不能宣称无人值守时长、数百智能体、吞吐量或成本节省 |
 | C12 | [统一智能体元数据](docs/agent-contracts.md)：描述能力与智能体清单 | 已包含；仅元数据提取 | E5；[合成元数据示例](examples/agent-contracts/README.md)；独立验收仍需另行记录 | `Capability` 与 `AgentManifest` 需显式调用 `.validate()`；预算与权限仅作描述，不新增执行强制机制，也未迁移既有使用方 |
-| C13 | [可选 Temporal 参考传输](docs/temporal-reference-transport.md)：交付固定合成 Activity 并复用已记录结果 | 已打包进 0.3.0a2；上方分别说明资格验证范围 | [较早实现证据](docs/temporal-qualification-evidence.md)：818 项 SDK／纯软件及七项真实服务检查；三代服务正常退出、12 代 worker 等待关闭完成；重放时处理函数计数保持一。0.3.0a2 的独立执行链接见上方 | 单主机、回环连接、同一可信本地 CAS／SQLite；仅排队首次交付与已记录结果重放；不证明执行中崩溃恢复、全局恰好一次或通用智能体执行 |
+| C13 | [可选 Temporal 参考传输](docs/temporal-reference-transport.md)：交付固定合成 Activity 并复用已记录结果 | 自 0.3.0a2 起已打包；上方分别说明历史资格验证范围 | [较早实现证据](docs/temporal-qualification-evidence.md)：818 项 SDK／纯软件及七项真实服务检查；三代服务正常退出、12 代 worker 等待关闭完成；重放时处理函数计数保持一。0.3.0a2 的独立执行链接见上方 | 单主机、回环连接、同一可信本地 CAS／SQLite；仅排队首次交付与已记录结果重放；不证明执行中崩溃恢复、全局恰好一次或通用智能体执行 |
+| C14 | [有限批量准备](docs/temporal-batch-qualification.md)：检查固定合成准入与证据规则 | a3 完整源码中的仅测试准备；不是 wheel 生产 API | 确定性夹具／轨迹检查，明确标为 FABRICATED_UNIT_DATA；无真实批量资格验证 | 200 固定任务／16 未完成项／八个配置 Activity 槽位；无实际 200 任务执行、200 智能体、实测并行、吞吐量或服务可用回执 |
 
 ## 如何解释结果
 

@@ -1,9 +1,9 @@
-# First useful result from the 0.3.0a2 prerelease
+# First useful result from the exact 0.3.0a3 assets
 
 [简体中文](installed-quickstart.zh-CN.md) · [Source-only route](../README.md#run-the-synthetic-examples)
 
 Run one permission-gated Python callable, store its synthetic result, and verify
-the stored bytes independently. This first result needs only the released wheel;
+the stored bytes independently. This first result needs only the pinned wheel;
 it does not need a source checkout, model key, network service, native solver, or
 device. These are finite local software examples, not an autonomous agent runtime.
 
@@ -14,49 +14,60 @@ Earlier local checks used Linux and CPython 3.12; this is not a general
 platform-support promise. Use a shell session in which `/tmp` is a suitable
 trusted temporary parent.
 
-Download the [opendot_engineering-0.3.0a2-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2-py3-none-any.whl)
-from the [0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)
-to a trusted local directory. Its exact SHA-256 is pinned below and listed in the
-release's [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/SHA256SUMS).
-This guide uses GitHub release assets; no PyPI publication is claimed. Do not
+Download the exact assets listed below from the [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)
+and keep them together in a trusted directory. Published on 2 October 2026,
+this GitHub prerelease has tag `v0.3.0a3`; no PyPI publication is claimed.
+The recipe below uses your local files and downloads no dependencies. Do not
 substitute a similarly named package or an earlier same-version build. A matching
-digest checks the supplied bytes, not their authorship, safety or scientific validity.
+digest checks file bytes, not authorship, safety or scientific validity.
 
-The [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
-bind these assets to public commit
-[359f781a5aa1650ae92b1af81cf369a17c444045](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045).
-The [historical 0.3.0a1 verification record](structural-v2-candidate-verification.md)
+The release tag and pinned assets bind to [commit `30610de43da81801e7b88517459fbdf0f667ca2d`](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d),
+source tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`. This six-file documentation
+follow-on is not inside those frozen assets: their installed guides still contain
+historical a2 instructions. Use the a3 names and hashes in this guide for this journey.
+All five final assets were verified through the published download URLs in an
+authenticated browser and separately with an HTTP client configured without
+credentials or cookies. Client request audits confirmed no authentication or
+cookie headers on the initial or redirected requests; normal proxy policy was
+preserved. Anonymous-browser access and unknown intermediary identity were not
+verified.
+
+This guide targets the frozen a3 package, which includes only pure batch
+preparation. Later `main` changes and CI do not alter or qualify these assets.
+
+The [historical 0.3.0a2 release](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)
+and its [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md),
+the [historical 0.3.0a1 verification record](structural-v2-candidate-verification.md)
 and [historical 0.3.0a1 installed guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md)
-retain their earlier versions and pins; they do not approve this wheel. Release
-assets remain frozen at the linked source commit. Documentation inside those
-assets retains its build-time download guidance; use this updated guide for the
-0.3.0a2 pins. The breaking structural default is covered by the
-[migration guide](structural-default-v2.md); this first-result journey uses the unchanged
-callable/artifact profile. The [documentation check](documentation-checks.md)
-compares the eight shell blocks below without executing them.
+retain their own versions and pins; they do not accept a3. The structural default
+change is covered by the [migration guide](structural-default-v2.md). The
+[documentation check](documentation-checks.md) compares the eight shell blocks
+below without executing them.
 
-### Exact download identities
+### Exact released asset identities
 
 | Asset | Bytes | SHA-256 |
 | --- | ---: | --- |
-| `opendot_engineering-0.3.0a2-py3-none-any.whl` | 99,220 | `c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7` |
-| `opendot_engineering-0.3.0a2.tar.gz` | 231,217 | `2b7520119edd698d98ab4ce0cb052d03d55b4ec02c9e3e62ba9dba85ad3fc0c8` |
-| `opendot-engineering-0.3.0a2-source.tar.gz` | 611,307 | `928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2` |
+| [opendot_engineering-0.3.0a3-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/opendot_engineering-0.3.0a3-py3-none-any.whl) | 99,743 | `d5e08c8ee38b94b35707ac25f0e8b04fbd4cf46a539542e1e6ab95d19d51ea59` |
+| [opendot_engineering-0.3.0a3.tar.gz](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/opendot_engineering-0.3.0a3.tar.gz) | 243,517 | `3df5024d5878682f678049913ea8c3b4236fefdb1c63cf5f2bea089a9451d73b` |
+| [opendot-engineering-0.3.0a3-source.tar.gz](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/opendot-engineering-0.3.0a3-source.tar.gz) | 682,889 | `e651190162830d9fe15e388496e1231dce8966bfd5a6807207278e0d23053fa1` |
 
-The [packaging sdist](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2.tar.gz)
-is a separate build input, not the full-source archive used for examples in step 3.
-This guide installs the wheel and does not build or install the sdist.
+The packaging sdist is a separate build input, not the full-source archive used
+for examples in step 3. This guide installs the wheel and does not build or
+install the sdist. The same [release](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) also provides [RELEASE-NOTES.md](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md)
+and [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/SHA256SUMS) alongside the three archives.
 
-Replace only `WHEEL` with the absolute path to the downloaded wheel. If your Python
-3.12+ executable has another name, change `PYTHON` too. Keep the pinned SHA-256
-unchanged. Run all blocks in the same shell. Installation creates a fresh environment
-and makes no dependency download.
+Replace only `RELEASE_DIR` with the absolute directory containing the exact wheel
+and full-source archive. If your Python 3.12+ executable has another name, change
+`PYTHON` too. Keep the pinned SHA-256 values unchanged. Run all blocks in the same
+shell. Installation creates a fresh environment and downloads no dependencies.
 
 ```sh
 set -eu
 PYTHON=python3.12
-WHEEL='/absolute/path/to/opendot_engineering-0.3.0a2-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7'
+RELEASE_DIR='/absolute/path/to/reviewed-a3-files'
+WHEEL="$RELEASE_DIR/opendot_engineering-0.3.0a3-py3-none-any.whl"
+EXPECTED_WHEEL_SHA256='d5e08c8ee38b94b35707ac25f0e8b04fbd4cf46a539542e1e6ab95d19d51ea59'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
 import hashlib, pathlib, sys
@@ -71,12 +82,13 @@ PYCODE
 JOURNEY=$(mktemp -d /tmp/opendot-first-run.XXXXXX)
 "$PYTHON" -I -B -m venv "$JOURNEY/venv"
 PY="$JOURNEY/venv/bin/python"
-"$PY" -I -B -m pip install --no-index --no-deps --no-compile --no-cache-dir "$WHEEL"
+"$PY" -I -B -m pip --isolated install --disable-pip-version-check \
+  --no-index --no-deps --no-compile --no-cache-dir "$WHEEL"
 cd "$JOURNEY"
 "$PY" -I -B -c 'import importlib.metadata as m, opendot_engineering as p; print(m.version("opendot-engineering")); print(p.__file__)'
 ```
 
-Expect version `0.3.0a2` and an import path inside the new environment's
+Expect version `0.3.0a3` and an import path inside the new environment's
 `site-packages`. No shell activation or `PYTHONPATH` is needed. `-I` ignores
 source-directory import shortcuts; `-B` avoids Python bytecode writes. There is
 no `opendot` console command.
@@ -106,7 +118,7 @@ OUTPUT_PARENT=$(mktemp -d /tmp/opendot-result.XXXXXX)
 "$PY" -I -B - "$OUTPUT_PARENT/result" <<'PYCODE'
 import hashlib, json, sys
 from pathlib import Path
-from opendot_engineering.core import ArtifactRef, ArtifactStore
+from opendot_engineering.core import ArtifactIntegrityError, ArtifactRef, ArtifactStore
 from opendot_engineering.tool_runtime import ToolRisk, ToolRuntime, ToolSpec
 
 output = Path(sys.argv[1])
@@ -128,7 +140,13 @@ ref, receipt = runtime.execute(
 )
 assert receipt.status == "COMPLETED" and receipt.semantic_valid
 assert ref is not None
-stored_bytes = store.get_bytes(ref)
+stored_bytes = store.get_bytes(ref, max_bytes=256)
+try:
+    store.get_bytes(ref, max_bytes=len(stored_bytes) - 1)
+except ArtifactIntegrityError as error:
+    assert str(error) == "artifact exceeds max_bytes"
+else:
+    raise AssertionError("Oversize input should have been refused")
 hash_matches = hashlib.sha256(stored_bytes).hexdigest() == ref.sha256
 assert hash_matches
 print(json.dumps({
@@ -136,6 +154,7 @@ print(json.dumps({
     "semantic_valid": receipt.semantic_valid,
     "artifact_id": ref.artifact_id,
     "independent_sha256_matches": hash_matches,
+    "bounded_read_and_refusal_passed": True,
     "output_directory": str(output),
     "scientific_accepted": False,
 }, indent=2))
@@ -143,48 +162,55 @@ PYCODE
 ```
 
 A successful run exits zero and prints `status: "COMPLETED"`,
-`semantic_valid: true`, an `artifact_id` starting with `sha256:`, and
-`independent_sha256_matches: true`. The `output_directory` points to the local
-CAS tree you can inspect. `scientific_accepted` remains `false`.
+`semantic_valid: true`, an `artifact_id` starting with `sha256:`,
+`independent_sha256_matches: true` and `bounded_read_and_refusal_passed: true`.
+The `output_directory` points to the local CAS tree you can inspect. `scientific_accepted` remains `false`.
 
 The semantic validator here checks only the returned reference type. It does not
 validate a scientific claim. Permissions are dispatch checks, not an OS sandbox.
 The `REVERSIBLE_WRITE` label does not implement undo; CAS is trusted-root storage,
 follows symlinks, and is not a transaction or recovery system.
 
+The a3 opt-in read above uses `max_bytes=256` and also checks an intentionally
+smaller budget is refused. For trusted regular local objects, a budget N acquires
+at most N+1 actual bytes to detect oversize input. Omitted or `None` keeps the
+whole-object read; puts and verify operations retain their previous behavior.
+This is not a constant-memory, time, hostile-filesystem or execution-wide bound.
+See [bounded retrieval and its limits](canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment).
+That section's “unreleased” label is its earlier source checkpoint; the exact a3
+wheel pinned here includes the API.
+
 ## 3. Try success, refusal, and missing permission
 
-The wheel contains the Python package, not the example scripts or fixtures.
-Download the matching [full source archive](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot-engineering-0.3.0a2-source.tar.gz)
-from the same release and replace `SOURCE_ARCHIVE` with its absolute local path.
-Use this named asset, not the narrower packaging sdist or GitHub's automatically
-generated source links, which have different bytes. Keep the source SHA-256 pin
-unchanged. The block verifies the archive before extracting it into the fresh
-journey directory, then copies only public examples. Imports continue to come
-from the installed wheel.
+The wheel contains the Python package, not example scripts and fixtures. Use
+`opendot-engineering-0.3.0a3-source.tar.gz` from the same `RELEASE_DIR`. This named
+full-source asset has different bytes from the narrower packaging sdist and
+GitHub-generated source archives; do not substitute either. Keep its fixed hash.
+The block verifies the archive before extracting it into a fresh journey directory,
+then copies only public examples. Python still imports from the installed wheel.
 
 ```sh
-SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a2-source.tar.gz'
-EXPECTED_SOURCE_SHA256='928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2'
+SOURCE_ARCHIVE="$RELEASE_DIR/opendot-engineering-0.3.0a3-source.tar.gz"
+EXPECTED_SOURCE_SHA256='e651190162830d9fe15e388496e1231dce8966bfd5a6807207278e0d23053fa1'
 "$PY" -I -B - "$SOURCE_ARCHIVE" "$EXPECTED_SOURCE_SHA256" "$JOURNEY/source" <<'PYCODE'
 import hashlib, pathlib, sys, tarfile
 archive, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
 if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
-    raise SystemExit("Source archive hash mismatch: stop and check the released asset")
+    raise SystemExit("Source archive hash mismatch: stop and check the reviewed asset")
 output = pathlib.Path(sys.argv[3])
 output.mkdir(exist_ok=False)
 with tarfile.open(archive, "r:gz") as source:
     source.extractall(output, filter="data")
 print("Pinned source archive bytes match")
 PYCODE
-SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a2"
+SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a3"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"
 ```
 
 Expect `synthetic_software_assertions_passed: true` and `package_version:
-"0.3.0a2"`. The three cases deliberately have different outcomes:
+"0.3.0a3"`. The three cases deliberately have different outcomes:
 
 - `success`: `COMPLETED`, semantic-valid, independently hash-verified bytes
 - `semantic_refusal`: `FAILED` with one intact **unaccepted** artifact retained
@@ -254,7 +280,7 @@ using its API on other repositories. Git failure does not block steps 1–4.
 
 ## Optional features are separate
 
-The 0.3.0a2 package includes the [Gmsh file-size-limit repair](gmsh-cpu-ceiling.md)
+The 0.3.0a3 package retains the [Gmsh file-size-limit repair](gmsh-cpu-ceiling.md)
 and [bounded Temporal reference transport](temporal-reference-transport.md).
 This walkthrough runs neither native backends nor Temporal. Default runtime
 Python dependencies remain empty, and default imports do not load the optional
@@ -269,6 +295,13 @@ first delivery after a graceful quiescent restart, and recorded-result replay.
 It does not establish in-flight crash recovery, multi-host operation, global
 exactly-once effects, production deployment, scientific validity or device authority.
 See the [capability and evidence limits](../CAPABILITIES.md); `NOT_SCORED` is unchanged.
+
+The full-source archive also includes [pure finite-batch preparation](temporal-batch-qualification.md):
+exactly 200 frozen synthetic jobs, 16 reserved/submitted-but-not-validated-terminal
+workflows and eight external Activity slots/executor workers. These are fixed
+fixture/configuration limits, not an actual 200-job service run, 200 agents,
+measured concurrency or throughput. The test-only batch harness is not packaged
+as a production wheel API. This journey starts no service or native backend.
 
 ## Recover from common first-run errors
 

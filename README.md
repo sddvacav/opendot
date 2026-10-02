@@ -12,9 +12,15 @@ OpenDot Engineering is a Python toolkit for local tool execution and inspectable
 
 Use it to prototype reviewable developer and research-engineering workflows: connect a callable to an artifact, review a synthetic measurement summary, or create a controlled local Git working copy. Start with the small example below, then explore the [APIs and examples](#explore-the-package).
 
-**Experimental alpha · 0.3.0a2 · NOT_SCORED.** Download the [0.3.0a2 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and follow the [version-pinned installation guide](docs/installed-quickstart.md) for the wheel, matching source examples and SHA-256 checks. Python 3.12+ is required; the default package has no runtime Python dependencies. Linux is the reviewed environment.
+**Experimental alpha · 0.3.0a3 · NOT_SCORED.** The [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) is available. Follow the [exact-asset installation guide](docs/installed-quickstart.md) for the released wheel, matching source examples and SHA-256 checks. Python 3.12+ is required; the default package has no runtime Python dependencies. Linux is the reviewed environment.
 
-**Included in 0.3.0a2:** the [Gmsh file-size-limit repair](docs/gmsh-cpu-ceiling.md) and [optional bounded Temporal transport](docs/temporal-reference-transport.md). The default install remains dependency-free; the Temporal extra needs separately approved dependencies and never starts a server automatically. The unchanged v0.3.0a1 assets contain neither addition; their [historical installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) preserves the original pins.
+**New in the a3 assets:** opt-in [bounded artifact acquisition](docs/canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment) with `get_bytes(..., max_bytes=N)`, plus [pure finite-batch preparation](docs/temporal-batch-qualification.md) in the full source. A bounded read acquires at most N+1 actual object bytes to detect excess; omitted/`None` retains whole-read behavior. The batch fixtures model 200 fixed synthetic jobs, 16 outstanding reservations/workflows and eight external Activity slots/executor workers. They do not demonstrate an actual 200-job service run, agent count, throughput or a production scheduler. Earlier “unreleased” labels in the linked API notes are source checkpoints; the pinned a3 wheel includes the bounded-read API.
+
+**Retained from [0.3.0a2](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2):** the [Gmsh file-size-limit repair](docs/gmsh-cpu-ceiling.md) and [optional bounded Temporal transport](docs/temporal-reference-transport.md). The default install remains dependency-free; the Temporal extra needs separately approved dependencies and never starts a server automatically. The unchanged v0.3.0a1 assets contain neither addition; their [historical installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) preserves the original pins.
+
+Installation and release claims on this page describe the frozen a3 assets.
+Later `main` changes and CI do not alter or qualify that package; its batch
+content remains pure preparation only.
 
 ## Run the synthetic examples
 
