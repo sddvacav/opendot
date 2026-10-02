@@ -1,13 +1,20 @@
 # Exact portable CI boundary
 
 The [overview](../OVERVIEW.md) and [claim status](../docs/claim-status.md) identify the current release and its separate evidence scopes; **NOT_SCORED** remains unchanged.
-The current unreleased source manifests select **1,382 distinct portable nodes**:
-the released a2 source's historical 1,325 plus 57 opt-in bounded artifact-read
-cases appended to the [read-only artifact manifest](readonly-artifact-nodes.txt)
-under [ADR 005](../docs/decisions/005-bounded-artifact-reads.md). The existing nine
-workflow manifests still select each node exactly once. Adding the separately
-scoped 78 Git and 81 source-provenance cases gives **1,541 controlled-local nodes**.
-These are selection counts, not hosted outcomes or release acceptance.
+The current portable selection is defined by the node manifests consumed by the
+[portable workflow](../.github/workflows/portable.yml) and the
+[source recipe below](#current-portable-source-selection). Collect their exact
+union from the reviewed checkout before reporting its distinct-node count; each
+node must appear exactly once. Report actual passes, failures, errors and skips
+from that exact revision's receipts separately from selection counts. The
+[current claim status](../docs/claim-status.md) links the separately scoped
+hosted and release evidence; those receipts do not qualify a changed checkout
+or substitute for installed-artifact checks.
+
+The 78 Git and 81 source-provenance cases remain separately scoped controlled-local
+selections. Collect any separately approved combined selection before reporting
+its total rather than reusing a historical aggregate. Selection counts alone
+establish neither hosted outcomes nor release acceptance.
 
 The released a2 selection remains **1,325 portable nodes**: a6's 1,183 plus 59
 [structural-v2 cases](solver-crosscheck-nodes.txt), 48
