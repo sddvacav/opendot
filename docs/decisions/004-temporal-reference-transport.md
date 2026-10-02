@@ -343,3 +343,34 @@ need separate future review; no event may be fabricated or reordered to satisfy
 that fixture. No new live evidence, service/native execution, hosted wiring or
 publication is authorized. Deterministic future-controlled tests and fresh actual
 locked pytest collection must precede any workflow-count adjustment.
+
+## 2026-10-02 real-batch local preparation amendment
+
+This amendment authorizes only local preparation of a separate manually selected
+hosted `batch200` profile. It preserves every earlier historical decision and
+receipt. The foundation is the frozen v2 async preparation source; preparation is
+not evidence of publication, merge, or real service execution.
+
+One shared `BatchAdmission` owns reservations, acknowledgments, uncertainty and
+validated-terminal release. A short lock serializes thread-side closure with
+reservation and logical public-client entry. A reserved but prevented start stays
+consumed. No lock spans an SDK await, canonical CAS operation, callable, or file
+write. Monotonic observations retain actual order, including Activity entry or
+exit before client acknowledgment. Original receipt, result bytes, received Info,
+run identity and terminal history must bind before a slot is released.
+
+The new `opendot.temporal.real-batch.*.v1` schema cannot be selected by fabricated
+preparation evidence. Configuration remains 200/16/8 with the existing 180-second
+work deadline, at most 40 seconds observation-only cleanup, fixed 10/60-second
+Activity settings and one attempt. Existing acquisition, preflight and observed
+public shutdown are reused; the seven reference cases are unchanged. No source
+owner, dependency pin or default import changes. The public SDK's default
+transport retry behavior is recorded separately from application submissions.
+
+The path ceiling is AGENTS.md; this ADR; the existing harness and verifier;
+ci/temporal-batch-nodes.txt; the new ci/temporal-real-batch-nodes.txt and explicit
+acceptance file; the two existing harness/verifier unit owners; the existing
+Temporal workflow; docs/temporal-batch-qualification.md; and the transport guide.
+No hosted execution, acquisition, publication, native lifetime probe or provider
+operation is authorized by this amendment. Later execution needs exact-candidate
+approval and explicit manual dispatch. See the batch protocol for limits.
