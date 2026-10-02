@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'; img-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>OpenDot · Local evidence inspector</title>
+  <link rel="stylesheet" href="viewer.css">
+  <script src="viewer.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#content">Skip to evidence</a>
+<header><div class="brand">OpenDot <span>Engineering / evidence</span></div><span class="local-label">LOCAL · READ ONLY</span></header>
+<main id="content">
+  <section class="intro"><p class="eyebrow">FINITE SYNTHETIC BATCH / 200 JOBS</p><h1>Inspect the evidence.<br>Keep the claims bounded.</h1><p class="lede">A local view of the public Temporal batch projection. Select files from one extracted bundle to inspect its recorded assertions and event sequence.</p></section>
+  <aside class="notice" aria-label="Trust boundary"><strong>Consistency is not authenticity.</strong> This page can establish only that selected bytes match the supplied manifest. It does not authenticate a run, validate its semantics, replay original evidence, or establish scientific validity. The existing Python public-bundle recheck remains authoritative for projection consistency.</aside>
+  <section class="panel loader" aria-labelledby="load-title"><div><h2 id="load-title">Open a public bundle</h2><p>Select all eight JSON files together, including manifest.json. Maximum 10 MiB. No ZIP extraction, upload, network request, or saved session.</p></div><label for="files">Choose eight local JSON files</label><input id="files" type="file" multiple accept=".json,application/json" aria-describedby="file-help"><p id="file-help" class="small">Use your file picker’s multi-select. Only the fixed public filenames are accepted; raw audit folders are not supported.</p><div class="actions"><button id="demo" type="button">Explore synthetic demo</button><button id="reset" type="button" class="secondary">Reset</button></div></section>
+  <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true">No evidence loaded</p>
+  <section id="empty" class="empty"><h2>Your evidence stays here</h2><p>Choose a bundle or open the clearly marked synthetic demo. Reset clears the view and invalidates any unfinished read.</p></section>
+  <div id="results" hidden>
+    <section class="panel"><div class="section-heading"><h2>Bundle context</h2><span id="kind" class="tag"></span></div><p id="trust" class="notice compact"></p><dl id="context" class="facts"></dl></section>
+    <section aria-labelledby="reported-title"><div class="section-heading"><h2 id="reported-title">Reported assertions</h2><span class="small">Supplied data, not browser verdicts</span></div><div id="metrics" class="metrics"></div><p class="small">Activity overlap and handler overlap are separate observations. Neither proves CPU parallelism, speedup, fairness, or agent count. Missing and null values are never converted to zero.</p></section>
+    <section class="panel" aria-labelledby="jobs-title"><div class="section-heading"><h2 id="jobs-title">200-job ledger</h2><label class="filter">Cohort <select id="cohort"><option value="all">All jobs</option><option value="a">Cohort a</option><option value="b">Cohort b</option></select></label></div><p id="job-count" class="small"></p><div class="table-scroll" tabindex="0" role="region" aria-label="Job ledger, horizontally scrollable"><table><caption>Recorded job fields; durations derived only from paired trace observations</caption><thead><tr><th scope="col">Job</th><th scope="col">Cohort</th><th scope="col">Activity µs</th><th scope="col">Handler µs</th><th scope="col">Reported tool status</th><th scope="col">Reported transport</th><th scope="col">Reported semantics</th></tr></thead><tbody id="jobs"></tbody></table></div></section>
+    <section class="panel" aria-labelledby="detail-title"><h2 id="detail-title" tabindex="-1">Job event detail</h2><p id="detail-intro"></p><dl id="detail" class="facts"></dl><div class="table-scroll" tabindex="0" role="region" aria-label="Selected job event sequence, horizontally scrollable"><table><caption>Sequence is the tie-breaker for equal timestamps. No wall-clock time or server-only queue latency is inferred.</caption><thead><tr><th scope="col">Sequence</th><th scope="col">Elapsed µs</th><th scope="col">Recorded event</th></tr></thead><tbody id="events"></tbody></table></div></section>
+    <section class="panel"><h2>File-byte comparison</h2><p class="small">The manifest is supplied by the same source as the files and cannot authenticate itself. All seven data-file hashes and byte counts must match before any bundle data is shown.</p><div class="table-scroll" tabindex="0" role="region" aria-label="File comparison, horizontally scrollable"><table><caption>SHA-256 over exact selected bytes, without reserialization</caption><thead><tr><th scope="col">Fixed filename</th><th scope="col">Bytes</th><th scope="col">Supplied SHA-256</th></tr></thead><tbody id="checks"></tbody></table></div></section>
+  </div>
+</main>
+<footer>OpenDot Engineering · Apache-2.0 · See the repository LICENSE and NOTICE files. Local presentation only; no runtime or control surface.</footer>
+</body>
+</html>
