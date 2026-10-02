@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "recordset_type": "HILLHOUSE_PRIMARY_SOURCE_REFERENCE_SUPPLEMENT",
+  "as_of": "2026-10-02",
+  "access_date": "2026-10-02",
+  "status": "REFERENCE_ONLY",
+  "baseline": {
+    "commit": "2d16190a8121410bbeea252869b196f7891e1696",
+    "tree": "c6c2b015fc1e016b1dea2fb09990e53dc2af4996",
+    "hashes": {
+      "docs/research/source-needs-index.json": "966af396a974379106831aed9139b14ac0c6de441b04f1c565cae116f48147da",
+      "docs/research/delta-20261002/source-needs-delta.json": "fcccb1cbec6d74e7bb40cd8a191dc69dd37a5b100569075895f9183d07bdfed7"
+    },
+    "deduplication": "The exact source URL and source ID were absent from the baseline research collection.",
+    "historical_counts": "UNCHANGED; no combined source/need or priority total asserted"
+  },
+  "delta_counts": {
+    "new_to_collection_sources": 1,
+    "newly_published_after_previous_cutoff": 0,
+    "new_needs": 0,
+    "implemented_features": 0,
+    "executed_acceptance_protocols": 0
+  },
+  "global_limits": [
+    "Historical business commentary provides indirect reference only; it is not recent technical evidence.",
+    "No OpenDot demand, procurement, adoption, funding, endorsement, AI-agent strategy or independent performance evidence is established.",
+    "All OpenDot mappings, metrics and priorities are project inferences, not requirements stated by the source.",
+    "No transaction-completion conclusion is drawn.",
+    "No original page bytes are archived; retrieval observations are not publisher-authenticated archives.",
+    "Documentation-only integration; no runtime change, provider or external-agent contact, private inputs, software installation or native execution."
+  ],
+  "sources": [
+    {
+      "source_id": "quest-hillhouse-sean-carney-20260223",
+      "record_label": "Quest Global announcement concerning Hillhouse",
+      "source_type": "TRANSACTION_PARTICIPANT_PRESS_RELEASE_WITH_NAMED_INVESTOR_COMMENTARY",
+      "evidence_class": "HISTORICAL_BUSINESS_SIGNAL_REFERENCE_ONLY",
+      "publisher": "Quest Global",
+      "speaker": "Sean Carney",
+      "attributed_role": "Hillhouse Investment partner and global buyout co-head",
+      "url": "https://www.questglobal.com/news/press-releases/hillhouse-to-invest-in-quest-global-the-largest-private-independent-pure-play-engineering-services-company/",
+      "publication_date": "2026-02-23",
+      "date_basis": "Opening announcement dateline; exact timestamp, timezone and update history not verified",
+      "publication_timezone": null,
+      "access_date": "2026-10-02",
+      "verification": "DIRECT_PUBLIC_PAGE_TEXT_VERIFIED_THIS_RESEARCH_ROUND",
+      "read_scope": [
+        "Opening dateline",
+        "Named investor remarks",
+        "Closing conditions"
+      ],
+      "verified_paraphrase": "Carney links the investment rationale to specialist engineering expertise, critical programs, enduring customer relationships and dependable delivery.",
+      "verbatim_excerpt": null,
+      "collection_change": "NEW_TO_COLLECTION_HISTORICAL_PUBLICATION",
+      "claim_kind": "NAMED_INVESTOR_COMMENTARY",
+      "related_existing_need_ids": [
+        "incremental-utility-before-expansion"
+      ],
+      "endorsement_or_procurement_evidence": false,
+      "limits": [
+        "REFERENCE_ONLY; no independent technical validation or AI-agent strategy.",
+        "Transaction completion, size and closing date are not established.",
+        "No OpenDot-specific requirement or endorsement."
+      ]
+    }
+  ],
+  "reference_mappings": [
+    {
+      "source_id": "quest-hillhouse-sean-carney-20260223",
+      "mapping_type": "REFERENCE_ONLY",
+      "claim_kind": "INFERENCE",
+      "need_id": "incremental-utility-before-expansion",
+      "oracle_id": "O3-INCREMENTAL-UTILITY",
+      "authoritative_record": "docs/research/delta-20261002/source-needs-delta.json",
+      "need_json_pointer": "/needs/2",
+      "oracle_json_pointer": "/oracles/2",
+      "priority": "P0",
+      "priority_origin": "EXISTING_PROJECT_RESEARCH_SEQUENCE_UNCHANGED",
+      "inferred_relevance": "Engineering delivery context is indirect background for judging a fixed task by accepted results, failures and complete delivery effort.",
+      "existing_proposal": "Read-only baseline/candidate comparison report over accepted outcomes, all attempts, failures, setup, elapsed time and human review effort.",
+      "existing_oracle_case_ids": [
+        "MORE-TOOLS-ONLY",
+        "UNACCEPTED-OUTPUT",
+        "UNKNOWN-REVIEW-EFFORT",
+        "FIXTURE-UTILITY-POSITIVE"
+      ],
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN",
+      "implementation_evidence": [],
+      "limits": [
+        "No new need, priority, oracle or acceptance case is defined; use the unchanged authoritative O3 records.",
+        "The existing utility rule is an invented synthetic fixture rule, not a universal metric.",
+        "Documentation checks do not execute O3 or establish real-task benefit, ROI, throughput, unattended duration or scientific validity."
+      ]
+    }
+  ],
+  "unverified_observations": [
+    {
+      "family": "LIDANG_X",
+      "url": "https://x.com/lidangzzz",
+      "verification": "UNVERIFIED",
+      "scope": "New material in this bounded retrieval only",
+      "publication_date": null,
+      "post_permalink": null,
+      "verbatim_excerpt": null,
+      "observation": "Direct retrieval failed without post body; no new original statement or date was verified.",
+      "limits": "Does not establish absence of newer posts or invalidate earlier records; no login or workaround was used.",
+      "added_to_sources": false
+    },
+    {
+      "family": "HILLHOUSE_LINKEDIN",
+      "url": "https://www.linkedin.com/company/hillhouse-investment",
+      "identity_source_url": "https://www.hillhouseinvestment.com/",
+      "identity_basis": "Official website links the company account",
+      "verification": "UNVERIFIED",
+      "scope": "Exact publication date, individual post permalink and shortlink target",
+      "publication_date": null,
+      "post_permalink": null,
+      "verbatim_excerpt": null,
+      "observation": "Relative date displays were insufficient; exact-date inspection stopped at a sign-in overlay.",
+      "limits": "No inferred date or quotation; no verified shortlink relationship to the Quest announcement.",
+      "added_to_sources": false
+    }
+  ],
+  "integration": {
+    "original_registry_source_and_need_records": "UNCHANGED",
+    "earlier_interoperability_supplement": "UNCHANGED",
+    "research_overview_change": "One navigation link only",
+    "existing_index_change": "Only the SHA-256 of docs/research/README.md",
+    "executable_source_changed": false,
+    "product_acceptance_run": false
+  }
+}
