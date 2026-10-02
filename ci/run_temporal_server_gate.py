@@ -477,6 +477,12 @@ class Runner:
             require(info.server_version == "1.32.0", "SERVER_VERSION")
             self.environment["server_version"] = info.server_version
             row["readiness_seconds"] = round(time.monotonic() - start, 6)
+            # Readiness connects the lazy probe, but Worker requires a client
+            # created with lazy=False. Use a fresh public, bounded connection.
+            self.diagnostic.phase = "client_connect"
+            self.client = await self.bounded(Client.connect("127.0.0.1:7233", namespace="default",
+                                                           identity="opendot-gate-client", lazy=False),
+                                             2, "CLIENT_CONNECT")
             return
         raise GateRunError("SERVER_READINESS")
 
