@@ -1,13 +1,15 @@
 # OpenDot Engineering
 
-## Current 0.3.0a4 source/package candidate
+## Current 0.3.0a4 experimental prerelease
 
-**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
-This coherent snapshot includes the optional [offline A2A worker-turn adapter](docs/a2a-worker-turn.md),
+**ALPHA / NOT_SCORED; [published experimental prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4).**
+The accepted release source is commit `2d16190a8121410bbeea252869b196f7891e1696`.
+The release includes the optional [offline A2A worker-turn adapter](docs/a2a-worker-turn.md),
 matching source examples and version-bound installation instructions. Default runtime
 dependencies remain empty. Use the [a4 installed guide](docs/installed-quickstart.md)
-with its externally reviewed checksum-manifest pin; final exact identities and
-separately scoped qualification belong in the candidate's external release notes.
+with the independently reviewed checksum-manifest pin on the [release page](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4).
+Exact artifact identities and separately scoped qualification are recorded in the
+[released notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md).
 
 - Installed wheel: one dependency-free callable/artifact result, bounded reads,
   read-only help and copied lightweight public fixtures; no source imports
@@ -37,6 +39,18 @@ separately scoped qualification belong in the candidate's external release notes
 OpenDot Engineering is a Python toolkit for local tool execution and inspectable results. Run a function with declared permissions and a validator, store its output by SHA-256, and check the saved bytes separately from whether the result was accepted.
 
 Use it to prototype reviewable developer and research-engineering workflows: connect a callable to an artifact, review a synthetic measurement summary, or create a controlled local Git working copy. Start with the small example below, then explore the [APIs and examples](#explore-the-package).
+
+**Synthetic result preview** · [Run it and verify the saved output](examples/measurement-review/README.md#preview-a-checked-synthetic-result)
+
+`A.mean=2.0` · `B.mean=4.0` · exact difference `2/1` · tolerance `2/1` (all `au`)  
+`CHECKED` · `within_tolerance=true`
+
+`summary.txt` is the human view; `report.json` records `summary.conditions`,
+`comparison` and `status`. This source-only example uses six invented rows, not
+experimental data; it is not an installed-wheel API. `CHECKED` means arithmetic checked,
+even for an outside-tolerance result, not scientific acceptance. All results keep
+`scientific_accepted=false`, `device_control_authorized=false` and
+`independent_review="NOT_EVALUATED"`.
 
 **Historical experimental alpha · 0.3.0a3 · NOT_SCORED.** The [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) is available. Follow the [exact-asset installation guide](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md) for the released wheel, matching source examples and SHA-256 checks. Python 3.12+ is required; the default package has no runtime Python dependencies. Linux is the reviewed environment.
 
