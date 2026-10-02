@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0a2 — unreleased installable alpha candidate (2026-10-02)
+
+- Package the merged optional finite Temporal reference transport and its qualification documentation; the explicit `temporal` extra pins SDK 1.34.0, while default runtime dependencies remain empty
+- Include the merged Gmsh file-size ceiling repair that preserves lower finite inherited limits, including zero; native enforcement is not established by fake-resource checks
+- Preserve the existing canonical callable, artifact and contract owners; no general agent runtime, arbitrary tool routing, deployment, recovery guarantee or scientific acceptance is added
+- Keep all published v0.3.0a1 tags and assets unchanged. Exact a2 source, build, installed, independent and hosted-CI results require their own evidence; prior implementation-only qualification does not certify these new distributions
+
 ## Unreleased Gmsh file-size source follow-on (2026-10-01)
 
 - Preserve lower finite inherited Gmsh file-size soft/hard limits, including zero, using the existing CPU minimum policy; solver-child file-size setup is unchanged
