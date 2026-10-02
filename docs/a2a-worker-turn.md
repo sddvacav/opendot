@@ -3,8 +3,9 @@
 This optional adapter prepares one `code_candidate.v1` turn under
 [ADR 007](decisions/007-bounded-external-worker-turn.md). Its first case is a
 public synthetic parser task with a preauthored response and a requested budget
-of USD 0.00. Every replacement remains **UNACCEPTED**. No live worker, model,
-provider or transport implementation is included or qualified.
+of USD 0.00. Every replacement remains **UNACCEPTED**. No live worker, model or provider is qualified. The separately prepared
+[optional HTTPS exchange](a2a-http-transport.md) supplies a narrow no-auth
+transport implementation with finite mock qualification only.
 
 The source owner is
 [`opendot_engineering.adapters.a2a_worker_turn`](../src/opendot_engineering/adapters/a2a_worker_turn.py).
@@ -121,10 +122,14 @@ exchange(request_bytes, *, protocol_version="1.0",
          max_response_bytes=131072, timeout_s=45) -> bytes
 ```
 
-This is a callback contract only. HTTP, SDK use, authentication, destination
-selection, version negotiation, redirects and transport retry behavior remain
-operator-owned and **unimplemented** here. The prepared tests supply finite
-preauthored responses rather than network requests. The adapter requests or
+This owner exposes a callback contract only. A separate optional explicit-import
+[HTTPS exchange](a2a-http-transport.md) now implements one strict no-auth stdlib
+POST with bounded entity acquisition and a cooperative deadline. It rejects all
+Transfer-Encoding, including chunked. Trusted bootstrap still owns endpoint
+selection and authorization. SDKs, authentication and general transport/version
+negotiation are unimplemented. Other operator callbacks retain their own
+transport behavior. Prepared tests supply finite preauthored responses and
+BytesIO/mocked HTTP connections rather than network requests. The adapter requests or
 subscribes to no streams. Its constructed wire payload contains no approval
 token or credentials; the existing runtime approval assertion stays local.
 
@@ -138,7 +143,9 @@ CAS handle and does not parse candidate content or store outputs.
 
 This byte check occurs **after** the callback returns. The callback may already
 have acquired an oversized body. Neither its requested acquisition limit nor
-this check establishes pre-acquisition or peak-memory bounds. The 45-second
+this check establishes pre-acquisition or peak-memory bounds. The optional
+HTTPS callback supplies its own narrower entity-acquisition cap, not a whole-wire
+or peak-memory guarantee. For arbitrary callbacks the 45-second
 callback allowance is a request; the 60-second local runtime timeout does not
 prove remote cancellation or process termination.
 
@@ -284,9 +291,11 @@ attempts: no global deduplication or at-most-once external effects are promised.
 Ambiguity remains UNKNOWN, with no automatic retry, poll, cancel, refund,
 resubmission, fallback or late candidate publication.
 
-Live worker interoperability, transport acquisition/retry/redirect/TLS/auth
-behavior, remote identity, budget enforcement, billing, termination, model
-coding capability and code-acceptance integration are **NOT_RUN**. A future
+The optional HTTPS exchange has finite mock qualification of its local
+acquisition, refusal, retry/redirect and TLS-configuration mechanics. Live TLS/
+network/worker interoperability, remote identity, budget enforcement, billing,
+termination, model coding capability and code-acceptance integration are
+**NOT_RUN**. A future
 live gate needs separate approval of the exact worker, environment, destination,
 inputs, credentials, model and cost limits, plus transport review. An existing
 external verifier interface needs its own review before acceptance integration.
