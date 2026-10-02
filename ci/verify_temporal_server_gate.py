@@ -1,7 +1,8 @@
 """Strict, stdlib-only verifier for the optional real-server gate.
 
 Unit-test records exercise this verifier; they are never real-server evidence.
-Nothing from failed validation, JUnit diagnostics, or exception text is exposed.
+Only independently validated bounded diagnostics may be exposed on failure.
+No raw failed records, JUnit diagnostics, or exception text is exposed.
 """
 from __future__ import annotations
 
@@ -41,7 +42,39 @@ CODES = frozenset({
     "PREFLIGHT_FAILED", "METADATA_MISMATCH", "COUNTER_MISMATCH", "OUTCOME_MISMATCH",
     "HISTORY_MISMATCH", "HISTORY_LINKAGE", "REPLAY_MISMATCH", "CLEANUP_UNCONFIRMED",
     "INTERNAL_ERROR", "WRITE_FAILED", "ACQUISITION_UNVERIFIED",
+    "DIAGNOSTIC_INVALID", "DIAGNOSTIC_UNAVAILABLE", "DIAGNOSTIC_FAILED",
 })
+DIAGNOSTIC_MAX_BYTES = 4096
+DIAGNOSTIC_PHASES = frozenset({
+    "preflight", "sdk_binding", "input_seeding", "server_launch", "client_connect",
+    "server_readiness", "workflow_worker_start", "activity_worker_start", "workflow_submit",
+    "history_read", "history_project", "result_query", "result_verify", "worker_shutdown",
+    "server_shutdown", "workflow_signal", "workflow_result", "sdk_replay", "audit_write",
+    "cleanup", "complete",
+})
+DIAGNOSTIC_GATE_REASONS = frozenset("""
+    ACTIVITY_COMPLETION ACTIVITY_NOT_QUIESCENT CAS_INTEGRITY CI_REQUIRED CLEANUP_HISTORY
+    CLEANUP_UNCONFIRMED CLIENT_CONNECT CLI_FILE CLI_FILE_HASH CLI_PIN CLI_RECEIPT
+    DEPENDENCY_VERSION DIRTY_SOURCE DUPLICATE_JSON_KEY EXECUTION_NOT_ENABLED FAILURE_CATEGORY
+    FRACTIONAL_TIMEOUT FRESH_GATE_ROOT_REQUIRED GATE_DEADLINE HISTORY_DEADLINE HISTORY_READ
+    HISTORY_SIZE JSONL_SIZE JSON_SIZE NONFINITE_JSON NOT_QUIESCENT OWNER_HASH PLATFORM
+    PREVIOUS_STOP_UNCONFIRMED QUERY_DEADLINE QUERY_NOT_READY QUEUED_ACTIVITY_STARTED
+    QUEUED_COUNTERS QUEUED_DURABILITY QUEUED_PHASE_DEADLINE REPLAY_HISTORY_HASH REPLAY_REFERENCE
+    RESPONSE_PAYLOAD RESPONSE_SCHEMA RESULT_INPUT_REFERENCE RESULT_OUTPUT_PROFILE
+    RESULT_RECEIPT_IDENTITY RESULT_RECEIPT_SCHEMA RESULT_REFERENCE RESULT_SCHEMA REVISION
+    RUNNER_TEMP_REQUIRED RUN_IDENTITY SCENARIO SDK_REPLAY SDK_WHEEL_HASH SDK_WHEEL_REPORT
+    SERVER_EXITED SERVER_GATE_FAILED SERVER_READINESS SERVER_STOP_UNCONFIRMED SERVER_VERSION
+    SIGNAL_DEADLINE TRANSPORT_FAILURE_EXPECTED UNEXPECTED_HISTORY_EVENT UNEXPECTED_NEW_RUN
+    WORKER_STOP_UNCONFIRMED WORKFLOW_REFERENCE WORKFLOW_RESULT WORKFLOW_START
+""".split())
+DIAGNOSTIC_GENERIC_REASONS = {
+    "dependency_error": "DEPENDENCY_ERROR", "type_error": "TYPE_ERROR",
+    "value_error": "VALUE_ERROR", "attribute_error": "ATTRIBUTE_ERROR",
+    "key_error": "KEY_ERROR", "os_error": "OS_ERROR", "timeout_error": "TIMEOUT_ERROR",
+    "sdk_error": "SDK_ERROR", "unknown_error": "UNKNOWN_ERROR",
+}
+DIAGNOSTIC_REASON_CODES = DIAGNOSTIC_GATE_REASONS | frozenset(DIAGNOSTIC_GENERIC_REASONS.values())
+DIAGNOSTIC_EXCEPTION_CATEGORIES = frozenset(DIAGNOSTIC_GENERIC_REASONS) | {"gate_refusal"}
 OWNER_SHA256 = {
     "src/opendot_engineering/tool_runtime.py": "7c5011e02b2cf07e5f15ad7854905ce0738271e167b873bad9256a8ed169199c",
     "src/opendot_engineering/core/artifacts.py": "91fde8d32f6f7498fc96c0e883b9ba658440e95b0cc92f69f172e4de3d7b7856",
@@ -85,7 +118,8 @@ COUNTER_EVENTS = ("activity_enter", "execute_enter", "handler_enter", "handler_r
 EXPECTED_COUNTS = dict(zip(SCENARIOS, ((1, 1, 1, 1), (1, 1, 1, 1), (1, 1, 0, 0),
                                      (1, 1, 1, 1), (1, 0, 0, 0))))
 AUDIT_FILES = ("environment.json", "activity-metadata.jsonl", "history-projection.json",
-               "invocation-counters.jsonl", "outcomes.json", "replay.json", "cleanup.json")
+               "invocation-counters.jsonl", "outcomes.json", "replay.json", "cleanup.json",
+               "diagnostic.json")
 
 
 class GateError(Exception):
@@ -173,6 +207,101 @@ def read_jsonl(path: Path) -> list:
     lines = read_bytes(path, 256 * 1024).splitlines()
     require(0 < len(lines) <= 256 and all(lines), "SIZE_LIMIT")
     return [strict_json(line) for line in lines]
+
+
+def _diagnostic_shape(value: object, fields: str) -> None:
+    # Exact builtins also reject subclasses whose equality could impersonate an
+    # allowlisted key or enum in an in-memory caller. JSON is checked separately.
+    require(type(value) is dict and all(type(key) is str for key in value)
+            and value.keys() == set(fields.split()), "DIAGNOSTIC_INVALID")
+
+
+def _diagnostic_enum(value: object, allowed: frozenset) -> None:
+    require(type(value) is str and len(value) <= 64 and value in allowed, "DIAGNOSTIC_INVALID")
+
+
+def _diagnostic_failure(value: object, field: str) -> dict | None:
+    if value is None:
+        return None
+    _diagnostic_shape(value, "phase reason_code exception_category")
+    _diagnostic_enum(value["phase"], DIAGNOSTIC_PHASES - {"complete"})
+    _diagnostic_enum(value["reason_code"], DIAGNOSTIC_REASON_CODES)
+    _diagnostic_enum(value["exception_category"], DIAGNOSTIC_EXCEPTION_CATEGORIES)
+    category = value["exception_category"]
+    if category == "gate_refusal":
+        require(value["reason_code"] in DIAGNOSTIC_GATE_REASONS, "DIAGNOSTIC_INVALID")
+    else:
+        exact(value["reason_code"], DIAGNOSTIC_GENERIC_REASONS[category], "DIAGNOSTIC_INVALID")
+    if field == "cleanup_failure":
+        require(value["phase"] in {"cleanup", "worker_shutdown", "server_shutdown"}, "DIAGNOSTIC_INVALID")
+    elif field == "audit_failure":
+        exact(value["phase"], "audit_write", "DIAGNOSTIC_INVALID")
+    return {key: value[key] for key in ("phase", "reason_code", "exception_category")}
+
+
+def validate_diagnostic(value: object, expected_revision: str | None) -> dict:
+    """Return a fresh fixed-schema record; never retain arbitrary exception data.
+
+    This only certifies the diagnostic's bounded form and revision binding. It
+    cannot certify execution, cleanup, or real-server acceptance.
+    """
+    _diagnostic_shape(value, "schema_version requested_revision status primary_failure cleanup_failure audit_failure")
+    exact(value["schema_version"], PREFIX + "diagnostic.v1", "DIAGNOSTIC_INVALID")
+    _diagnostic_enum(value["status"], frozenset({"COMPLETE", "FAILED"}))
+    failures = {field: _diagnostic_failure(value[field], field)
+                for field in ("primary_failure", "cleanup_failure", "audit_failure")}
+    if value["status"] == "COMPLETE":
+        require(all(failure is None for failure in failures.values()), "DIAGNOSTIC_INVALID")
+    else:
+        require(any(failure is not None for failure in failures.values()), "DIAGNOSTIC_INVALID")
+    if expected_revision is None:
+        exact(value["requested_revision"], None, "DIAGNOSTIC_INVALID")
+        exact(value["status"], "FAILED", "DIAGNOSTIC_INVALID")
+        exact(failures["primary_failure"], {"phase": "preflight", "reason_code": "KEY_ERROR",
+                                           "exception_category": "key_error"}, "DIAGNOSTIC_INVALID")
+    else:
+        require(type(expected_revision) is str and len(expected_revision) == 40
+                and re.fullmatch(r"[0-9a-f]{40}", expected_revision) is not None, "DIAGNOSTIC_INVALID")
+        exact(value["requested_revision"], expected_revision, "DIAGNOSTIC_INVALID")
+    result = {"schema_version": PREFIX + "diagnostic.v1", "requested_revision": expected_revision,
+              "status": value["status"], **failures}
+    require(len(_encode(result).encode("utf-8")) <= DIAGNOSTIC_MAX_BYTES, "DIAGNOSTIC_INVALID")
+    return result
+
+
+def build_diagnostic(requested_revision: str | None, *, status: str,
+                     primary_failure: dict | None = None, cleanup_failure: dict | None = None,
+                     audit_failure: dict | None = None) -> dict:
+    """Build through the same strict validator used for untrusted audit bytes."""
+    return validate_diagnostic({"schema_version": PREFIX + "diagnostic.v1",
+        "requested_revision": requested_revision, "status": status, "primary_failure": primary_failure,
+        "cleanup_failure": cleanup_failure, "audit_failure": audit_failure}, requested_revision)
+
+
+def read_safe_diagnostic(audit_dir: Path, expected_revision: str | None) -> dict:
+    """Read diagnostics independently of failed or partial audit records.
+
+    Always return a bounded public report. Unreadable/missing or invalid records
+    yield fixed codes and no source bytes, paths, exception names, or messages.
+    """
+    report = {"schema_version": PREFIX + "diagnostic-report.v1", "validation": "INVALID",
+              "reason_code": "DIAGNOSTIC_INVALID", "diagnostic": None}
+    try:
+        audit_dir = Path(audit_dir)
+        require(not audit_dir.is_symlink(), "DIAGNOSTIC_INVALID")
+        require(audit_dir.is_dir(), "DIAGNOSTIC_UNAVAILABLE")
+        raw = read_bytes(audit_dir / "diagnostic.json", DIAGNOSTIC_MAX_BYTES, "DIAGNOSTIC_UNAVAILABLE")
+        record = validate_diagnostic(strict_json(raw), expected_revision)
+    except GateError as error:
+        if error.code in {"DIAGNOSTIC_UNAVAILABLE", "READ_FAILED"}:
+            report.update(validation="UNAVAILABLE", reason_code="DIAGNOSTIC_UNAVAILABLE")
+    except OSError:
+        report.update(validation="UNAVAILABLE", reason_code="DIAGNOSTIC_UNAVAILABLE")
+    except Exception:
+        pass
+    else:
+        report.update(validation="VALID", reason_code="OK", diagnostic=record)
+    return report
 
 
 def checked_required_nodes(nodes: object) -> tuple[str, ...]:
@@ -712,8 +841,12 @@ def validate_audit(audit_dir: Path, expected_revision: str, required_nodes: tupl
     except OSError:
         raise GateError("READ_FAILED") from None
     verify_collection(audit_dir / "collection-receipt.json", required_nodes)
-    records = {name: (read_jsonl(audit_dir / name) if name.endswith(".jsonl") else read_json(audit_dir / name))
+    records = {name: (read_jsonl(audit_dir / name) if name.endswith(".jsonl") else
+                     strict_json(read_bytes(audit_dir / name, DIAGNOSTIC_MAX_BYTES)) if name == "diagnostic.json"
+                     else read_json(audit_dir / name))
                for name in AUDIT_FILES}
+    records["diagnostic.json"] = validate_diagnostic(records["diagnostic.json"], expected_revision)
+    exact(records["diagnostic.json"]["status"], "COMPLETE", "DIAGNOSTIC_FAILED")
     validate_environment(records["environment.json"], expected_revision)
     metadata = validate_metadata(records["activity-metadata.jsonl"])
     counters = validate_counters(records["invocation-counters.jsonl"])
@@ -781,6 +914,11 @@ def main(argv: list[str] | None = None) -> int:
         reasons.append(error.code)
     except Exception:
         reasons.append("INTERNAL_ERROR")
+    diagnostic_report = read_safe_diagnostic(args.audit, args.expected_revision)
+    if diagnostic_report["validation"] != "VALID":
+        reasons.append(diagnostic_report["reason_code"])
+    elif diagnostic_report["diagnostic"]["status"] != "COMPLETE":
+        reasons.append("DIAGNOSTIC_FAILED")
     acceptance = make_acceptance(args.expected_revision, nodes, collected, records is not None, reasons)
     try:
         require(not args.audit.is_symlink(), "WRITE_FAILED")
@@ -795,7 +933,8 @@ def main(argv: list[str] | None = None) -> int:
         try:
             with args.summary.open("a", encoding="utf-8") as output:
                 output.write("Temporal real-server gate: " + ("PASS" if acceptance["acceptance"] == "PASS"
-                                                               else "NOT VERIFIED") + "\n" + _encode(acceptance) + "\n")
+                                                               else "NOT VERIFIED") + "\n" + _encode(acceptance) + "\n"
+                             + _encode(diagnostic_report) + "\n")
         except OSError:
             acceptance["acceptance"] = "FAIL"
             acceptance["reason_codes"] = sorted(set(acceptance["reason_codes"]) - {"OK"} | {"WRITE_FAILED"})
@@ -806,9 +945,11 @@ def main(argv: list[str] | None = None) -> int:
                 pass
     # All emitted values below are freshly built fixed fields or completely validated records.
     print(_encode(acceptance))
-    if records is not None:
+    print(_encode(diagnostic_report))
+    if records is not None and acceptance["acceptance"] == "PASS":
         for filename in AUDIT_FILES:
-            print(_encode({"audit_file": filename, "evidence": records[filename]}))
+            if filename != "diagnostic.json":
+                print(_encode({"audit_file": filename, "evidence": records[filename]}))
     return 0 if acceptance["acceptance"] == "PASS" else 1
 
 

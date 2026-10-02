@@ -49,6 +49,110 @@ class GateRunError(RuntimeError):
     """Only fixed codes escape to the pytest boundary."""
 
 
+def failure_category(error: BaseException) -> tuple[str, str]:
+    """Classify without asking an exception instance (or its metaclass) anything.
+
+    Builtin subclass checks use the actual type, not instance ``__class__``.
+    The own fixed-code exception's args and foreign class metadata are read
+    through trusted builtin descriptors, bypassing user-defined attributes.
+    Failure of even this bounded inspection is a fixed unknown observation.
+    """
+    try:
+        error_type = type(error)
+        if error_type is GateRunError:
+            from verify_temporal_server_gate import DIAGNOSTIC_GATE_REASONS
+            args = BaseException.args.__get__(error, GateRunError)
+            if len(args) == 1 and type(args[0]) is str and args[0] in DIAGNOSTIC_GATE_REASONS:
+                return "gate_refusal", args[0]
+        for base, category, code in (
+            (TimeoutError, "timeout_error", "TIMEOUT_ERROR"),
+            (ImportError, "dependency_error", "DEPENDENCY_ERROR"),
+            (KeyError, "key_error", "KEY_ERROR"),
+            (AttributeError, "attribute_error", "ATTRIBUTE_ERROR"),
+            (TypeError, "type_error", "TYPE_ERROR"),
+            (ValueError, "value_error", "VALUE_ERROR"),
+            (OSError, "os_error", "OS_ERROR"),
+        ):
+            if issubclass(error_type, base):
+                return category, code
+        namespace = type.__dict__["__dict__"].__get__(error_type)
+        module = namespace.get("__module__")
+        name = type.__dict__["__name__"].__get__(error_type)
+        if (type(module) is str and module.startswith("temporalio.") and type(name) is str
+                and name in {"RPCError", "WorkflowFailureError", "ApplicationError", "ActivityError",
+                             "NondeterminismError", "WorkflowAlreadyStartedError",
+                             "WorkflowContinuedAsNewError"}):
+            return "sdk_error", "SDK_ERROR"
+    except BaseException:
+        pass
+    return "unknown_error", "UNKNOWN_ERROR"
+
+
+def is_interruption(error: BaseException) -> bool:
+    # Both operands are real classes and Exception has the trusted builtin
+    # metaclass. Never use isinstance(error, Exception): __class__ may be hostile.
+    return not issubclass(type(error), Exception)
+
+
+class DiagnosticState:
+    """Bounded enum-only failure observations; never exception messages or repr."""
+    def __init__(self, requested_revision: str | None):
+        self.requested_revision = requested_revision
+        self.phase = "preflight"
+        self.primary_failure = None
+        self.cleanup_failure = None
+        self.audit_failure = None
+
+    def capture(self, error: BaseException, *, slot: str = "primary_failure", phase: str | None = None) -> None:
+        category, code = failure_category(error)
+        if slot not in {"primary_failure", "cleanup_failure", "audit_failure"}:
+            raise GateRunError("UNKNOWN_ERROR")
+        if getattr(self, slot) is None:
+            setattr(self, slot, {"phase": self.phase if phase is None else phase, "reason_code": code,
+                                 "exception_category": category})
+
+    def record(self) -> dict:
+        from verify_temporal_server_gate import build_diagnostic
+        failed = any((self.primary_failure, self.cleanup_failure, self.audit_failure))
+        return build_diagnostic(self.requested_revision, status="FAILED" if failed else "COMPLETE",
+                                primary_failure=self.primary_failure, cleanup_failure=self.cleanup_failure,
+                                audit_failure=self.audit_failure)
+
+    def write(self, audit: Path) -> None:
+        from verify_temporal_server_gate import DIAGNOSTIC_MAX_BYTES
+        record = self.record()
+        encoded = json.dumps(record, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+        require(len(encoded) + 1 <= DIAGNOSTIC_MAX_BYTES, "JSON_SIZE")
+        write_json(audit / "diagnostic.json", record)
+
+
+def capture_diagnostic(diagnostic: DiagnosticState, error: BaseException, *, slot: str,
+                       phase: str) -> tuple[bool, BaseException | None]:
+    """Best-effort observation, separate from saved execution failure state.
+
+    A failed/no-op capture gets at most one fixed UNKNOWN fallback in the same
+    slot. If even that slot is unavailable, return an explicit diagnostic gap;
+    the caller must not publish a misleading COMPLETE or partial diagnostic.
+    This never retries diagnostic publication or inspects the original error.
+    """
+    capture_error = None
+    try:
+        diagnostic.capture(error, slot=slot, phase=phase)
+    except BaseException as failure:
+        capture_error = failure
+    try:
+        if getattr(diagnostic, slot) is None:
+            setattr(diagnostic, slot, {"phase": phase, "reason_code": "UNKNOWN_ERROR",
+                                      "exception_category": "unknown_error"})
+        return getattr(diagnostic, slot) is not None, capture_error
+    except BaseException as failure:
+        if capture_error is not None and is_interruption(capture_error):
+            return False, capture_error
+        if is_interruption(failure):
+            return False, failure
+        return False, capture_error if capture_error is not None else failure
+
+
 def require(condition: bool, code: str) -> None:
     if not condition:
         raise GateRunError(code)
@@ -286,8 +390,10 @@ def sdk_types(observed: Observations):
 
 
 class Runner:
-    def __init__(self, root: Path, cli: Path, environment: dict):
+    def __init__(self, root: Path, cli: Path, environment: dict, diagnostic: DiagnosticState):
         self.root, self.cli, self.environment = root, cli, environment
+        self.diagnostic = diagnostic
+        self.diagnostic.phase = "sdk_binding"
         self.observed = Observations()
         self.workflow_class, self.capture_class = sdk_types(self.observed)
         self.started = time.monotonic()
@@ -305,6 +411,7 @@ class Runner:
         self.replay: dict | None = None
         self.stop_uncertain = False
         self.activity_ever_started = False
+        self.diagnostic.phase = "input_seeding"
         from opendot_engineering.core.artifacts import ArtifactStore
         self.store = ArtifactStore(root / "cas")
         self.requests = {}
@@ -335,6 +442,7 @@ class Runner:
                         for s in SCENARIOS))
 
     async def start_server(self):
+        self.diagnostic.phase = "server_launch"
         require(time.monotonic() < self.deadline, "GATE_DEADLINE")
         require(self.server is None and not self.stop_uncertain, "PREVIOUS_STOP_UNCONFIRMED")
         for port in (7233, 7243, 9090):
@@ -350,11 +458,13 @@ class Runner:
                "graceful_exit_observed": False, "exit_code": None,
                "readiness_seconds": None, "shutdown_seconds": None}
         self.server_rows.append(row)
+        self.diagnostic.phase = "client_connect"
         from temporalio.client import Client
         from temporalio.api.workflowservice.v1 import GetSystemInfoRequest
         self.client = await self.bounded(Client.connect("127.0.0.1:7233", namespace="default",
                                                        identity="opendot-gate-client", lazy=True),
                                          2, "CLIENT_CONNECT")
+        self.diagnostic.phase = "server_readiness"
         ready_deadline = min(self.deadline, start + 10)
         while time.monotonic() < ready_deadline:
             require(self.server.poll() is None, "SERVER_EXITED")
@@ -373,6 +483,7 @@ class Runner:
     async def stop_server(self):
         if self.server is None:
             return
+        self.diagnostic.phase = "server_shutdown"
         require(self.quiescent() and all(w["row"]["public_shutdown_completed"] for w in self.workers),
                 "NOT_QUIESCENT")
         row = self.server_rows[-1]
@@ -393,6 +504,7 @@ class Runner:
         self.server_log = None
 
     async def start_worker(self, kind: str, scenario: str | None = None):
+        self.diagnostic.phase = "workflow_worker_start" if kind == "workflow" else "activity_worker_start"
         require(time.monotonic() < self.deadline, "GATE_DEADLINE")
         from temporalio.worker import Worker
         require(not self.stop_uncertain, "PREVIOUS_STOP_UNCONFIRMED")
@@ -443,6 +555,7 @@ class Runner:
         return record
 
     async def stop_workers(self):
+        self.diagnostic.phase = "worker_shutdown"
         require(self.quiescent(), "NOT_QUIESCENT")
         for entry in reversed(self.workers):
             row = entry["row"]
@@ -462,6 +575,7 @@ class Runner:
                 entry["executor"].shutdown(wait=True)
 
     async def start_case(self, scenario):
+        self.diagnostic.phase = "workflow_submit"
         require(time.monotonic() < self.deadline, "GATE_DEADLINE")
         from temporalio.common import RetryPolicy, WorkflowIDReusePolicy
         handle = await self.bounded(self.client.start_workflow(
@@ -474,6 +588,7 @@ class Runner:
         return self.client.get_workflow_handle(handle.id, run_id=handle.first_execution_run_id)
 
     async def history(self, handle):
+        self.diagnostic.phase = "history_read"
         return await self.bounded(handle.fetch_history(rpc_timeout=timedelta(seconds=2)), 3, "HISTORY_READ")
 
     async def poll_history(self, handle, predicate, budget):
@@ -504,6 +619,7 @@ class Runner:
                 "result_sha256": ref["sha256"], "result_size_bytes": ref["size_bytes"]}
 
     async def snapshot(self, scenario, phase, handle, history):
+        self.diagnostic.phase = "history_project"
         events = []
         for event in history.events:
             name = self.event_name(event)
@@ -573,6 +689,7 @@ class Runner:
         return row
 
     def verify_result(self, scenario, response):
+        self.diagnostic.phase = "result_verify"
         from opendot_engineering.adapters import temporal_activity as production
         row = response["result_ref"]
         from opendot_engineering.core.contracts import ArtifactRef
@@ -623,6 +740,7 @@ class Runner:
                 "test_only_validator_fault": scenario == "failed_validation"}
 
     async def queried_result(self, handle, budget=10):
+        self.diagnostic.phase = "result_query"
         limit = min(self.deadline, time.monotonic() + budget)
         while time.monotonic() < limit:
             result = await self.bounded(handle.query("recorded_result", rpc_timeout=timedelta(seconds=2)),
@@ -640,7 +758,9 @@ class Runner:
         return history
 
     async def finish_case(self, handle):
+        self.diagnostic.phase = "workflow_signal"
         await self.bounded(handle.signal("finish", rpc_timeout=timedelta(seconds=2)), 3, "SIGNAL_DEADLINE")
+        self.diagnostic.phase = "workflow_result"
         return await self.bounded(handle.result(follow_runs=False, rpc_timeout=timedelta(seconds=2)),
                                   10, "WORKFLOW_RESULT")
 
@@ -691,6 +811,7 @@ class Runner:
         require(workflow_response == response, "WORKFLOW_REFERENCE")
         terminal = await self.history(handle)
         terminal_row = await self.snapshot(scenario, "workflow_completed_after_replay", handle, terminal)
+        self.diagnostic.phase = "sdk_replay"
         from temporalio.worker import Replayer
         replay_result = await self.bounded(Replayer(workflows=[self.workflow_class]).replay_workflow(
             terminal, raise_on_replay_failure=True), 10, "SDK_REPLAY")
@@ -733,6 +854,7 @@ class Runner:
                 from temporalio.client import WorkflowFailureError
                 failed = False
                 try:
+                    self.diagnostic.phase = "workflow_result"
                     await self.bounded(handle.result(follow_runs=False, rpc_timeout=timedelta(seconds=2)),
                                        10, "WORKFLOW_RESULT")
                 except WorkflowFailureError:
@@ -789,34 +911,86 @@ class Runner:
                 "cleanup_code": "OK" if status else "CLEANUP_UNCONFIRMED",
                 "elapsed_seconds": round(time.monotonic() - self.started, 6)}
 
-    async def execute(self):
-        error = None
-        try:
-            await self.run_cases()
-        except Exception:
-            # No exception message/trace leaves private pytest logging.
-            error = GateRunError("SERVER_GATE_FAILED")
-        finally:
-            cleanup = await self.cleanup()
-            audit = self.root / "audit"
-            write_json(audit / "environment.json", self.environment)
-            write_json(audit / "history-projection.json", {
-                "schema_version": "opendot.temporal.server-gate.history.v1", "snapshots": self.histories})
-            write_json(audit / "outcomes.json", {
-                "schema_version": "opendot.temporal.server-gate.outcomes.v1", "scenarios": self.outcomes})
+    def write_audit(self, cleanup):
+        """Existing bounded evidence writers; called once, never used as a retry."""
+        audit = self.root / "audit"
+        write_json(audit / "environment.json", self.environment)
+        write_json(audit / "history-projection.json", {
+            "schema_version": "opendot.temporal.server-gate.history.v1", "snapshots": self.histories})
+        write_json(audit / "outcomes.json", {
+            "schema_version": "opendot.temporal.server-gate.outcomes.v1", "scenarios": self.outcomes})
+        if cleanup is not None:
             write_json(audit / "cleanup.json", cleanup)
-            if self.replay is not None:
-                write_json(audit / "replay.json", self.replay)
-            for name, rows in (("activity-metadata.jsonl", self.observed.metadata),
-                               ("invocation-counters.jsonl", self.observed.counters)):
-                require(len(rows) <= 256, "JSONL_SIZE")
-                encoded = b"".join(json.dumps(r, separators=(",", ":"), allow_nan=False).encode() + b"\n" for r in rows)
-                require(len(encoded) <= 256 * 1024, "JSONL_SIZE")
-                (audit / name).write_bytes(encoded)
-                (audit / name).chmod(0o600)
-        require(cleanup["cleanup_status"] == "PASS", "CLEANUP_UNCONFIRMED")
-        if error is not None:
-            raise error
+        if self.replay is not None:
+            write_json(audit / "replay.json", self.replay)
+        for name, rows in (("activity-metadata.jsonl", self.observed.metadata),
+                           ("invocation-counters.jsonl", self.observed.counters)):
+            require(len(rows) <= 256, "JSONL_SIZE")
+            encoded = b"".join(json.dumps(r, separators=(",", ":"), allow_nan=False).encode() + b"\n" for r in rows)
+            require(len(encoded) <= 256 * 1024, "JSONL_SIZE")
+            (audit / name).write_bytes(encoded)
+            (audit / name).chmod(0o600)
+
+    async def execute(self):
+        cleanup = None
+        primary_error = cleanup_error = audit_error = None
+        primary_phase = cleanup_phase = None
+        # Preserve actual failures and their phases independently of diagnostic
+        # storage. In particular, no diagnostic capture can bypass cleanup.
+        try:
+            try:
+                await self.run_cases()
+            except BaseException as error:
+                primary_error = error
+                primary_phase = self.diagnostic.phase
+        finally:
+            try:
+                self.diagnostic.phase = "cleanup"
+                cleanup = await self.cleanup()
+                if cleanup["cleanup_status"] != "PASS":
+                    cleanup_error = GateRunError("CLEANUP_UNCONFIRMED")
+                    cleanup_phase = "cleanup"
+            except BaseException as error:
+                cleanup_error = error
+                cleanup_phase = self.diagnostic.phase
+            finally:
+                try:
+                    self.diagnostic.phase = "audit_write"
+                    self.write_audit(cleanup)
+                except BaseException as error:
+                    audit_error = error
+
+        failures = ((primary_error, "primary_failure", primary_phase),
+                    (cleanup_error, "cleanup_failure", cleanup_phase),
+                    (audit_error, "audit_failure", "audit_write"))
+        # Real execution interruptions precede faults in later observation.
+        interrupted = next((error for error, _, _ in failures
+                            if error is not None and is_interruption(error)), None)
+        diagnostic_gap = False
+        for error, slot, phase in failures:
+            if error is not None:
+                recorded, capture_error = capture_diagnostic(self.diagnostic, error, slot=slot, phase=phase)
+                diagnostic_gap = diagnostic_gap or not recorded
+                if (interrupted is None and capture_error is not None
+                        and is_interruption(capture_error)):
+                    interrupted = capture_error
+
+        # One separate small record survives independent audit refusal when the
+        # safe job-local directory is writable. A known recording gap leaves no
+        # diagnostic rather than claiming completion or inventing a lost cause.
+        # No write is retried, including after an uncertain partial publication.
+        write_error = None
+        if not diagnostic_gap:
+            try:
+                self.diagnostic.write(self.root / "audit")
+            except BaseException as error:
+                write_error = error
+        if interrupted is not None:
+            raise interrupted
+        if write_error is not None:
+            raise write_error
+        require(not diagnostic_gap and all(error is None for error, _, _ in failures),
+                "SERVER_GATE_FAILED")
         return {"environment": self.environment, "histories": self.histories,
                 "metadata": self.observed.metadata, "counters": self.observed.counters,
                 "outcomes": self.outcomes, "replay": self.replay, "cleanup": cleanup}
@@ -832,14 +1006,35 @@ def run_gate(root: Path, cli: Path, collected_nodes: list[str]) -> dict:
         (root / name).mkdir(mode=0o700)
     write_json(root / "audit" / "collection-receipt.json", {
         "schema_version": "opendot.temporal.server-gate.collection.v1", "nodes": collected_nodes})
-    logging.basicConfig(filename=root / "private" / "sdk.log", level=logging.ERROR, force=True)
-    environment = preflight(root, cli, source)
-    loop = asyncio.new_event_loop()
+    # Revision is a bounded requested identity, never an assertion that preflight
+    # succeeded. Invalid/missing configuration stays null in a failed diagnostic.
+    requested = os.environ.get("OPENDOT_TEMPORAL_EXPECTED_REVISION")
+    requested = requested if type(requested) is str and re.fullmatch(r"[0-9a-f]{40}", requested) else None
+    diagnostic = DiagnosticState(requested)
+    loop = None
+    runner = None
     try:
-        runner = Runner(root, cli, environment)
+        if requested is None:
+            # Missing/unusable identity is a real bootstrap refusal, never a
+            # guessed candidate revision in the diagnostic record.
+            raise KeyError("OPENDOT_TEMPORAL_EXPECTED_REVISION")
+        logging.basicConfig(filename=root / "private" / "sdk.log", level=logging.ERROR, force=True)
+        environment = preflight(root, cli, source)
+        loop = asyncio.new_event_loop()
+        runner = Runner(root, cli, environment, diagnostic)
         return loop.run_until_complete(runner.execute())
+    except Exception as error:
+        # Only bootstrap failures belong here. Runner.execute owns its saved
+        # primary failure and single diagnostic attempt, even when capture fails.
+        if runner is None:
+            recorded, capture_error = capture_diagnostic(diagnostic, error, slot="primary_failure",
+                                                         phase=diagnostic.phase)
+            if recorded and not (root / "audit" / "diagnostic.json").exists():
+                diagnostic.write(root / "audit")
+            if capture_error is not None and is_interruption(capture_error):
+                raise capture_error
+        raise GateRunError("SERVER_GATE_FAILED") from None
     finally:
         # Do not cancel unresolved Worker operations on an unconfirmed shutdown.
-        # Such a run fails and leaves disposal to the bounded CI host.
-        if not asyncio.all_tasks(loop):
+        if loop is not None and not asyncio.all_tasks(loop):
             loop.close()
