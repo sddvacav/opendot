@@ -1562,3 +1562,546 @@ class BatchAsyncPreparationTests(_batch_unittest.TestCase):
             self.assertEqual(controller.snapshot()["attempts_consumed"], 1)
             self.assertFalse(controller.snapshot()["uncertainty_latched"])
         _batch_asyncio.run(exercise())
+
+
+# Live-shaped pure tests. No service/CLI/acquisition or native lifetime probes.
+# Test ActivityEnvironment Info is never serialized as hosted acceptance.
+import asyncio as _real_asyncio
+from contextvars import copy_context as _real_copy_context
+from types import SimpleNamespace as _RealNamespace
+
+
+def _real_observer(clock=None):
+    gate = _batch_gate
+    owner = m.BatchAdmission(gate.frozen_batch_plan(), dict(gate.BATCH_PROFILE))
+    requests = {}
+    for job in gate.frozen_batch_plan()["jobs"]:
+        requests[job["job_id"]] = {"schema_version": "opendot.temporal.request.v1",
+            "input_ref": {"artifact_id": job["input_artifact_id"]}}
+    observed = m.BatchObservations(owner, requests, **({"clock": clock} if clock else {}))
+    return owner, observed
+
+
+def _real_info(job, **changes):
+    row = dict(workflow_id=job["workflow_id"], workflow_run_id=_batch_ack(job)["run_id"],
+        activity_id=m.ACTIVITY_ID, activity_type=m.ACTIVITY_TYPE, namespace="default", task_queue=m.QUEUE,
+        attempt=1, is_local=False, retry_policy=_RealNamespace(maximum_attempts=1),
+        start_to_close_timeout=timedelta(seconds=10), schedule_to_close_timeout=timedelta(seconds=60))
+    row.update(changes)
+    return _RealNamespace(**row)
+
+
+def _real_reserve(owner, observed, *, acknowledge=True):
+    job = owner._reserve_submission("sync")
+    with owner._lock:
+        owner._emit("rpc_enter", job["job_id"])
+    if acknowledge:
+        owner.acknowledge(_batch_ack(job))
+    owner._inside_submit = False
+    return job
+
+
+def test_real_observer_preserves_activity_before_acknowledgment_and_equal_clocks():
+    owner, observed = _real_observer(clock=lambda: 1000)
+    job = _real_reserve(owner, observed, acknowledge=False)
+    identity = observed.enter_activity(_real_info(job), observed.requests[job["job_id"]])
+    token = m._BATCH_INVOCATION.set(identity)
+    try:
+        observed.phase("execute_enter", "activity_enter", payload=job["payload"])
+        assert observed.handler(lambda p: p["left"] + p["right"], job["payload"]) == 199
+        observed.phase("execute_return", "handler_return")
+        observed.exit_activity(identity, {}, True)
+    finally:
+        m._BATCH_INVOCATION.reset(token)
+    owner.acknowledge(_batch_ack(job))
+    assert [r["event"] for r in observed.counters] == ["reservation", "rpc_enter", "activity_enter",
+        "execute_enter", "handler_enter", "handler_return", "execute_return", "activity_exit", "acknowledgment"]
+    assert all(r["elapsed_us"] == 0 for r in observed.counters)
+    assert owner.snapshot()["outstanding"] == 1
+
+
+@pytest.mark.parametrize("change", [
+    {"workflow_id": "unreserved"}, {"workflow_run_id": "invalid"}, {"activity_id": "wrong"},
+    {"activity_type": "wrong"}, {"namespace": "wrong"}, {"task_queue": "wrong"}, {"attempt": 2},
+    {"is_local": True}, {"retry_policy": None}, {"retry_policy": _RealNamespace(maximum_attempts=2)},
+    {"start_to_close_timeout": timedelta(seconds=11)}, {"schedule_to_close_timeout": timedelta(seconds=61)},
+    {"workflow_run_id": "00000000-0000-0000-0000-111111111111"},
+])
+def test_real_observer_rejects_wrong_received_metadata(change):
+    owner, observed = _real_observer()
+    job = _real_reserve(owner, observed)
+    with pytest.raises(Exception):
+        observed.enter_activity(_real_info(job, **change), observed.requests[job["job_id"]])
+    assert owner.snapshot()["uncertainty_latched"]
+    assert owner.snapshot()["outstanding"] == 1
+
+
+@pytest.mark.parametrize("fault", ["duplicate", "wrong_request", "unreserved", "ninth"])
+def test_real_observer_rejects_entry_identity_and_capacity_faults(fault):
+    owner, observed = _real_observer()
+    jobs = [_real_reserve(owner, observed) for _ in range(9 if fault == "ninth" else 1)]
+    if fault == "unreserved":
+        jobs = [_batch_gate.frozen_batch_plan()["jobs"][1]]
+    elif fault in {"duplicate", "ninth"}:
+        for job in jobs[:-1] if fault == "ninth" else jobs:
+            observed.enter_activity(_real_info(job), observed.requests[job["job_id"]])
+    job = jobs[-1]
+    with pytest.raises(Exception):
+        observed.enter_activity(_real_info(job), {} if fault == "wrong_request" else observed.requests[job["job_id"]])
+    assert owner.snapshot()["uncertainty_latched"]
+
+
+@pytest.mark.parametrize("fault", ["missing_context", "wrong_context", "wrong_payload", "duplicate_handler", "orphan_return"])
+def test_real_observer_rejects_context_and_order_gaps(fault):
+    owner, observed = _real_observer()
+    job = _real_reserve(owner, observed)
+    identity = observed.enter_activity(_real_info(job), observed.requests[job["job_id"]])
+    token = m._BATCH_INVOCATION.set(None if fault == "missing_context" else
+                                  ("wrong", *identity[1:]) if fault == "wrong_context" else identity)
+    try:
+        with pytest.raises(Exception):
+            if fault in {"missing_context", "wrong_context", "wrong_payload"}:
+                observed.phase("execute_enter", "activity_enter", payload={} if fault == "wrong_payload" else job["payload"])
+            elif fault == "orphan_return":
+                observed.phase("handler_return", "handler_enter")
+            else:
+                observed.phase("execute_enter", "activity_enter")
+                observed.phase("handler_enter", "execute_enter")
+                observed.phase("handler_enter", "execute_enter")
+    finally:
+        m._BATCH_INVOCATION.reset(token)
+    assert owner.snapshot()["uncertainty_latched"]
+
+
+def test_real_thread_stop_prevents_reservation_and_client_entry():
+    owner, observed = _real_observer()
+    thread = threading.Thread(target=lambda: observed.uncertain(None, "OBSERVER_FAILURE"))
+    thread.start(); thread.join()
+    with pytest.raises(m.GateRunError):
+        owner.submit_next(lambda _: pytest.fail("post-stop callback"))
+    assert observed.counters[0]["event"] == "uncertainty"
+    assert owner.snapshot()["attempts_consumed"] == 0
+
+
+def test_real_thread_stop_after_reservation_prevents_actual_client_call():
+    async def exercise():
+        owner, observed = _real_observer()
+        runner = m.BatchRunner.__new__(m.BatchRunner)
+        runner.admission, runner.requests = owner, observed.requests
+        runner.workflow_class = m.ReferenceBatchWorkflow
+        runner.client = _RealNamespace(start_workflow=lambda *a, **k: pytest.fail("post-stop public SDK call"))
+        async def callback(job):
+            thread = threading.Thread(target=lambda: observed.uncertain(job["job_id"], "OBSERVER_FAILURE"))
+            thread.start(); thread.join()
+            return await runner._submit(job)
+        with pytest.raises(m.GateRunError):
+            await owner.submit_next_async(callback)
+        assert owner.snapshot()["attempts_consumed"] == owner.snapshot()["outstanding"] == 1
+        assert [r["event"] for r in observed.counters] == ["reservation", "uncertainty"]
+    _real_asyncio.run(exercise())
+
+
+def test_real_recorder_failure_closes_independently_without_missing_event_success():
+    clock = iter([10000, 11000, 9000])
+    owner, observed = _real_observer(clock=lambda: next(clock))
+    job = owner._reserve_submission("sync")
+    with pytest.raises(m.GateRunError):
+        with owner._lock:
+            owner._emit("rpc_enter", job["job_id"])
+    assert owner.snapshot()["uncertainty_latched"] and owner._recording_failed
+    assert observed.observation_uncertain
+    with pytest.raises(m.GateRunError):
+        owner._reserve_submission("sync")
+
+
+def _real_original_fixture(tmp_path):
+    from dataclasses import replace
+    from temporalio.testing import ActivityEnvironment
+    from temporalio.common import RetryPolicy
+    from opendot_engineering.adapters import temporal_activity as production
+    from opendot_engineering.tool_runtime import ToolRuntime
+    root = tmp_path / "runner"
+    for name in ("cas", "private", "audit"):
+        (root / name).mkdir(parents=True)
+    runner = m.BatchRunner(root, root / "temporal", {"candidate_revision": "a" * 40}, m.DiagnosticState("a" * 40))
+    job = _real_reserve(runner.admission, runner.observed)
+    env = ActivityEnvironment()
+    env.info = replace(env.info, workflow_id=job["workflow_id"], workflow_run_id=_batch_ack(job)["run_id"],
+        activity_id=m.ACTIVITY_ID, activity_type=m.ACTIVITY_TYPE, namespace="default", task_queue=m.QUEUE,
+        attempt=1, is_local=False, retry_policy=RetryPolicy(maximum_attempts=1),
+        start_to_close_timeout=timedelta(seconds=10), schedule_to_close_timeout=timedelta(seconds=60))
+    runtime = ToolRuntime()
+    runtime.register(production.SYNTHETIC_SPEC, lambda payload: runner.observed.handler(production.bounded_sum, payload))
+    original = runtime.execute
+    runtime.execute = lambda *args, **kwargs: runner.observed.execute_once(original, *args, **kwargs)
+    adapter = production.ReferenceActivity(runtime=runtime, store=runner.store, tool_id=production.TOOL_ID,
+        expected_registration_sha256=production.REGISTRATION_SHA256, granted_permissions=frozenset({"synthetic:read"}),
+        expected_namespace="default", expected_task_queue=m.QUEUE)
+    request = runner.requests[job["job_id"]]
+    identity = runner.observed.enter_activity(env.info, request)
+    token = m._BATCH_INVOCATION.set(identity)
+    try:
+        # Public test SDK context plus a real bounded outer executor exercises
+        # ContextVar propagation to the untouched runtime's nested callable.
+        with m.ThreadPoolExecutor(max_workers=1) as executor:
+            response = executor.submit(_real_copy_context().run, env.run, adapter.run, request).result()
+        runner.observed.exit_activity(identity, response, True)
+    finally:
+        m._BATCH_INVOCATION.reset(token)
+    return runner, job, response
+
+
+def test_real_original_canonical_receipt_and_bounded_cas_binding(tmp_path):
+    runner, job, response = _real_original_fixture(tmp_path)
+    original = runner.store.get_bytes
+    limits = []
+    def read(ref, **kwargs):
+        limits.append(kwargs)
+        return original(ref, **kwargs)
+    runner.store.get_bytes = read
+    row = runner.original_result(job, _batch_ack(job)["run_id"], response)
+    assert row["terminal"]["output"] == 199
+    assert row["original_validation"] == "CAS_RECEIPT_INPUT_BOUND"
+    assert limits == [{"max_bytes": 16384}]
+    assert "worker_pid" not in json.dumps(row)
+    assert runner.observed.total("handler_enter") == runner.observed.total("handler_return") == 1
+    assert m._BATCH_INVOCATION.get() is None
+
+
+@pytest.mark.parametrize("fault", ["wrong_run", "wrong_input", "wrong_result", "source_refs", "producer",
+    "uri", "size", "receipt_mutation", "document_output", "document_input", "document_semantic", "document_authority",
+    "document_output_float", "document_input_float", "document_liveness_integer"])
+def test_real_original_refuses_swapped_or_modified_evidence(tmp_path, fault):
+    runner, job, response = _real_original_fixture(tmp_path)
+    response = json.loads(json.dumps(response))
+    run_id = _batch_ack(job)["run_id"]
+    if fault == "wrong_run": run_id = "00000000-0000-0000-0000-111111111111"
+    elif fault == "wrong_input": job = _batch_gate.frozen_batch_plan()["jobs"][1]
+    elif fault == "wrong_result": response["result_ref"]["artifact_id"] = "sha256:" + "b" * 64
+    elif fault == "source_refs": response["result_ref"]["source_refs"] = []
+    elif fault == "producer": response["result_ref"]["producer"] = "wrong"
+    elif fault == "uri": response["result_ref"]["uri"] = "artifact://sha256/" + "b" * 64
+    elif fault == "size": response["result_ref"]["size_bytes"] = 16385
+    elif fault == "receipt_mutation": runner.observed.originals[job["job_id"]][1].execution_liveness["reconciliation_required"] = True
+    else:
+        ref = response["result_ref"]
+        from opendot_engineering.core.contracts import ArtifactRef
+        data = runner.store.get_bytes(ArtifactRef(**{**ref, "source_refs": tuple(ref["source_refs"])}), max_bytes=16384)
+        doc = json.loads(data)
+        if fault == "document_output_float": doc["output"] = 199.0
+        elif fault == "document_input_float": doc["input_ref"]["size_bytes"] = float(doc["input_ref"]["size_bytes"])
+        elif fault == "document_liveness_integer": doc["receipt_report"]["execution_liveness"]["reconciliation_required"] = 0
+        elif fault == "document_output": doc["output"] = 198
+        elif fault == "document_input": doc["input_ref"]["task_id"] = "wrong"
+        elif fault == "document_semantic": doc["receipt_report"]["semantic_valid"] = False
+        else: doc["scientific_validity"] = True
+        new = runner.store.put_json(doc, producer=ref["producer"], task_id=ref["task_id"], source_refs=tuple(ref["source_refs"]))
+        response["result_ref"] = {**m.asdict(new), "source_refs": list(new.source_refs)}
+        # Preserve only transport equality, deliberately challenge original bytes.
+        runner.observed.responses[job["job_id"]] = response
+    with pytest.raises(Exception):
+        runner.original_result(job, run_id, response)
+    assert runner.admission.snapshot()["outstanding"] == 1
+
+
+def test_real_profile_requires_exact_four_nodes_and_manual_dispatch_before_files(tmp_path, monkeypatch):
+    for nodes, profile, event in (([], "batch200", "workflow_dispatch"),
+        (list(_batch_gate.REAL_BATCH_REQUIRED_NODES), "reference", "workflow_dispatch"),
+        (list(_batch_gate.REAL_BATCH_REQUIRED_NODES), "batch200", "pull_request")):
+        monkeypatch.setenv("OPENDOT_TEMPORAL_QUALIFICATION", profile)
+        monkeypatch.setenv("GITHUB_EVENT_NAME", event)
+        with pytest.raises(m.GateRunError):
+            m.run_real_batch_gate(tmp_path / "untouched", tmp_path / "cli", nodes)
+        assert not (tmp_path / "untouched").exists()
+
+
+def test_real_acceptance_manifest_exact_four_nodes_outside_default_discovery():
+    path = ROOT / "tests/acceptance/temporal_real_batch_gate.py"
+    tree = ast.parse(path.read_text())
+    nodes = ["tests/acceptance/temporal_real_batch_gate.py::" + n.name for n in tree.body
+             if isinstance(n, ast.FunctionDef) and n.name.startswith("test_")]
+    assert nodes == list(_batch_gate.REAL_BATCH_REQUIRED_NODES)
+    assert nodes == (ROOT / "ci/temporal-real-batch-nodes.txt").read_text().splitlines()
+    assert not path.name.startswith("test_") and not path.name.endswith("_test.py")
+
+
+def test_real_live_runner_uses_no_execution_delays_or_recovery_calls():
+    tree = ast.parse((ROOT / "ci/run_temporal_server_gate.py").read_text())
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef) and node.name in {"BatchRunner", "BatchObservations", "ReferenceBatchWorkflow"}:
+            for call in ast.walk(node):
+                if isinstance(call, ast.Call) and isinstance(call.func, ast.Attribute):
+                    assert call.func.attr not in {"sleep", "cancel", "kill", "terminate", "reset_workflow_execution", "signal"}
+
+
+async def _real_history_fixture(runner, job, response):
+    from temporalio.api.history.v1 import HistoryEvent
+    from temporalio.api.enums.v1 import EventType
+    from temporalio.client import WorkflowHistory
+    from temporalio.converter import DataConverter
+    converter = DataConverter.default
+    runner.client = _RealNamespace(data_converter=converter)
+    runner.responses[job["job_id"]] = response
+    inputs = await converter.encode([runner.requests[job["job_id"]]])
+    outputs = await converter.encode([response])
+    run_id = _batch_ack(job)["run_id"]
+    events = []
+    def add(name, attrs):
+        enum = "EVENT_TYPE_" + name.upper()
+        events.append(HistoryEvent(event_id=len(events) + 1, event_type=getattr(EventType, enum),
+                                  **{name.lower() + "_event_attributes": attrs}))
+    add("WORKFLOW_EXECUTION_STARTED", {"workflow_type": {"name": m.BATCH_WORKFLOW_TYPE},
+        "task_queue": {"name": m.QUEUE}, "workflow_execution_timeout": {"seconds": 120},
+        "workflow_run_timeout": {"seconds": 120}, "workflow_task_timeout": {"seconds": 10},
+        "retry_policy": {"maximum_attempts": 1}, "workflow_id": job["workflow_id"],
+        "original_execution_run_id": run_id, "first_execution_run_id": run_id, "attempt": 1,
+        "input": {"payloads": inputs}})
+    add("WORKFLOW_TASK_SCHEDULED", {})
+    add("WORKFLOW_TASK_STARTED", {"scheduled_event_id": 2, "identity": "opendot-gate-workflow-worker"})
+    add("WORKFLOW_TASK_COMPLETED", {"scheduled_event_id": 2, "started_event_id": 3,
+                                     "identity": "opendot-gate-workflow-worker"})
+    add("ACTIVITY_TASK_SCHEDULED", {"activity_type": {"name": m.ACTIVITY_TYPE}, "activity_id": m.ACTIVITY_ID,
+        "task_queue": {"name": m.QUEUE}, "retry_policy": {"maximum_attempts": 1},
+        "start_to_close_timeout": {"seconds": 10}, "schedule_to_close_timeout": {"seconds": 60},
+        "input": {"payloads": inputs}})
+    add("ACTIVITY_TASK_STARTED", {"scheduled_event_id": 5, "attempt": 1, "identity": "opendot-gate-activity-worker"})
+    add("ACTIVITY_TASK_COMPLETED", {"scheduled_event_id": 5, "started_event_id": 6, "result": {"payloads": outputs}})
+    add("WORKFLOW_TASK_SCHEDULED", {})
+    add("WORKFLOW_TASK_STARTED", {"scheduled_event_id": 8, "identity": "opendot-gate-workflow-worker"})
+    add("WORKFLOW_TASK_COMPLETED", {"scheduled_event_id": 8, "started_event_id": 9,
+                                     "identity": "opendot-gate-workflow-worker"})
+    add("WORKFLOW_EXECUTION_COMPLETED", {"result": {"payloads": outputs}})
+    return WorkflowHistory(job["workflow_id"], events), _RealNamespace(id=job["workflow_id"], run_id=run_id)
+
+
+def test_real_history_binds_public_proto_run_input_result_and_projects_only_allowlist(tmp_path):
+    runner, job, response = _real_original_fixture(tmp_path)
+    async def exercise():
+        history, handle = await _real_history_fixture(runner, job, response)
+        outcome = runner.original_result(job, handle.run_id, response)
+        row = await runner.real_history(job, handle, history, outcome["terminal"])
+        assert len(row["events"]) == 11 and row["raw_history_bytes"] <= 65536
+        assert row["events"][0]["attributes"]["original_execution_run_id"] == handle.run_id
+        assert "payloads" not in json.dumps(row)
+    _real_asyncio.run(exercise())
+
+
+@pytest.mark.parametrize("fault", ["history_workflow", "started_workflow", "original_run", "first_run", "attempt",
+    "continued", "workflow_input", "activity_input", "activity_result", "workflow_result", "extra_event", "raw_size"])
+def test_real_history_refuses_wrong_run_reset_retries_inputs_and_unbounded_data(tmp_path, fault):
+    runner, job, response = _real_original_fixture(tmp_path)
+    async def exercise():
+        history, handle = await _real_history_fixture(runner, job, response)
+        started = history.events[0].workflow_execution_started_event_attributes
+        if fault == "history_workflow":
+            from temporalio.client import WorkflowHistory
+            history = WorkflowHistory("wrong", history.events)
+        elif fault == "started_workflow": started.workflow_id = "wrong"
+        elif fault == "original_run": started.original_execution_run_id = "00000000-0000-0000-0000-111111111111"
+        elif fault == "first_run": started.first_execution_run_id = "00000000-0000-0000-0000-111111111111"
+        elif fault == "attempt": started.attempt = 2
+        elif fault == "continued": started.continued_execution_run_id = handle.run_id
+        elif fault == "workflow_input": started.input.Clear()
+        elif fault == "activity_input": history.events[4].activity_task_scheduled_event_attributes.input.Clear()
+        elif fault == "activity_result": history.events[6].activity_task_completed_event_attributes.result.Clear()
+        elif fault == "workflow_result": history.events[-1].workflow_execution_completed_event_attributes.result.Clear()
+        elif fault == "extra_event": history.events.append(history.events[4])
+        elif fault == "raw_size": started.identity = "PRIVATE" * 12000
+        terminal = runner.original_result(job, handle.run_id, response)["terminal"]
+        with pytest.raises(Exception):
+            await runner.real_history(job, handle, history, terminal)
+        assert not list((runner.root / "private").iterdir())
+    _real_asyncio.run(exercise())
+
+
+def test_real_late_observer_interruption_is_not_swallowed_during_cleanup(tmp_path):
+    runner, job, response = _real_original_fixture(tmp_path)
+    class Control(BaseException):
+        pass
+    async def exercise():
+        async def failed(): raise Control("PRIVATE_CONTROL")
+        task = _real_asyncio.create_task(failed())
+        await _real_asyncio.wait({task})
+        runner.pending[job["job_id"]] = task
+        runner._observer_started.add(job["job_id"])
+        with pytest.raises(Control):
+            await runner.cleanup()
+        assert runner.admission.snapshot()["uncertainty_latched"]
+    _real_asyncio.run(exercise())
+
+
+def test_real_failed_observer_is_never_replaced_by_cleanup(tmp_path):
+    runner, job, response = _real_original_fixture(tmp_path)
+    async def exercise():
+        async def failed(): raise ValueError("PRIVATE_FAILURE")
+        task = _real_asyncio.create_task(failed())
+        await _real_asyncio.wait({task})
+        runner.pending[job["job_id"]] = task
+        runner._observer_started.add(job["job_id"])
+        runner.handles[job["job_id"]] = _RealNamespace()
+        row = await runner.cleanup()
+        assert row["cleanup_status"] == "UNCONFIRMED"
+        assert runner._observer_started == {job["job_id"]} and not runner.pending
+        assert runner.admission.snapshot()["outstanding"] == 1
+    _real_asyncio.run(exercise())
+
+
+def test_real_factory_uses_exact_shared_runtime_and_external_worker_bounds(tmp_path, monkeypatch):
+    import temporalio.worker
+    root = tmp_path / "runner"
+    (root / "cas").mkdir(parents=True)
+    runner = m.BatchRunner(root, root / "cli", {"candidate_revision": "a" * 40}, m.DiagnosticState("a" * 40))
+    captured = []
+    class Worker:
+        def __init__(self, client, **kwargs):
+            self.kwargs = kwargs
+            captured.append(kwargs)
+        async def run(self): return None
+    monkeypatch.setattr(temporalio.worker, "Worker", Worker)
+    async def exercise():
+        workflow = await runner.start_worker("workflow")
+        activity = await runner.start_worker("activity")
+        await workflow["task"]; await activity["task"]
+        assert captured[0]["max_concurrent_workflow_tasks"] == 1 and captured[0]["max_cached_workflows"] == 0
+        assert captured[0]["max_concurrent_workflow_task_polls"] == 1 and captured[0]["no_remote_activities"]
+        assert captured[1]["max_concurrent_activities"] == 8 and captured[1]["max_concurrent_activity_task_polls"] == 1
+        assert captured[1]["disable_eager_activity_execution"] and captured[0]["disable_eager_activity_execution"]
+        assert activity["executor"]._max_workers == 8
+        adapter = captured[1]["activities"][0].__self__
+        from opendot_engineering.tool_runtime import ToolRuntime
+        from opendot_engineering.core.artifacts import ArtifactStore
+        assert type(adapter.runtime) is ToolRuntime and type(adapter.store) is ArtifactStore
+        assert adapter.store is runner.store
+        with pytest.raises(m.GateRunError): await runner.start_worker("activity")
+        activity["executor"].shutdown(wait=True)
+    _real_asyncio.run(exercise())
+
+
+def test_real_async_start_observation_timeout_retains_one_late_operation():
+    async def exercise():
+        owner = m.BatchAdmission(_batch_gate.frozen_batch_plan(), dict(_batch_gate.BATCH_PROFILE))
+        result = _real_asyncio.get_running_loop().create_future()
+        calls = []
+        def callback(job):
+            calls.append(job)
+            return result
+        with pytest.raises(m.GateRunError):
+            await owner.submit_next_async(callback, start_timeout=1e-9)
+        assert owner.snapshot()["start_observation_pending"] and not result.cancelled()
+        assert owner.snapshot()["outstanding"] == 1
+        result.set_result(_batch_ack(calls[0]))
+        await _batch_async_turn(); await _batch_async_turn()
+        assert not owner.snapshot()["start_observation_pending"]
+        assert owner.snapshot()["uncertainty_latched"] and owner.snapshot()["outstanding"] == 1
+        with pytest.raises(m.GateRunError):
+            await owner.submit_next_async(callback)
+        assert len(calls) == 1
+    _real_asyncio.run(exercise())
+
+
+def test_real_finite_loop_never_constructs_two_hundred_observers_at_once(tmp_path):
+    root = tmp_path / "runner"
+    (root / "cas").mkdir(parents=True)
+    runner = m.BatchRunner(root, root / "cli", {"candidate_revision": "a" * 40}, m.DiagnosticState("a" * 40))
+    calls, releases, peaks = [], {}, []
+    async def nothing(*args): pass
+    runner.start_server = runner.start_worker = nothing
+    class Client:
+        def get_workflow_handle(self, workflow_id, *, run_id):
+            return _RealNamespace(id=workflow_id, run_id=run_id)
+        async def start_workflow(self, method, request, **kwargs):
+            workflow_id = kwargs["id"]
+            job = next(j for j in runner.plan["jobs"] if j["workflow_id"] == workflow_id)
+            calls.append(job["job_id"])
+            releases[job["job_id"]] = _real_asyncio.get_running_loop().create_future()
+            peaks.append(runner.admission.snapshot()["outstanding"])
+            assert len(runner.pending) <= 16 and len(releases) <= 16
+            assert kwargs["request_eager_start"] is False and kwargs["retry_policy"].maximum_attempts == 1
+            if len(calls) % 16 == 0 or len(calls) == 200:
+                for future in releases.values():
+                    if not future.done(): future.set_result(None)
+            return _RealNamespace(id=workflow_id, first_execution_run_id=_batch_ack(job)["run_id"])
+    runner.client = Client()
+    async def observer(job_id):
+        await releases[job_id]
+        releases.pop(job_id)
+        terminal = _batch_harness_result(runner.admission._job(job_id))
+        runner.admission.record_outcome(terminal)
+        runner.admission.observe_terminal(terminal)
+    runner._observe_result = observer
+    _real_asyncio.run(runner.run_cases())
+    assert calls == [j["job_id"] for j in runner.plan["jobs"]]
+    assert len(calls) == 200 and max(peaks) == 16 and not releases and not runner.pending
+    assert runner.admission.snapshot()["validated_terminal"] == 200
+
+
+def test_real_error_edges_preserve_original_control_and_leave_sticky_failure():
+    owner, observed = _real_observer()
+    job = _real_reserve(owner, observed)
+    identity = observed.enter_activity(_real_info(job), observed.requests[job["job_id"]])
+    token = m._BATCH_INVOCATION.set(identity)
+    class Control(BaseException): pass
+    error = Control("PRIVATE")
+    def execute(*args, **kwargs):
+        def handler(payload): raise error
+        return observed.handler(handler, job["payload"])
+    try:
+        with pytest.raises(Control) as caught:
+            observed.execute_once(execute, "synthetic.bounded_sum", job["payload"])
+        assert caught.value is error
+        observed.exit_activity(identity, None, False)
+    finally:
+        m._BATCH_INVOCATION.reset(token)
+    events = [row["event"] for row in observed.counters]
+    assert events[-4:] == ["handler_error", "uncertainty", "execute_error", "activity_error"]
+    assert observed.execution_uncertain and owner.snapshot()["uncertainty_latched"]
+    assert observed.in_flight == 0 and owner.snapshot()["outstanding"] == 1
+
+
+def test_real_json_writer_counts_trailing_newline_in_complete_container_cap(tmp_path):
+    row = {"bounded": True}
+    size = len(_batch_gate._real_encoded(row, 1024))
+    with pytest.raises(_batch_gate.GateError):
+        m.write_batch_json(tmp_path / "refused.json", row, size)
+    assert not (tmp_path / "refused.json").exists()
+    m.write_batch_json(tmp_path / "exact.json", row, size + 1)
+    assert len((tmp_path / "exact.json").read_bytes()) == size + 1
+
+
+@pytest.mark.parametrize("fault", ["info", "exit_after_control"])
+def test_real_public_interceptor_closes_info_gap_and_preserves_original_control(monkeypatch, fault):
+    from temporalio import activity
+    from temporalio.testing import ActivityEnvironment
+    from temporalio.common import RetryPolicy
+    from temporalio.worker import ExecuteActivityInput
+    from dataclasses import replace
+    owner, observed = _real_observer()
+    job = _real_reserve(owner, observed)
+    class Control(BaseException): pass
+    original = Control("PRIVATE_CONTROL")
+    env = ActivityEnvironment()
+    env.info = replace(env.info, workflow_id=job["workflow_id"], workflow_run_id=_batch_ack(job)["run_id"],
+        activity_id=m.ACTIVITY_ID, activity_type=m.ACTIVITY_TYPE, namespace="default", task_queue=m.QUEUE,
+        attempt=1, is_local=False, retry_policy=RetryPolicy(maximum_attempts=1),
+        start_to_close_timeout=timedelta(seconds=10), schedule_to_close_timeout=timedelta(seconds=60))
+    if fault == "info":
+        def failed_info(): raise original
+        monkeypatch.setattr(activity, "info", failed_info)
+    else:
+        def failed_exit(*args): raise ValueError("PRIVATE_EXIT")
+        monkeypatch.setattr(observed, "exit_activity", failed_exit)
+    _, capture = m.batch_sdk_types(observed)
+    class Next:
+        async def execute_activity(self, input):
+            assert fault != "info"
+            raise original
+    interceptor = capture().intercept_activity(Next())
+    async def exercise():
+        with pytest.raises(Control) as caught:
+            await env.run(interceptor.execute_activity,
+                          ExecuteActivityInput(fn=lambda: None, args=[observed.requests[job["job_id"]]],
+                                               executor=None, headers={}))
+        assert caught.value is original
+        assert owner.snapshot()["uncertainty_latched"] and observed.observation_uncertain
+        assert m._BATCH_INVOCATION.get() is None
+    _real_asyncio.run(exercise())

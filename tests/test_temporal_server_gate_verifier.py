@@ -1333,3 +1333,560 @@ class UnitJunitIdentityTests(_batch_unittest.TestCase):
             self.verify_rows(nodes, [])
         with self.assertRaises(_batch_gate.GateError):
             self.verify_rows([True], [])
+
+# Live-shaped fixtures deliberately retain FABRICATED_UNIT_DATA. They exercise
+# only the independent pure validator, never hosted acceptance or a service.
+def _real_batch_fixture(width=1, *, early_activity=False):
+    plan = gate.frozen_batch_plan()
+    events, metadata, histories, outcomes = [], [], [], []
+    def add(job, event):
+        terminal = _batch_result(job)
+        invocation = event.startswith(("activity_", "execute_", "handler_"))
+        row = {"sequence": len(events) + 1, "elapsed_us": len(events) * 10,
+            "event": event, "job_id": job["job_id"],
+            "run_id": None if event in {"reservation", "rpc_enter"} else terminal["run_id"],
+            "activity_id": gate.ACTIVITY_ID if invocation else None,
+            "attempt": 1 if invocation else None, "reason_code": "OK"}
+        events.append(row)
+        if event == "activity_enter":
+            metadata.append({"job_id": job["job_id"], "entry_sequence": row["sequence"],
+                "workflow_id": job["workflow_id"], "run_id": terminal["run_id"],
+                "activity_id": gate.ACTIVITY_ID, "activity_type": gate.ACTIVITY_TYPE,
+                "namespace": "default", "task_queue": "opendot-temporal-gate", "attempt": 1,
+                "is_local": False, "retry_policy_present": True, "maximum_attempts": 1,
+                "start_to_close_seconds": 10, "schedule_to_close_seconds": 60,
+                "input_artifact_id": job["input_artifact_id"], "metadata_source": "real_sdk_activity_info"})
+    for start in range(0, 200, width):
+        group = plan["jobs"][start:start + width]
+        for job in group:
+            add(job, "reservation")
+            add(job, "rpc_enter")
+            if early_activity:
+                for event in ("activity_enter", "execute_enter", "handler_enter"):
+                    add(job, event)
+                if width == 1:
+                    for event in ("handler_return", "execute_return", "activity_exit"):
+                        add(job, event)
+            add(job, "acknowledgment")
+        if not early_activity:
+            for job in group:
+                for event in ("activity_enter", "execute_enter", "handler_enter"):
+                    add(job, event)
+        for job in group:
+            if not early_activity or width != 1:
+                for event in ("handler_return", "execute_return", "activity_exit"):
+                    add(job, event)
+            add(job, "workflow_result")
+            add(job, "validated_terminal")
+            terminal = _batch_result(job)
+            outcomes.append({"terminal": terminal, "original_validation": "CAS_RECEIPT_INPUT_BOUND",
+                "receipt_report_kind": "serialized_runtime_report_not_live_proof",
+                "scientific_validity": False, "device_control_authority": False,
+                "independent_review": "NOT_EVALUATED", "owner_integration": "NOT_EVALUATED"})
+            # The old fixture helper supplies the common SDK event shape only.
+            _, original, _ = _base_history("durability_replay")
+            projected = deepcopy(original)
+            projected[0]["attributes"]["workflow_type"] = "ReferenceBatchWorkflow"
+            projected[0]["attributes"].update(workflow_id=job["workflow_id"],
+                original_execution_run_id=terminal["run_id"], first_execution_run_id=terminal["run_id"],
+                attempt=1, continued_execution_run_id="")
+            result = {"response_schema": gate.RESPONSE_SCHEMA,
+                "result_artifact_id": terminal["result_artifact_id"],
+                "result_sha256": terminal["result_artifact_id"][7:],
+                "result_size_bytes": terminal["result_size_bytes"]}
+            projected[6]["attributes"].update(result)
+            projected.append({"event_id": 11, "event_type": "WorkflowExecutionCompleted", "attributes": result})
+            raw = json.dumps(projected).encode()
+            histories.append({"job_id": job["job_id"], "workflow_id": job["workflow_id"],
+                "run_id": terminal["run_id"], "raw_history_sha256": hashlib.sha256(raw).hexdigest(),
+                "raw_history_bytes": len(raw), "events": projected})
+    trace = {"schema_version": gate.REAL_BATCH_PREFIX + "trace.v1",
+        "evidence_kind": "FABRICATED_UNIT_DATA", "revision": REVISION,
+        "source_sha256": {path: gate.BATCH_OWNER_SHA256.get(path, _digest("fabricated-" + path))
+                          for path in gate.REAL_BATCH_SOURCE_PATHS},
+        "clock_scope": "HOST_MONOTONIC_OBSERVATIONS",
+        "sdk_transport_retries": dict(gate.REAL_BATCH_RETRY_DECLARATION),
+        "plan": plan, "profile": dict(gate.BATCH_PROFILE), "events": events}
+    return trace, metadata, histories, outcomes
+
+
+def _verify_real_fixture(bundle, monkeypatch):
+    trace, metadata, histories, outcomes = bundle
+    sources = {path: gate.BATCH_OWNER_SHA256.get(path, _digest("fabricated-" + path))
+               for path in gate.REAL_BATCH_SOURCE_PATHS}
+    monkeypatch.setattr(gate, "real_batch_source_digests", lambda source=None: sources)
+    return gate.validate_real_batch_trace(trace, gate.frozen_batch_plan(), dict(gate.BATCH_PROFILE),
+        metadata, histories, outcomes, allow_test_data=True, expected_revision=REVISION)
+
+
+def _real_cleanup():
+    historical = _fabricated_records()["cleanup.json"]
+    return {"schema_version": gate.REAL_BATCH_PREFIX + "cleanup.v1",
+        "server_generations": historical["server_generations"][:1],
+        "worker_generations": [{"generation": i, "type": kind, "public_shutdown_called": True,
+            "public_shutdown_completed": True} for i, kind in enumerate(("workflow", "activity"), 1)],
+        "all_reservations_accounted": True, "unresolved_start_operations": 0,
+        "unresolved_result_operations": 0, "active_activity_calls": 0,
+        "handler_entries": 200, "handler_returns": 200, "execution_uncertainty": False,
+        "observation_uncertainty": False, "in_flight_shutdown_attempted": False,
+        "forced_termination_used": False, "cleanup_status": "PASS", "cleanup_code": "OK",
+        "elapsed_seconds": 20.0}
+
+
+@pytest.mark.parametrize("width", (1, 2, 8))
+@pytest.mark.parametrize("early_activity", (False, True))
+def test_real_batch_fixture_partial_order_and_measured_overlap(monkeypatch, width, early_activity):
+    result = _verify_real_fixture(_real_batch_fixture(width, early_activity=early_activity), monkeypatch)
+    assert result["delivery_admission_acceptance"] == "PASS"
+    assert result["observed_activity_peak"] == result["observed_handler_peak"] == width
+    assert result["activity_overlap"] == ("NOT_DEMONSTRATED" if width == 1 else "DEMONSTRATED")
+    assert result["evidence_kind"] == "FABRICATED_UNIT_DATA"
+    assert result["schema_version"].endswith("fixture-verdict.v1")
+    assert result["clock_scope"] == "HOST_MONOTONIC_OBSERVATIONS"
+    assert result["cpu_parallelism"] == "NOT_EVALUATED"
+    assert result["sdk_transport_retries"]["physical_rpc_count_claimed"] is False
+    assert "acceptance" not in result and len(gate._real_encoded(result, 65536)) < 65536
+
+
+def test_real_batch_fabricated_data_cannot_enter_hosted_verifier(monkeypatch):
+    trace, metadata, histories, outcomes = bundle = _real_batch_fixture()
+    _verify_real_fixture(bundle, monkeypatch)
+    with pytest.raises(gate.GateError, match="INVALID_SCHEMA"):
+        gate.validate_real_batch_trace(trace, trace["plan"], trace["profile"], metadata, histories, outcomes)
+    # Opting into test mode cannot relabel a hosted record into a fixture pass.
+    trace["evidence_kind"] = "HOSTED_REAL_SERVICE"
+    with pytest.raises(gate.GateError, match="INVALID_SCHEMA"):
+        _verify_real_fixture(bundle, monkeypatch)
+
+
+@pytest.mark.parametrize("section,key,value", (
+    ("trace", "schema_version", gate.BATCH_SCHEMA + "trace.v1"),
+    ("trace", "evidence_kind", "HOSTED_REAL_SERVICE"),
+    ("trace", "clock_scope", "SYNTHETIC_FIXTURE_MICROSECONDS"),
+    ("trace", "revision", "b" * 40),
+    ("trace", "private_token", "PRIVATE_CANARY"),
+    ("profile", "activity_slots", 9), ("profile", "outstanding_limit", 17),
+    ("profile", "executor_workers", 9), ("profile", "job_count", 201),
+    ("profile", "disable_eager_activity_execution", False),
+    ("profile", "maximum_attempts", True),
+    ("retry", "physical_rpc_count_claimed", True), ("retry", "retry_config_supplied", True),
+    ("retry", "high_level_start_retry", False), ("retry", "policy", "DISABLED"),
+    ("metadata", "attempt", 2), ("metadata", "attempt", True),
+    ("metadata", "maximum_attempts", 2), ("metadata", "retry_policy_present", False),
+    ("metadata", "start_to_close_seconds", 11), ("metadata", "schedule_to_close_seconds", 61),
+    ("metadata", "is_local", True), ("metadata", "namespace", "private"),
+    ("metadata", "task_queue", "other"), ("metadata", "activity_type", "arbitrary.tool"),
+    ("metadata", "workflow_id", "opendot-batch-199"),
+    ("metadata", "run_id", _run_id(999)), ("metadata", "entry_sequence", 1),
+    ("metadata", "input_artifact_id", "sha256:" + "e" * 64),
+    ("metadata", "metadata_source", "fixture"), ("metadata", "task_token", "PRIVATE_CANARY"),
+    ("outcome", "original_validation", "OUTPUT_ONLY"),
+    ("outcome", "receipt_report_kind", "live_proof"),
+    ("outcome", "scientific_validity", True), ("outcome", "device_control_authority", True),
+    ("outcome", "owner_integration", "PASS"), ("outcome", "independent_review", "PASS"),
+    ("terminal", "workflow_id", "opendot-batch-199"),
+    ("terminal", "run_id", _run_id(999)), ("terminal", "attempt", 2),
+    ("terminal", "input_artifact_id", "sha256:" + "e" * 64),
+    ("terminal", "result_input_artifact_id", "sha256:" + "e" * 64),
+    ("terminal", "result_size_bytes", 16385), ("terminal", "tool_status", "BLOCKED"),
+    ("terminal", "tool_status", "FAILED"), ("terminal", "semantic_valid", False),
+    ("terminal", "output", 200), ("terminal", "reconciliation_required", True),
+    ("terminal", "transport_status", "UNKNOWN"),
+    ("history", "workflow_id", "opendot-batch-199"),
+    ("history", "run_id", _run_id(999)), ("history", "raw_history_bytes", 65537),
+    ("history", "raw_history_sha256", "PRIVATE_CANARY"),
+    ("history", "raw_history", "PRIVATE_CANARY"),
+))
+def test_real_batch_rejects_unbound_or_unapproved_fields(monkeypatch, section, key, value):
+    trace, metadata, histories, outcomes = bundle = _real_batch_fixture()
+    row = {"trace": trace, "profile": trace["profile"], "retry": trace["sdk_transport_retries"],
+           "metadata": metadata[0], "outcome": outcomes[0], "terminal": outcomes[0]["terminal"],
+           "history": histories[0]}[section]
+    row[key] = value
+    with pytest.raises(gate.GateError):
+        _verify_real_fixture(bundle, monkeypatch)
+
+
+@pytest.mark.parametrize("mutation", (
+    "source_missing", "source_extra", "source_digest", "metadata_missing", "metadata_duplicate",
+    "outcome_missing", "outcome_duplicate", "history_missing", "history_duplicate",
+    "reused_receipt", "reused_result", "swapped_outcomes", "swapped_histories", "duplicate_raw_history",
+    "ninth_activity", "event_duplicate", "event_missing", "clock_regression", "sequence_gap",
+    "private_event", "row_oversize", "trace_oversize", "metadata_oversize", "outcome_oversize",
+    "history_event_limit", "history_row_limit", "table_row_limit", "unknown_job", "no_reservation",
+    "no_rpc", "no_ack", "ack_run_mismatch", "two_acks", "terminal_before_result", "handler_before_execute",
+))
+def test_real_batch_adversarial_trace_and_table_bindings(monkeypatch, mutation):
+    trace, metadata, histories, outcomes = bundle = _real_batch_fixture(9 if mutation == "ninth_activity" else 1)
+    if mutation.startswith("source_"):
+        if mutation == "source_missing":
+            trace["source_sha256"].pop(next(iter(trace["source_sha256"])))
+        elif mutation == "source_extra":
+            trace["source_sha256"]["/PRIVATE_CANARY"] = "0" * 64
+        else:
+            trace["source_sha256"][next(iter(trace["source_sha256"]))] = "0" * 64
+    elif mutation.endswith("_missing") and mutation.split("_")[0] in {"metadata", "outcome", "history"}:
+        {"metadata": metadata, "outcome": outcomes, "history": histories}[mutation.split("_")[0]].pop(0)
+    elif mutation.endswith("_duplicate") and mutation.split("_")[0] in {"metadata", "outcome", "history"}:
+        rows = {"metadata": metadata, "outcome": outcomes, "history": histories}[mutation.split("_")[0]]
+        rows[-1] = deepcopy(rows[0])
+    elif mutation in {"reused_receipt", "reused_result"}:
+        key = "receipt_id" if mutation == "reused_receipt" else "result_artifact_id"
+        outcomes[1]["terminal"][key] = outcomes[0]["terminal"][key]
+    elif mutation == "swapped_outcomes":
+        for key in ("result_artifact_id", "receipt_id"):
+            outcomes[0]["terminal"][key], outcomes[1]["terminal"][key] = outcomes[1]["terminal"][key], outcomes[0]["terminal"][key]
+    elif mutation == "swapped_histories":
+        histories[0]["events"], histories[1]["events"] = histories[1]["events"], histories[0]["events"]
+    elif mutation == "duplicate_raw_history":
+        histories[1]["raw_history_sha256"] = histories[0]["raw_history_sha256"]
+    elif mutation == "event_duplicate":
+        trace["events"][4] = deepcopy(trace["events"][3])
+    elif mutation == "event_missing":
+        trace["events"].pop(4)
+    elif mutation == "clock_regression":
+        trace["events"][4]["elapsed_us"] = 0
+    elif mutation == "sequence_gap":
+        trace["events"][4]["sequence"] += 1
+    elif mutation == "private_event":
+        trace["events"][4]["exception"] = "PRIVATE_CANARY"
+    elif mutation == "row_oversize":
+        trace["events"][4]["reason_code"] = "x" * 1025
+    elif mutation == "trace_oversize":
+        trace["events"] = trace["events"] * 2
+    elif mutation == "metadata_oversize":
+        metadata[0]["task_queue"] = "x" * 1025
+    elif mutation == "outcome_oversize":
+        outcomes[0]["original_validation"] = "x" * 1025
+    elif mutation == "history_event_limit":
+        histories[0]["events"] *= 6
+    elif mutation == "history_row_limit":
+        histories[0]["events"] = [dict(histories[0]["events"][0], attributes={"extra": "x" * 256})] * 64
+    elif mutation == "table_row_limit":
+        metadata.append(deepcopy(metadata[0]))
+    elif mutation == "unknown_job":
+        trace["events"][0]["job_id"] = "batch-999"
+    elif mutation in {"no_reservation", "no_rpc", "no_ack"}:
+        idx = {"no_reservation": 0, "no_rpc": 1, "no_ack": 2}[mutation]
+        trace["events"][idx]["event"] = "uncertainty"
+        trace["events"][idx]["reason_code"] = "UNKNOWN_ACK"
+    elif mutation == "ack_run_mismatch":
+        trace["events"][2]["run_id"] = _run_id(999)
+    elif mutation == "two_acks":
+        trace["events"][3].update(event="acknowledgment", activity_id=None, attempt=None)
+    elif mutation == "terminal_before_result":
+        trace["events"][9]["event"] = "validated_terminal"
+    elif mutation == "handler_before_execute":
+        trace["events"][4]["event"] = "handler_enter"
+    with pytest.raises(gate.GateError):
+        _verify_real_fixture(bundle, monkeypatch)
+
+
+@pytest.mark.parametrize("event_index,key,value", (
+    (0, "workflow_type", "ReferenceGateWorkflow"), (0, "maximum_attempts", 2),
+    (0, "execution_timeout_seconds", 121), (0, "run_timeout_seconds", 121),
+    (0, "task_timeout_seconds", 11), (0, "task_queue", "other"),
+    (0, "workflow_id", "opendot-batch-199"), (0, "original_execution_run_id", _run_id(999)),
+    (0, "first_execution_run_id", _run_id(999)), (0, "attempt", 2),
+    (0, "continued_execution_run_id", _run_id(999)),
+    (4, "maximum_attempts", 2), (4, "start_to_close_seconds", 11),
+    (4, "schedule_to_close_seconds", 61), (4, "activity_id", "other"),
+    (5, "scheduled_event_id", 2), (5, "attempt", 2), (5, "identity", "other"),
+    (6, "started_event_id", 3), (6, "scheduled_event_id", 2),
+    (6, "result_size_bytes", 1025), (6, "result_sha256", "0" * 64),
+    (9, "started_event_id", 3), (10, "result_size_bytes", 1025),
+    (10, "new_execution_run_id", _run_id(999)),
+))
+def test_real_batch_history_exact_configuration_and_linkage(monkeypatch, event_index, key, value):
+    bundle = _real_batch_fixture()
+    bundle[2][0]["events"][event_index]["attributes"][key] = value
+    with pytest.raises(gate.GateError):
+        _verify_real_fixture(bundle, monkeypatch)
+
+
+@pytest.mark.parametrize("event_type", ("ActivityTaskTimedOut", "ActivityTaskFailed", "ActivityTaskCanceled",
+    "WorkflowExecutionContinuedAsNew", "WorkflowExecutionFailed", "WorkflowExecutionTimedOut",
+    "WorkflowExecutionCanceled", "WorkflowExecutionTerminated", "WorkflowExecutionSignaled"))
+def test_real_batch_history_rejects_extra_service_paths(monkeypatch, event_type):
+    bundle = _real_batch_fixture()
+    bundle[2][0]["events"][6]["event_type"] = event_type
+    with pytest.raises(gate.GateError):
+        _verify_real_fixture(bundle, monkeypatch)
+
+
+def test_real_batch_timestamps_are_observations_not_timeout_proofs(monkeypatch):
+    bundle = _real_batch_fixture(2, early_activity=True)
+    # Equal samples are legal; measured edges are not SDK timeout enforcement.
+    for row in bundle[0]["events"]:
+        row["elapsed_us"] = 123
+    assert _verify_real_fixture(bundle, monkeypatch)["delivery_admission_acceptance"] == "PASS"
+    bundle = _real_batch_fixture()
+    for row in bundle[0]["events"]:
+        row["elapsed_us"] = 0 if row["sequence"] < 7 else 11_000_001
+    assert _verify_real_fixture(bundle, monkeypatch)["delivery_admission_acceptance"] == "PASS"
+
+
+def test_real_batch_no_completion_preserves_sixteen_reservations(monkeypatch):
+    trace, _, _, _ = _real_batch_fixture()
+    selected = [row for row in trace["events"] if int(row["job_id"][-3:]) < 16
+                and row["event"] in {"reservation", "rpc_enter", "acknowledgment"}]
+    trace["events"] = selected
+    for number, row in enumerate(selected, 1):
+        row["sequence"] = number
+    result = _verify_real_fixture((trace, [], [], []), monkeypatch)
+    assert result["delivery_admission_acceptance"] == "FAIL"
+    assert result["reserved_attempts"] == result["outstanding"] == result["peak_outstanding"] == 16
+    assert result["unsubmitted"] == 184
+    row = deepcopy(selected[0])
+    row.update(sequence=49, job_id="batch-016", elapsed_us=2000)
+    selected.append(row)
+    with pytest.raises(gate.GateError, match="COUNTER_MISMATCH"):
+        _verify_real_fixture((trace, [], [], []), monkeypatch)
+
+
+def test_real_batch_late_accounting_keeps_uncertainty_sticky(monkeypatch):
+    trace, metadata, histories, outcomes = _real_batch_fixture(1, early_activity=True)
+    trace["events"] = trace["events"][:11]
+    row = deepcopy(trace["events"][0])
+    row.update(event="uncertainty", reason_code="UNKNOWN_ACK")
+    trace["events"].insert(2, row)
+    for number, event in enumerate(trace["events"], 1):
+        event.update(sequence=number, elapsed_us=number * 10)
+    metadata[0]["entry_sequence"] += 1
+    result = _verify_real_fixture((trace, metadata[:1], histories[:1], outcomes[:1]), monkeypatch)
+    assert result["validated_terminal"] == 1 and result["outstanding"] == 0
+    assert result["uncertainty_latched"] and result["delivery_admission_acceptance"] == "FAIL"
+    next_row = deepcopy(row)
+    next_row.update(sequence=13, elapsed_us=130, event="reservation", job_id="batch-001", reason_code="OK")
+    trace["events"].append(next_row)
+    with pytest.raises(gate.GateError):
+        _verify_real_fixture((trace, metadata[:1], histories[:1], outcomes[:1]), monkeypatch)
+
+
+def test_real_batch_global_observer_failure_is_bounded_and_sticky(monkeypatch):
+    trace, _, _, _ = _real_batch_fixture()
+    trace["events"] = [{"sequence": 1, "elapsed_us": 0, "event": "uncertainty", "job_id": None,
+        "run_id": None, "activity_id": None, "attempt": None, "reason_code": "OBSERVER_FAILURE"}]
+    result = _verify_real_fixture((trace, [], [], []), monkeypatch)
+    assert result["uncertainty_latched"] and result["reserved_attempts"] == 0
+    assert result["delivery_admission_acceptance"] == "FAIL"
+
+
+@pytest.mark.parametrize("key,value", (
+    ("schema_version", gate.PREFIX + "cleanup.v1"), ("all_reservations_accounted", False),
+    ("unresolved_start_operations", 1), ("unresolved_result_operations", 1), ("active_activity_calls", 1),
+    ("handler_returns", 199), ("execution_uncertainty", True), ("observation_uncertainty", True),
+    ("in_flight_shutdown_attempted", True), ("forced_termination_used", True),
+    ("cleanup_status", "UNCONFIRMED"), ("cleanup_code", "CLEANUP_UNCONFIRMED"),
+    ("elapsed_seconds", 241), ("elapsed_seconds", float("nan")),
+    ("private_path", "PRIVATE_CANARY"),
+))
+def test_real_batch_cleanup_refuses_unknown_or_unsafe_state(key, value):
+    value_row = _real_cleanup()
+    value_row[key] = value
+    with pytest.raises(gate.GateError):
+        gate.validate_real_batch_cleanup(value_row)
+
+
+@pytest.mark.parametrize("mutation", ("server_count", "worker_count", "worker_type", "worker_call",
+                                      "worker_complete", "server_exit", "server_signal", "generation"))
+def test_real_batch_cleanup_requires_single_service_and_public_shutdown(mutation):
+    value = _real_cleanup()
+    if mutation == "server_count":
+        value["server_generations"] *= 2
+    elif mutation == "worker_count":
+        value["worker_generations"] *= 2
+    elif mutation == "worker_type":
+        value["worker_generations"][1]["type"] = "workflow"
+    elif mutation in {"worker_call", "worker_complete"}:
+        key = "public_shutdown_called" if mutation == "worker_call" else "public_shutdown_completed"
+        value["worker_generations"][1][key] = False
+    elif mutation == "server_exit":
+        value["server_generations"][0]["exit_code"] = 1
+    elif mutation == "server_signal":
+        value["server_generations"][0]["shutdown_requested_signal"] = "SIGKILL"
+    else:
+        value["server_generations"][0]["generation"] = 2
+    with pytest.raises(gate.GateError):
+        gate.validate_real_batch_cleanup(value)
+
+
+def test_real_batch_cleanup_allows_observed_partial_accounting_without_qualification():
+    value = _real_cleanup()
+    gate.validate_real_batch_cleanup(value)
+    value["handler_entries"] = value["handler_returns"] = 1
+    gate.validate_real_batch_cleanup(value)
+
+
+def test_real_batch_source_closure_is_explicit_and_pins_unchanged_owners(tmp_path):
+    required = {"AGENTS.md", "docs/decisions/004-temporal-reference-transport.md",
+        "ci/run_temporal_server_gate.py", "ci/verify_temporal_server_gate.py", "ci/temporal-batch-nodes.txt",
+        "ci/temporal-real-batch-nodes.txt", "tests/acceptance/temporal_real_batch_gate.py",
+        "tests/test_temporal_server_harness_unit.py", "tests/test_temporal_server_gate_verifier.py",
+        ".github/workflows/temporal-server.yml", "docs/temporal-batch-qualification.md",
+        "docs/temporal-reference-transport.md"}
+    assert required <= set(gate.REAL_BATCH_SOURCE_PATHS)
+    assert set(gate.BATCH_SOURCE_PATHS) <= set(gate.REAL_BATCH_SOURCE_PATHS)
+    for path in gate.REAL_BATCH_SOURCE_PATHS:
+        target = tmp_path / path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((SOURCE / path).read_bytes() if path in gate.BATCH_OWNER_SHA256 else b"fabricated source\n")
+    digests = gate.real_batch_source_digests(tmp_path)
+    assert set(digests) == set(gate.REAL_BATCH_SOURCE_PATHS)
+    owner = next(iter(gate.BATCH_OWNER_SHA256))
+    (tmp_path / owner).write_bytes(b"changed\n")
+    with pytest.raises(gate.GateError, match="OWNER_MISMATCH"):
+        gate.real_batch_source_digests(tmp_path)
+
+
+@pytest.mark.parametrize("mutation", ("reference", "reordered", "duplicate", "missing", "extra"))
+def test_real_batch_manifest_is_separate_and_exact(tmp_path, mutation):
+    nodes = list(gate.REAL_BATCH_REQUIRED_NODES)
+    if mutation == "reference":
+        nodes = list(gate.REQUIRED_NODES)
+    elif mutation == "reordered":
+        nodes.reverse()
+    elif mutation == "duplicate":
+        nodes[1] = nodes[0]
+    elif mutation == "missing":
+        nodes.pop()
+    else:
+        nodes.append(gate.REQUIRED_NODES[0])
+    manifest = tmp_path / "nodes.txt"
+    manifest.write_text("\n".join(nodes) + "\n")
+    with pytest.raises(gate.GateError, match="REQUIRED_NODES"):
+        gate.read_real_batch_nodes(manifest)
+
+
+def test_real_batch_four_node_collection_and_junit_bindings(tmp_path):
+    nodes = list(gate.REAL_BATCH_REQUIRED_NODES)
+    receipt = tmp_path / "collection.json"
+    _write(receipt, {"schema_version": gate.REAL_BATCH_PREFIX + "collection.v1", "nodes": nodes})
+    assert gate.verify_real_batch_collection(receipt) == nodes
+    junit = tmp_path / "junit.xml"
+    cases = ['<testcase classname="tests.acceptance.temporal_real_batch_gate" name="' + name + '"/>'
+             for name in gate.REAL_BATCH_NODE_NAMES]
+    junit.write_text("<testsuite>" + "".join(cases) + "</testsuite>")
+    assert all(row["outcome"] == "PASS" for row in gate.verify_real_batch_junit(junit))
+    junit.write_text("<testsuite>" + "".join(cases[:-1] + cases[:1]) + "</testsuite>")
+    with pytest.raises(gate.GateError):
+        gate.verify_real_batch_junit(junit)
+
+
+@pytest.mark.parametrize("payload", (b'{"a":1,"a":2}', b'{"value":NaN}', b'{"value":Infinity}', b'\xff'))
+def test_real_batch_strict_reader_refuses_invalid_json(payload):
+    with pytest.raises(gate.GateError, match="INVALID_JSON"):
+        gate.strict_json(payload)
+
+
+def test_real_batch_cli_fails_safely_without_evidence_and_never_emits_raw_data(tmp_path, capsys):
+    audit, manifest, junit = tmp_path / "audit", tmp_path / "nodes.txt", tmp_path / "unit.xml"
+    manifest.write_text("\n".join(gate.REAL_BATCH_REQUIRED_NODES) + "\n")
+    junit.write_text('<testsuite><testcase classname="PRIVATE_CANARY" name="PRIVATE_CANARY"/></testsuite>')
+    summary = tmp_path / "summary.txt"
+    result = gate.main(["--profile", "batch200", "--required", str(manifest), "--junit", str(junit),
+        "--audit", str(audit), "--expected-revision", "PRIVATE_CANARY", "--summary", str(summary)])
+    assert result == 1
+    output = capsys.readouterr().out
+    report, diagnostic = [json.loads(line) for line in output.splitlines()]
+    assert report["delivery_admission_acceptance"] == "FAIL" and report["summary"] is None
+    assert report["revision"] is None and report["profile"] == "batch200"
+    assert "PRIVATE_CANARY" not in output + summary.read_text() + (audit / "batch-acceptance.json").read_text()
+    assert '"audit_file"' not in output and diagnostic["validation"] != "VALID"
+
+
+def test_real_batch_only_one_logical_start_can_await_ack(monkeypatch):
+    bundle = _real_batch_fixture(2)
+    trace = bundle[0]
+    # The second reservation cannot begin while the first logical start lacks
+    # an ack, even though the aggregate outstanding limit would allow it.
+    trace["events"][2], trace["events"][3] = trace["events"][3], trace["events"][2]
+    for number, row in enumerate(trace["events"], 1):
+        row.update(sequence=number, elapsed_us=number)
+    with pytest.raises(gate.GateError, match="COUNTER_MISMATCH"):
+        _verify_real_fixture(bundle, monkeypatch)
+
+
+@pytest.mark.parametrize("index", (0, 1))
+def test_real_batch_closure_forbids_reservation_and_rpc_entry(monkeypatch, index):
+    trace, _, _, _ = _real_batch_fixture()
+    trace["events"] = trace["events"][:2]
+    stop = {"sequence": index + 1, "elapsed_us": index, "event": "uncertainty", "job_id": None,
+            "run_id": None, "activity_id": None, "attempt": None, "reason_code": "OBSERVER_FAILURE"}
+    trace["events"].insert(index, stop)
+    for number, row in enumerate(trace["events"], 1):
+        row.update(sequence=number, elapsed_us=number)
+    with pytest.raises(gate.GateError, match="COUNTER_MISMATCH"):
+        _verify_real_fixture((trace, [], [], []), monkeypatch)
+
+
+def test_real_batch_unmatched_intervals_never_demonstrate_overlap(monkeypatch):
+    trace, metadata, _, _ = _real_batch_fixture(2)
+    trace["events"] = trace["events"][:12]
+    result = _verify_real_fixture((trace, metadata[:2], [], []), monkeypatch)
+    assert result["observed_activity_peak"] == result["observed_handler_peak"] == 2
+    assert result["activity_overlap"] == result["handler_overlap"] == "NOT_DEMONSTRATED"
+    assert result["delivery_admission_acceptance"] == "FAIL"
+
+
+def test_real_batch_audit_and_cli_reject_complete_fabricated_fixture(tmp_path, monkeypatch, capsys):
+    trace, metadata, histories, outcomes = bundle = _real_batch_fixture()
+    _verify_real_fixture(bundle, monkeypatch)
+    audit = tmp_path / "audit"
+    audit.mkdir()
+    # Isolate environment reads only. There is deliberately no test-mode switch
+    # in either hosted audit or CLI, even with every file present.
+    monkeypatch.setattr(gate, "validate_environment", lambda value, revision: None)
+    _write(audit / "environment.json", {})
+    _write(audit / "diagnostic.json", {"schema_version": gate.PREFIX + "diagnostic.v1",
+        "requested_revision": REVISION, "status": "COMPLETE", "primary_failure": None,
+        "cleanup_failure": None, "audit_failure": None})
+    _write(audit / "collection-receipt.json", {"schema_version": gate.REAL_BATCH_PREFIX + "collection.v1",
+        "nodes": list(gate.REAL_BATCH_REQUIRED_NODES)})
+    _write(audit / "batch-trace.json", trace)
+    for filename, kind, rows in (("batch-metadata.json", "metadata", metadata),
+                                ("batch-histories.json", "history", histories),
+                                ("batch-outcomes.json", "outcomes", outcomes)):
+        _write(audit / filename, {"schema_version": gate.REAL_BATCH_PREFIX + kind + ".v1", "rows": rows})
+    _write(audit / "batch-cleanup.json", _real_cleanup())
+    manifest = tmp_path / "nodes.txt"
+    manifest.write_text("\n".join(gate.REAL_BATCH_REQUIRED_NODES) + "\n")
+    monkeypatch.setattr(gate, "read_real_batch_nodes", lambda path: gate.REAL_BATCH_REQUIRED_NODES)
+    with pytest.raises(gate.GateError, match="INVALID_SCHEMA"):
+        gate.validate_real_batch_audit(audit, REVISION)
+    junit = tmp_path / "junit.xml"
+    junit.write_text("<testsuite>" + "".join('<testcase classname="tests.acceptance.temporal_real_batch_gate" name="'
+        + name + '"/>' for name in gate.REAL_BATCH_NODE_NAMES) + "</testsuite>")
+    assert gate.main(["--profile", "batch200", "--required", str(manifest), "--junit", str(junit),
+        "--audit", str(audit), "--expected-revision", REVISION]) == 1
+    report, _ = [json.loads(line) for line in capsys.readouterr().out.splitlines()]
+    assert report["delivery_admission_acceptance"] == "FAIL"
+    assert report["summary"] is None and "INVALID_SCHEMA" in report["reason_codes"]
+
+
+def test_real_batch_acceptance_file_cap_includes_final_newline(tmp_path, monkeypatch, capsys):
+    manifest = tmp_path / "nodes.txt"
+    manifest.write_text("\n".join(gate.REAL_BATCH_REQUIRED_NODES) + "\n")
+    for summary_failure in (False, True):
+        def run(label):
+            audit = tmp_path / (str(summary_failure) + "-" + label)
+            args = ["--profile", "batch200", "--required", str(manifest),
+                    "--junit", str(tmp_path / "missing.xml"), "--audit", str(audit),
+                    "--expected-revision", REVISION]
+            if summary_failure:
+                args += ["--summary", str(tmp_path / "missing-parent" / "summary.txt")]
+            assert gate.main(args) == 1
+            report = json.loads(capsys.readouterr().out.splitlines()[0])
+            return audit / "batch-acceptance.json", report
+        monkeypatch.setattr(gate, "BATCH_SUMMARY_BYTES", 65536)
+        baseline, _ = run("baseline")
+        maximum = baseline.stat().st_size
+        monkeypatch.setattr(gate, "BATCH_SUMMARY_BYTES", maximum)
+        exact_file, exact_report = run("exact")
+        assert exact_file.stat().st_size == maximum
+        assert exact_file.read_bytes().endswith(b"\n")
+        assert json.loads(exact_file.read_bytes()) == exact_report
+        monkeypatch.setattr(gate, "BATCH_SUMMARY_BYTES", maximum - 1)
+        over_file, over_report = run("over")
+        assert "WRITE_FAILED" in over_report["reason_codes"]
+        assert not over_file.exists() or over_file.stat().st_size <= maximum - 1
