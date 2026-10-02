@@ -1,0 +1,777 @@
+{
+  "schema_version": "1.0",
+  "recordset_type": "PUBLIC_RESEARCH_DELTA",
+  "as_of": "2026-10-02",
+  "language_policy": "Bilingual summaries; stable machine fields in English.",
+  "scope": "Documentation-only public-source research. Protocols describe expected outcomes, not executed tests.",
+  "baseline": {
+    "historical_index": "docs/research/source-needs-index.json",
+    "historical_source_count": 18,
+    "historical_need_count": 22,
+    "counts_unchanged": true,
+    "also_compared": [
+      "docs/research/refresh-20261001/source-needs-delta.json",
+      "docs/research/demand-gap-20261001/source-needs-delta.json",
+      "docs/research/lidang.md",
+      "docs/research/sequoia-hongshan.md",
+      "docs/research/hillhouse-primary-addendum.zh-CN.md",
+      "docs/research/official-strategy.md"
+    ],
+    "deduplication": "The four newly listed URLs were absent from existing research Markdown/JSON; the Chongqing URL was already listed. These are collection-relative classifications, not a merged total."
+  },
+  "delta_counts": {
+    "source_records": 7,
+    "sources_new_to_collection": 4,
+    "existing_url_coverage_corrections": 1,
+    "existing_policy_rechecks": 2,
+    "need_refinements": 4,
+    "existing_need_supplements": 1,
+    "new_validated_customer_needs": 0,
+    "sources_confirmed_published_after_2026_10_01": 0,
+    "implemented_features": 0,
+    "executed_acceptance_protocols": 0
+  },
+  "date_policy": "Composition, publication, republication, event and access dates are distinct. Unknown displayed timezones remain null. The X post is dated on, not proven after, the previous October 1 cutoff.",
+  "priority_definitions": {
+    "P0": "Evidence design before any authorized pilot or scope expansion.",
+    "P1": "Narrow report/case design, then separately authorized user or domain validation.",
+    "origin": "Project inference, not source-authored priorities or maturity scores."
+  },
+  "sources": [
+    {
+      "source_id": "cn-miit-industrial-data-foundation-2026-64",
+      "title": "工业数据筑基行动通知",
+      "url": "https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2026/art_f2b5d5d3dda44da5b8d3fa7d3198656a.html",
+      "source_type": "ISSUER_POLICY_NOTICE",
+      "publication_date": "2026-03-10",
+      "access_date": "2026-10-02",
+      "timezone": null,
+      "collection_change": "NEW_TO_COLLECTION_EXISTING_PUBLICATION",
+      "read_scope": "Notice metadata and body; III(1)–(6), especially III(1), III(2), III(4); application attachments not read.",
+      "source_paraphrase": {
+        "en": "The notice covers simulation collection, synthetic extreme scenarios, multiple industrial data types, standards and quality evaluation.",
+        "zh-CN": "通知涉及仿真采集、极端场景合成、多类工业数据、标准和质量评价。"
+      },
+      "limitations": [
+        "Lineage schemas and partition rules below are project inference, not prescribed policy.",
+        "The body gives a March 8 submission date although the page was published March 10; no extension or project eligibility is inferred."
+      ],
+      "issuer": "工业和信息化部办公厅",
+      "document_number": "工信厅信发函〔2026〕64号",
+      "composition_date": "2026-02-12",
+      "displayed_time": "17:53",
+      "reading_method": "ISSUER_HTML_TEXT",
+      "first_party_for_viewpoint": true
+    },
+    {
+      "source_id": "cn-miit-industrial-data-scenarios-2026-174",
+      "title": "工业场景数据要素应用参考指引",
+      "url": "https://www.miit.gov.cn/jgsj/xxjsfzs/wjfb/art/2026/art_118d1522a8554a11b6b061600079367f.html",
+      "source_type": "OFFICIAL_GUIDE_READ_VIA_OFFICIAL_REPUBLICATION",
+      "publication_date": "2026-04-28",
+      "access_date": "2026-10-02",
+      "timezone": null,
+      "collection_change": "NEW_TO_COLLECTION_EXISTING_PUBLICATION",
+      "read_scope": "Issuer notice metadata; official Hunan republication and PDF I.4–I.5, printed pages 2–3 (zero-based pages 1–2).",
+      "source_paraphrase": {
+        "en": "The guide describes using test and pilot-stage data for virtual product verification, and material, equipment and environmental data for process simulation.",
+        "zh-CN": "指引将测试和中试数据用于虚拟产品验证，并将材料、设备和环境数据用于工艺仿真。"
+      },
+      "limitations": [
+        "The issuer PDF was inaccessible; the Hunan PDF text was read. Byte equivalence was not established.",
+        "PDF screenshots were unavailable; no visual PDF verification is claimed.",
+        "The search tool title includes a 2025-edition suffix absent from the extracted body title; issuer notice dates are retained.",
+        "Benefits are expected effects, not OpenDot measurements; thresholds and holdout rules are project proposals."
+      ],
+      "issuer": "工业和信息化部办公厅",
+      "document_number": "工信厅信发函〔2026〕174号",
+      "composition_date": "2026-04-20",
+      "displayed_time": "18:23",
+      "reading_method": "ISSUER_HTML_AND_OFFICIAL_REPRINT_PDF_TEXT",
+      "official_republication_url": "https://hunan.gov.cn/zqt/zcsd/202604/t20260430_33967674.html",
+      "republication_date": "2026-04-30",
+      "read_pdf_url": "https://www.hunan.gov.cn/zqt/zcsd/202604/33967674/files/b4da87f3d70b432bacbc2aac2b6fd29c.pdf",
+      "unread_issuer_pdf_url": "https://www.miit.gov.cn/cms_files/filemanager/1226211233/attach/20264/27a000af6a264ff8860b23a3bcc5a41d.pdf",
+      "first_party_for_viewpoint": true
+    },
+    {
+      "source_id": "lidang-agent-infra-skepticism-20261001",
+      "title": "Lidang comment on agent infrastructure trends",
+      "url": "https://x.com/lidangzzz/status/2105835837418250465",
+      "source_type": "ORIGINAL_PERSONAL_POST",
+      "publication_date": "2026-10-01",
+      "access_date": "2026-10-02",
+      "timezone": null,
+      "collection_change": "NEW_TO_COLLECTION_PUBLISHED_ON_PRIOR_CUTOFF_DATE",
+      "read_scope": "Entire original post; visible author and related-profile identity fields; replies excluded.",
+      "source_paraphrase": {
+        "en": "The author satirizes the proliferation of agent browser, language, OS, email, CLI and skill infrastructure trends.",
+        "zh-CN": "作者讽刺 agent 浏览器、语言、操作系统、邮箱、CLI 和 skill 等基础设施热点的泛化包装。"
+      },
+      "limitations": [
+        "A sarcastic personal opinion is not a customer sample, product specification or evidence that all such infrastructure fails.",
+        "Only the displayed calendar date and time were verified; no UTC conversion or exhaustive timeline coverage.",
+        "The self-described affiliation is identity context, not independent employment verification or endorsement."
+      ],
+      "publisher": "X / @lidangzzz",
+      "speaker": "lidang 立党 (@lidangzzz)",
+      "displayed_time": "18:42",
+      "reading_method": "PUBLIC_ORIGINAL_IN_CLOUD_BROWSER_WITHOUT_LOGIN",
+      "first_party_for_viewpoint": true,
+      "identity_evidence": "The original page shows @lidangzzz, a name including lidang 立党, and a profile self-description as co-founder of Hedgehog Lab and Project DARC."
+    },
+    {
+      "source_id": "sequoia-cognitive-revolution-20260902",
+      "title": "The Cognitive Revolution",
+      "url": "https://sequoiacap.com/article/the-cognitive-revolution",
+      "source_type": "INSTITUTION_HOSTED_AUTHORED_OPINION",
+      "publication_date": "2026-09-02",
+      "access_date": "2026-10-02",
+      "timezone": null,
+      "collection_change": "NEW_TO_COLLECTION_EXISTING_PUBLICATION",
+      "read_scope": "Byline/date; The Application Era, The Shape of Daily Life, What Remains Human.",
+      "source_paraphrase": {
+        "en": "Buhler describes human direction, review and correction of AI work, while retaining choices, accountability and trust.",
+        "zh-CN": "Buhler 讨论人对 AI 工作的指导、复核和纠正，并保留选择、责任和信任。"
+      },
+      "limitations": [
+        "Macroeconomic, labor, cost and future-share predictions are not verified or adopted.",
+        "This is the author’s thesis on Sequoia Capital’s site, not a HongShan publication, buyer requirement or OpenDot validation."
+      ],
+      "publisher": "Sequoia Capital",
+      "speaker": "Konstantine Buhler",
+      "displayed_time": null,
+      "reading_method": "ORIGINAL_PUBLISHER_HTML_TEXT",
+      "first_party_for_viewpoint": true
+    },
+    {
+      "source_id": "hillhouse-liliang-chongqing-20260704-coverage",
+      "title": "从资金供给方到产业合伙人 一场大会折射重庆产融协同发展路径",
+      "url": "https://www.cq.gov.cn/ywdt/jrcq/202607/t20260704_15798637.html",
+      "source_type": "GOVERNMENT_REPUBLICATION_OF_NEWS_REPORT",
+      "publication_date": "2026-07-04",
+      "access_date": "2026-10-02",
+      "timezone": null,
+      "collection_change": "EXISTING_URL_BODY_COVERAGE_AND_ATTRIBUTION_CORRECTION",
+      "read_scope": "Page date/source credit; Li Liang paragraphs under 制造业底座升级为场景优势 and 资本力量与重庆产业基础相结合.",
+      "source_paraphrase": {
+        "en": "The report attributes to Li Liang an emphasis on manufacturing application settings and combining industrial resources with local opportunities.",
+        "zh-CN": "报道将重视制造业应用场景、产业资源与本地机会结合的看法归给李良。"
+      },
+      "limitations": [
+        "Indirect attributed reporting, not a Hillhouse-authored strategy or full speech transcript.",
+        "The credit for this exact URL is Chongqing Daily; no identity or byte-equivalence with another newspaper report is established.",
+        "Other speakers’ remarks, government hosting and a synthetic example do not establish Hillhouse demand or endorsement."
+      ],
+      "publisher": "Chongqing Municipal Government website",
+      "credited_original_publication": "重庆日报 / Chongqing Daily",
+      "speaker": "李良; identified by the report as 高瓴投资创始合伙人",
+      "event_date": "2026-07-03",
+      "displayed_time": "07:11",
+      "reading_method": "SEARCH_RETRIEVAL_OF_EXACT_GOVERNMENT_PAGE_BODY; DIRECT_WEB_OPEN_TIMED_OUT",
+      "first_party_for_viewpoint": false,
+      "correction_of": "docs/research/hillhouse-primary-addendum.zh-CN.md: the Shanghai Securities News credit for this exact URL is superseded by the Chongqing Daily credit verified here."
+    },
+    {
+      "source_id": "cn-state-council-ai-plus-2025-11",
+      "title": "国务院关于深入实施“人工智能+”行动的意见",
+      "url": "https://wap.miit.gov.cn/xwfb/szyw/art/2025/art_f8bd63905b384841a84e643c1b9455c7.html",
+      "source_type": "OFFICIAL_POLICY_REPUBLICATION",
+      "publication_date": "2025-08-26",
+      "access_date": "2026-10-02",
+      "timezone": null,
+      "collection_change": "EXISTING_SOURCE_RECHECK",
+      "read_scope": "MIIT republication, II(1).1–2 and II(2).2; issue and publication dates.",
+      "source_paraphrase": {
+        "en": "The policy supports scientific data, research tools and coordination from research through engineering and application.",
+        "zh-CN": "意见支持科学数据、科研工具及研究、工程实现和应用协同。"
+      },
+      "limitations": [
+        "Existing policy context only; no added source or validated need count.",
+        "Read via MIIT’s republication credited to the Chinese government website, not a new reading of the State Council original page."
+      ],
+      "issuer": "国务院",
+      "publisher": "工业和信息化部",
+      "document_number": "国发〔2025〕11号",
+      "composition_date": "2025-08-21",
+      "displayed_time": "17:57",
+      "reading_method": "OFFICIAL_REPRINT_HTML_TEXT",
+      "first_party_for_viewpoint": true
+    },
+    {
+      "source_id": "cn-miit-ai-software-2026-209",
+      "title": "“人工智能+软件”专项行动实施方案通知",
+      "url": "https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2026/art_49783ce685f042029111c8b6e94f0f30.html",
+      "source_type": "ISSUER_POLICY_NOTICE_METADATA_ONLY",
+      "publication_date": "2026-09-11",
+      "access_date": "2026-10-02",
+      "timezone": null,
+      "collection_change": "EXISTING_SOURCE_METADATA_RECHECK",
+      "read_scope": "Issuer, document number, issue/publication dates and attachment entry only.",
+      "source_paraphrase": {
+        "en": "Notice identity and dates were reconfirmed; no attachment clause is newly asserted.",
+        "zh-CN": "仅重核通知身份和日期，不据本轮未读附件提出条款结论。"
+      },
+      "limitations": [
+        "The plan attachment was not read in this integration; existing appendix reading limits remain.",
+        "No new feature mapping is derived from this metadata-only recheck."
+      ],
+      "issuer": "工业和信息化部",
+      "document_number": "工信部信发〔2026〕209号",
+      "composition_date": "2026-09-02",
+      "displayed_time": "17:24",
+      "reading_method": "ISSUER_NOTICE_HTML_METADATA",
+      "first_party_for_viewpoint": true
+    }
+  ],
+  "needs": [
+    {
+      "need_id": "derived-data-role-and-split-lineage",
+      "source_ids": [
+        "cn-miit-industrial-data-foundation-2026-64"
+      ],
+      "claim_kind": "PROJECT_INFERENCE",
+      "collection_change": "REFINEMENT_OF_EXISTING_HYPOTHESIS",
+      "inferred_need": {
+        "en": "Preserve evidence roles and detect prohibited calibration/validation ancestry after data transformations.",
+        "zh-CN": "数据变换后保留证据角色，识别任务禁止的校准/验证共同祖先。"
+      },
+      "proposed_feature": {
+        "en": "Versioned derived-record manifest containing parents, role, transform/version/parameters, output identity and intended use; report prohibited promotion or leakage.",
+        "zh-CN": "版本化派生清单记录父来源、角色、变换版本/参数、产物身份和用途，报告禁止的角色升级或泄漏。"
+      },
+      "oracle_id": "O1-LINEAGE",
+      "priority": "P0",
+      "priority_origin": "PROJECT_RESEARCH_SEQUENCE",
+      "extends_existing_need_ids": [
+        "policy-science-evidence",
+        "policy-data-boundaries"
+      ],
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN"
+    },
+    {
+      "need_id": "paired-virtual-validation",
+      "source_ids": [
+        "cn-miit-industrial-data-scenarios-2026-174",
+        "cn-state-council-ai-plus-2025-11"
+      ],
+      "claim_kind": "PROJECT_INFERENCE",
+      "collection_change": "REFINEMENT_OF_EXISTING_HYPOTHESIS",
+      "inferred_need": {
+        "en": "Know whether simulation and reference describe the same design and conditions, with calibration separate from validation.",
+        "zh-CN": "确认仿真与参照属于同一设计及工况，区分校准与验证。"
+      },
+      "proposed_feature": {
+        "en": "Bounded paired-evidence package; check comparability before residuals and retain NOT_VALIDATED when independent reference is absent.",
+        "zh-CN": "限定场景的成对证据包，先判可比性再计算残差；缺独立参照时保持 NOT_VALIDATED。"
+      },
+      "oracle_id": "O2-PAIRED-VALIDATION",
+      "priority": "P1",
+      "priority_origin": "PROJECT_RESEARCH_SEQUENCE",
+      "extends_existing_need_ids": [
+        "policy-industrial-adapter",
+        "policy-science-evidence"
+      ],
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN"
+    },
+    {
+      "need_id": "incremental-utility-before-expansion",
+      "source_ids": [
+        "lidang-agent-infra-skepticism-20261001"
+      ],
+      "claim_kind": "PROJECT_INFERENCE",
+      "collection_change": "REFINEMENT_OF_EXISTING_HYPOTHESIS",
+      "inferred_need": {
+        "en": "Test whether additional infrastructure improves a fixed task before adding more categories.",
+        "zh-CN": "扩充工具类别前，验证新增复杂度是否改善同一任务。"
+      },
+      "proposed_feature": {
+        "en": "Read-only baseline/candidate comparison report with accepted outcomes, all attempts, failures, setup and review effort.",
+        "zh-CN": "只读基线/候选比较报告，列出合格产物、全部尝试、失败、接入及复核成本。"
+      },
+      "oracle_id": "O3-INCREMENTAL-UTILITY",
+      "priority": "P0",
+      "priority_origin": "PROJECT_RESEARCH_SEQUENCE",
+      "extends_existing_need_ids": [
+        "sequoia-domain-evaluation",
+        "hillhouse-wangbei-full-delivery-cost",
+        "hongshan-market-validation"
+      ],
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN"
+    },
+    {
+      "need_id": "visible-human-review-and-decisions",
+      "source_ids": [
+        "sequoia-cognitive-revolution-20260902"
+      ],
+      "claim_kind": "PROJECT_INFERENCE",
+      "collection_change": "REFINEMENT_OF_EXISTING_HYPOTHESIS",
+      "inferred_need": {
+        "en": "A responsible person can inspect, correct and decide as execution expands.",
+        "zh-CN": "自动执行增加时，负责人仍可检查、纠正和作决定。"
+      },
+      "proposed_feature": {
+        "en": "Read-only evidence-linked handoff summary separating accepted, unreviewed, rejected and decision-pending items.",
+        "zh-CN": "只读交接摘要链接证据，区分已接受、待复核、拒收和待人工决定事项。"
+      },
+      "oracle_id": "O4-HUMAN-HANDOFF",
+      "priority": "P1",
+      "priority_origin": "PROJECT_RESEARCH_SEQUENCE",
+      "extends_existing_need_ids": [
+        "hillhouse-liliang-human-handoff",
+        "lidang-independent-verification",
+        "synthesis-reviewed-outcomes"
+      ],
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN"
+    },
+    {
+      "need_id": "supplement-domain-scenario-mapping",
+      "source_ids": [
+        "hillhouse-liliang-chongqing-20260704-coverage"
+      ],
+      "claim_kind": "PROJECT_INFERENCE",
+      "collection_change": "SUPPLEMENT_ONLY_NO_NEW_HYPOTHESIS",
+      "inferred_need": {
+        "en": "An engineering trial identifies its scenario, input holder and accountable acceptance criteria.",
+        "zh-CN": "工程试点明确场景、输入持有人和验收责任。"
+      },
+      "proposed_feature": {
+        "en": "Reuse the existing proposed domain case package with scenario, reference criteria and applicability boundary.",
+        "zh-CN": "沿用已有领域算例包提案，明确场景、参考判据和适用边界。"
+      },
+      "oracle_id": "O5-DOMAIN-CASE",
+      "priority": "P1",
+      "priority_origin": "PROJECT_RESEARCH_SEQUENCE",
+      "extends_existing_need_ids": [
+        "hillhouse-industry-hypothesis",
+        "hillhouse-wangbei-domain-validity"
+      ],
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN"
+    }
+  ],
+  "oracles": [
+    {
+      "oracle_id": "O1-LINEAGE",
+      "status": "NOT_RUN",
+      "type": "PROPOSED_OFFLINE_SYNTHETIC_PROTOCOL",
+      "preconditions": [
+        "Freeze allowed role transitions and partition rules before evaluating the invented records.",
+        "Retain all original, derived and failed records and the rule version."
+      ],
+      "cases": [
+        {
+          "case_id": "ROLE-PROMOTION",
+          "status": "NOT_RUN",
+          "fixture": {
+            "parent_role": "SYNTHETIC",
+            "child_claim": "MEASURED",
+            "transform": "copy/v1",
+            "allowed_transition": [
+              "SYNTHETIC",
+              "SYNTHETIC"
+            ]
+          },
+          "expected_not_observed": {
+            "verdict": "BLOCKED_ROLE_PROMOTION",
+            "measured_evidence_count": 0
+          }
+        },
+        {
+          "case_id": "SHARED-ANCESTOR",
+          "status": "NOT_RUN",
+          "fixture": {
+            "fit_parent": "r",
+            "validation_parent": "r",
+            "rule": "For this fixture, calibration and validation may not share ancestors."
+          },
+          "expected_not_observed": {
+            "verdict": "BLOCKED_SHARED_ANCESTOR",
+            "independent_validation_count": 0
+          }
+        },
+        {
+          "case_id": "HASH-IS-NOT-MEAN",
+          "status": "NOT_RUN",
+          "fixture": {
+            "values": [
+              "2",
+              "4"
+            ],
+            "transform": "decimal_mean/v1",
+            "frozen_expected": "3",
+            "stored_claim": "4",
+            "stored_claim_hash_matches_bytes": true
+          },
+          "expected_not_observed": {
+            "integrity": "PASS",
+            "semantics": "FAIL",
+            "accepted_result": null
+          }
+        },
+        {
+          "case_id": "ALLOWED-ROLE",
+          "status": "NOT_RUN",
+          "fixture": {
+            "parent_role": "SYNTHETIC",
+            "child_role": "SYNTHETIC",
+            "transform": "copy/v1",
+            "parents_resolved": true,
+            "allowed_transition": [
+              "SYNTHETIC",
+              "SYNTHETIC"
+            ]
+          },
+          "expected_not_observed": {
+            "role_check": "PASS",
+            "measured_evidence_count": 0
+          }
+        }
+      ],
+      "limits": [
+        "Role labels and hashes authenticate neither measurements nor rights.",
+        "A rule suitable for this fixture is not a universal statistical independence criterion."
+      ]
+    },
+    {
+      "oracle_id": "O2-PAIRED-VALIDATION",
+      "status": "NOT_RUN",
+      "type": "PROPOSED_OFFLINE_SYNTHETIC_PROTOCOL",
+      "preconditions": [
+        "Freeze matching keys: design revision, material/condition and unit; reject missing keys before residuals.",
+        "Use declared decimal absolute-error tolerance 0.2 au and invented reference data; retain unmatched records and denominators."
+      ],
+      "cases": [
+        {
+          "case_id": "COMPARABLE",
+          "status": "NOT_RUN",
+          "fixture": {
+            "revision": "synthetic-v1",
+            "condition": "A",
+            "unit": "au",
+            "simulation": [
+              "10.0",
+              "20.0"
+            ],
+            "reference": [
+              "10.1",
+              "19.9"
+            ],
+            "reference_role": "INDEPENDENT_SYNTHETIC_REFERENCE"
+          },
+          "expected_not_observed": {
+            "software_contract": "PASS",
+            "absolute_residuals": [
+              "0.1",
+              "0.1"
+            ],
+            "comparison_count": 2,
+            "scientific_acceptance": false
+          }
+        },
+        {
+          "case_id": "REVISION-MISMATCH",
+          "status": "NOT_RUN",
+          "fixture": {
+            "simulation_revision": "synthetic-v1",
+            "reference_revision": "synthetic-v2"
+          },
+          "expected_not_observed": {
+            "verdict": "NOT_COMPARABLE",
+            "residuals": null,
+            "accepted_pairs": 0
+          }
+        },
+        {
+          "case_id": "CALIBRATION-NOT-VALIDATION",
+          "status": "NOT_RUN",
+          "fixture": {
+            "requested_claim": "independent_validation",
+            "reference_role": "CALIBRATION",
+            "values_match": true
+          },
+          "expected_not_observed": {
+            "verdict": "NOT_VALIDATED",
+            "independent_validation_count": 0
+          }
+        },
+        {
+          "case_id": "NO-REFERENCE",
+          "status": "NOT_RUN",
+          "fixture": {
+            "simulation": [
+              "10.0"
+            ],
+            "reference": null,
+            "tool_exit_code": 0
+          },
+          "expected_not_observed": {
+            "verdict": "NOT_VALIDATED",
+            "residuals": null,
+            "reference_guessed": false
+          }
+        }
+      ],
+      "limits": [
+        "No measured data, sensor or native solver is used.",
+        "A software-contract pass cannot validate a physical object or justify replacing physical tests."
+      ]
+    },
+    {
+      "oracle_id": "O3-INCREMENTAL-UTILITY",
+      "status": "NOT_RUN",
+      "type": "PROPOSED_OFFLINE_SYNTHETIC_REPORT_PROTOCOL",
+      "preconditions": [
+        "Freeze task, versions, budget, acceptance rules and the report’s utility rule.",
+        "The invented utility rule requires more accepted outcomes with no increase in total recorded effort and no missing effort fields.",
+        "Report all attempts, failures, setup, elapsed time and review effort; the rule is a fixture choice, not a universal utility metric."
+      ],
+      "cases": [
+        {
+          "case_id": "MORE-TOOLS-ONLY",
+          "status": "NOT_RUN",
+          "fixture": {
+            "baseline": {
+              "accepted": 1,
+              "tool_count": 1,
+              "total_effort": 10
+            },
+            "candidate": {
+              "accepted": 1,
+              "tool_count": 5,
+              "total_effort": 12
+            }
+          },
+          "expected_not_observed": {
+            "utility_improvement": false
+          }
+        },
+        {
+          "case_id": "UNACCEPTED-OUTPUT",
+          "status": "NOT_RUN",
+          "fixture": {
+            "baseline": {
+              "accepted": 1,
+              "attempts": 1,
+              "total_effort": 10
+            },
+            "candidate": {
+              "accepted": 1,
+              "attempts": 3,
+              "unaccepted": 2,
+              "total_effort": 10
+            }
+          },
+          "expected_not_observed": {
+            "utility_improvement": false,
+            "candidate_attempt_denominator": 3
+          }
+        },
+        {
+          "case_id": "UNKNOWN-REVIEW-EFFORT",
+          "status": "NOT_RUN",
+          "fixture": {
+            "baseline_review_minutes": 2,
+            "candidate_review_minutes": null
+          },
+          "expected_not_observed": {
+            "utility_verdict": "INDETERMINATE",
+            "utility_improvement": false
+          }
+        },
+        {
+          "case_id": "FIXTURE-UTILITY-POSITIVE",
+          "status": "NOT_RUN",
+          "fixture": {
+            "baseline": {
+              "accepted": 1,
+              "total_effort": 10,
+              "all_effort_fields_known": true
+            },
+            "candidate": {
+              "accepted": 2,
+              "total_effort": 10,
+              "all_effort_fields_known": true
+            }
+          },
+          "expected_not_observed": {
+            "fixture_utility_improvement": true,
+            "real_world_benefit_established": false
+          }
+        }
+      ],
+      "limits": [
+        "Synthetic report classification is not a benchmark or proof of real benefit.",
+        "Real benefit needs a separately authorized task comparison."
+      ]
+    },
+    {
+      "oracle_id": "O4-HUMAN-HANDOFF",
+      "status": "NOT_RUN",
+      "type": "PROPOSED_OFFLINE_SYNTHETIC_REPORT_PROTOCOL",
+      "preconditions": [
+        "Freeze four invented records: valid reviewed output, missing evidence, rejected output, pending human decision.",
+        "Use distinct record IDs and require raw-evidence references for each status."
+      ],
+      "cases": [
+        {
+          "case_id": "SEPARATE-STATUS-COUNTS",
+          "status": "NOT_RUN",
+          "fixture": {
+            "records": [
+              {
+                "id": "a",
+                "state": "ACCEPTED_IN_FIXTURE",
+                "evidence": "fixture-a"
+              },
+              {
+                "id": "b",
+                "state": "UNREVIEWED",
+                "evidence": null
+              },
+              {
+                "id": "c",
+                "state": "REJECTED",
+                "evidence": "fixture-c"
+              },
+              {
+                "id": "d",
+                "state": "DECISION_PENDING",
+                "evidence": "fixture-d"
+              }
+            ]
+          },
+          "expected_not_observed": {
+            "accepted_count": 1,
+            "unreviewed_count": 1,
+            "rejected_count": 1,
+            "decision_pending_count": 1,
+            "total_count": 4,
+            "b_or_d_counted_accepted": false
+          }
+        }
+      ],
+      "limits": [
+        "Synthetic reviewer/approval fields prove no real consent or authority.",
+        "Review time, corrections and false acceptance require an authorized human pilot."
+      ]
+    },
+    {
+      "oracle_id": "O5-DOMAIN-CASE",
+      "status": "NOT_RUN",
+      "type": "PROPOSED_OFFLINE_SYNTHETIC_REPORT_PROTOCOL",
+      "preconditions": [
+        "Reuse a rights-cleared invented domain case with scenario, input holder, parameters, unit, tool version, reference criteria and applicability boundary.",
+        "Keep domain-user fitness confirmation separate from software completeness."
+      ],
+      "cases": [
+        {
+          "case_id": "MISSING-UNIT",
+          "status": "NOT_RUN",
+          "fixture": {
+            "unit": null,
+            "other_required_fields_present": true
+          },
+          "expected_not_observed": {
+            "package_completeness": "FAIL",
+            "scenario_fitness": "NOT_VALIDATED"
+          }
+        },
+        {
+          "case_id": "COMPLETE-CASE-UNCONFIRMED",
+          "status": "NOT_RUN",
+          "fixture": {
+            "all_required_fields_present": true,
+            "domain_user_confirmation": false
+          },
+          "expected_not_observed": {
+            "package_completeness": "PASS",
+            "scenario_fitness": "NOT_VALIDATED"
+          }
+        }
+      ],
+      "limits": [
+        "A report’s claims and a synthetic completeness pass cannot substitute for domain-user confirmation."
+      ]
+    }
+  ],
+  "source_to_need_map": [
+    {
+      "source_id": "cn-miit-industrial-data-foundation-2026-64",
+      "source_publication_date": "2026-03-10",
+      "need_id": "derived-data-role-and-split-lineage",
+      "feature_field": "needs.proposed_feature",
+      "oracle_id": "O1-LINEAGE",
+      "priority": "P0",
+      "mapping_status": "PROPOSED",
+      "oracle_status": "NOT_RUN"
+    },
+    {
+      "source_id": "cn-miit-industrial-data-scenarios-2026-174",
+      "source_publication_date": "2026-04-28",
+      "need_id": "paired-virtual-validation",
+      "feature_field": "needs.proposed_feature",
+      "oracle_id": "O2-PAIRED-VALIDATION",
+      "priority": "P1",
+      "mapping_status": "PROPOSED",
+      "oracle_status": "NOT_RUN"
+    },
+    {
+      "source_id": "cn-state-council-ai-plus-2025-11",
+      "source_publication_date": "2025-08-26",
+      "need_id": "paired-virtual-validation",
+      "feature_field": "needs.proposed_feature",
+      "oracle_id": "O2-PAIRED-VALIDATION",
+      "priority": "P1",
+      "mapping_status": "PROPOSED",
+      "oracle_status": "NOT_RUN"
+    },
+    {
+      "source_id": "lidang-agent-infra-skepticism-20261001",
+      "source_publication_date": "2026-10-01",
+      "need_id": "incremental-utility-before-expansion",
+      "feature_field": "needs.proposed_feature",
+      "oracle_id": "O3-INCREMENTAL-UTILITY",
+      "priority": "P0",
+      "mapping_status": "PROPOSED",
+      "oracle_status": "NOT_RUN"
+    },
+    {
+      "source_id": "sequoia-cognitive-revolution-20260902",
+      "source_publication_date": "2026-09-02",
+      "need_id": "visible-human-review-and-decisions",
+      "feature_field": "needs.proposed_feature",
+      "oracle_id": "O4-HUMAN-HANDOFF",
+      "priority": "P1",
+      "mapping_status": "PROPOSED",
+      "oracle_status": "NOT_RUN"
+    },
+    {
+      "source_id": "hillhouse-liliang-chongqing-20260704-coverage",
+      "source_publication_date": "2026-07-04",
+      "need_id": "supplement-domain-scenario-mapping",
+      "feature_field": "needs.proposed_feature",
+      "oracle_id": "O5-DOMAIN-CASE",
+      "priority": "P1",
+      "mapping_status": "PROPOSED",
+      "oracle_status": "NOT_RUN"
+    }
+  ],
+  "unmapped_metadata_rechecks": [
+    "cn-miit-ai-software-2026-209"
+  ],
+  "global_limits": [
+    "Policies, authored opinions and indirect reporting are different evidence types. All needs, features, oracles and priorities here are project inferences.",
+    "No customer interview, procurement, adoption, investment, endorsement, certification, compliance or eligibility evidence is established.",
+    "No runtime, provider, adapter, scheduler, permission owner, recovery owner, implementation status, test count or release claim changes.",
+    "Existing 0.3.0a2 alpha / NOT_SCORED and optional fixed single-host synthetic Temporal boundaries remain unchanged.",
+    "scientific_acceptance=false and physical_validation=false remain true limits even if a future synthetic protocol passes.",
+    "No raw third-party content or source bytes are archived here; URLs and reading scope support traceability, not immutable provenance.",
+    "The source review is bounded and does not prove no newer publication or Hillhouse-authored strategy exists.",
+    "Sequoia Capital and HongShan are distinct; the Chongqing report is not a Hillhouse-authored primary statement."
+  ]
+}
