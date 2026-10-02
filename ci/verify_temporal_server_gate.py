@@ -401,6 +401,63 @@ def verify_junit(path: Path, required_nodes: tuple[str, ...]) -> list[dict]:
             for n in required_nodes]
 
 
+def verify_collected_unit_junit(nodes: object, path: Path, *, files: tuple[str, ...],
+                                expected_count: int) -> list[dict]:
+    """Bind every testcase to exactly one known collected module/class/test node.
+
+    JUnit classnames flatten Python module and class scopes with dots. Replacing
+    those dots with slashes loses the collector boundary. Build the mapping from
+    the independently collected IDs instead and refuse any ambiguous projection.
+    Parameter suffixes (including dots, slashes and literal ``::``) stay exact.
+    This returns observed outcomes; the caller must still require all PASS and
+    zero collection/test process exit codes before accepting the unit gate.
+    """
+    integer(expected_count, 1, 4096, "COLLECTION_MISMATCH")
+    require(type(files) is tuple and 0 < len(files) <= 32
+            and all(type(file) is str and len(file) <= 256 and re.fullmatch(
+                r"tests/(?:[A-Za-z_][A-Za-z0-9_]*/)*[A-Za-z_][A-Za-z0-9_]*\.py", file)
+                is not None for file in files)
+            and len(files) == len(set(files)), "COLLECTION_MISMATCH")
+    require(type(nodes) is list and len(nodes) == expected_count
+            and all(type(node) is str and 0 < len(node) <= 128 * 1024 for node in nodes),
+            "COLLECTION_MISMATCH")
+    # Existing fixed fixtures include long parameter IDs. Bound their total bytes
+    # without shortening, escaping, normalizing or dropping any identity.
+    require(sum(len(node.encode("utf-8")) + 1 for node in nodes) <= 2 * 1024 * 1024,
+            "SIZE_LIMIT")
+    require(len(nodes) == len(set(nodes)), "DUPLICATE_NODE")
+    identities = {}
+    for node in nodes:
+        file, separator, qualified = node.partition("::")
+        require(separator == "::" and file in files
+                and not any(ord(char) < 32 or ord(char) == 127 for char in node), "JUNIT_IDENTITY")
+        bare, parameter, suffix = qualified.partition("[")
+        scopes = bare.split("::")
+        require(all(re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", scope) is not None for scope in scopes)
+                and (not parameter or suffix.endswith("]")), "JUNIT_IDENTITY")
+        classname = ".".join([file[:-3].replace("/", "."), *scopes[:-1]])
+        name = scopes[-1] + parameter + suffix
+        identity = (classname, name)
+        require(identity not in identities, "JUNIT_IDENTITY")
+        identities[identity] = node
+    root = parse_junit(path, maximum=2 * 1024 * 1024)
+    cases = list(root.iter("testcase"))
+    require(len(cases) == expected_count, "COLLECTION_MISMATCH")
+    results = {}
+    for case in cases:
+        identity = (case.get("classname"), case.get("name"))
+        require(identity in identities, "JUNIT_IDENTITY")
+        node = identities[identity]
+        require(node not in results, "DUPLICATE_NODE")
+        statuses = [child.tag for child in case if child.tag in {"failure", "error", "skipped"}]
+        outcome, reason = {"failure": ("FAIL", "TEST_FAILED"), "error": ("ERROR", "TEST_ERROR"),
+                           "skipped": ("SKIP", "TEST_SKIPPED")}.get(
+                               statuses[0] if statuses else "", ("PASS", "OK"))
+        results[node] = {"node_id": node, "outcome": outcome, "reason_code": reason}
+    require(set(results) == set(nodes), "COLLECTION_MISMATCH")
+    return [results[node] for node in nodes]
+
+
 def _sha(path: Path) -> str:
     return hashlib.sha256(read_bytes(path, 2 * 1024 * 1024)).hexdigest()
 
@@ -951,6 +1008,314 @@ def main(argv: list[str] | None = None) -> int:
             if filename != "diagnostic.json":
                 print(_encode({"audit_file": filename, "evidence": records[filename]}))
     return 0 if acceptance["acceptance"] == "PASS" else 1
+
+
+# Finite batch v1 is preparation-only. It has no CLI path and cannot emit the
+# historical real-server acceptance schema. All clocks below are fixture clocks.
+BATCH_SCHEMA = "opendot.temporal.batch."
+BATCH_JOB_COUNT = 200
+BATCH_MAX_EVENTS = 4096
+BATCH_EVENT_BYTES = 1024
+BATCH_SUMMARY_BYTES = 65536
+BATCH_TRACE_BYTES = 5 * 1024 * 1024
+BATCH_PROFILE = {
+    "job_count": 200, "outstanding_limit": 16, "activity_slots": 8,
+    "executor_workers": 8, "workflow_task_slots": 1, "workflow_cache": 0,
+    "activity_pollers": 1, "workflow_pollers": 1,
+    "disable_eager_activity_execution": True, "maximum_attempts": 1,
+    "callable_timeout_seconds": 1, "start_to_close_seconds": 10,
+    "schedule_to_close_seconds": 60,
+}
+BATCH_UNCERTAINTY_REASONS = frozenset({
+    "UNKNOWN_ACK", "RPC_EXCEPTION", "TIMEOUT", "TRANSPORT_LOSS",
+    "RUNTIME_EXCEPTION", "RECONCILIATION_REQUIRED", "OBSERVER_FAILURE",
+    "INVALID_TERMINAL", "DUPLICATE_ACK", "DUPLICATE_TERMINAL",
+})
+BATCH_OWNER_SHA256 = {
+    **OWNER_SHA256,
+    "src/opendot_engineering/adapters/temporal_activity.py":
+        "cd2c277266239e57c10cb5aab743052f3322acf75be1d48156d715cef6fae5ae",
+    "src/opendot_engineering/adapters/temporal_workflow.py":
+        "d9307d0e78e4a925d92f021c5316a0515040bb091013182419bc6ccbb6a5ea38",
+}
+BATCH_SOURCE_PATHS = tuple(sorted(set(HARNESS_SOURCE_PATHS) | set(BATCH_OWNER_SHA256) | {
+    "AGENTS.md", "docs/decisions/004-temporal-reference-transport.md",
+    "ci/temporal-batch-nodes.txt", "docs/temporal-batch-qualification.md",
+}))
+
+
+def _batch_encoded(value: object, maximum: int) -> bytes:
+    """Bound exact plain data before serialization; no arbitrary object hooks."""
+    remaining = [100000]
+    def plain(item, depth=0):
+        remaining[0] -= 1
+        require(remaining[0] >= 0 and depth <= 10, "SIZE_LIMIT")
+        if item is None or type(item) in (bool, int):
+            if type(item) is int:
+                require(abs(item) <= 10 ** 15, "SIZE_LIMIT")
+            return
+        if type(item) is str:
+            require(len(item) <= 256, "SIZE_LIMIT")
+            return
+        if type(item) is list:
+            require(len(item) <= BATCH_MAX_EVENTS, "SIZE_LIMIT")
+            for child in item:
+                plain(child, depth + 1)
+            return
+        require(type(item) is dict and len(item) <= 32, "INVALID_TYPE")
+        for key, child in item.items():
+            require(type(key) is str and len(key) <= 128, "INVALID_SCHEMA")
+            plain(child, depth + 1)
+    plain(value)
+    data = json.dumps(value, sort_keys=True, separators=(",", ":"),
+                      ensure_ascii=True, allow_nan=False).encode("ascii")
+    require(0 < len(data) <= maximum, "SIZE_LIMIT")
+    return data
+
+
+def frozen_batch_plan() -> dict:
+    """Materialize the sole admitted fixture, not a configurable job source."""
+    jobs = []
+    for index in range(BATCH_JOB_COUNT):
+        payload = {"left": index, "right": 199 - index, "return_null": False}
+        data = _batch_encoded(payload, 256)
+        jobs.append({"job_id": f"batch-{index:03d}", "cohort": "ab"[index % 2],
+                     "workflow_id": f"opendot-batch-{index:03d}", "payload": payload,
+                     "input_artifact_id": "sha256:" + hashlib.sha256(data).hexdigest(),
+                     "input_size_bytes": len(data), "expected_output": 199,
+                     "max_result_bytes": 16384})
+    return {"schema_version": BATCH_SCHEMA + "plan.v1", "jobs": jobs,
+            "attempt_allowance": 200, "output_allowance_bytes": 200 * 16384}
+
+
+def validate_batch_plan(value: object) -> dict:
+    _batch_encoded(value, 128 * 1024)
+    expected = frozen_batch_plan()
+    exact(_batch_encoded(value, 128 * 1024), _batch_encoded(expected, 128 * 1024), "INVALID_VALUE")
+    return expected  # fresh internally built objects; no caller aliases survive
+
+
+def validate_batch_profile(value: object) -> dict:
+    _batch_encoded(value, 2048)
+    shape(value, set(BATCH_PROFILE))
+    for name, expected in BATCH_PROFILE.items():
+        exact(value[name], expected)
+    return dict(BATCH_PROFILE)
+
+
+def current_batch_source_digests(source: Path | None = None) -> dict:
+    source = ROOT if source is None else Path(source)
+    result = {path: _sha(source / path) for path in BATCH_SOURCE_PATHS}
+    for path, expected in BATCH_OWNER_SHA256.items():
+        exact(result[path], expected, "OWNER_MISMATCH")
+    return result
+
+
+def validate_batch_terminal(value: object, job: dict, run_id: str) -> dict:
+    """Validate original projection bindings; semantic acceptance is separate.
+
+    The fixture projection is not a CAS read or a live receipt. A hosted consumer
+    is deliberately absent until independently approved original-byte validation.
+    """
+    _batch_encoded(value, BATCH_EVENT_BYTES)
+    shape(value, "job_id workflow_id run_id activity_id invocation_id attempt receipt_id "
+          "input_artifact_id result_artifact_id result_input_artifact_id result_size_bytes "
+          "tool_status semantic_valid output reconciliation_required transport_status")
+    exact(value["job_id"], job["job_id"])
+    exact(value["workflow_id"], job["workflow_id"])
+    match(run_id, r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+    exact(value["run_id"], run_id)
+    exact(value["activity_id"], ACTIVITY_ID)
+    exact(value["invocation_id"], "inv-" + job["job_id"][-3:])
+    exact(value["attempt"], 1)
+    match(value["receipt_id"], r"[0-9a-f]{24}")
+    exact(value["input_artifact_id"], job["input_artifact_id"])
+    exact(value["result_input_artifact_id"], job["input_artifact_id"])
+    artifact_id(value["result_artifact_id"])
+    integer(value["result_size_bytes"], 1, job["max_result_bytes"])
+    require(type(value["tool_status"]) is str
+            and value["tool_status"] in {"COMPLETED", "FAILED", "BLOCKED"})
+    require(type(value["transport_status"]) is str
+            and value["transport_status"] in {"COMPLETED", "FAILED", "UNKNOWN"})
+    require(type(value["semantic_valid"]) is bool
+            and type(value["reconciliation_required"]) is bool)
+    require(value["output"] is None or type(value["output"]) is int
+            and -2000000 <= value["output"] <= 2000000)
+    return dict(value)
+
+
+def batch_terminal_accepted(value: dict) -> bool:
+    return (value["transport_status"] == "COMPLETED"
+            and value["tool_status"] == "COMPLETED" and value["semantic_valid"] is True
+            and value["reconciliation_required"] is False
+            and type(value["output"]) is int and value["output"] == 199)
+
+
+def read_batch_trace(path: Path) -> object:
+    return strict_json(read_bytes(path, BATCH_TRACE_BYTES))
+
+
+def validate_batch_trace(value: object, expected_revision: str,
+                         source: Path | None = None) -> dict:
+    """Reconstruct a finite *fabricated* trace; never certify a service run.
+
+    Malformed evidence raises a fixed GateError. Well-formed partial/uncertain
+    observations yield a bounded FAIL summary retaining outstanding work. A late
+    success can account for work but can never erase an uncertainty latch.
+    """
+    _batch_encoded(value, BATCH_TRACE_BYTES)
+    shape(value, "schema_version evidence_kind revision source_sha256 plan profile events outcomes")
+    exact(value["schema_version"], BATCH_SCHEMA + "trace.v1", "INVALID_SCHEMA")
+    exact(value["evidence_kind"], "FABRICATED_UNIT_DATA", "INVALID_SCHEMA")
+    match(expected_revision, r"[0-9a-f]{40}")
+    exact(value["revision"], expected_revision, "REVISION_MISMATCH")
+    exact(value["source_sha256"], current_batch_source_digests(source), "SOURCE_MISMATCH")
+    plan = validate_batch_plan(value["plan"])
+    profile = validate_batch_profile(value["profile"])
+    events, originals = value["events"], value["outcomes"]
+    require(type(events) is list and len(events) <= BATCH_MAX_EVENTS, "SIZE_LIMIT")
+    require(type(originals) is list and len(originals) <= 200, "SIZE_LIMIT")
+    jobs = {job["job_id"]: job for job in plan["jobs"]}
+    states = {job_id: {"reserved": False, "run_id": None, "phase": 0,
+              "terminal_seen": False, "accepted": False, "uncertain": False,
+              "submit_us": None, "start_us": None, "end_us": None, "terminal_us": None,
+              "handler_start_us": None, "handler_end_us": None}
+              for job_id in jobs}
+    outcomes, result_ids, receipts = {}, set(), set()
+    for row in originals:
+        require(type(row) is dict and type(row.get("job_id")) is str
+                and row["job_id"] in jobs, "OUTCOME_MISMATCH")
+        job_id = row["job_id"]
+        require(job_id not in outcomes, "OUTCOME_MISMATCH")
+        validated = validate_batch_terminal(row, jobs[job_id], row.get("run_id"))
+        require(validated["result_artifact_id"] not in result_ids
+                and validated["receipt_id"] not in receipts, "OUTCOME_MISMATCH")
+        result_ids.add(validated["result_artifact_id"])
+        receipts.add(validated["receipt_id"])
+        outcomes[job_id] = validated
+    reserved = outstanding = peak_outstanding = peak_activity = 0
+    active, run_ids, invoked, observed_outcomes = set(), set(), set(), set()
+    latched, last_us = False, 0
+    for number, row in enumerate(events, 1):
+        _batch_encoded(row, BATCH_EVENT_BYTES)
+        shape(row, "sequence elapsed_us job_id kind details")
+        exact(row["sequence"], number, "COUNTER_MISMATCH")
+        integer(row["elapsed_us"], 0, 600000000)
+        require(row["elapsed_us"] >= last_us, "COUNTER_MISMATCH")
+        last_us = row["elapsed_us"]
+        require(type(row["job_id"]) is str and row["job_id"] in jobs, "OUTCOME_MISMATCH")
+        job_id, kind, details = row["job_id"], row["kind"], row["details"]
+        require(type(kind) is str and kind in {"reserve", "ack", "activity_begin", "execute_enter",
+                "handler_enter", "handler_return", "activity_end", "terminal", "uncertain"},
+                "INVALID_SCHEMA")
+        state, job = states[job_id], jobs[job_id]
+        if kind == "reserve":
+            shape(details, "attempt output_allowance_bytes")
+            exact(details["attempt"], 1)
+            exact(details["output_allowance_bytes"], 16384)
+            require(not latched and not state["reserved"] and reserved < 200
+                    and job_id == plan["jobs"][reserved]["job_id"]
+                    and outstanding < profile["outstanding_limit"], "COUNTER_MISMATCH")
+            state["reserved"], state["submit_us"] = True, row["elapsed_us"]
+            reserved += 1
+            outstanding += 1
+            peak_outstanding = max(peak_outstanding, outstanding)
+            continue
+        require(state["reserved"], "COUNTER_MISMATCH")
+        if kind == "uncertain":
+            shape(details, "reason")
+            require(type(details["reason"]) is str and details["reason"] in BATCH_UNCERTAINTY_REASONS)
+            latched, state["uncertain"] = True, True
+            continue
+        if kind == "ack":
+            shape(details, "workflow_id run_id")
+            exact(details["workflow_id"], job["workflow_id"])
+            match(details["run_id"], r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+            require(state["run_id"] is None and details["run_id"] not in run_ids, "HISTORY_LINKAGE")
+            state["run_id"] = details["run_id"]
+            run_ids.add(details["run_id"])
+            continue
+        require(state["run_id"] is not None, "HISTORY_LINKAGE")
+        invocation = "inv-" + job_id[-3:]
+        if kind == "activity_begin":
+            shape(details, "workflow_id run_id activity_id invocation_id attempt maximum_attempts "
+                  "start_to_close_seconds schedule_to_close_seconds is_local")
+            for key, expected in {"workflow_id": job["workflow_id"], "run_id": state["run_id"],
+                    "activity_id": ACTIVITY_ID, "invocation_id": invocation, "attempt": 1,
+                    "maximum_attempts": 1, "start_to_close_seconds": 10,
+                    "schedule_to_close_seconds": 60, "is_local": False}.items():
+                exact(details[key], expected, "METADATA_MISMATCH")
+            require(state["phase"] == 0 and invocation not in invoked, "COUNTER_MISMATCH")
+            invoked.add(invocation)
+            active.add(invocation)
+            require(len(active) <= 8, "COUNTER_MISMATCH")
+            peak_activity = max(peak_activity, len(active))
+            state["phase"], state["start_us"] = 1, row["elapsed_us"]
+        elif kind in {"execute_enter", "handler_enter", "handler_return", "activity_end"}:
+            shape(details, "invocation_id")
+            exact(details["invocation_id"], invocation, "HISTORY_LINKAGE")
+            expected_phase = {"execute_enter": 1, "handler_enter": 2,
+                              "handler_return": 3, "activity_end": 4}[kind]
+            require(state["phase"] == expected_phase and invocation in active, "COUNTER_MISMATCH")
+            state["phase"] += 1
+            if kind == "handler_enter":
+                state["handler_start_us"] = row["elapsed_us"]
+            elif kind == "handler_return":
+                state["handler_end_us"] = row["elapsed_us"]
+                require(state["handler_end_us"] - state["handler_start_us"] <= 1000000, "METADATA_MISMATCH")
+            if kind == "activity_end":
+                active.remove(invocation)
+                state["end_us"] = row["elapsed_us"]
+                require(state["end_us"] - state["start_us"] <= 10000000, "METADATA_MISMATCH")
+        else:  # terminal, tied to an independently supplied original projection
+            shape(details, "result_artifact_id receipt_id")
+            require(state["phase"] == 5 and not state["terminal_seen"]
+                    and job_id in outcomes, "OUTCOME_MISMATCH")
+            require(row["elapsed_us"] - state["submit_us"] <= 60000000, "METADATA_MISMATCH")
+            outcome = validate_batch_terminal(outcomes[job_id], job, state["run_id"])
+            exact(details["result_artifact_id"], outcome["result_artifact_id"], "OUTCOME_MISMATCH")
+            exact(details["receipt_id"], outcome["receipt_id"], "OUTCOME_MISMATCH")
+            state["terminal_seen"], state["terminal_us"] = True, row["elapsed_us"]
+            observed_outcomes.add(job_id)
+            if batch_terminal_accepted(outcome):
+                state["accepted"] = True
+                outstanding -= 1
+            else:
+                latched, state["uncertain"] = True, True
+    require(observed_outcomes == set(outcomes), "OUTCOME_MISMATCH")
+    accepted = sum(state["accepted"] for state in states.values())
+    passed = (reserved == accepted == 200 and outstanding == 0 and not latched and not active
+              and all(state["phase"] == 5 and state["terminal_seen"] for state in states.values()))
+    rows = []
+    for job_id, state in states.items():
+        rows.append({"job_id": job_id, "cohort": jobs[job_id]["cohort"],
+                     "submitted": state["reserved"], "validated_terminal": state["accepted"],
+                     "uncertain": state["uncertain"],
+                     "queue_wait_us": None if state["start_us"] is None else state["start_us"] - state["submit_us"],
+                     "activity_duration_us": None if state["end_us"] is None else state["end_us"] - state["start_us"],
+                     "handler_duration_us": None if state["handler_end_us"] is None else state["handler_end_us"] - state["handler_start_us"],
+                     "terminal_us": state["terminal_us"]})
+    cohorts = []
+    for cohort in ("a", "b"):
+        selected = [row for row in rows if row["cohort"] == cohort]
+        terminal = [row["terminal_us"] for row in selected if row["validated_terminal"]]
+        cohorts.append({"cohort": cohort, "planned": 100,
+                        "submitted": sum(row["submitted"] for row in selected),
+                        "validated_terminal": len(terminal), "missing": 100 - len(terminal),
+                        "last_validated_terminal_us": max(terminal) if terminal else None})
+    summary = {"schema_version": BATCH_SCHEMA + "fixture-verdict.v1",
+               "evidence_kind": "FABRICATED_UNIT_DATA", "acceptance": "PASS" if passed else "FAIL",
+               "revision": expected_revision, "planned": 200, "reserved_attempts": reserved,
+               "validated_terminal": accepted, "outstanding": outstanding, "unsubmitted": 200 - reserved,
+               "uncertainty_latched": latched, "uncertain_jobs": sum(s["uncertain"] for s in states.values()),
+               "peak_outstanding": peak_outstanding, "configured_activity_slots": 8,
+               "observed_activity_peak": peak_activity, "active_at_end": len(active),
+               "clock_scope": "SYNTHETIC_FIXTURE_MICROSECONDS", "observed_duration_us": last_us,
+               "tool_outcomes": {name: sum(row["tool_status"] == name for row in outcomes.values())
+                                 for name in ("COMPLETED", "FAILED", "BLOCKED")},
+               "cohorts": cohorts, "jobs": rows}
+    _batch_encoded(summary, BATCH_SUMMARY_BYTES)
+    return summary
 
 
 if __name__ == "__main__":

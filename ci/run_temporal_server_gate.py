@@ -1044,3 +1044,322 @@ def run_gate(root: Path, cli: Path, collected_nodes: list[str]) -> dict:
         # Do not cancel unresolved Worker operations on an unconfirmed shutdown.
         if loop is not None and not asyncio.all_tasks(loop):
             loop.close()
+
+
+# Preparation-only finite admission. Deliberately not connected to Runner or any
+# native entrypoint. The callbacks/factories in its tests are deterministic fakes.
+class BatchAdmission:
+    """Single-producer finite fixture bookkeeping, not a scheduler or runtime.
+
+    Only validated original results release capacity. This harness never invokes
+    an escaped submit callback again. Callback-internal transport retries are
+    outside this fixture. Uncertainty is sticky even after late observations.
+    """
+    def __init__(self, plan: dict, profile: dict):
+        import verify_temporal_server_gate as verifier
+        self._verifier = verifier
+        self._plan = verifier.validate_batch_plan(plan)
+        self._profile = verifier.validate_batch_profile(profile)
+        # Whole-fixture admission occurs before any individual callback/factory.
+        self._budget = {"reserved_job_allowance": 200, "reserved_attempt_allowance": 200,
+                        "reserved_output_allowance_bytes": 200 * 16384}
+        self._states = {job["job_id"]: {"reserved": False, "run_id": None,
+                       "validated_terminal": False, "uncertain": False}
+                        for job in self._plan["jobs"]}
+        self._next = 0
+        self._attempts = 0
+        self._outstanding = 0
+        self._peak_outstanding = 0
+        self._uncertain = False
+        self._reasons: set[str] = set()
+        self._outcomes: dict[str, dict] = {}
+        self._run_ids: set[str] = set()
+        self._receipt_ids: set[str] = set()
+        self._result_ids: set[str] = set()
+        self._inside_submit = False
+        self._owner_thread = threading.get_ident()
+        self._submission_mode = None
+        self._async_loop = None
+        self._async_producer = None
+        self._pending_start = None
+
+    def snapshot(self) -> dict:
+        self._check_owner(mutation=False)
+        return {**self._budget, "attempts_consumed": self._attempts,
+                "outstanding": self._outstanding, "peak_outstanding": self._peak_outstanding,
+                "unsubmitted": 200 - self._next,
+                "validated_terminal": sum(s["validated_terminal"] for s in self._states.values()),
+                "uncertainty_latched": self._uncertain, "reasons": sorted(self._reasons),
+                "submission_mode": self._submission_mode,
+                "start_observation_pending": self._pending_start is not None,
+                "jobs": {key: dict(value) for key, value in self._states.items()}}
+
+    def mark_uncertain(self, job_id: str | None, reason: str) -> None:
+        self._check_owner()
+        # Latch before validating observer arguments: observer failures themselves
+        # must not leave admission open. Unknown identities affect all outstanding.
+        self._uncertain = True
+        if type(reason) is not str or reason not in self._verifier.BATCH_UNCERTAINTY_REASONS:
+            reason = "OBSERVER_FAILURE"
+        self._reasons.add(reason)
+        if type(job_id) is str and job_id in self._states and self._states[job_id]["reserved"]:
+            self._states[job_id]["uncertain"] = True
+        else:
+            for state in self._states.values():
+                if state["reserved"] and not state["validated_terminal"]:
+                    state["uncertain"] = True
+
+    def _job(self, job_id: str) -> dict:
+        require(type(job_id) is str and job_id in self._states, "BATCH_JOB_ID")
+        return self._plan["jobs"][int(job_id[-3:])]
+
+    def _check_owner(self, *, mutation: bool = True) -> None:
+        require(threading.get_ident() == self._owner_thread, "BATCH_OWNER_THREAD")
+        if mutation and self._async_loop is not None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                raise GateRunError("BATCH_OWNER_LOOP") from None
+            require(loop is self._async_loop, "BATCH_OWNER_LOOP")
+
+    def _claim_submission(self, mode: str):
+        self._check_owner()
+        require(self._submission_mode in (None, mode), "BATCH_SUBMISSION_MODE")
+        if mode == "async":
+            loop = asyncio.get_running_loop()
+            producer = asyncio.current_task()
+            require(producer is not None, "BATCH_PRODUCER_TASK")
+            require(self._async_loop in (None, loop)
+                    and self._async_producer in (None, producer), "BATCH_PRODUCER_TASK")
+            self._async_loop, self._async_producer = loop, producer
+        self._submission_mode = mode
+
+    def _reserve_submission(self, mode: str) -> dict | None:
+        """The only attempt/window reservation implementation, before callback entry."""
+        self._claim_submission(mode)
+        require(not self._uncertain and not self._inside_submit
+                and self._pending_start is None, "BATCH_ADMISSION_STOPPED")
+        if self._next == 200 or self._outstanding == 16:
+            return None
+        job = self._plan["jobs"][self._next]
+        self._states[job["job_id"]]["reserved"] = True
+        self._next += 1
+        self._attempts += 1
+        self._outstanding += 1
+        self._peak_outstanding = max(self._peak_outstanding, self._outstanding)
+        self._inside_submit = True
+        return {**job, "payload": dict(job["payload"])}
+
+    def _settle_submission_ack(self, job_id: str, acknowledgment: dict) -> None:
+        """The only start-ack binding path for synchronous, async and late results."""
+        require(type(acknowledgment) is dict
+                and acknowledgment.get("job_id") == job_id, "BATCH_ACK_BINDING")
+        self.acknowledge(acknowledgment)
+
+    def _submission_uncertain(self, job_id: str | None, error: BaseException) -> None:
+        reason = ("UNKNOWN_ACK" if issubclass(type(error), asyncio.CancelledError) else
+                  "TIMEOUT" if issubclass(type(error), TimeoutError) else "RPC_EXCEPTION")
+        self.mark_uncertain(job_id, reason)
+
+    def submit_next(self, submit) -> str | None:
+        """Retained synchronous fixture wrapper over the shared reservation core."""
+        job = self._reserve_submission("sync")
+        if job is None:
+            return None
+        job_id = job["job_id"]
+        try:
+            self._settle_submission_ack(job_id, submit(job))
+        except BaseException as error:
+            self._submission_uncertain(job_id, error)
+            if is_interruption(error):
+                raise
+            raise GateRunError("BATCH_RPC_UNCERTAIN") from None
+        finally:
+            self._inside_submit = False
+        return job_id
+
+    async def _await_start_result(self, awaitable):
+        return await awaitable
+
+    def _observe_async_start(self, record: dict) -> None:
+        """One-time observation of the single retained operation, including late ack.
+
+        No callback reinvocation, replacement task or capacity release occurs here. Reading
+        result() also observes a late failure instead of leaking an unhandled task
+        exception. The awaiting producer still receives control cancellation.
+        """
+        self._check_owner()
+        if record["settled"] or not record["task"].done():
+            return
+        record["settled"] = True
+        task, job_id = record["task"], record["job_id"]
+        try:
+            acknowledgment = task.result()
+            if task.cancelling():
+                record["cancelled"] = True
+                self.mark_uncertain(job_id, "UNKNOWN_ACK")
+            self._settle_submission_ack(job_id, acknowledgment)
+        except BaseException as error:
+            record["failed"] = True
+            record["cancelled"] = issubclass(type(error), asyncio.CancelledError)
+            self._submission_uncertain(job_id, error)
+        finally:
+            if self._pending_start is record:
+                self._pending_start = None
+
+    async def submit_next_async(self, submit) -> str | None:
+        """Bounded cooperative bootstrap: one loop, producer and shielded start.
+
+        Invocation of this async function only creates a coroutine; reservation
+        occurs when its body starts. An unstarted cancelled task issues no RPC.
+        The v1 fabricated trace ordering is not a live causality contract.
+        Cooperative callbacks must start work only when invoked; this cannot
+        retroactively reserve an operation the caller already launched.
+        """
+        self._claim_submission("async")
+        producer = self._async_producer
+        if producer.cancelling():
+            self.mark_uncertain(None, "UNKNOWN_ACK")
+            raise asyncio.CancelledError
+        job = self._reserve_submission("async")
+        if job is None:
+            return None
+        job_id, record = job["job_id"], None
+        try:
+            # Reserve before calling the callback, not merely before its await.
+            awaitable = submit(job)
+            require(asyncio.isfuture(awaitable) or asyncio.iscoroutine(awaitable),
+                    "BATCH_START_AWAITABLE")
+            if asyncio.isfuture(awaitable):
+                # A completed foreign-loop Future otherwise may await successfully.
+                require(awaitable.get_loop() is self._async_loop
+                        and awaitable is not producer, "BATCH_OWNER_LOOP")
+            task = (awaitable if isinstance(awaitable, asyncio.Task) else
+                    self._async_loop.create_task(self._await_start_result(awaitable)))
+            record = {"job_id": job_id, "task": task, "settled": False,
+                      "failed": False, "cancelled": False}
+            self._pending_start = record
+            task.add_done_callback(lambda _done: self._observe_async_start(record))
+            if producer.cancelling():
+                self.mark_uncertain(job_id, "UNKNOWN_ACK")
+                raise asyncio.CancelledError
+            await asyncio.shield(task)
+            self._observe_async_start(record)
+            # Awaiting a done Future or swallowed cancellation need not raise.
+            if producer.cancelling() or record["cancelled"]:
+                self.mark_uncertain(job_id, "UNKNOWN_ACK")
+                raise asyncio.CancelledError
+            require(not record["failed"], "BATCH_RPC_UNCERTAIN")
+            return job_id
+        except BaseException as error:
+            self._submission_uncertain(job_id, error)
+            if record is not None:
+                self._observe_async_start(record)
+            if is_interruption(error):
+                raise
+            raise GateRunError("BATCH_RPC_UNCERTAIN") from None
+        finally:
+            self._inside_submit = False
+
+    def acknowledge(self, row: dict) -> None:
+        self._check_owner()
+        job_id = row.get("job_id") if type(row) is dict else None
+        try:
+            self._verifier._batch_encoded(row, 512)
+            self._verifier.shape(row, "job_id workflow_id run_id")
+            job = self._job(job_id)
+            state = self._states[job_id]
+            require(state["reserved"], "BATCH_UNRESERVED_ACK")
+            require(state["run_id"] is None, "BATCH_DUPLICATE_ACK")
+            self._verifier.exact(row["workflow_id"], job["workflow_id"])
+            self._verifier.match(row["run_id"],
+                r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+            require(row["run_id"] not in self._run_ids, "BATCH_DUPLICATE_RUN")
+            state["run_id"] = row["run_id"]
+            self._run_ids.add(row["run_id"])
+        except BaseException as error:
+            self.mark_uncertain(job_id, "UNKNOWN_ACK")
+            if is_interruption(error):
+                raise
+            raise GateRunError("BATCH_ACK_UNCERTAIN") from None
+
+    def record_outcome(self, row: dict) -> None:
+        """Record the independently checked original projection; release nothing.
+
+        The later terminal must match these exact bindings. This is fixture-only;
+        real CAS/receipt extraction and received-metadata wiring remain unapproved.
+        """
+        self._check_owner()
+        job_id = row.get("job_id") if type(row) is dict else None
+        try:
+            job = self._job(job_id)
+            state = self._states[job_id]
+            require(state["reserved"] and state["run_id"] is not None, "BATCH_UNRESERVED_RESULT")
+            checked = self._verifier.validate_batch_terminal(row, job, state["run_id"])
+            require(job_id not in self._outcomes and checked["receipt_id"] not in self._receipt_ids
+                    and checked["result_artifact_id"] not in self._result_ids, "BATCH_DUPLICATE_RESULT")
+            self._outcomes[job_id] = checked
+            self._receipt_ids.add(checked["receipt_id"])
+            self._result_ids.add(checked["result_artifact_id"])
+            if not self._verifier.batch_terminal_accepted(checked):
+                self.mark_uncertain(job_id, "RECONCILIATION_REQUIRED"
+                                    if checked["reconciliation_required"] else "INVALID_TERMINAL")
+        except BaseException as error:
+            self.mark_uncertain(job_id, "INVALID_TERMINAL")
+            if is_interruption(error):
+                raise
+            raise GateRunError("BATCH_RESULT_UNCERTAIN") from None
+
+    def observe_terminal(self, row: dict) -> bool:
+        self._check_owner()
+        job_id = row.get("job_id") if type(row) is dict else None
+        try:
+            job = self._job(job_id)
+            state = self._states[job_id]
+            require(state["reserved"] and state["run_id"] is not None
+                    and not state["validated_terminal"], "BATCH_DUPLICATE_TERMINAL")
+            checked = self._verifier.validate_batch_terminal(row, job, state["run_id"])
+            require(job_id in self._outcomes, "BATCH_ORIGINAL_RESULT_MISSING")
+            self._verifier.exact(checked, self._outcomes[job_id], "OUTCOME_MISMATCH")
+            if not self._verifier.batch_terminal_accepted(checked):
+                self.mark_uncertain(job_id, "INVALID_TERMINAL")
+                return False
+            state["validated_terminal"] = True
+            self._outstanding -= 1
+            # The global and per-job uncertainty latches are never cleared.
+            return True
+        except BaseException as error:
+            self.mark_uncertain(job_id, "INVALID_TERMINAL")
+            if is_interruption(error):
+                raise
+            raise GateRunError("BATCH_TERMINAL_UNCERTAIN") from None
+
+
+def batch_worker_arguments(plan: dict, profile: dict) -> dict:
+    """Pure external Worker/executor kwargs; the existing serial Runner is untouched."""
+    import verify_temporal_server_gate as verifier
+    verifier.validate_batch_plan(plan)
+    verifier.validate_batch_profile(profile)
+    return {
+        "executor": {"max_workers": 8, "thread_name_prefix": "opendot-batch-fixture"},
+        "activity": {"task_queue": QUEUE, "max_concurrent_activities": 8,
+                     "max_concurrent_activity_task_polls": 1,
+                     "disable_eager_activity_execution": True},
+        "workflow": {"task_queue": QUEUE, "no_remote_activities": True,
+                     "max_cached_workflows": 0, "max_concurrent_workflow_tasks": 1,
+                     "max_concurrent_workflow_task_polls": 1,
+                     "disable_eager_activity_execution": True},
+    }
+
+
+def build_batch_factory_fixture(plan: dict, profile: dict, *, executor_factory, worker_factory) -> dict:
+    """Exercise only explicitly supplied test factories; never run/start workers.
+
+    No default factories or SDK imports exist. Entire preflight precedes the first
+    callback. Hosted bootstrap/lifecycle must be separately reviewed and wired.
+    """
+    arguments = batch_worker_arguments(plan, profile)
+    executor = executor_factory(**arguments["executor"])
+    return {"executor": executor,
+            "activity": worker_factory(kind="activity", activity_executor=executor, **arguments["activity"]),
+            "workflow": worker_factory(kind="workflow", **arguments["workflow"])}
