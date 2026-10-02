@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-10-02",
+  "status": "RESEARCH_SUPPLEMENT_ONLY",
+  "implementation_status": "PROPOSED",
+  "acceptance_status": "NOT_RUN",
+  "claim_boundary": "No OpenDot live-agent, scale, recovery, throughput, cost-saving or scientific-performance result is established by this research.",
+  "source_search_scope": "Targeted gap review, not an exhaustive literature review. Current arXiv version metadata checked on the as-of date.",
+  "source_versions": [
+    {
+      "id": "L1",
+      "title": "Towards a Science of Scaling Agent Systems",
+      "arxiv": "2512.08296v3",
+      "first_submitted": "2025-12-09",
+      "version_date": "2026-04-08",
+      "scope": "260 configurations; six agentic benchmarks; five architectures; three model families; agent-count exploration up to nine",
+      "read_sections": [
+        "4",
+        "5",
+        "Appendices D-F"
+      ],
+      "full_text": "https://arxiv.org/html/2512.08296v3",
+      "limits": [
+        "Small coding/terminal subsets",
+        "Some findings directional under clustered inference",
+        "No hundred-agent evidence"
+      ],
+      "primary_source": true,
+      "source_type": "academic_preprint",
+      "abstract_url": "https://arxiv.org/abs/2512.08296v3",
+      "doi": "10.48550/arXiv.2512.08296",
+      "checked_on": "2026-10-02",
+      "experiments_reproduced": false,
+      "absent_from_reviewed_research_map": true
+    },
+    {
+      "id": "L2",
+      "title": "Why Do Multi-Agent LLM Systems Fail?",
+      "arxiv": "2503.13657v3",
+      "first_submitted": "2025-03-17",
+      "version_date": "2025-10-26",
+      "scope": "1642 traces across seven systems; 150-trace initial taxonomy development",
+      "read_sections": [
+        "3-5",
+        "Appendix A"
+      ],
+      "full_text": "https://arxiv.org/html/2503.13657v3",
+      "limits": [
+        "Expanded labels largely LLM-assisted",
+        "Different task distributions",
+        "Not a recovery protocol"
+      ],
+      "primary_source": true,
+      "source_type": "academic_preprint",
+      "abstract_url": "https://arxiv.org/abs/2503.13657v3",
+      "doi": "10.48550/arXiv.2503.13657",
+      "checked_on": "2026-10-02",
+      "experiments_reproduced": false,
+      "absent_from_reviewed_research_map": true
+    },
+    {
+      "id": "L3",
+      "title": "Stop Overvaluing Multi-Agent Debate—We Must Rethink Evaluation and Embrace Model Heterogeneity",
+      "arxiv": "2502.08788v3",
+      "first_submitted": "2025-02-12",
+      "version_date": "2025-06-21",
+      "scope": "Five debate methods; nine static-task benchmarks; four models; reasoning/self-consistency comparisons",
+      "read_sections": [
+        "3-5 (PDF pages 5-14)"
+      ],
+      "full_text": "https://arxiv.org/pdf/2502.08788v3",
+      "limits": [
+        "Call and token budgets differ",
+        "Heterogeneous comparison includes averaged constituent baselines",
+        "Not tool-fleet recovery"
+      ],
+      "primary_source": true,
+      "source_type": "academic_preprint",
+      "abstract_url": "https://arxiv.org/abs/2502.08788v3",
+      "doi": "10.48550/arXiv.2502.08788",
+      "checked_on": "2026-10-02",
+      "experiments_reproduced": false,
+      "absent_from_reviewed_research_map": true
+    },
+    {
+      "id": "L4",
+      "title": "AI Agents That Matter",
+      "arxiv": "2407.01502v1",
+      "first_submitted": "2024-07-01",
+      "version_date": "2024-07-01",
+      "scope": "HumanEval, HotPotQA, NovelQA, WebArena; 17-benchmark survey",
+      "read_sections": [
+        "2-6",
+        "Appendices A, G, I"
+      ],
+      "full_text": "https://arxiv.org/html/2407.01502v1",
+      "limits": [
+        "Historical prices and models",
+        "Incomplete wider operational-cost coverage",
+        "One timed-out run has excluded time/cost"
+      ],
+      "primary_source": true,
+      "source_type": "academic_preprint",
+      "abstract_url": "https://arxiv.org/abs/2407.01502v1",
+      "doi": "10.48550/arXiv.2407.01502",
+      "checked_on": "2026-10-02",
+      "experiments_reproduced": false,
+      "absent_from_reviewed_research_map": true
+    }
+  ],
+  "existing_map_inputs": [
+    {
+      "relative_path": "RESEARCH-MAP.md",
+      "sha256": "ebfdeb6c98fb14036a9ed5902a4af5d3cd694c08b3ca062a0c7bba4d23c9987b"
+    },
+    {
+      "relative_path": "RESEARCH-MAP.zh-CN.md",
+      "sha256": "06964c4def8ad696e7ad3e4529ce7de8e0ef278a2b18c2c77518236f0afdd864"
+    },
+    {
+      "relative_path": "docs/research/academic-needs.md",
+      "sha256": "32c4265723aa88e95d1e5bfd5567174c2f1d69ee3fd70ba2fba46c61d355e9cb"
+    },
+    {
+      "relative_path": "docs/research/oss-workflows/PRIMARY-SOURCES.md",
+      "sha256": "4a5bfe359f4565f48d51ecf7125d61609bcaab0da2d574f50de2f1a4d96ab867"
+    },
+    {
+      "relative_path": "CAPABILITIES.md",
+      "sha256": "697486723fcebfbeb91504f3d290deffb18fc7c99b4e2b41e103052bc1b9de50"
+    },
+    {
+      "relative_path": "docs/temporal-reference-transport.md",
+      "sha256": "5083be16de613d7188ffd01617cce9851d49139e20ac7a958f584d1d34e27f3f"
+    }
+  ],
+  "current_boundary": {
+    "C11": "PROPOSED",
+    "C12": "metadata only",
+    "C13": "single-host loopback fixed synthetic Activity; one concurrent profile Activity and one writer process; queued first delivery and recorded-result replay only"
+  },
+  "requirements": [
+    {
+      "id": "G1",
+      "title": "Freeze matched comparisons",
+      "sources": [
+        "L1",
+        "L3",
+        "L4"
+      ],
+      "extends_map": [
+        "R9"
+      ],
+      "required_evidence": "Versioned task, environment, baseline and budget protocol; held-out task identities",
+      "status": "PROPOSED",
+      "acceptance": "NOT_RUN",
+      "origin": "project synthesis, not an author-issued requirement"
+    },
+    {
+      "id": "G2",
+      "title": "Complete acceptance and cost ledger",
+      "sources": [
+        "L4"
+      ],
+      "extends_map": [
+        "R9",
+        "R11"
+      ],
+      "required_evidence": "Every admitted task and attempt reconciled; independent verdict; usage, prices, time and unknown costs retained",
+      "status": "PROPOSED",
+      "acceptance": "NOT_RUN",
+      "origin": "project synthesis, not an author-issued requirement"
+    },
+    {
+      "id": "G3",
+      "title": "Measure correlated errors and coordination losses",
+      "sources": [
+        "L1",
+        "L3"
+      ],
+      "extends_map": [
+        "R9"
+      ],
+      "required_evidence": "Pre/post-communication artifacts; pairwise joint errors; correction/corruption; shared-premise fixtures",
+      "status": "PROPOSED",
+      "acceptance": "NOT_RUN",
+      "origin": "project synthesis, not an author-issued requirement"
+    },
+    {
+      "id": "G4",
+      "title": "Separate failure and acceptance semantics",
+      "sources": [
+        "L2"
+      ],
+      "extends_map": [
+        "R1",
+        "R6",
+        "R9"
+      ],
+      "required_evidence": "Phase, delivery, tool result, integrity, semantic verdict and acceptance separately recorded",
+      "status": "PROPOSED",
+      "acceptance": "NOT_RUN",
+      "origin": "project synthesis, not an author-issued requirement"
+    },
+    {
+      "id": "G5",
+      "title": "Reconcile effects at interruption boundaries",
+      "sources": [
+        "L2"
+      ],
+      "extends_map": [
+        "R5"
+      ],
+      "required_evidence": "Independent effect observations, duplicate count, residual work, unresolved states and manual intervention",
+      "status": "PROPOSED",
+      "acceptance": "NOT_RUN",
+      "origin": "project synthesis, not an author-issued requirement"
+    },
+    {
+      "id": "G6",
+      "title": "Stage actual concurrency and accepted-throughput evidence",
+      "sources": [
+        "L1",
+        "L4"
+      ],
+      "extends_map": [
+        "R9"
+      ],
+      "required_evidence": "Observed overlap and bounded resources; separately matched team-size and worker-pool experiments; paired uncertainty",
+      "status": "PROPOSED",
+      "acceptance": "NOT_RUN",
+      "origin": "project synthesis, not an author-issued requirement"
+    }
+  ],
+  "failure_recovery_mapping_limit": "L2 motivates failure diagnosis; crash/effect gates extend the existing R5/C13 local contract, rather than claiming that MAST specifies a distributed recovery protocol.",
+  "artifacts": {
+    "narrative": "README.md",
+    "structured_evidence": "evidence.json"
+  },
+  "activity_constraints": {
+    "model_provider_calls": false,
+    "paid_services": false,
+    "external_posts": false,
+    "private_user_data_used": false,
+    "external_experiments_run": false,
+    "runtime_changes": false
+  },
+  "next_required_decision": "Define an executable-workflow specification and bounded evaluation protocol; any later live-model or large-scale experiment requires independently reviewed authority boundaries and an authorized workload and spending/resource limit.",
+  "reading_method": "Checked primary arXiv version metadata and selected full-text methods, results, and limitations passages. Listed sections identify consulted locations, not a claim of line-by-line full-paper review. No code, datasets, or experimental results were independently reproduced.",
+  "collection_policy": {
+    "source_count": 4,
+    "novelty": "NEW_TO_COLLECTION_HISTORICAL_PUBLICATIONS",
+    "historical_source_count": 18,
+    "historical_need_count": 22,
+    "historical_counts_unchanged": true,
+    "merged_total_asserted": false,
+    "related_delta": "../delta-20261002/source-needs-delta.json"
+  }
+}
