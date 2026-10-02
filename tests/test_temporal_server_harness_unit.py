@@ -203,6 +203,315 @@ def test_expired_runner_cannot_start_server_worker_or_workflow():
             asyncio.run(awaitable)
 
 
+@pytest.fixture
+def fake_ready_server(monkeypatch, tmp_path):
+    """Drive only fake coroutines: no SDK import, event loop, socket, or process."""
+    from types import ModuleType, SimpleNamespace
+    state = SimpleNamespace(now=1000.0, events=[], clients=[], ready_clients=[], workers=[],
+                            servers=[], waits=[], pending_tasks=[], info_results=[],
+                            eager_error=None, hold_eager=False)
+
+    def drive(coroutine):
+        try:
+            coroutine.send(None)
+        except StopIteration as result:
+            return result.value
+        finally:
+            coroutine.close()
+        raise AssertionError("unexpected real coroutine suspension")
+
+    class Task:
+        def __init__(self, coroutine):
+            self.coroutine, self.done, self.value, self.error = coroutine, False, None, None
+        def step(self):
+            if self.done:
+                return
+            try:
+                self.coroutine.send(None)
+            except StopIteration as result:
+                self.done, self.value = True, result.value
+            except BaseException as error:
+                self.done, self.error = True, error
+        def result(self):
+            assert self.done
+            if self.error is not None:
+                raise self.error
+            return self.value
+
+    class Hold:
+        def __await__(self):
+            yield self
+
+    def ensure_future(awaitable):
+        return awaitable if isinstance(awaitable, Task) else Task(awaitable)
+
+    async def wait(tasks, timeout):
+        assert len(tasks) == 1
+        state.waits.append(timeout)
+        task = next(iter(tasks))
+        task.step()
+        if task.done:
+            return {task}, set()
+        state.pending_tasks.append(task)
+        state.now += timeout
+        return set(), {task}
+
+    async def sleep(seconds):
+        state.events.append(("sleep", seconds))
+        state.now += seconds
+
+    def create_task(coroutine):
+        task = Task(coroutine)
+        task.step()
+        return task
+
+    class Socket:
+        def __init__(self, family, kind):
+            assert (family, kind) == (m.socket.AF_INET, m.socket.SOCK_STREAM)
+        def __enter__(self):
+            return self
+        def __exit__(self, *args):
+            return False
+        def bind(self, address):
+            state.events.append(("bind", address))
+
+    class Server:
+        def __init__(self, command, **kwargs):
+            assert command == m.fixed_command(runner.cli, runner.root)
+            assert kwargs == {"stdin": m.subprocess.DEVNULL, "stdout": runner.server_log,
+                              "stderr": m.subprocess.STDOUT, "env": m.child_environment(runner.root)}
+            self.exit_code = None
+            state.servers.append(self)
+            state.events.append(("launch", len(state.servers)))
+        def poll(self):
+            return self.exit_code
+        def send_signal(self, value):
+            assert value == m.signal.SIGINT
+            state.events.append(("shutdown", len(state.servers)))
+            self.exit_code = 0
+
+    class GetSystemInfoRequest:
+        pass
+
+    class Client:
+        def __init__(self, lazy):
+            self.lazy, self.connected = lazy, not lazy
+            self.workflow_service = SimpleNamespace(get_system_info=self.get_system_info)
+        @classmethod
+        async def connect(cls, address, **kwargs):
+            state.events.append(("connect", address, dict(kwargs), runner.diagnostic.phase))
+            assert address == "127.0.0.1:7233"
+            assert kwargs == {"namespace": "default", "identity": "opendot-gate-client",
+                              "lazy": kwargs["lazy"]}
+            if kwargs["lazy"] is False:
+                if state.eager_error is not None:
+                    raise state.eager_error
+                if state.hold_eager:
+                    await Hold()
+            client = cls(kwargs["lazy"])
+            state.clients.append(client)
+            if not client.lazy:
+                state.ready_clients.append(client)
+            state.now += .02 if client.lazy else .04
+            state.events.append(("connected", client))
+            return client
+        async def get_system_info(self, request, **kwargs):
+            assert self.lazy is True
+            assert type(request) is GetSystemInfoRequest
+            assert kwargs == {"retry": False, "timeout": timedelta(seconds=2)}
+            assert runner.diagnostic.phase == "server_readiness"
+            state.events.append(("probe", self))
+            state.now += .03
+            result = state.info_results.pop(0) if state.info_results else "1.32.0"
+            if isinstance(result, Exception):
+                raise result
+            self.connected = True
+            return SimpleNamespace(server_version=result)
+        async def start_workflow(self, *args, **kwargs):
+            state.events.append(("dispatch", self))
+            assert self in state.ready_clients and self.lazy is False
+            return SimpleNamespace(id=kwargs["id"], first_execution_run_id="fake-run")
+        def get_workflow_handle(self, workflow_id, *, run_id):
+            state.events.append(("handle", self))
+            return SimpleNamespace(id=workflow_id, run_id=run_id)
+
+    class Worker:
+        def __init__(self, client, **kwargs):
+            state.events.append(("worker", client, kwargs))
+            # Model the SDK guard, including its rejection of a connected probe.
+            if client.lazy:
+                raise RuntimeError("fake Worker rejects a lazy client")
+            assert client.connected and client in state.ready_clients
+            self.client = client
+            state.workers.append(self)
+        async def run(self):
+            state.events.append(("worker_run", self.client))
+        async def shutdown(self):
+            state.events.append(("worker_shutdown", self.client))
+
+    class RetryPolicy:
+        def __init__(self, **kwargs):
+            assert kwargs == {"maximum_attempts": 1}
+
+    for name in ("temporalio", "temporalio.client", "temporalio.worker", "temporalio.common",
+                 "temporalio.api", "temporalio.api.workflowservice", "temporalio.api.workflowservice.v1"):
+        monkeypatch.setitem(sys.modules, name, ModuleType(name))
+    sys.modules["temporalio.client"].Client = Client
+    sys.modules["temporalio.worker"].Worker = Worker
+    sys.modules["temporalio.common"].RetryPolicy = RetryPolicy
+    sys.modules["temporalio.common"].WorkflowIDReusePolicy = SimpleNamespace(REJECT_DUPLICATE="reject")
+    sys.modules["temporalio.api.workflowservice.v1"].GetSystemInfoRequest = GetSystemInfoRequest
+    monkeypatch.setattr(m, "socket", SimpleNamespace(socket=Socket, AF_INET=m.socket.AF_INET,
+                                                     SOCK_STREAM=m.socket.SOCK_STREAM))
+    monkeypatch.setattr(m, "subprocess", SimpleNamespace(Popen=Server, DEVNULL=m.subprocess.DEVNULL,
+                                                         STDOUT=m.subprocess.STDOUT))
+    monkeypatch.setattr(m, "time", SimpleNamespace(monotonic=lambda: state.now))
+    monkeypatch.setattr(m, "asyncio", SimpleNamespace(ensure_future=ensure_future, wait=wait,
+                                                     sleep=sleep, create_task=create_task))
+    for name in ("private", "audit"):
+        (tmp_path / name).mkdir()
+    runner = m.Runner.__new__(m.Runner)
+    runner.root, runner.cli, runner.environment = tmp_path, tmp_path / "temporal", {}
+    runner.diagnostic = m.DiagnosticState("0" * 40)
+    runner.started, runner.deadline = state.now, state.now + 180
+    runner.server = runner.server_log = runner.client = runner.replay = None
+    runner.stop_uncertain = runner.activity_ever_started = False
+    runner.observed = m.Observations()
+    runner.server_rows, runner.worker_rows, runner.workers = [], [], []
+    runner.histories, runner.outcomes = [], []
+    runner.pending, runner.responses = {}, {}
+    runner.requests = {scenario: {"scenario": scenario} for scenario in m.SCENARIOS}
+    runner.workflow_class = SimpleNamespace(run=object())
+    yield SimpleNamespace(runner=runner, state=state, drive=drive)
+    for task in state.pending_tasks:
+        if not task.done:
+            task.coroutine.close()
+    if runner.server_log is not None:
+        runner.server_log.close()
+
+
+def test_readiness_publicly_reconnects_before_worker_and_dispatch(fake_ready_server):
+    runner, state, drive = (fake_ready_server.runner, fake_ready_server.state, fake_ready_server.drive)
+    drive(runner.start_server())
+    probe, ready = state.clients
+    assert probe.connected and probe.lazy and ready.connected and not ready.lazy
+    assert runner.client is ready
+    assert runner.environment["server_version"] == "1.32.0"
+    assert runner.server_rows[0]["readiness_seconds"] == .05
+    assert state.waits == [2, 2]
+    drive(runner.start_worker("workflow"))
+    drive(runner.start_case("null"))
+    assert [event[0] for event in state.events] == [
+        "bind", "bind", "bind", "launch", "connect", "connected", "probe", "connect", "connected",
+        "worker", "worker_run", "dispatch", "handle"]
+    assert [event[1] for event in state.events if event[0] == "bind"] == [
+        ("127.0.0.1", 7233), ("127.0.0.1", 7243), ("127.0.0.1", 9090)]
+    assert [event[1:] for event in state.events if event[0] == "connect"] == [
+        ("127.0.0.1:7233", {"namespace": "default", "identity": "opendot-gate-client", "lazy": lazy},
+         "client_connect") for lazy in (True, False)]
+    worker_event = next(event for event in state.events if event[0] == "worker")
+    assert worker_event[1] is ready
+    assert worker_event[2] == {
+        "task_queue": m.QUEUE, "identity": "opendot-gate-workflow-worker",
+        "graceful_shutdown_timeout": timedelta(seconds=5), "disable_eager_activity_execution": True,
+        "workflows": [runner.workflow_class], "no_remote_activities": True, "max_cached_workflows": 0,
+        "max_concurrent_workflow_tasks": 1, "max_concurrent_workflow_task_polls": 1}
+    assert all(event[1] is ready for event in state.events if event[0] in {"dispatch", "handle"})
+
+
+def test_readiness_probe_rpc_error_still_recovers_before_eager_connect(fake_ready_server):
+    runner, state, drive = (fake_ready_server.runner, fake_ready_server.state, fake_ready_server.drive)
+    state.info_results = [RuntimeError("fake transient probe RPC failure"), "1.32.0"]
+    drive(runner.start_server())
+    assert [event[0] for event in state.events][4:] == [
+        "connect", "connected", "probe", "sleep", "probe", "connect", "connected"]
+    assert [event[1] for event in state.events if event[0] == "sleep"] == [.1]
+    assert len(state.clients) == 2 and runner.client is state.ready_clients[0]
+    assert runner.server_rows[0]["readiness_seconds"] == .18
+    assert state.waits == [2, 2]
+
+
+def test_server_version_mismatch_prevents_eager_connect_and_worker(fake_ready_server):
+    runner, state, drive = (fake_ready_server.runner, fake_ready_server.state, fake_ready_server.drive)
+    state.info_results = ["wrong-version"]
+    with pytest.raises(m.GateRunError, match="^SERVER_VERSION$"):
+        drive(runner.start_server())
+    assert len(state.clients) == 1 and state.clients[0].lazy
+    assert not state.ready_clients and not state.workers and "server_version" not in runner.environment
+    assert state.waits == [2] and runner.server_rows[0]["readiness_seconds"] is None
+    assert runner.diagnostic.phase == "server_readiness"
+
+
+@pytest.mark.parametrize("remaining,expected_bound", [(180, 2), (.3, .25)])
+def test_eager_connect_uses_existing_cap_and_global_deadline(fake_ready_server, remaining, expected_bound):
+    runner, state, drive = (fake_ready_server.runner, fake_ready_server.state, fake_ready_server.drive)
+    runner.deadline = state.now + remaining
+    original_deadline = runner.deadline
+    drive(runner.start_server())
+    assert state.waits[-1] == pytest.approx(expected_bound)
+    assert state.waits[0] == pytest.approx(min(2, remaining))
+    assert runner.deadline == original_deadline
+
+
+@pytest.mark.parametrize("failure", ["exception", "timeout"])
+def test_eager_connect_failure_prevents_dispatch_and_execute_cleans_up(
+        fake_ready_server, diagnostic_verifier, failure):
+    runner, state, drive = (fake_ready_server.runner, fake_ready_server.state, fake_ready_server.drive)
+    if failure == "exception":
+        state.eager_error = OSError("PRIVATE_EAGER_CONNECT_ERROR")
+    else:
+        state.hold_eager = True
+    with pytest.raises(m.GateRunError, match="^SERVER_GATE_FAILED$"):
+        drive(runner.execute())
+    assert state.waits == [2, 2]
+    assert len([event for event in state.events if event[0] == "connect"]) == 2
+    assert not state.workers and not state.ready_clients
+    assert not any(event[0] in {"worker", "worker_run", "dispatch", "handle"} for event in state.events)
+    assert runner.quiescent() and runner.server is None and runner.server_log is None
+    assert runner.stop_uncertain is False and runner.activity_ever_started is False
+    cleanup = json.loads((runner.root / "audit/cleanup.json").read_text())
+    assert cleanup["cleanup_status"] == "PASS" and cleanup["worker_generations"] == []
+    assert cleanup["forced_termination_used"] is False
+    assert cleanup["server_generations"][0]["shutdown_requested_signal"] == "SIGINT"
+    assert cleanup["server_generations"][0]["graceful_exit_observed"] is True
+    value = diagnostic_verifier.read_safe_diagnostic(runner.root / "audit", "0" * 40)["diagnostic"]
+    assert value["primary_failure"] == {
+        "phase": "client_connect", "reason_code": "CLIENT_CONNECT" if failure == "timeout" else "OS_ERROR",
+        "exception_category": "gate_refusal" if failure == "timeout" else "os_error"}
+    assert value["cleanup_failure"] is None and value["audit_failure"] is None
+    assert "PRIVATE" not in json.dumps(value)
+    if failure == "timeout":
+        # The existing bounded helper never cancels its owned operation. Let the
+        # fake finish late: no assignment, retry, worker, or dispatch follows.
+        assert len(state.pending_tasks) == 1 and not state.pending_tasks[0].done
+        state.pending_tasks[0].step()
+        assert state.pending_tasks[0].done and len(state.ready_clients) == 1
+        assert runner.client is state.clients[0] and runner.client.lazy
+        assert not state.workers
+
+
+def test_every_server_restart_replaces_probe_with_fresh_ready_client(fake_ready_server):
+    runner, state, drive = (fake_ready_server.runner, fake_ready_server.state, fake_ready_server.drive)
+    prior = None
+    for generation in range(1, 4):
+        drive(runner.start_server())
+        probe, ready = state.clients[-2:]
+        assert runner.client is ready and ready is not prior and probe is not ready
+        assert probe.lazy and probe.connected and not ready.lazy and ready.connected
+        assert runner.server_rows[-1]["generation"] == generation
+        assert runner.server_rows[-1]["readiness_seconds"] == .05
+        drive(runner.start_worker("workflow"))
+        assert state.workers[-1].client is ready
+        drive(runner.stop_workers())
+        drive(runner.stop_server())
+        prior = ready
+    assert len({id(client) for client in state.clients}) == 6
+    assert len(state.ready_clients) == len(state.workers) == 3
+    assert [event[2]["lazy"] for event in state.events if event[0] == "connect"] == [True, False] * 3
+    assert all(row["graceful_exit_observed"] for row in runner.server_rows)
+    assert all(row["public_shutdown_completed"] for row in runner.worker_rows)
+
+
 @pytest.mark.parametrize("uncertain", [True, False])
 def test_runtime_uncertainty_is_latched_without_reconciliation(uncertain):
     from types import SimpleNamespace
