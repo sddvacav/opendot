@@ -1,6 +1,6 @@
 # Choose your first OpenDot result
 
-For a first installation, use the **[0.3.0a4 candidate installed quickstart](installed-quickstart.md)**
+For a first installation, use the **[0.3.0a5 candidate installed quickstart](installed-quickstart.md)**
 or **[中文安装入门](installed-quickstart.zh-CN.md)**. Steps 1–2 install the pinned wheel
 and produce one inspectable result. The complete five-file bundle is verified first;
 source extraction and optional dependencies are not needed for that first result.
@@ -19,31 +19,37 @@ The default package needs no model key, server or native solver.
 - **Want read-only fixture checks?** Continue below with the two source-audit and
   qualification commands
 
-## Current 0.3.0a4 source/package candidate
+## Current 0.3.0a5 release preparation
 
-**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
-This coherent snapshot includes the optional [offline A2A worker-turn adapter](../docs/a2a-worker-turn.md),
-matching source examples and version-bound installation instructions. Default runtime
-dependencies remain empty. Use the [a4 installed guide](../docs/installed-quickstart.md)
-with its externally reviewed checksum-manifest pin; final exact identities and
-separately scoped qualification belong in the candidate's external release notes.
+**ALPHA / NOT_SCORED; candidate preparation, not a publication receipt.**
+Use the [a5 installed guide](../docs/installed-quickstart.md) only with its matching
+reviewed five-file bundle and independently accepted external SHA256SUMS digest.
+Exact source, installed and guide qualification require separate external receipts;
+no a4 acceptance transfers to this candidate.
 
-- Installed wheel: one dependency-free callable/artifact result, bounded reads,
-  read-only help and copied lightweight public fixtures; no source imports
-- Matching complete source: [measurement comparison](../examples/measurement-review/README.md)
-  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
-  it is not an installed-wheel workflow
-- [CAD/thermal plan](../examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
-  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
-  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
-  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
-- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
-  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
-  model, autonomous-agent or native-agent qualification is claimed
-- Source-only Temporal batch tools and historical hosted runs retain their own
-  evidence scopes; this candidate performs no fresh service run. The historical
-  [a3 component inventory](../docs/release-inventory/v0.3.0a3/README.md) is a3-only,
-  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+- Wheel: callable/artifact APIs, bounded reads, read-only help and the optional
+  explicit-import [HTTPS exchange](../docs/a2a-http-transport.md); default runtime
+  dependencies remain empty. Examples and documentation are not installed files
+- Sdist: wheel-rebuild input, not the complete runnable examples or test tree
+- Full source: [measurement comparison](../examples/measurement-review/README.md),
+  metadata-only [CAD/thermal plan](../examples/cad_cae/README.md) (`NOT_EXECUTED`),
+  the existing three-file [public STEP reference](../examples/cad_cae/native-geometry-reference/README.md),
+  and finite offline [utility `history`/`profile`](../examples/measurement-review/README.md#offline-incremental-utility-fixture-report).
+  These use the matching source tree; the STEP retains historical a4 provenance
+  and is a static projection, not a replayable native pack
+- HTTPS has finite mocked qualification only; live transport/worker/provider/model
+  interoperability is `NOT_RUN`. [A2A](../docs/a2a-worker-turn.md) still returns an
+  `UNACCEPTED` candidate. Real O3 remains `PROPOSED / NOT_RUN`; measured effort is `UNKNOWN`
+- This preparation adds no native or service run. Full CAD/thermal native execution
+  is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review `NOT_EVALUATED`,
+  mesh independence `NOT_ESTABLISHED`. Scientific/device authority stays false;
+  historical Temporal evidence and the [a3 inventory](../docs/release-inventory/v0.3.0a3/README.md)
+  retain their own scopes, without new agent-scale or UI claims
+
+The published predecessor is [0.3.0a4](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4), source commit
+`2d16190a8121410bbeea252869b196f7891e1696`. Its [pinned installed guide](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.md)
+and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md) retain the exact historical artifact and qualification scope;
+those frozen assets are unchanged.
 
 Historical a3 instructions and exact pins remain in the [corrected a3 guide](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md). The a3 full source had pure batch preparation and no three-role comparison; its bundled guides retained historical a2 pins. Those facts and earlier receipts are unchanged.
 
@@ -72,7 +78,7 @@ PYTHONPATH=src python -B -m opendot_engineering.adapters.lab_qualification \
 - For both synthetic examples, POSIX descriptor-relative no-symlink file reads; unsupported platforms fail closed
 - No model key, network service, native CAD backend, or solver is needed for these two examples
 
-The default package has no required runtime Python dependencies. This a4 source is a local candidate, not a publication receipt. Use its [installed guide](installed-quickstart.md) only with the matching reviewed five-file bundle and external SHA256SUMS pin. No PyPI publication or broader supported-platform matrix is claimed. Do not substitute a similarly named package.
+The default package has no required runtime Python dependencies. This a5 source is release preparation, not a publication receipt. Use its [installed guide](installed-quickstart.md) only with the matching reviewed five-file bundle and external SHA256SUMS pin. No PyPI publication or broader supported-platform matrix is claimed. Do not substitute a similarly named package.
 
 ## What to inspect
 
@@ -86,7 +92,7 @@ Both adapters read their fixtures and print a bounded result. They do not create
 
 The local packaging check builds a wheel in separate staging, installs it without dependencies into a fresh environment, and runs the same fixed inputs outside the source tree. Isolated Python execution disables source-tree import shortcuts. [Integration checks](integration-review.md) distinguish this result from source-root execution and from public-release qualification.
 
-The wheel installs the Python package; examples and documentation are source-distribution material. When testing an installed wheel, copy the public fixtures separately, clear source-tree `PYTHONPATH`, use the installed interpreter with `-I -B -m`, and keep the same published pins. No registered console script exists.
+The wheel installs the Python package; examples and documentation require the matching full-source archive. The sdist is wheel-rebuild input, not the full examples or test tree. When testing an installed wheel, copy the public fixtures separately, clear source-tree `PYTHONPATH`, use the installed interpreter with `-I -B -m`, and keep the same published pins. No registered console script exists.
 
 ## Optional fake-only execution
 
@@ -112,4 +118,4 @@ A future runtime tutorial must separately demonstrate task permissions, resource
 
 首次安装请先完成[中文安装入门](installed-quickstart.zh-CN.md)的第 1–2 步：先核验完整五文件包，再只用固定版本 wheel 生成并检查第一个本地产物，无需提取源码示例或准备可选依赖。若只想检查本地夹具，可运行本文上方的两条只读命令。模型、服务、原生求解器与设备均不是这些入门示例的前提。
 
-当前安装指南对应 0.3.0a4 本地候选，要求外部独立复核的 SHA256SUMS 摘要；此处不证明已发布。测量比较须从匹配完整源码导入，CAD plan 为 NOT_EXECUTED，原生执行与 A2A 外部 live gate 为 NOT_RUN。历史 a3 产物仅含可选有界读取与纯批次准备，其捆绑指南保留历史 a2 固定值；应使用版本固定的历史 a3 修正版指南。后续真实批次与保留证据工作不改变 a3 产物。安装包检查与源目录检查分别记录；ALPHA、NOT_SCORED 不变，完整运行时的中断、恢复和清理行为仍需独立实现与验证。
+当前安装指南对应 0.3.0a5 发布准备，要求匹配的五文件包与外部独立验收的 SHA256SUMS 摘要；此处不证明已发布。已发布的前一版 [0.3.0a4](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)使用[固定提交的历史指南](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.zh-CN.md)。a5 wheel 包含可选、显式导入的 HTTPS 模块，默认依赖仍为空；真实传输／worker／提供方／模型互通为 NOT_RUN。Sdist 仅供重建 wheel，不含完整示例／测试树。匹配完整源码另含测量比较、NOT_EXECUTED 的 CAD plan、保留历史 a4 来源的静态 STEP 参考，以及离线效用 history／profile。真实 O3 为 PROPOSED／NOT_RUN，实测投入 UNKNOWN；不新增原生或服务运行。历史 a3 产物仅含可选有界读取与纯批次准备，其捆绑指南保留历史 a2 固定值；应使用版本固定的历史 a3 修正版指南。后续真实批次与保留证据工作不改变 a3 产物。安装包检查与源目录检查分别记录；ALPHA、NOT_SCORED 不变，完整运行时的中断、恢复和清理行为仍需独立实现与验证。
