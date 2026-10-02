@@ -8,6 +8,16 @@
 
 **优先级含义：** P0 为信任/验收前提；P1 为可用场景或可测的采用/规模实验；P2 为首条有用工作流之后的扩展。它们是推进顺序建议，不是评分规则或交付承诺。C1–C11、E1–E3 对应能力矩阵。
 
+## 2026-10-02 当前状态补充
+
+本节补充下方原样保留的 10 月 1 日映射及“下一项决定”。历史 **18 条来源／22 条需求**、拟议判据与原有 **NOT_RUN** 状态不变；项目仍为 **ALPHA / NOT_SCORED**。当前源代码状态对应 [main d768a6b](https://github.com/sddvacav/opendot/commit/d768a6bf352beb9c3f401aa82b23dafae5bac8d8)：CAD 参考文件和 a4 之后的 HTTPS 增补已在该源码树中；冻结的 a4 发布产物保持不变。
+
+- **R10：** 实验性 [v0.3.0a4 版本](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)已发布。版本绑定的安装指南（[中文](docs/installed-quickstart.zh-CN.md)、[English](docs/installed-quickstart.md)）已有另行核验的第 1–6、8 个命令块；可选 Git 第 7 块仍为 NOT_RUN。精确产物的信任输入和平台资格仍以各自发布证据的范围为限。
+- **R1/R3/R6：** 仅源代码可用的[测量比较](examples/measurement-review/README.zh-CN.md)在六行虚构数据上演示有界脚本算术及输入／证据绑定，不证明科学验收或独立人工复核。
+- **R7：** 当前源代码中的[公开合成 CAD 参考文件](examples/cad_cae/native-geometry-reference/README.md#中文)记录一次历史原生导出／回读，以及另行实现、使用相同内核的只读复核；它不验证完整 [CAD → 网格 → 热学流程](examples/cad_cae/README.zh-CN.md)，也不构成独立内核验证或科学／物理验收。
+- **R5/R9：** [历史 Temporal 批次证据](docs/temporal-batch-qualification.md)涉及 200 个合成工作流，不等于 200 个智能体或通用持久智能体恢复。[离线 A2A 接口](docs/a2a-worker-turn.md)与 [HTTPS 增补](docs/a2a-http-transport.md)不补足这些证据：HTTPS 是 a4 之后未发布的源代码增补，仅有有限模拟测试及代理／CA 环境拒绝；真实 worker／模型／网络互通仍为 NOT_RUN。
+- **下一项证据：** [O3 增量效用](docs/research/delta-20261002/README.md#five-bounded-proposals--五项限定提案)仍为 **P0 / PROPOSED / NOT_RUN**。仍需匹配的合格成果、全部尝试成本和人工复核投入比较；算术检查与工作流数量不能替代。
+
 ## 来源到验收的映射
 
 | 编号 / 优先级 | 带日期来源 | 推断的用户需求 | 已实现或拟议回应 | 所需验收 |

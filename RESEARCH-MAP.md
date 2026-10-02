@@ -8,6 +8,16 @@ The source dates and reading limits are carried forward from the six files in [t
 
 **Priority meaning:** P0 = trust/acceptance prerequisites; P1 = a usable scenario or measured adoption/scale experiment; P2 = extension after the first useful workflow. These are sequencing recommendations, not a scoring rubric or delivery commitment. C1–C11 and E1–E3 refer to the capability matrix.
 
+## 2026-10-02 current-status overlay
+
+This supplements the unchanged October 1 map and next-decision text below. Historical **18-source / 22-need** counts, proposed oracles and original **NOT_RUN** states remain unchanged; the project remains **ALPHA / NOT_SCORED**. Current source status is recorded at [main d768a6b](https://github.com/sddvacav/opendot/commit/d768a6bf352beb9c3f401aa82b23dafae5bac8d8): the CAD reference and post-a4 HTTPS addition are in that source tree; frozen a4 release assets remain unchanged.
+
+- **R10:** The experimental [v0.3.0a4 release](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4) is published. The version-bound installed guides ([English](docs/installed-quickstart.md), [中文](docs/installed-quickstart.zh-CN.md)) have separately verified blocks 1–6 and 8; optional Git block 7 remains NOT_RUN. Exact-artifact trust and platform qualification remain scoped to their release evidence.
+- **R1/R3/R6:** The source-only [measurement comparison](examples/measurement-review/README.md) demonstrates bounded scripted arithmetic and input/evidence bindings on six invented rows. It does not establish scientific acceptance or independent human review.
+- **R7:** The [public synthetic CAD reference](examples/cad_cae/native-geometry-reference/README.md) in the current source records one historical native export/readback and a separate read-only review using the same kernel. It does not qualify the full [CAD → mesh → thermal workflow](examples/cad_cae/README.md), independent-kernel validation or scientific/physical acceptance.
+- **R5/R9:** The [historical Temporal batch evidence](docs/temporal-batch-qualification.md) covers 200 synthetic workflows, not 200 agents or general durable-agent recovery. The [offline A2A seam](docs/a2a-worker-turn.md) and [HTTPS addition](docs/a2a-http-transport.md) do not close that gap: HTTPS is unreleased source-only after a4, with finite mocked tests and proxy/CA-environment refusals; live worker/model/network interoperability remains NOT_RUN.
+- **Next evidence:** [O3 incremental utility](docs/research/delta-20261002/README.md#five-bounded-proposals--五项限定提案) remains **P0 / PROPOSED / NOT_RUN**. A matched accepted-outcome, all-attempt-cost and review-effort comparison is still needed; arithmetic checks and workflow counts do not substitute for it.
+
 ## Source to acceptance map
 
 | ID / priority | Dated sources | User need inferred | Implemented or proposed response | Acceptance required |
