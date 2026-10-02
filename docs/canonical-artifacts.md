@@ -33,7 +33,8 @@ automatic backend discovery, database, execution engine, or service.
 `meta/<sha256>.json` contains the first successfully recorded reference. Byte puts
 require `bytes`. Text uses UTF-8. JSON uses sorted keys, compact separators, UTF-8,
 and rejects NaN/Infinity. File puts read a whole caller-selected file and infer
-MIME type from its filename. There are no streaming or size limits.
+MIME type from its filename. Those put operations retain whole-read behavior.
+The unreleased opt-in bounded retrieval increment below does not change them.
 
 `get_bytes` accepts the canonical reference, a lowercase 64-hex digest, or a
 `sha256:` identifier. It hashes retrieved bytes and raises
@@ -46,6 +47,34 @@ exists. They keep the first stored metadata but return a new reference with the
 current caller-supplied producer, task, and source fields. Those fields are
 untrusted declarations, not authenticated provenance. A stored byte hash does
 not certify content, licensing, access rights, or scientific quality.
+
+## Optional bounded retrieval (unreleased source increment)
+
+[ADR 005](decisions/005-bounded-artifact-reads.md) adds
+`get_bytes(ref, *, max_bytes: int | None = None)` in the same canonical owner.
+This API is not in the unchanged released a2 wheel. Omitted or explicit `None`
+preserves the whole-object read. A supplied budget must be an exact nonnegative
+integer: bools, int subclasses and other types raise `TypeError`; negatives raise
+`ValueError`, before reference/path access. Zero permits a digest-valid empty
+object. No metadata or reference-declared size is trusted to enforce the bound.
+
+For trusted ordinary regular local objects, the opt-in branch opens the existing
+path with `buffering=0` and requests at most 64 KiB at a time, tracking actual
+bytes returned across short reads. It acquires at most N+1 object bytes; observing
+N+1 raises `ArtifactIntegrityError("artifact exceeds max_bytes")` before hashing.
+An exact-N object requires an EOF probe. A complete object no larger than N still
+must pass the original digest check before `bytes` are returned. Missing-object
+and ordinary I/O errors remain unchanged. No arbitrary allowance ceiling is
+imposed; even a huge exact integer never causes an N-sized up-front allocation.
+
+This is a caller-selected acquisition bound, not an exact peak-memory, kernel-I/O,
+wall-time or sandbox guarantee. Accumulation/copying have O(N) memory cost with
+allocator overhead. Existing trusted-root/symlink assumptions remain; hostile
+filesystem changes, devices/FIFOs and object lifetime are outside the guarantee.
+`verify`, `verify_id`, `put_file`, put collision comparisons and other readers
+retain legacy whole-read behavior. Only the fixed Temporal Activity input is
+migrated here, with literal 256, and it still separately checks declared length.
+Its changed source requires fresh qualification; earlier a2 results are historical.
 
 ## Optional non-mutating verification
 

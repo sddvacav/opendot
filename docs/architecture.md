@@ -80,3 +80,16 @@ in an independent module with only create/status/diff. It is not wired into the
 CAS/callable owners, a scheduler, a permission authority, or recovery events.
 Trusted cooperative local repository/filesystem assumptions remain; required
 Git switches and fail-closed refusals do not create an OS sandbox.
+
+## Unreleased bounded-read increment
+
+[ADR 005](decisions/005-bounded-artifact-reads.md) adds an opt-in byte allowance to
+the existing canonical ArtifactStore, without another store or permission owner.
+Only the fixed Temporal Activity input supplies 256; unbuffered, short-read-safe
+acquisition observes at most 257 object bytes before oversize refusal, independently
+of declared size. The actual-vs-declared length check and original runtime guard
+remain. Default reads, puts and verify methods retain their previous behavior.
+This trusted-regular-local-file guarantee does not cover kernel I/O, peak memory,
+wall time, hostile filesystem changes or SDK message decoding. The new owner
+bytes need their own local/SDK/wheel qualification and fresh real-server gate;
+the unchanged released a2 assets and historical PASS remain distinct.

@@ -4,6 +4,15 @@ Historical implementation qualification, 2 October 2026: optional source feature
 
 Current release status: this optional feature is packaged in the [0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and absent from unchanged published v0.3.0a1 assets. The [version-pinned installed guide](installed-quickstart.md) now uses the a2 assets; it does not install or run Temporal. The [a2 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md) bind the [released source commit](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045) to exact assets and the fresh [a2 Temporal qualification run](https://github.com/sddvacav/opendot/actions/runs/36963928744). That run tested a PR merge revision with the same tree as the released source, not the later main commit; it is separate from the earlier qualification above. The dated [ADR 004](decisions/004-temporal-reference-transport.md) and [failure matrix](temporal-reference-failure-matrix.md) retain their historical decisions, SDK-only checkpoint and unexecuted cases; later qualification does not retroactively turn them into passes.
 
+
+Unreleased source increment: [ADR 005](decisions/005-bounded-artifact-reads.md)
+changes only the same canonical store's optional bounded-read branch and this
+Activity's fixed input allowance. The new input call acquires at most 257 object
+bytes for its 256-byte limit before oversize refusal. Local/SDK-only and
+installed-wheel checks apply separately to these new owner bytes; fresh
+real-server qualification remains pending. The released a2 wheel and its
+historical real-server PASS above remain unchanged.
+
 ## What is implemented
 
 The explicit optional extra is `temporal = ["temporalio==1.34.0"]`. Default dependencies remain empty and root/core/adapter initializers do not import either optional module. Installing this extra does not start or connect anything.
@@ -21,7 +30,9 @@ The finite pure profile accepts exactly integer `left` and `right` in [-1,000,00
 
 The real SDK `activity.info()` is the metadata source. Attempt must be exact integer 1, mode non-local, actual RetryPolicy present with exact integer maximum 1, and both received timeouts exactly the fixed profile values. Activity type, namespace, queue and nonempty bounded Workflow/run IDs must match the admitted mode. Missing/unknown/malformed metadata refuses. Submission options alone are not evidence about actual received server metadata.
 
-All those checks, strict request/reference checks and the declaration-signature recheck happen before per-invocation CAS access. Canonical references are reconstructed as the original ArtifactRef type; a claimed integrity flag is reset before canonical verified-byte retrieval. Input size is checked after that read. The canonical source-audit JSON decoder rejects duplicate keys/nonfinite literals, and exact schema validation rejects floating values, overflowing exponents, nested data, unexpected keys and booleans-as-integers.
+All those checks, strict request/reference checks and the declaration-signature recheck happen before per-invocation CAS access. Canonical references are reconstructed as the original ArtifactRef type; a claimed integrity flag is reset before canonical verified-byte retrieval. The current unreleased increment calls `get_bytes(ref, max_bytes=256)`;
+actual-vs-declared size is still checked after the bounded verified read.
+An oversize object refuses before hashing or decoding. The canonical source-audit JSON decoder rejects duplicate keys/nonfinite literals, and exact schema validation rejects floating values, overflowing exponents, nested data, unexpected keys and booleans-as-integers.
 
 Only after input checks does the sole runtime call execute with local grants, approval_token=None, backoff_base_s=0.0 and attempt_limit=1. The original deny-only guard is untouched. Every bound non-None context, even a false-like value, and resolver failures still deny. Configured control exceptions propagate unchanged to the SDK boundary. An admitted input read may already have happened when that guard refuses; no result put occurs. The adapter never resets context, substitutes another runtime or calls private dispatch.
 
@@ -42,7 +53,12 @@ Runtime exceptions are not wrapped. SDK conversion, completion, deadlines and mi
 
 ## Trust limits and qualified integration scope
 
-Only synthetic, nonsensitive data in one trusted operator domain is admitted. Producer, Workflow author, registrar, worker, store owner and reader need an independently owned authorization boundary. Anyone able to schedule this endpoint can exercise its fixed worker authority. Queue names/digests are not authentication. Only one trusted local CAS and one writer process with one concurrent profile Activity are admitted; no multi-host availability or multi-process safety is provided. Root ancestors and bounded objects are trusted. The canonical full-object read and SDK's prior decoding mean size limits are not adversarial preallocation bounds.
+Only synthetic, nonsensitive data in one trusted operator domain is admitted. Producer, Workflow author, registrar, worker, store owner and reader need an independently owned authorization boundary. Anyone able to schedule this endpoint can exercise its fixed worker authority. Queue names/digests are not authentication. Only one trusted local CAS and one writer process with one concurrent profile Activity are admitted; no multi-host availability or multi-process safety is provided. Root ancestors and ordinary regular local objects are trusted. The unreleased
+opt-in input read uses unbuffered requests and acquires at most 257 object bytes,
+independently of declared size, under [ADR 005](decisions/005-bounded-artifact-reads.md).
+It does not bound kernel I/O, peak memory, wall time, hostile filesystem races or
+the SDK's prior message decoding. Symlink behavior and other whole-read store
+operations are unchanged; this is not a global adversarial-memory guarantee.
 
 At most one runtime invocation is admitted per current Activity invocation. A separate submission can execute again, even with the same digest and fixed Activity ID. No global uniqueness, exactly-once effects, durable callable recovery, eventual delivery, arbitrary read-only introspection, scientific acceptance or per-result independent acceptance is claimed. Temporal owns scheduling/history; OpenDot owns no new orchestrator, registry or store.
 
