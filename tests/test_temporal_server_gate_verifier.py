@@ -1005,3 +1005,331 @@ def test_missing_or_invalid_diagnostic_never_prints_untrusted_fields(unit_bundle
     assert report["reason_code"] == expected and report["diagnostic"] is None
     assert "PRIVATE_CANARY" not in output + summary.read_text()
     assert '"audit_file"' not in output
+
+
+# BATCH_PREPARATION_TESTS: self-contained stdlib section, also collectable by pytest.
+# These are fabricated finite fixtures. No sleeps, SDK imports, process or service.
+import unittest as _batch_unittest
+import sys as _batch_sys
+import importlib as _batch_importlib
+from copy import deepcopy as _batch_copy
+from pathlib import Path as _BatchPath
+import hashlib as _batch_hashlib
+import json as _batch_json
+
+_batch_root = _BatchPath(__file__).resolve().parents[1]
+if str(_batch_root / "ci") not in _batch_sys.path:
+    _batch_sys.path.insert(0, str(_batch_root / "ci"))
+_batch_gate = _batch_importlib.import_module("verify_temporal_server_gate")
+_BATCH_REVISION = "a" * 40
+
+
+def _batch_result(job):
+    index = int(job["job_id"][-3:])
+    return {"job_id": job["job_id"], "workflow_id": job["workflow_id"],
+            "run_id": f"00000000-0000-0000-0000-{index + 1:012x}",
+            "activity_id": _batch_gate.ACTIVITY_ID, "invocation_id": f"inv-{index:03d}",
+            "attempt": 1, "receipt_id": f"{index + 1:024x}",
+            "input_artifact_id": job["input_artifact_id"],
+            "result_artifact_id": "sha256:" + _batch_hashlib.sha256(("result-" + job["job_id"]).encode()).hexdigest(),
+            "result_input_artifact_id": job["input_artifact_id"], "result_size_bytes": 1024,
+            "tool_status": "COMPLETED", "semantic_valid": True, "output": 199,
+            "reconciliation_required": False, "transport_status": "COMPLETED"}
+
+
+def _batch_fixture_trace(width=1):
+    plan = _batch_gate.frozen_batch_plan()
+    events, outcomes = [], []
+    def add(job_id, kind, details):
+        events.append({"sequence": len(events) + 1, "elapsed_us": len(events) * 10,
+                       "job_id": job_id, "kind": kind, "details": details})
+    for start in range(0, 200, width):
+        group = plan["jobs"][start:start + width]
+        for job in group:
+            result = _batch_result(job)
+            outcomes.append(result)
+            add(job["job_id"], "reserve", {"attempt": 1, "output_allowance_bytes": 16384})
+            add(job["job_id"], "ack", {"workflow_id": job["workflow_id"], "run_id": result["run_id"]})
+        for job in group:
+            result = _batch_result(job)
+            add(job["job_id"], "activity_begin", {key: result[key] for key in
+                ("workflow_id", "run_id", "activity_id", "invocation_id", "attempt")} |
+                {"maximum_attempts": 1, "start_to_close_seconds": 10,
+                 "schedule_to_close_seconds": 60, "is_local": False})
+            add(job["job_id"], "execute_enter", {"invocation_id": result["invocation_id"]})
+            add(job["job_id"], "handler_enter", {"invocation_id": result["invocation_id"]})
+        for job in group:
+            result = _batch_result(job)
+            add(job["job_id"], "handler_return", {"invocation_id": result["invocation_id"]})
+            add(job["job_id"], "activity_end", {"invocation_id": result["invocation_id"]})
+            add(job["job_id"], "terminal", {"result_artifact_id": result["result_artifact_id"],
+                                           "receipt_id": result["receipt_id"]})
+    return {"schema_version": _batch_gate.BATCH_SCHEMA + "trace.v1",
+            "evidence_kind": "FABRICATED_UNIT_DATA", "revision": _BATCH_REVISION,
+            "source_sha256": _batch_gate.current_batch_source_digests(_batch_root),
+            "plan": plan, "profile": dict(_batch_gate.BATCH_PROFILE),
+            "events": events, "outcomes": outcomes}
+
+
+def _batch_renumber(trace):
+    for index, row in enumerate(trace["events"]):
+        row["sequence"], row["elapsed_us"] = index + 1, index * 10
+
+
+class BatchVerifierPreparationTests(_batch_unittest.TestCase):
+    def verify(self, trace):
+        return _batch_gate.validate_batch_trace(trace, _BATCH_REVISION, _batch_root)
+
+    def rejects(self, trace):
+        with self.assertRaises(_batch_gate.GateError):
+            self.verify(trace)
+
+    def test_batch_verifier_counts_actual_overlap_not_configured_slots(self):
+        for width in (1, 2, 8):
+            with self.subTest(width=width):
+                result = self.verify(_batch_fixture_trace(width))
+                self.assertEqual(result["acceptance"], "PASS")
+                self.assertEqual(result["observed_activity_peak"], width)
+                self.assertEqual(result["configured_activity_slots"], 8)
+                self.assertEqual(result["validated_terminal"], 200)
+                self.assertEqual(result["outstanding"], 0)
+                self.assertEqual(result["evidence_kind"], "FABRICATED_UNIT_DATA")
+                self.assertLessEqual(len(_batch_json.dumps(result).encode()), 65536)
+
+    def test_batch_verifier_rejects_ninth_activity_and_unbalanced_trace(self):
+        self.rejects(_batch_fixture_trace(9))
+        trace = _batch_fixture_trace()
+        trace["events"] = trace["events"][:-2]
+        trace["outcomes"] = trace["outcomes"][:-1]
+        result = self.verify(trace)
+        self.assertEqual(result["acceptance"], "FAIL")
+        self.assertEqual(result["active_at_end"], 1)
+        self.assertEqual(result["outstanding"], 1)
+
+    def test_batch_verifier_rejects_event_cardinality_and_sequence_faults(self):
+        for kind in ("activity_begin", "execute_enter", "handler_enter", "handler_return", "activity_end", "terminal", "ack", "reserve"):
+            with self.subTest(kind=kind):
+                trace = _batch_fixture_trace()
+                index = next(i for i, row in enumerate(trace["events"]) if row["kind"] == kind)
+                trace["events"].insert(index, _batch_copy(trace["events"][index]))
+                _batch_renumber(trace)
+                self.rejects(trace)
+        for mutation in ("missing_begin", "missing_exit", "exit_first", "sequence", "time", "boolean", "retry", "invocation", "reset"):
+            with self.subTest(mutation=mutation):
+                trace = _batch_fixture_trace()
+                if mutation == "missing_begin": del trace["events"][2]
+                if mutation == "missing_exit": del trace["events"][6]
+                if mutation == "exit_first": trace["events"][2]["kind"] = "activity_end"
+                if mutation == "sequence": trace["events"][1]["sequence"] = 1
+                if mutation == "time": trace["events"][2]["elapsed_us"] = 0
+                if mutation == "boolean": trace["events"][0]["sequence"] = True
+                if mutation == "retry": trace["events"][2]["details"]["attempt"] = 2
+                if mutation == "invocation": trace["events"][10]["details"]["invocation_id"] = "inv-000"
+                if mutation == "reset": trace["events"][2]["kind"] = "continued_as_new"
+                self.rejects(trace)
+
+        for event_index, delta in ((5, 1000001), (6, 10000001), (7, 60000001)):
+            with self.subTest(deadline_event=event_index):
+                trace = _batch_fixture_trace()
+                for event in trace["events"][event_index:]:
+                    event["elapsed_us"] += delta
+                self.rejects(trace)
+
+    def test_batch_verifier_binds_every_job_to_original_outcome_and_artifacts(self):
+        for field in ("result_artifact_id", "receipt_id"):
+            with self.subTest(swap=field):
+                trace = _batch_fixture_trace()
+                first, second = trace["events"][7], trace["events"][15]
+                first["details"][field], second["details"][field] = second["details"][field], first["details"][field]
+                self.rejects(trace)
+        for field, bad in (("job_id", "batch-001"), ("workflow_id", "opendot-batch-001"),
+                ("run_id", "00000000-0000-0000-0000-000000000002"), ("attempt", 2),
+                ("input_artifact_id", "sha256:" + "0" * 64),
+                ("result_input_artifact_id", "sha256:" + "0" * 64),
+                ("result_size_bytes", 16385), ("activity_id", "other"),
+                ("invocation_id", "inv-001")):
+            with self.subTest(field=field):
+                trace = _batch_fixture_trace()
+                trace["outcomes"][0][field] = bad
+                self.rejects(trace)
+        for mutation in ("orphan", "missing", "duplicate", "same_receipt", "same_output"):
+            with self.subTest(mutation=mutation):
+                trace = _batch_fixture_trace()
+                if mutation == "orphan": trace["events"] = trace["events"][:-1]
+                if mutation == "missing": trace["outcomes"].pop()
+                if mutation == "duplicate": trace["outcomes"][1] = _batch_copy(trace["outcomes"][0])
+                if mutation == "same_receipt": trace["outcomes"][1]["receipt_id"] = trace["outcomes"][0]["receipt_id"]
+                if mutation == "same_output": trace["outcomes"][1]["result_artifact_id"] = trace["outcomes"][0]["result_artifact_id"]
+                self.rejects(trace)
+
+    def test_batch_verifier_preserves_unknowns_and_rejects_blind_replay(self):
+        for reason in sorted(_batch_gate.BATCH_UNCERTAINTY_REASONS):
+            with self.subTest(reason=reason):
+                trace = _batch_fixture_trace()
+                trace["events"] = trace["events"][:8]
+                trace["outcomes"] = trace["outcomes"][:1]
+                trace["events"].insert(2, {"job_id": "batch-000", "kind": "uncertain", "details": {"reason": reason}})
+                _batch_renumber(trace)
+                verdict = self.verify(trace)
+                self.assertEqual(verdict["acceptance"], "FAIL")
+                self.assertTrue(verdict["uncertainty_latched"])
+                self.assertEqual(verdict["reserved_attempts"], 1)
+                self.assertEqual(verdict["validated_terminal"], 1)
+                trace["events"].append({"job_id": "batch-001", "kind": "reserve",
+                                        "details": {"attempt": 1, "output_allowance_bytes": 16384}})
+                _batch_renumber(trace)
+                self.rejects(trace)
+
+    def test_batch_verifier_never_promotes_transport_only_or_invalid_outcomes(self):
+        for field, value in (("tool_status", "FAILED"), ("tool_status", "BLOCKED"),
+                ("semantic_valid", False), ("output", 198), ("output", None),
+                ("reconciliation_required", True), ("transport_status", "UNKNOWN")):
+            with self.subTest(field=field, value=value):
+                trace = _batch_fixture_trace()
+                trace["events"] = trace["events"][:8]
+                trace["outcomes"] = trace["outcomes"][:1]
+                trace["outcomes"][0][field] = value
+                verdict = self.verify(trace)
+                self.assertEqual(verdict["acceptance"], "FAIL")
+                self.assertEqual(verdict["validated_terminal"], 0)
+                self.assertEqual(verdict["outstanding"], 1)
+                self.assertTrue(verdict["uncertainty_latched"])
+
+    def test_batch_reports_queue_wait_and_cohort_completion_without_fairness_claim(self):
+        verdict = self.verify(_batch_fixture_trace(8))
+        self.assertEqual(verdict["clock_scope"], "SYNTHETIC_FIXTURE_MICROSECONDS")
+        self.assertEqual([row["validated_terminal"] for row in verdict["cohorts"]], [100, 100])
+        self.assertGreater(verdict["jobs"][0]["queue_wait_us"], 0)
+        self.assertGreater(verdict["jobs"][0]["activity_duration_us"], 0)
+        for forbidden in ("throughput", "speedup", "agent_count", "fairness", "cpu_parallelism"):
+            self.assertNotIn(forbidden, verdict)
+        trace = _batch_fixture_trace()
+        trace["events"] = trace["events"][:8]
+        trace["outcomes"] = trace["outcomes"][:1]
+        partial = self.verify(trace)
+        self.assertEqual(partial["cohorts"][1]["missing"], 100)
+        self.assertEqual(partial["acceptance"], "FAIL")
+
+    def test_batch_verifier_reconstructs_sixteen_outstanding_without_trusting_counts(self):
+        trace = _batch_fixture_trace()
+        trace["events"], trace["outcomes"] = [], []
+        for index in range(16):
+            trace["events"].append({"job_id": f"batch-{index:03d}", "kind": "reserve",
+                                    "details": {"attempt": 1, "output_allowance_bytes": 16384}})
+        _batch_renumber(trace)
+        verdict = self.verify(trace)
+        self.assertEqual((verdict["outstanding"], verdict["peak_outstanding"]), (16, 16))
+        trace["events"].append({"job_id": "batch-016", "kind": "reserve",
+                                "details": {"attempt": 1, "output_allowance_bytes": 16384}})
+        _batch_renumber(trace)
+        self.rejects(trace)
+
+    def test_batch_verifier_rejects_size_privacy_and_source_binding_failures(self):
+        for mutation in ("source", "revision", "hosted", "private", "token", "large", "rows", "profile", "plan_bool"):
+            with self.subTest(mutation=mutation):
+                trace = _batch_fixture_trace()
+                if mutation == "source": trace["source_sha256"]["ci/run_temporal_server_gate.py"] = "0" * 64
+                if mutation == "revision": trace["revision"] = "b" * 40
+                if mutation == "hosted": trace["evidence_kind"] = "REAL_SERVER"
+                if mutation == "private": trace["private_path"] = "/private/canary"
+                if mutation == "token": trace["events"][0]["details"]["token"] = "PRIVATE_CANARY"
+                if mutation == "large": trace["events"][0]["details"]["extra"] = "x" * 1025
+                if mutation == "rows": trace["events"] = [trace["events"][0]] * 4097
+                if mutation == "profile": trace["profile"]["activity_slots"] = 9
+                if mutation == "plan_bool": trace["plan"]["jobs"][0]["payload"]["left"] = False
+                self.rejects(trace)
+        for raw in (b'{"a":1,"a":2}', b'{"a":NaN}', b'{"a":Infinity}'):
+            with self.subTest(raw=raw), self.assertRaises(_batch_gate.GateError):
+                _batch_gate.strict_json(raw)
+        with self.assertRaises(_batch_gate.GateError):
+            _batch_gate._batch_encoded({"rows": ["x" * 256] * 256}, 65536)
+
+
+# Strict collected-node/JUnit mapping for module functions and unittest methods.
+import tempfile as _unit_tempfile
+import xml.etree.ElementTree as _unit_et
+
+
+class UnitJunitIdentityTests(_batch_unittest.TestCase):
+    def verify_rows(self, nodes, rows, *, files=("tests/test_fixed.py",), expected_count=None):
+        root = _unit_et.Element("testsuite", {"tests": "999", "failures": "999"})
+        for classname, name, status in rows:
+            attrs = {}
+            if classname is not None: attrs["classname"] = classname
+            if name is not None: attrs["name"] = name
+            case = _unit_et.SubElement(root, "testcase", attrs)
+            for tag in status:
+                _unit_et.SubElement(case, tag).text = "PRIVATE_DIAGNOSTIC"
+        with _unit_tempfile.TemporaryDirectory(prefix="opendot-unit-junit-") as directory:
+            path = _BatchPath(directory) / "results.xml"
+            path.write_bytes(_unit_et.tostring(root, encoding="utf-8"))
+            return _batch_gate.verify_collected_unit_junit(nodes, path, files=files,
+                expected_count=len(nodes) if expected_count is None else expected_count)
+
+    def test_unit_junit_matches_module_class_and_exact_parameter_identities(self):
+        nodes = ["tests/test_fixed.py::test_same",
+                 "tests/test_fixed.py::Case::test_same",
+                 "tests/test_fixed.py::Case::Nested::test_same",
+                 "tests/test_fixed.py::test_param[a.b/c::d[e]]",
+                 "tests/test_fixed.py::Case::test_param[a.b/c::d[e]]"]
+        rows = [("tests.test_fixed", "test_same", ()),
+                ("tests.test_fixed.Case", "test_same", ()),
+                ("tests.test_fixed.Case.Nested", "test_same", ()),
+                ("tests.test_fixed", "test_param[a.b/c::d[e]]", ()),
+                ("tests.test_fixed.Case", "test_param[a.b/c::d[e]]", ())]
+        result = self.verify_rows(nodes, rows[::-1])
+        self.assertEqual([row["node_id"] for row in result], nodes)
+        self.assertTrue(all(row["outcome"] == "PASS" for row in result))
+        long_name = "test_long[" + " " * 65536 + "]"
+        self.assertEqual(self.verify_rows(["tests/test_fixed.py::" + long_name],
+            [("tests.test_fixed", long_name, ())])[0]["outcome"], "PASS")
+
+    def test_unit_junit_rejects_ambiguous_or_invalid_collected_identities(self):
+        files = ("tests/test_fixed.py", "tests/test_fixed/Case.py")
+        ambiguous = ["tests/test_fixed.py::Case::test_same", "tests/test_fixed/Case.py::test_same"]
+        with self.assertRaises(_batch_gate.GateError):
+            self.verify_rows(ambiguous, [("tests.test_fixed.Case", "test_same", ())] * 2, files=files)
+        for nodes, selected, expected in ((["tests/test_fixed.py::test_a"] * 2, ("tests/test_fixed.py",), 2),
+                (["tests/foreign.py::test_a"], ("tests/test_fixed.py",), 1),
+                (["tests/test_fixed.py::Case::::test_a"], ("tests/test_fixed.py",), 1),
+                (["tests/test_fixed.py::test_a[unclosed"], ("tests/test_fixed.py",), 1),
+                (["tests/test_fixed.py::test_a\n"], ("tests/test_fixed.py",), 1),
+                (["tests/test_fixed.py::test_a"], ("tests/test_fixed.py",) * 2, 1),
+                (["tests/test_fixed.py::test_a"], ("tests/test_fixed.py",), True),
+                (["tests/test_fixed.py::test_a"], ("tests/test_fixed.py",), 2)):
+            with self.subTest(nodes=nodes, files=selected, expected=expected), self.assertRaises(_batch_gate.GateError):
+                self.verify_rows(nodes, [("tests.test_fixed", "test_a", ())], files=selected, expected_count=expected)
+
+    def test_unit_junit_rejects_duplicate_missing_extra_or_mismatched_cases(self):
+        nodes = ["tests/test_fixed.py::test_a", "tests/test_fixed.py::Case::test_b[x::y.z/q]"]
+        correct = [("tests.test_fixed", "test_a", ()), ("tests.test_fixed.Case", "test_b[x::y.z/q]", ())]
+        variants = [correct[:1], correct + correct[:1], correct[:1] * 2,
+                    [("tests.test_fixed.Case", "test_a", ()), correct[1]],
+                    [correct[0], ("tests.test_fixed/Case", "test_b[x::y.z/q]", ())],
+                    [correct[0], ("tests.test_fixed.Case", "test_b[x/y/z/q]", ())],
+                    [correct[0], (None, "test_b[x::y.z/q]", ())],
+                    [correct[0], ("tests.test_fixed.Case", None, ())]]
+        for rows in variants:
+            with self.subTest(rows=rows), self.assertRaises(_batch_gate.GateError):
+                self.verify_rows(nodes, rows)
+
+    def test_unit_junit_preserves_failure_error_and_skip_outcomes(self):
+        for tag, expected in (("failure", "FAIL"), ("error", "ERROR"), ("skipped", "SKIP")):
+            with self.subTest(tag=tag):
+                result = self.verify_rows(["tests/test_fixed.py::Case::test_a"],
+                    [("tests.test_fixed.Case", "test_a", (tag,))])
+                self.assertEqual(result[0]["outcome"], expected)
+                self.assertNotEqual(result[0]["reason_code"], "OK")
+                self.assertNotIn("PRIVATE_DIAGNOSTIC", repr(result))
+        with self.assertRaises(_batch_gate.GateError):
+            self.verify_rows(["tests/test_fixed.py::test_a"],
+                             [("tests.test_fixed", "test_a", ("failure", "error"))])
+
+    def test_unit_junit_identity_limits_fail_without_normalizing_or_truncating(self):
+        with self.assertRaises(_batch_gate.GateError):
+            self.verify_rows(["tests/test_fixed.py::test_a[" + "x" * (128 * 1024) + "]"], [])
+        nodes = [f"tests/test_fixed.py::test_a[{index:02d}" + "x" * 100000 + "]" for index in range(22)]
+        with self.assertRaises(_batch_gate.GateError):
+            self.verify_rows(nodes, [])
+        with self.assertRaises(_batch_gate.GateError):
+            self.verify_rows([True], [])
