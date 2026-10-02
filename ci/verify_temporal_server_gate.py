@@ -1822,7 +1822,7 @@ def _read_real_table(path: Path, kind: str, maximum: int) -> list:
 PUBLIC_RETENTION_DAYS = 30
 PUBLIC_WORKFLOW_PATH = ".github/workflows/temporal-server.yml"
 # Updated only alongside an explicitly reviewed exact workflow candidate.
-PUBLIC_WORKFLOW_SHA256 = "724bd1f342c9ba09f1badcb3049a15fb740b0d99a50035926d9827d559df67a3"
+PUBLIC_WORKFLOW_SHA256 = "b6d479131b8b1c811b4855df1bc6ae30ca8f34c945d226cdcb97e9fb2592f84c"
 
 
 def validate_public_batch_workflow(source: bytes) -> None:
