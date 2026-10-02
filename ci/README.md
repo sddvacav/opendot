@@ -179,3 +179,19 @@ nodes and the historical 78 controlled Git cases is **1,192 distinct selected
 nodes**. This is a selection count, not a pass receipt. The 81 and 78 Git-bound
 profiles are not part of the hosted workflow. Run them only on the supported
 trusted Git 2.52+ POSIX environment, with output outside source.
+
+## Separate local evidence-viewer presentation checks
+
+The dependency-free [local evidence inspector](../docs/evidence-viewer/README.md)
+has a separate Node command, outside every Python/portable/Temporal manifest:
+
+```sh
+node --test tests/test_evidence_viewer.cjs
+```
+
+Use preinstalled Node (local qualification: Node 24). No dependency installation,
+service, SDK, provider, scientific acceptance, or hosted action is added. Report
+its results separately; do not add Node cases to Python test counts. The tests
+exercise bounded synthetic presentation, byte/manifest checks, safe text rendering,
+and stale-selection/reset handling. Required real-browser desktop/mobile/keyboard/
+200%-zoom QA remains a separate publication gate; a DOM stub is not visual proof.
