@@ -1,4 +1,4 @@
-# 从 0.3.0a1 预发布版得到第一个结果
+# 从 0.3.0a2 预发布版得到第一个结果
 
 [English](installed-quickstart.md) · [仅使用源码的路径](../README.zh-CN.md#运行合成示例)
 
@@ -14,18 +14,32 @@
 先前本地检查使用 Linux 和 CPython 3.12，不代表承诺支持所有平台。
 以下命令假设 `/tmp` 适合作为你信任的临时父目录。
 
-从 [0.3.0a1 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)下载
-[opendot_engineering-0.3.0a1-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot_engineering-0.3.0a1-py3-none-any.whl)，
+从 [0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)下载
+[opendot_engineering-0.3.0a2-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2-py3-none-any.whl)，
 保存到可信的本地目录。其精确 SHA-256 固定在下方命令中，也列于发布包的
-[SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/SHA256SUMS)。
+[SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/SHA256SUMS)。
 本文使用 GitHub 发布产物，不声明已发布到 PyPI。不要替换为名字相似的软件包，
 或先前具有相同版本号的构建。摘要一致仅核对文件字节，不能证明作者身份、安全性或科学有效性。
 
-[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/RELEASE-NOTES.md)将这些产物绑定至公开提交
-[49891de448f0bf80c47c035aab4742e1d32221d9](https://github.com/sddvacav/opendot/commit/49891de448f0bf80c47c035aab4742e1d32221d9)。
-[0.3.0a1 发布前验证记录](structural-v2-candidate-verification.md)保留源码、离线构建、安装检查
-和教程实测的独立范围；先前版本的结果不批准本 wheel。
+[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)将这些产物绑定至公开提交
+[359f781a5aa1650ae92b1af81cf369a17c444045](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045)。
+[历史 0.3.0a1 验证记录](structural-v2-candidate-verification.md)与
+[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)
+保留原版本与固定值，不构成本 wheel 的验收。发布产物冻结在上述源码提交；产物内部文档
+保留构建时的下载说明，请使用本更新指南中的 0.3.0a2 固定值。
 [文档检查](documentation-checks.md)仅比较下方八个 shell 代码块，不执行这些命令。
+
+### 精确下载标识
+
+| 产物 | 字节数 | SHA-256 |
+| --- | ---: | --- |
+| `opendot_engineering-0.3.0a2-py3-none-any.whl` | 99,220 | `c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7` |
+| `opendot_engineering-0.3.0a2.tar.gz` | 231,217 | `2b7520119edd698d98ab4ce0cb052d03d55b4ec02c9e3e62ba9dba85ad3fc0c8` |
+| `opendot-engineering-0.3.0a2-source.tar.gz` | 611,307 | `928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2` |
+
+[打包 sdist](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2.tar.gz)
+是独立的构建输入，并非步骤 3 获取示例所用的完整源码归档。
+本指南安装 wheel，不构建或安装 sdist。
 
 只将 `WHEEL` 替换为已下载 wheel 的绝对路径。若 Python 3.12+ 的可执行文件
 名称不同，也请修改 `PYTHON`。保留固定 SHA-256 不变。所有代码块在同一个 shell
@@ -34,8 +48,8 @@
 ```sh
 set -eu
 PYTHON=python3.12
-WHEEL='/absolute/path/to/opendot_engineering-0.3.0a1-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='53ba4398939dce8d037be21656bfadf6686abdd9bcc1134d85efa44a9b5c1207'
+WHEEL='/absolute/path/to/opendot_engineering-0.3.0a2-py3-none-any.whl'
+EXPECTED_WHEEL_SHA256='c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
 import hashlib, pathlib, sys
@@ -44,7 +58,7 @@ if sys.version_info < (3, 12):
 wheel, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
 if hashlib.sha256(wheel.read_bytes()).hexdigest() != expected:
     raise SystemExit("Wheel hash mismatch: stop and check the reviewed artifact")
-print("Released wheel bytes match")
+print("Pinned wheel bytes match")
 PYCODE
 
 JOURNEY=$(mktemp -d /tmp/opendot-first-run.XXXXXX)
@@ -55,7 +69,7 @@ cd "$JOURNEY"
 "$PY" -I -B -c 'import importlib.metadata as m, opendot_engineering as p; print(m.version("opendot-engineering")); print(p.__file__)'
 ```
 
-应看到版本 `0.3.0a1` 和位于新环境 `site-packages` 内的导入路径。
+应看到版本 `0.3.0a2` 和位于新环境 `site-packages` 内的导入路径。
 无需激活环境或设置 `PYTHONPATH`；`-I` 忽略源码目录导入捷径，`-B` 避免写入 Python
 字节码。软件包没有名为 `opendot` 的独立控制台命令。
 
@@ -129,15 +143,15 @@ PYCODE
 ## 3. 观察成功、语义拒绝与缺少权限
 
 wheel 包含 Python 包，但不包含示例脚本和夹具。从同一版本下载配套的
-[完整源码归档](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot-engineering-0.3.0a1-source.tar.gz)，
+[完整源码归档](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot-engineering-0.3.0a2-source.tar.gz)，
 将 `SOURCE_ARCHIVE` 替换为其绝对本地路径。请使用这个具名产物，而非范围更窄的打包
 sdist 或 GitHub 自动生成的源码链接；它们的字节不同。保留固定源码 SHA-256 不变。
 代码块先验证归档，再解压到全新的教程目录中，然后仅复制公开示例。
 Python 仍从已安装 wheel 导入。
 
 ```sh
-SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a1-source.tar.gz'
-EXPECTED_SOURCE_SHA256='bd7dfa520e1a176b48bf4cebaafbddb02dfb90aad5c7be759595ed13d3c7a73c'
+SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a2-source.tar.gz'
+EXPECTED_SOURCE_SHA256='928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2'
 "$PY" -I -B - "$SOURCE_ARCHIVE" "$EXPECTED_SOURCE_SHA256" "$JOURNEY/source" <<'PYCODE'
 import hashlib, pathlib, sys, tarfile
 archive, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
@@ -147,16 +161,16 @@ output = pathlib.Path(sys.argv[3])
 output.mkdir(exist_ok=False)
 with tarfile.open(archive, "r:gz") as source:
     source.extractall(output, filter="data")
-print("Released source archive bytes match")
+print("Pinned source archive bytes match")
 PYCODE
-SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a1"
+SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a2"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"
 ```
 
 应看到 `synthetic_software_assertions_passed: true` 和 `package_version:
-"0.3.0a1"`。三个场景的结果有意不同：
+"0.3.0a2"`。三个场景的结果有意不同：
 
 - `success`：`COMPLETED`、语义有效、字节通过独立哈希核对
 - `semantic_refusal`：`FAILED`，仍保留一个完整但**未获接受**的产物
@@ -218,6 +232,19 @@ PATH=/usr/local/bin:/usr/bin:/bin git --version
 `primary_checkout_unchanged` 应为 true。示例自行创建临时仓库，并在退出时移除自己
 创建的临时容器，不需要使用你的现有仓库。在其他仓库使用 API 前，请阅读
 [Git 适用边界](git-workspaces.md)。Git 环境不满足条件不会阻止步骤 1–4。
+
+## 可选功能另行准备
+
+0.3.0a2 软件包包含 [Gmsh 单文件大小限制修复](gmsh-cpu-ceiling.md)和
+[有限范围 Temporal 参考传输](temporal-reference-transport.md)。本教程不执行原生后端
+或 Temporal。默认运行时 Python 依赖仍为空，默认导入也不会加载可选 Temporal 模块。
+
+可选 `temporal` extra 声明 `temporalio==1.34.0`。使用时需另行批准并准备 SDK 依赖，
+以及由操作者负责的服务配置；上方离线 `--no-deps` 安装不提供这些依赖或服务。
+安装 extra 不会自动启动或连接服务。已验证范围仅为单主机回环的
+`synthetic.bounded_sum.v1`、静止状态下正常重启后的排队首次交付和已记录结果重放。
+它不证明执行中崩溃恢复、多主机运行、全局恰好一次副作用、生产部署、科学有效性或设备权限。
+参见[能力与证据边界](../CAPABILITIES.zh-CN.md)；`NOT_SCORED` 保持不变。
 
 ## 常见首次运行错误
 

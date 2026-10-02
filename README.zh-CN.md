@@ -12,9 +12,9 @@ OpenDot Engineering 是一套用于本地工具执行和结果检查的 Python �
 
 它适合开发者与科研工程人员构建可复核的工作流原型：把函数输出连接到产物存储、复核合成测量数据的统计结果，或创建受控的本地 Git 工作副本。先运行下面的小示例，再按需要查看 [API 与示例](#按需要选择入口)。
 
-**实验性 alpha · 0.3.0a1 · NOT_SCORED。** 下载 [0.3.0a1 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)，按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得 wheel、匹配的源码示例并核验 SHA-256。要求 Python 3.12+；默认软件包没有运行时 Python 依赖。已复核的环境是 Linux。
+**实验性 alpha · 0.3.0a2 · NOT_SCORED。** 下载 [0.3.0a2 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)，按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得 wheel、匹配的源码示例并核验 SHA-256。要求 Python 3.12+；默认软件包没有运行时 Python 依赖。已复核的环境是 Linux。
 
-**源码与发行物不同：** 当前源码包含尚未发布的 [Gmsh 单文件大小限制修复](docs/gmsh-cpu-ceiling.md)。已发布的 v0.3.0a1 产物不含此修复，原有哈希保持不变。
+**0.3.0a2 已包含：** [Gmsh 单文件大小限制修复](docs/gmsh-cpu-ceiling.md)与[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)。默认安装仍无运行时 Python 依赖；Temporal extra 需要另行批准并准备依赖，且不会自动启动服务。未改动的 v0.3.0a1 产物不含这两项新增内容；其[历史安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)保留原有固定值。
 
 ## 运行合成示例
 
@@ -73,7 +73,7 @@ Git API 仅包含 **create/status/diff**，要求可信、协作式使用的 POS
 
 软件包支持可信的本地工作流。模型驱动的自主智能体、持久恢复、多主机运行和数百智能体性能尚未在此实现或证明。声明的权限与预算不构成操作系统沙箱；字节完整性不赋予科学验收或设备控制权限。
 
-具体范围见[能力与历史证据清单](CAPABILITIES.zh-CN.md)、[结构验证 v2](docs/structural-default-v2.md)及[当前源码验证记录](docs/structural-v2-candidate-verification.md)。先前的 [a4 检查](docs/verifier-ci-verification.md)和[构建重复性记录](docs/build-toolchain.md)仍只适用于各自版本，不构成新源码或发行物的验收。
+当前版本证据与具体范围见[能力与证据清单](CAPABILITIES.zh-CN.md)、[结构验证 v2](docs/structural-default-v2.md)及[历史 0.3.0a1 验证记录](docs/structural-v2-candidate-verification.md)。先前的 [a4 检查](docs/verifier-ci-verification.md)和[构建重复性记录](docs/build-toolchain.md)仍只适用于各自版本，不构成新源码或发行物的验收。
 
 ## 发展方向
 

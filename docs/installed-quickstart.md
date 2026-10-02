@@ -1,4 +1,4 @@
-# First useful result from the 0.3.0a1 prerelease
+# First useful result from the 0.3.0a2 prerelease
 
 [简体中文](installed-quickstart.zh-CN.md) · [Source-only route](../README.md#run-the-synthetic-examples)
 
@@ -14,23 +14,38 @@ Earlier local checks used Linux and CPython 3.12; this is not a general
 platform-support promise. Use a shell session in which `/tmp` is a suitable
 trusted temporary parent.
 
-Download the [opendot_engineering-0.3.0a1-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot_engineering-0.3.0a1-py3-none-any.whl)
-from the [0.3.0a1 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)
+Download the [opendot_engineering-0.3.0a2-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2-py3-none-any.whl)
+from the [0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)
 to a trusted local directory. Its exact SHA-256 is pinned below and listed in the
-release's [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/SHA256SUMS).
+release's [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/SHA256SUMS).
 This guide uses GitHub release assets; no PyPI publication is claimed. Do not
 substitute a similarly named package or an earlier same-version build. A matching
 digest checks the supplied bytes, not their authorship, safety or scientific validity.
 
-The [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/RELEASE-NOTES.md)
+The [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
 bind these assets to public commit
-[49891de448f0bf80c47c035aab4742e1d32221d9](https://github.com/sddvacav/opendot/commit/49891de448f0bf80c47c035aab4742e1d32221d9).
-The [0.3.0a1 pre-publication verification record](structural-v2-candidate-verification.md)
-keeps source, offline-build, installed and guide checks separate; earlier-version
-results do not approve this wheel. The breaking structural default is covered by the
+[359f781a5aa1650ae92b1af81cf369a17c444045](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045).
+The [historical 0.3.0a1 verification record](structural-v2-candidate-verification.md)
+and [historical 0.3.0a1 installed guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md)
+retain their earlier versions and pins; they do not approve this wheel. Release
+assets remain frozen at the linked source commit. Documentation inside those
+assets retains its build-time download guidance; use this updated guide for the
+0.3.0a2 pins. The breaking structural default is covered by the
 [migration guide](structural-default-v2.md); this first-result journey uses the unchanged
 callable/artifact profile. The [documentation check](documentation-checks.md)
 compares the eight shell blocks below without executing them.
+
+### Exact download identities
+
+| Asset | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `opendot_engineering-0.3.0a2-py3-none-any.whl` | 99,220 | `c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7` |
+| `opendot_engineering-0.3.0a2.tar.gz` | 231,217 | `2b7520119edd698d98ab4ce0cb052d03d55b4ec02c9e3e62ba9dba85ad3fc0c8` |
+| `opendot-engineering-0.3.0a2-source.tar.gz` | 611,307 | `928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2` |
+
+The [packaging sdist](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2.tar.gz)
+is a separate build input, not the full-source archive used for examples in step 3.
+This guide installs the wheel and does not build or install the sdist.
 
 Replace only `WHEEL` with the absolute path to the downloaded wheel. If your Python
 3.12+ executable has another name, change `PYTHON` too. Keep the pinned SHA-256
@@ -40,8 +55,8 @@ and makes no dependency download.
 ```sh
 set -eu
 PYTHON=python3.12
-WHEEL='/absolute/path/to/opendot_engineering-0.3.0a1-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='53ba4398939dce8d037be21656bfadf6686abdd9bcc1134d85efa44a9b5c1207'
+WHEEL='/absolute/path/to/opendot_engineering-0.3.0a2-py3-none-any.whl'
+EXPECTED_WHEEL_SHA256='c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
 import hashlib, pathlib, sys
@@ -50,7 +65,7 @@ if sys.version_info < (3, 12):
 wheel, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
 if hashlib.sha256(wheel.read_bytes()).hexdigest() != expected:
     raise SystemExit("Wheel hash mismatch: stop and check the reviewed artifact")
-print("Released wheel bytes match")
+print("Pinned wheel bytes match")
 PYCODE
 
 JOURNEY=$(mktemp -d /tmp/opendot-first-run.XXXXXX)
@@ -61,7 +76,7 @@ cd "$JOURNEY"
 "$PY" -I -B -c 'import importlib.metadata as m, opendot_engineering as p; print(m.version("opendot-engineering")); print(p.__file__)'
 ```
 
-Expect version `0.3.0a1` and an import path inside the new environment's
+Expect version `0.3.0a2` and an import path inside the new environment's
 `site-packages`. No shell activation or `PYTHONPATH` is needed. `-I` ignores
 source-directory import shortcuts; `-B` avoids Python bytecode writes. There is
 no `opendot` console command.
@@ -140,7 +155,7 @@ follows symlinks, and is not a transaction or recovery system.
 ## 3. Try success, refusal, and missing permission
 
 The wheel contains the Python package, not the example scripts or fixtures.
-Download the matching [full source archive](https://github.com/sddvacav/opendot/releases/download/v0.3.0a1/opendot-engineering-0.3.0a1-source.tar.gz)
+Download the matching [full source archive](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot-engineering-0.3.0a2-source.tar.gz)
 from the same release and replace `SOURCE_ARCHIVE` with its absolute local path.
 Use this named asset, not the narrower packaging sdist or GitHub's automatically
 generated source links, which have different bytes. Keep the source SHA-256 pin
@@ -149,8 +164,8 @@ journey directory, then copies only public examples. Imports continue to come
 from the installed wheel.
 
 ```sh
-SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a1-source.tar.gz'
-EXPECTED_SOURCE_SHA256='bd7dfa520e1a176b48bf4cebaafbddb02dfb90aad5c7be759595ed13d3c7a73c'
+SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a2-source.tar.gz'
+EXPECTED_SOURCE_SHA256='928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2'
 "$PY" -I -B - "$SOURCE_ARCHIVE" "$EXPECTED_SOURCE_SHA256" "$JOURNEY/source" <<'PYCODE'
 import hashlib, pathlib, sys, tarfile
 archive, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
@@ -160,16 +175,16 @@ output = pathlib.Path(sys.argv[3])
 output.mkdir(exist_ok=False)
 with tarfile.open(archive, "r:gz") as source:
     source.extractall(output, filter="data")
-print("Released source archive bytes match")
+print("Pinned source archive bytes match")
 PYCODE
-SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a1"
+SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a2"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"
 ```
 
 Expect `synthetic_software_assertions_passed: true` and `package_version:
-"0.3.0a1"`. The three cases deliberately have different outcomes:
+"0.3.0a2"`. The three cases deliberately have different outcomes:
 
 - `success`: `COMPLETED`, semantic-valid, independently hash-verified bytes
 - `semantic_refusal`: `FAILED` with one intact **unaccepted** artifact retained
@@ -236,6 +251,24 @@ Expect `receipt_ok`, `shared_fixed_base`, `second_is_clean`, and
 repository and removes its own temporary container on exit; no existing user
 repository is needed. Read the [Git profile limits](git-workspaces.md) before
 using its API on other repositories. Git failure does not block steps 1–4.
+
+## Optional features are separate
+
+The 0.3.0a2 package includes the [Gmsh file-size-limit repair](gmsh-cpu-ceiling.md)
+and [bounded Temporal reference transport](temporal-reference-transport.md).
+This walkthrough runs neither native backends nor Temporal. Default runtime
+Python dependencies remain empty, and default imports do not load the optional
+Temporal modules.
+
+The optional `temporal` extra declares `temporalio==1.34.0`. Using it requires
+separately approved, prepared SDK dependencies and an operator-owned service
+configuration; the offline `--no-deps` installation above supplies none of them.
+Installing the extra never starts or connects a server automatically. Its
+qualified scope is only single-host loopback `synthetic.bounded_sum.v1`, queued
+first delivery after a graceful quiescent restart, and recorded-result replay.
+It does not establish in-flight crash recovery, multi-host operation, global
+exactly-once effects, production deployment, scientific validity or device authority.
+See the [capability and evidence limits](../CAPABILITIES.md); `NOT_SCORED` is unchanged.
 
 ## Recover from common first-run errors
 

@@ -2,11 +2,11 @@
 
 [简体中文](OVERVIEW.zh-CN.md) · [Capabilities and evidence](CAPABILITIES.md) · [Research and priorities](RESEARCH-MAP.md)
 
-**Version 0.3.0a1 · Experimental alpha source · Evidence snapshot 1 October 2026**
+**Version 0.3.0a2 · Experimental alpha · Evidence snapshot 2 October 2026**
 
 OpenDot Engineering provides a small, inspectable foundation for local engineering work: run a declared Python tool, inspect its acceptance result, store the output by its byte hash, and create controlled Git workspaces for separate tasks. The package is designed for developers and research engineers who need to examine what ran, what it produced, and which checks actually passed.
 
-**Experimental alpha source: 0.3.0a1; NOT_SCORED.** This source
+**Experimental alpha: 0.3.0a2; NOT_SCORED.** This version
 integrates [structural default verification v2](docs/structural-default-v2.md):
 conditional per-element energy consistency, schema 2 and explicit historical
 `artifact_v1` compatibility. Scientific acceptance remains false. The source-boundary
@@ -15,17 +15,18 @@ and six separately counted synthetic parameter fixtures; no production policy is
 Canonical execution/reference owners and optional energy-API results are unchanged.
 The [Gmsh resource-limit setup](docs/gmsh-cpu-ceiling.md) preserves inherited lower
 CPU and per-file ceilings; fake-resource checks do not establish native/kernel enforcement.
-The file-size repair is an unreleased source-only follow-on; existing v0.3.0a1
-release assets do not contain it and retain their original hashes.
-[Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
+The file-size repair and [optional bounded Temporal transport](docs/temporal-reference-transport.md)
+are packaged in 0.3.0a2. The unchanged v0.3.0a1 assets contain neither addition
+and retain their original hashes.
+[Historical 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
-The [0.3.0a1 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1) is available. Follow the [version-pinned installation guide](docs/installed-quickstart.md) for its exact wheel, matching source examples and SHA-256 checks. The [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retains its separate version-specific pins; earlier-version results do not accept these artifacts.
+The [0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) is available. Follow the [version-pinned installation guide](docs/installed-quickstart.md) for its exact wheel, matching source examples and SHA-256 checks. The [historical 0.3.0a1 installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) and [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retain their separate version-specific pins; earlier-version results do not accept these artifacts.
 
 The historical a4 candidate requires an unambiguous single CalculiX 2.23 version declaration in logs checked by the shared thermal/structural gate. It adds a source-only documentation checker for bounded local links, fragments and HTML anchors, plus exactly eight nonempty, literal-identical shell blocks in each installed-guide language. The build backend is pinned to setuptools 84.0.0. These changes add no physics model, runtime, native execution or public release. See the [historical a4 verification record](docs/verifier-ci-verification.md), [documentation-checking boundary](docs/documentation-checks.md), and [build profile](docs/build-toolchain.md).
 
-Historical evidence remains version-bound: the **0.2.0a1** Git repair candidate passed **773 selected author checks**. Its inaccessible-residue fix passed an independent source-level permission-loss reproduction; see the [repair record](docs/git-workspaces-residue-fix.md). The **0.2.0a0** callable/artifact integration separately passed **695 independently rerun portable checks**. These results do not establish a test total or independent acceptance for **0.3.0a1**, a full-platform rating, or a public release.
+Historical evidence remains version-bound: the **0.2.0a1** Git repair candidate passed **773 selected author checks**. Its inaccessible-residue fix passed an independent source-level permission-loss reproduction; see the [repair record](docs/git-workspaces-residue-fix.md). The **0.2.0a0** callable/artifact integration separately passed **695 independently rerun portable checks**. These results do not establish a test total or independent acceptance for **0.3.0a2**, a full-platform rating, or a public release.
 
-**Historical a4 author source checks: 1,066 passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** Independent component results overlap and must not be added to that aggregate. The portable CI definition selects 988 cases and omits the 78 controlled-Git cases; it has not run on hosted CI.
+**Historical a4 author source checks: 1,066 passed**, with zero failures/errors/skips. **Exact final artifact and installed acceptance require their own delivery receipt.** Independent component results overlap and must not be added to that aggregate. The historical a4 portable CI definition selected 988 cases and omitted the 78 controlled-Git cases; that record did not establish a hosted run. Current 0.3.0a2 hosted runs are separately linked in [Capabilities](CAPABILITIES.md).
 
 Historical **0.2.0a3** source checks passed **899** cases with zero failures/errors/skips. Its final `a59419b` receipt covered fresh installed journeys through all eight shell blocks per language; two clean build environments on the same host reproduced its exact wheel. Those results and any predecessor score do not transfer to this candidate. The [earlier development record](docs/parallel-development-verification.md) describes host-coordinated work, not an autonomous scheduler. Historical 0.2.0a2 author checks passed 805 selected source tests; its independent metadata review passed 410 cases on source and the same 410 on its installed wheel. These remain predecessor evidence.
 
@@ -56,12 +57,13 @@ The [disposable example](examples/git-workspaces/README.md) creates two worktree
 - [Synthetic qualification records](docs/synthetic-lab-qualification.md) check invented records against declared oracles; correct refusals are distinct from real qualification
 - [Fake-instrument simulation](docs/simulated-lab.md) runs a fixed Bluesky plan on internally created ophyd simulated instruments, with at most 16 setpoint/read steps and offline document verification
 - [Optional CAD/CAE contracts](examples/cad_cae/README.md) cover bounded geometry, mesh, thermal, and beam examples with separately prepared native backends
+- [Optional Temporal reference transport](docs/temporal-reference-transport.md) delivers only the fixed `synthetic.bounded_sum.v1` profile: single-host loopback, queued first delivery after a graceful quiescent restart, and recorded-result replay; no in-flight crash recovery, multi-host or global exactly-once claim
 
 ## Installation and first example
 
-The distribution is `opendot-engineering`; its Python import namespace is `opendot_engineering`. The default installation has no required runtime Python dependencies and needs Python 3.12 or newer. Several file-checking APIs require POSIX operations. Simulation execution has an optional, pinned dependency set; native CAD/CAE execution requires its own backend environment. There is no registered console command.
+The distribution is `opendot-engineering`; its Python import namespace is `opendot_engineering`. The default installation has no required runtime Python dependencies and needs Python 3.12 or newer. Several file-checking APIs require POSIX operations. The optional `temporal` extra pins `temporalio==1.34.0`; its dependencies need separate approval and preparation, and installation never starts a server. Simulation execution has an optional, pinned dependency set; native CAD/CAE execution requires its own backend environment. There is no registered console command.
 
-Start with [Getting started](docs/getting-started.md), then the [small callable/artifact example](examples/callable-artifacts/README.md). Use the [Git example](examples/git-workspaces/README.md) only on an eligible local host. The [public repository](https://github.com/sddvacav/opendot) and [issues](https://github.com/sddvacav/opendot/issues) are verified. The [historical a6 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is separate; use [Releases](https://github.com/sddvacav/opendot/releases) to verify the available artifacts and their exact version before installation.
+Start with the [0.3.0a2 installed quickstart](docs/installed-quickstart.md) for offline hash verification and a first result. For source use, see [Getting started](docs/getting-started.md) and the [small callable/artifact example](examples/callable-artifacts/README.md). Use the [Git example](examples/git-workspaces/README.md) only on an eligible local host. The [public repository](https://github.com/sddvacav/opendot) and [issues](https://github.com/sddvacav/opendot/issues) are verified. The [historical a6 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is separate; use [Releases](https://github.com/sddvacav/opendot/releases) to verify the available artifacts and their exact version before installation.
 
 ## The boundary that remains
 
