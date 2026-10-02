@@ -2,26 +2,26 @@
 
 [English](OVERVIEW.md) · [能力与证据](CAPABILITIES.zh-CN.md) · [研究与优先级](RESEARCH-MAP.zh-CN.md)
 
-**0.3.0a1 版本 · 实验性 alpha 源码 · 证据截至 2026 年 10 月 1 日**
+**0.3.0a2 版本 · 实验性 alpha · 证据截至 2026 年 10 月 2 日**
 
 OpenDot Engineering 为本地工程工作提供一个便于检查的小型基础包：执行具有明确声明的 Python 工具、查看验收结果、按字节哈希保存产物，并为不同任务创建受控的 Git 工作区。它面向需要检查“执行了什么、产生了什么、哪些检查确实通过”的开发者和科研工程人员。
 
-**实验性 alpha 源码：0.3.0a1；NOT_SCORED。** 本源码整合
+**实验性 alpha：0.3.0a2；NOT_SCORED。** 本版本整合
 [结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
 没有新增生产策略。既有执行／引用所有者及可选能量 API 返回结果保持不变。
 [Gmsh 资源限制设置](docs/gmsh-cpu-ceiling.md)保留较低的继承 CPU 与单文件大小限制；合成资源检查不证明原生或内核强制执行。
-文件大小修复仅属于尚未发布的源码后续变更；现有 v0.3.0a1 发布产物不含此修复，原有哈希保持不变。
-[当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
+文件大小修复与[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)已打包进 0.3.0a2。未改动的 v0.3.0a1 发布产物不含这两项新增内容，原有哈希保持不变。
+[历史 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-[0.3.0a1 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其独立的版本固定值；先前版本的结果不构成本次产物的验收。
+[0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
 
 历史 a4 候选要求热学与结构验证器共享的日志门槛仅接受一个明确的 CalculiX 2.23 版本声明。新增纯源码文档检查器，检查有限范围的本地链接、片段与 HTML 锚点，以及每种安装指南语言中恰好八个非空、逐字一致的 shell 代码块。构建后端固定为 setuptools 84.0.0。这些改动不新增物理模型、运行时、原生执行或公开发布。见[历史 a4 验证记录](docs/verifier-ci-verification.md)、[文档检查边界](docs/documentation-checks.md)和[构建配置](docs/build-toolchain.md)。
 
-历史证据保留版本边界：**0.2.0a1** Git 修复候选通过 **773 项指定作者检查**，无法检查的残留状态修复已通过独立源代码权限丢失反例复验，见[修复记录](docs/git-workspaces-residue-fix.md)。**0.2.0a0** 函数与产物集成另行通过 **695 项独立复跑的可移植检查**。这些结果不构成 **0.3.0a1** 的测试总数或独立验收、完整平台评分或公开发布。
+历史证据保留版本边界：**0.2.0a1** Git 修复候选通过 **773 项指定作者检查**，无法检查的残留状态修复已通过独立源代码权限丢失反例复验，见[修复记录](docs/git-workspaces-residue-fix.md)。**0.2.0a0** 函数与产物集成另行通过 **695 项独立复跑的可移植检查**。这些结果不构成 **0.3.0a2** 的测试总数或独立验收、完整平台评分或公开发布。
 
-**历史 a4 作者源码检查：1,066 项通过**，失败／错误／跳过均为零。**最终精确产物与安装验收以单独交付回执为准。** 独立组件结果存在重叠，不能叠加到该组合总数。可移植 CI 定义选择 988 项，不包含 78 项受控 Git 检查；尚未在托管 CI 上执行。
+**历史 a4 作者源码检查：1,066 项通过**，失败／错误／跳过均为零。**最终精确产物与安装验收以单独交付回执为准。** 独立组件结果存在重叠，不能叠加到该组合总数。历史 a4 可移植 CI 定义选择 988 项，不包含 78 项受控 Git 检查；该记录当时不证明托管执行。当前 0.3.0a2 托管执行的链接另见[能力清单](CAPABILITIES.zh-CN.md)。
 
 历史 **0.2.0a3** 源码检查 **899 项通过**，失败／错误／跳过均为零。其最终 `a59419b` 回执覆盖新环境中每种语言全部八个 shell 代码块的安装实测；同一主机上的两个干净构建环境复现了该版精确 wheel。这些结果及前版评分不能转移到本候选。[先前开发记录](docs/parallel-development-verification.md)描述宿主协调的工作，不证明自治调度器。历史 0.2.0a2 作者检查通过 805 项指定源码测试；独立元数据检查在源码及其安装包上分别通过同一组 410 项，仍仅属于前版证据。
 
@@ -52,12 +52,13 @@ OpenDot Engineering 为本地工程工作提供一个便于检查的小型基础
 - [合成资格记录](docs/synthetic-lab-qualification.md)将人为构造的记录与声明的预期结果核对；正确拒绝与真实资格认证分别记录
 - [模拟仪器实验](docs/simulated-lab.md)通过内部创建的 ophyd 假仪器运行固定 Bluesky 计划，最多 16 个设定与读取步骤，并支持离线文档验证
 - [可选 CAD/CAE 契约](examples/cad_cae/README.md)覆盖范围受限的几何、网格、导热和梁示例，原生后端需要另外准备
+- [可选 Temporal 参考传输](docs/temporal-reference-transport.md)仅交付固定的 `synthetic.bounded_sum.v1`：单主机回环、静止状态下正常重启后的排队首次交付、已记录结果重放；不证明执行中崩溃恢复、多主机或全局恰好一次
 
 ## 安装与首次运行
 
-分发包名为 `opendot-engineering`，Python 导入命名空间为 `opendot_engineering`。默认安装没有必需的运行时 Python 依赖，要求 Python 3.12 或更新版本。若干文件检查 API 需要 POSIX 操作。模拟实验执行使用可选的固定版本依赖；原生 CAD/CAE 执行有单独的后端环境要求。当前没有注册独立控制台命令。
+分发包名为 `opendot-engineering`，Python 导入命名空间为 `opendot_engineering`。默认安装没有必需的运行时 Python 依赖，要求 Python 3.12 或更新版本。若干文件检查 API 需要 POSIX 操作。可选 `temporal` extra 固定 `temporalio==1.34.0`；其依赖需另行批准并准备，安装不会启动服务。模拟实验执行使用可选的固定版本依赖；原生 CAD/CAE 执行有单独的后端环境要求。当前没有注册独立控制台命令。
 
-先阅读[入门说明](docs/getting-started.md)，再运行[小型函数与产物组合示例](examples/callable-artifacts/README.md)。[Git 示例](examples/git-workspaces/README.md)仅适用于满足条件的本地主机。[公开仓库](https://github.com/sddvacav/opendot)与[议题](https://github.com/sddvacav/opendot/issues)已核实。[历史 a6 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)另行提供；安装前请在 [Releases](https://github.com/sddvacav/opendot/releases) 核对现有产物及其精确版本。
+先按 [0.3.0a2 安装入门](docs/installed-quickstart.zh-CN.md)离线核验哈希并得到第一个结果。使用源码时，参见[入门说明](docs/getting-started.md)和[小型函数与产物组合示例](examples/callable-artifacts/README.md)。[Git 示例](examples/git-workspaces/README.md)仅适用于满足条件的本地主机。[公开仓库](https://github.com/sddvacav/opendot)与[议题](https://github.com/sddvacav/opendot/issues)已核实。[历史 a6 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)另行提供；安装前请在 [Releases](https://github.com/sddvacav/opendot/releases) 核对现有产物及其精确版本。
 
 ## 仍需遵守的边界
 

@@ -2,9 +2,9 @@
 
 [简体中文](CAPABILITIES.zh-CN.md) · [Overview](OVERVIEW.md) · [Research map](RESEARCH-MAP.md)
 
-Snapshot: 2 October 2026. This matrix describes the experimental 0.3.0a1 alpha source boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
+Snapshot: 2 October 2026. This matrix describes the experimental 0.3.0a2 alpha boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
 
-**Experimental alpha source: 0.3.0a1; NOT_SCORED.** This source
+**Experimental alpha: 0.3.0a2; NOT_SCORED.** This version
 integrates [structural default verification v2](docs/structural-default-v2.md):
 conditional per-element energy consistency, schema 2 and explicit historical
 `artifact_v1` compatibility. Scientific acceptance remains false. The source-boundary
@@ -13,18 +13,17 @@ and six separately counted synthetic parameter fixtures; no production policy is
 Canonical execution/reference owners and optional energy-API results are unchanged.
 The [Gmsh resource-limit setup](docs/gmsh-cpu-ceiling.md) preserves inherited lower
 CPU and per-file ceilings; fake-resource checks do not establish native/kernel enforcement.
-The file-size repair and optional Temporal transport are unreleased source-only
-follow-ons; existing v0.3.0a1 release assets contain neither and retain their
-original hashes.
-[Current 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
+The file-size repair and optional Temporal transport are packaged in 0.3.0a2;
+unchanged v0.3.0a1 release assets contain neither and retain their original hashes.
+[Historical 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
-The [0.3.0a1 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1) is available. Follow the [version-pinned installation guide](docs/installed-quickstart.md) for its exact wheel, matching source examples and SHA-256 checks. The [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retains its separate version-specific pins; earlier-version results do not accept these artifacts.
+The [0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) is available. Follow the [version-pinned installation guide](docs/installed-quickstart.md) for its exact wheel, matching source examples and SHA-256 checks. The [historical 0.3.0a1 installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) and [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retain their separate version-specific pins; earlier-version results do not accept these artifacts.
 
-## Current optional Temporal source qualification
+## Optional Temporal qualification and 0.3.0a2 evidence
 
 The [optional synthetic Temporal transport](docs/temporal-reference-transport.md)
 is present on `main` after [PR #18](https://github.com/sddvacav/opendot/pull/18).
-Its [bounded hosted qualification](docs/temporal-qualification-evidence.md) was
+The earlier implementation's [bounded hosted qualification](docs/temporal-qualification-evidence.md) was
 independently accepted on 2 October 2026: **818 SDK/pure checks and seven real-server
 checks passed** on the exact tree merged to `main`. This is one single-host,
 loopback-only `synthetic.bounded_sum.v1` profile with SDK 1.34.0, CLI 1.9.1 and
@@ -33,8 +32,17 @@ restart and replay of a recorded result without another handler call. The
 separate portable CI result was 1,325 passed / 141 subtests passed; these scopes
 are not combined into a new coverage total.
 
-This optional source feature preserves empty default dependencies, default-import
-isolation and the canonical execution/artifact/contracts owners. It does not
+The 0.3.0a2 [optional qualification run](https://github.com/sddvacav/opendot/actions/runs/36963928744)
+separately passed 818 SDK/pure checks and seven real-server checks; its
+[main portable run](https://github.com/sddvacav/opendot/actions/runs/36964156448)
+passed 1,325 checks / 141 subtests. These are separate scopes, not a new summed
+total or new scientific/device acceptance. The [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
+bind the released assets to their source and scoped evidence.
+
+This optional packaged feature preserves empty default dependencies, default-import
+isolation and the canonical execution/artifact/contracts owners. The `temporal`
+extra pins `temporalio==1.34.0`; dependencies require separate approval and
+preparation, and installation never starts a server. It does not
 establish multi-host operation, in-flight crash recovery, global exactly-once
 effects, production readiness, scientific validity or a complete MVP. It does
 not change `NOT_SCORED` or accept the unchanged published 0.3.0a1 assets for this
@@ -78,7 +86,7 @@ The independent E2/E3 results above summarize the separately reviewed evidence p
 | C10 | [Adapter source provenance](docs/git-provenance-verification.md): Bind new adapter provenance to actual local source membership | Implemented; inherited bounded checks | Selected provenance regressions in E1/E2; source hashes retained when Git context is uncertain | No upstream-authorship or atomic-snapshot proof; other native fields and historical evidence may still contain paths |
 | C11 | [Durable tasks and agent-scale execution](docs/research/README.md): Recover long work and measure useful parallel delivery | General capability remains proposed | No accepted in-flight crash-recovery, live-model or multi-host experiment; C13 is a separate finite transport qualification | No unattended-duration, hundreds-of-agent, throughput or cost-saving claim |
 | C12 | [Canonical agent metadata](docs/agent-contracts.md): Describe capabilities and agent manifests | Included; metadata-only extraction | E5; [synthetic metadata example](examples/agent-contracts/README.md); independent acceptance remains separate | `Capability` and `AgentManifest` require explicit `.validate()` calls; budgets/permissions are descriptive, with no execution enforcement or existing-consumer migration |
-| C13 | [Optional Temporal reference transport](docs/temporal-reference-transport.md): Deliver one fixed synthetic Activity and reuse its recorded result | Implemented on current source; independently accepted finite hosted qualification | [Exact run evidence](docs/temporal-qualification-evidence.md): 818 SDK/pure and seven real-server checks; three graceful server stops and 12 awaited worker shutdowns; replay handler count stays one | Single host, loopback, same trusted local CAS/SQLite; queued first delivery and recorded-result replay only; not in-flight crash recovery, global exactly-once or general agent execution |
+| C13 | [Optional Temporal reference transport](docs/temporal-reference-transport.md): Deliver one fixed synthetic Activity and reuse its recorded result | Packaged in 0.3.0a2; qualification scopes separated above | [Earlier implementation evidence](docs/temporal-qualification-evidence.md): 818 SDK/pure and seven real-server checks; three graceful server stops and 12 awaited worker shutdowns; replay handler count stays one. Separate 0.3.0a2 runs are linked above | Single host, loopback, same trusted local CAS/SQLite; queued first delivery and recorded-result replay only; not in-flight crash recovery, global exactly-once or general agent execution |
 
 ## Reading the results
 

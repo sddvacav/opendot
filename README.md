@@ -12,9 +12,9 @@ OpenDot Engineering is a Python toolkit for local tool execution and inspectable
 
 Use it to prototype reviewable developer and research-engineering workflows: connect a callable to an artifact, review a synthetic measurement summary, or create a controlled local Git working copy. Start with the small example below, then explore the [APIs and examples](#explore-the-package).
 
-**Experimental alpha · 0.3.0a1 · NOT_SCORED.** Download the [0.3.0a1 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1) and follow the [version-pinned installation guide](docs/installed-quickstart.md) for the wheel, matching source examples and SHA-256 checks. Python 3.12+ is required; the default package has no runtime Python dependencies. Linux is the reviewed environment.
+**Experimental alpha · 0.3.0a2 · NOT_SCORED.** Download the [0.3.0a2 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and follow the [version-pinned installation guide](docs/installed-quickstart.md) for the wheel, matching source examples and SHA-256 checks. Python 3.12+ is required; the default package has no runtime Python dependencies. Linux is the reviewed environment.
 
-**Source and release differ:** this checkout includes an unreleased [Gmsh file-size-limit repair](docs/gmsh-cpu-ceiling.md). The published v0.3.0a1 assets do not contain it and retain their original hashes.
+**Included in 0.3.0a2:** the [Gmsh file-size-limit repair](docs/gmsh-cpu-ceiling.md) and [optional bounded Temporal transport](docs/temporal-reference-transport.md). The default install remains dependency-free; the Temporal extra needs separately approved dependencies and never starts a server automatically. The unchanged v0.3.0a1 assets contain neither addition; their [historical installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) preserves the original pins.
 
 ## Run the synthetic examples
 
@@ -74,7 +74,7 @@ Optional simulation and native CAD/CAE execution need separately prepared depend
 
 This package supports trusted local workflows. Autonomous model-driven agents, durable recovery, multi-host operation and hundreds-of-agent performance are not implemented or demonstrated here. Declared permissions and budgets are not an OS sandbox; stored-byte integrity does not confer scientific or device-control authority.
 
-For precise scope, see the [capability and historical evidence ledger](CAPABILITIES.md), [structural verification v2](docs/structural-default-v2.md), and [current source verification](docs/structural-v2-candidate-verification.md). Earlier [a4 checks](docs/verifier-ci-verification.md) and [build-repeatability records](docs/build-toolchain.md) remain tied to their own versions; they do not accept new source or release artifacts.
+For current release evidence and precise scope, see the [capability and evidence ledger](CAPABILITIES.md), [structural verification v2](docs/structural-default-v2.md), and [historical 0.3.0a1 verification](docs/structural-v2-candidate-verification.md). Earlier [a4 checks](docs/verifier-ci-verification.md) and [build-repeatability records](docs/build-toolchain.md) remain tied to their own versions; they do not accept new source or release artifacts.
 
 ## Direction
 

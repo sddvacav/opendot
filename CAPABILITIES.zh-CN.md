@@ -2,23 +2,23 @@
 
 [English](CAPABILITIES.md) · [版本概览](OVERVIEW.zh-CN.md) · [研究映射](RESEARCH-MAP.zh-CN.md)
 
-截至 2026 年 10 月 2 日。本表描述实验性 0.3.0a1 alpha 源代码边界，并保留 a4 及更早证据的精确范围。这是可追溯性映射，不是评分。“已实现”表示代码存在；前一版独立通过不会自动批准后继改动。
+截至 2026 年 10 月 2 日。本表描述实验性 0.3.0a2 alpha 边界，并保留 a4 及更早证据的精确范围。这是可追溯性映射，不是评分。“已实现”表示代码存在；前一版独立通过不会自动批准后继改动。
 
-**实验性 alpha 源码：0.3.0a1；NOT_SCORED。** 本源码整合
+**实验性 alpha：0.3.0a2；NOT_SCORED。** 本版本整合
 [结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
 没有新增生产策略。既有执行／引用所有者及可选能量 API 返回结果保持不变。
 [Gmsh 资源限制设置](docs/gmsh-cpu-ceiling.md)保留较低的继承 CPU 与单文件大小限制；合成资源检查不证明原生或内核强制执行。
-文件大小修复与可选 Temporal 传输均属于尚未发布的源码后续变更；现有 v0.3.0a1 发布产物不含这两项变更，原有哈希保持不变。
-[当前 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
+文件大小修复与可选 Temporal 传输已打包进 0.3.0a2；未改动的 v0.3.0a1 发布产物不含这两项新增内容，原有哈希保持不变。
+[历史 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-[0.3.0a1 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a1)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留其独立的版本固定值；先前版本的结果不构成本次产物的验收。
+[0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)现已提供。请按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得精确 wheel、配套源码示例并核验 SHA-256。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
 
-## 当前可选 Temporal 源码资格验证
+## 可选 Temporal 资格验证与 0.3.0a2 证据
 
 [PR #18](https://github.com/sddvacav/opendot/pull/18) 合并后，`main` 已包含
-[可选合成 Temporal 传输](docs/temporal-reference-transport.md)。其
+[可选合成 Temporal 传输](docs/temporal-reference-transport.md)。较早实现的
 [有限范围托管资格验证](docs/temporal-qualification-evidence.md)于 2026 年 10 月 2 日
 通过独立复核：**818 项 SDK／纯软件检查及七项真实服务检查通过**，实际测试树与合入
 `main` 的树相同。范围仅为单主机、回环连接的 `synthetic.bounded_sum.v1`，
@@ -26,7 +26,15 @@
 排队首次交付，以及不再次调用处理函数的已记录结果重放。另行运行的可移植 CI 为
 1,325 项通过／141 项子测试通过；这些范围不合并成新的覆盖总数。
 
-这项可选源码功能保留默认空依赖、默认导入隔离，以及既有执行／产物／契约所有者。
+0.3.0a2 的[可选资格执行](https://github.com/sddvacav/opendot/actions/runs/36963928744)
+另行通过 818 项 SDK／纯软件检查和七项真实服务检查；其
+[主分支可移植执行](https://github.com/sddvacav/opendot/actions/runs/36964156448)
+通过 1,325 项检查／141 项子测试。这些是独立范围，不相加为新的总数，也不构成新的科学／设备验收。
+[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
+将发布产物绑定至对应源码与限定范围的证据。
+
+这项已打包的可选功能保留默认空依赖、默认导入隔离，以及既有执行／产物／契约所有者。
+`temporal` extra 固定 `temporalio==1.34.0`；依赖需另行批准并准备，安装不会启动服务。
 它不证明多机运行、执行中崩溃恢复、全局恰好一次副作用、生产就绪、科学有效性或完整
 MVP；不改变 `NOT_SCORED`，也不据此接受未改动的已发布 0.3.0a1 产物具备此功能。
 早期失败和 `NOT_RUN` 证据仍是历史记录；参见
@@ -69,7 +77,7 @@ E2/E3 独立结果概括了另行复核的证据包，完整材料保留在源�
 | C10 | [适配器来源信息](docs/git-provenance-verification.md)：让新适配器来源记录对应真实本地源文件成员关系 | 已实现；继承有限范围检查 | E1/E2 中的指定来源回归；Git 上下文不确定时保留源码哈希 | 不证明上游作者或原子快照；其他原生字段与历史证据仍可能含路径 |
 | C11 | [持久任务与智能体规模执行](docs/research/README.md)：恢复长任务并测量有用的并行交付 | 通用能力仍是提案 | 没有获接受的执行中崩溃恢复、真实模型或多机实验；C13 是单独的有限传输资格验证 | 不能宣称无人值守时长、数百智能体、吞吐量或成本节省 |
 | C12 | [统一智能体元数据](docs/agent-contracts.md)：描述能力与智能体清单 | 已包含；仅元数据提取 | E5；[合成元数据示例](examples/agent-contracts/README.md)；独立验收仍需另行记录 | `Capability` 与 `AgentManifest` 需显式调用 `.validate()`；预算与权限仅作描述，不新增执行强制机制，也未迁移既有使用方 |
-| C13 | [可选 Temporal 参考传输](docs/temporal-reference-transport.md)：交付固定合成 Activity 并复用已记录结果 | 当前源码已实现；有限范围托管资格验证通过独立复核 | [精确执行证据](docs/temporal-qualification-evidence.md)：818 项 SDK／纯软件及七项真实服务检查；三代服务正常退出、12 代 worker 等待关闭完成；重放时处理函数计数保持一 | 单主机、回环连接、同一可信本地 CAS／SQLite；仅排队首次交付与已记录结果重放；不证明执行中崩溃恢复、全局恰好一次或通用智能体执行 |
+| C13 | [可选 Temporal 参考传输](docs/temporal-reference-transport.md)：交付固定合成 Activity 并复用已记录结果 | 已打包进 0.3.0a2；上方分别说明资格验证范围 | [较早实现证据](docs/temporal-qualification-evidence.md)：818 项 SDK／纯软件及七项真实服务检查；三代服务正常退出、12 代 worker 等待关闭完成；重放时处理函数计数保持一。0.3.0a2 的独立执行链接见上方 | 单主机、回环连接、同一可信本地 CAS／SQLite；仅排队首次交付与已记录结果重放；不证明执行中崩溃恢复、全局恰好一次或通用智能体执行 |
 
 ## 如何解释结果
 
