@@ -1,12 +1,12 @@
 # OpenDot Engineering claim status
 
-## Current 0.3.0a5 release preparation
+## Current experimental release · 0.3.0a5
 
-**ALPHA / NOT_SCORED; candidate preparation, not a publication receipt.**
+**ALPHA / NOT_SCORED; [published prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5).**
 Use the [a5 installed guide](../docs/installed-quickstart.md) only with its matching
 reviewed five-file bundle and independently accepted external SHA256SUMS digest.
 Exact source, installed and guide qualification require separate external receipts;
-no a4 acceptance transfers to this candidate.
+no a4 acceptance transfers to a5.
 
 - Wheel: callable/artifact APIs, bounded reads, read-only help and the optional
   explicit-import [HTTPS exchange](../docs/a2a-http-transport.md); default runtime
@@ -21,7 +21,7 @@ no a4 acceptance transfers to this candidate.
 - HTTPS has finite mocked qualification only; live transport/worker/provider/model
   interoperability is `NOT_RUN`. [A2A](../docs/a2a-worker-turn.md) still returns an
   `UNACCEPTED` candidate. Real O3 remains `PROPOSED / NOT_RUN`; measured effort is `UNKNOWN`
-- This preparation adds no native or service run. Full CAD/thermal native execution
+- Installing the default wheel starts no native backend or service. Full CAD/thermal native execution
   is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review `NOT_EVALUATED`,
   mesh independence `NOT_ESTABLISHED`. Scientific/device authority stays false;
   historical Temporal evidence and the [a3 inventory](../docs/release-inventory/v0.3.0a3/README.md)
@@ -159,6 +159,6 @@ For any stronger statement, record the exact artifact/configuration, evidence, r
 
 ## 中文摘要
 
-当前 0.3.0a5 为发布准备，不构成发布声明；[当前安装指南](installed-quickstart.zh-CN.md)要求匹配的五文件包和外部独立验收的校验清单摘要。已发布的前一版 [0.3.0a4](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)保留[固定提交的指南](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.zh-CN.md)及其原有证据。a5 wheel 包含可选、显式导入且仅经有限模拟验证的 HTTPS 模块；默认依赖不变，真实传输／worker／提供方／模型互通为 NOT_RUN。Sdist 是重建 wheel 的输入；匹配完整源码提供测量比较、NOT_EXECUTED 的 CAD plan、保留历史 a4 来源的静态 STEP 参考及离线效用 history／profile。真实 O3 仍为 PROPOSED／NOT_RUN，实测投入 UNKNOWN；不新增原生或服务运行，科学／设备权限保持 false。源码、安装与指南证据分别记录；旧版本证据不构成本候选验收。
+当前为[已发布的 0.3.0a5 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5)；[当前安装指南](installed-quickstart.zh-CN.md)要求匹配的五文件包和外部独立验收的校验清单摘要。已发布的前一版 [0.3.0a4](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)保留[固定提交的指南](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.zh-CN.md)及其原有证据。a5 wheel 包含可选、显式导入且仅经有限模拟验证的 HTTPS 模块；默认依赖不变，真实传输／worker／提供方／模型互通为 NOT_RUN。Sdist 是重建 wheel 的输入；匹配完整源码提供测量比较、NOT_EXECUTED 的 CAD plan、保留历史 a4 来源的静态 STEP 参考及离线效用 history／profile。真实 O3 仍为 PROPOSED／NOT_RUN，实测投入 UNKNOWN；不新增原生或服务运行，科学／设备权限保持 false。源码、安装与指南证据分别记录；旧版本证据不构成 a5 验收。
 
 历史已发布的 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)，NOT_SCORED。[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md)分别记录精确产物、源码、安装与独立检查；主分支可移植执行和同树 PR 的可选 Temporal 执行不能互换或相加。a3 新增可选有界读取与纯批次准备；后续真实批次及保留投影仅属于源码证据，不在冻结产物中。200 个合成任务不等于 200 个智能体，Activity 区间重叠不证明 handler 或 CPU 并行。历史 a3 修正版指南使用 a3 固定值；冻结源码归档仍保留历史 a2 指南。历史 a2 已包含 Gmsh 文件大小上限修复与固定合成 Temporal 传输；未改变的 a1 发布产物不含这两项。a2 保留先前已引入的结构默认 schema 2，在声明的材料、历史与输出条件下要求逐单元能量一致性；科学验收仍为 false，无下溢仍为未验证假设，算术误差界限未证明。历史 artifact_v1 仅可显式选择，不自动回退。来源边界覆盖七项原始合成协议、八项未实现协议与另行计数的六个合成参数场景，仍无生产强制机制。历史后继候选预声明选择为 1,325 项可移植节点、1,484 项受控本地节点，结果由精确候选回执记录。历史 a6 字节与证据不变，不转移评分或验收；历史失败与 NOT_RUN 保持原状。可选 Temporal 的有界托管检查不证明运行中崩溃恢复、全局恰好一次或完整运行时。本次文档更新未执行原生求解、模型、设备或新托管检查。

@@ -1,11 +1,11 @@
 # OpenDot Engineering 能力与证据
 
-## 当前 0.3.0a5 发布准备
+## 当前实验性发布 · 0.3.0a5
 
-**ALPHA / NOT_SCORED；候选准备，不是发布回执。**
+**ALPHA / NOT_SCORED；[已发布预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5)。**
 [a5 安装入门](docs/installed-quickstart.zh-CN.md)仅适用于匹配且已复核的五文件包，
 并要求来自外部独立验收的 SHA256SUMS 摘要。源码、安装与指南执行资格需要各自的外部回执；
-a4 验收不会转移到本候选。
+a4 验收不会转移到 a5。
 
 - Wheel：函数／产物 API、有界读取、只读帮助，以及可选、须显式导入的
   [HTTPS 交换模块](docs/a2a-http-transport.md)；默认运行时依赖仍为空。示例与文档不作为安装文件提供
@@ -18,7 +18,7 @@ a4 验收不会转移到本候选。
 - HTTPS 仅有有限模拟资格验证；真实传输／worker／提供方／模型互通为 `NOT_RUN`。
   [A2A](docs/a2a-worker-turn.md)仍仅返回 `UNACCEPTED` 候选。
   真实 O3 保持 `PROPOSED / NOT_RUN`，实测投入为 `UNKNOWN`
-- 本次准备不新增原生或服务运行。完整 CAD／热传导原生执行为 `NOT_RUN`；
+- 安装默认 wheel 不会启动原生后端或服务。完整 CAD／热传导原生执行为 `NOT_RUN`；
   物理验证 `NOT_PERFORMED`、独立审查 `NOT_EVALUATED`、网格无关性 `NOT_ESTABLISHED`。
   科学／设备权限仍为 false；历史 Temporal 证据和 [a3 清单](docs/release-inventory/v0.3.0a3/README.md)
   保留各自范围，不新增智能体规模或 UI 声明
