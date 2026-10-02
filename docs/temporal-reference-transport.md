@@ -1,6 +1,8 @@
 # Optional synthetic Temporal reference transport
 
-Status: isolated implementation candidate, SDK-only qualification. No deployed functionality, server delivery/replay, owner integration or merge acceptance is established. See [ADR 004](decisions/004-temporal-reference-transport.md) and the [failure matrix](temporal-reference-failure-matrix.md).
+Status, 2 October 2026: optional source feature merged in [PR #18](https://github.com/sddvacav/opendot/pull/18), with an independently accepted bounded real-server qualification. The [exact hosted run and bilingual evidence summary](temporal-qualification-evidence.md) record 818 SDK/pure passes and seven real-server passes on the exact tree merged to `main`. This establishes only single-host loopback queued first delivery after a graceful quiescent restart and recorded-result replay for `synthetic.bounded_sum.v1`. No in-flight crash recovery, multi-host execution, global exactly-once, production deployment, scientific validity or full MVP is established; `NOT_SCORED` is unchanged.
+
+This is current-source functionality, absent from the unchanged published v0.3.0a1 assets. The [version-pinned installed guide](installed-quickstart.md) still describes those released artifacts. The dated [ADR 004](decisions/004-temporal-reference-transport.md) and [failure matrix](temporal-reference-failure-matrix.md) retain their historical decisions, SDK-only checkpoint and unexecuted cases; the new qualification does not retroactively turn them into passes.
 
 ## What is implemented
 
@@ -38,15 +40,19 @@ Adapter failures use non-retryable SDK ApplicationError types with bounded phase
 
 Runtime exceptions are not wrapped. SDK conversion, completion, deadlines and missing acknowledgments remain SDK/transport concerns. A failure does not establish that the handler did nothing. No failure causes another execute call, repeated put, fallback, cleanup, repair, grant change or result reconstruction. Object/metadata publication is not transactional.
 
-## Trust limits and unresolved integration gate
+## Trust limits and qualified integration scope
 
 Only synthetic, nonsensitive data in one trusted operator domain is admitted. Producer, Workflow author, registrar, worker, store owner and reader need an independently owned authorization boundary. Anyone able to schedule this endpoint can exercise its fixed worker authority. Queue names/digests are not authentication. Only one trusted local CAS and one writer process with one concurrent profile Activity are admitted; no multi-host availability or multi-process safety is provided. Root ancestors and bounded objects are trusted. The canonical full-object read and SDK's prior decoding mean size limits are not adversarial preallocation bounds.
 
-At most one runtime invocation is admitted per current Activity invocation. A separate submission can execute again, even with the same digest and fixed Activity ID. No global uniqueness, exactly-once effects, durable callable recovery, eventual delivery, arbitrary read-only introspection, scientific acceptance or independent acceptance is claimed. Temporal owns scheduling/history; OpenDot owns no new orchestrator, registry or store.
+At most one runtime invocation is admitted per current Activity invocation. A separate submission can execute again, even with the same digest and fixed Activity ID. No global uniqueness, exactly-once effects, durable callable recovery, eventual delivery, arbitrary read-only introspection, scientific acceptance or per-result independent acceptance is claimed. Temporal owns scheduling/history; OpenDot owns no new orchestrator, registry or store.
 
-Before functionality or merge acceptance, an independently authorized specified server deployment must demonstrate actual received Info policy/timeouts, omitted-policy refusal, genuinely queued first delivery and completed-result history replay. Lost acknowledgment must remain uncertain, never converted to a recovery success. Consumer Workflow and operator controls must exclude retries, resets and resubmission loops for the admitted use. Matching local CAS access, reviewed exact handler/validator binding, worker concurrency and grants must be established. If a server omits or normalizes required metadata incompatibly, that deployment is NO-GO.
+The accepted hosted configuration used Ubuntu 24.04 / Python 3.12.14, SDK 1.34.0, CLI 1.9.1 and server 1.32.0, with the same trusted local CAS and SQLite across three server generations. Five actual received Info records, eight history snapshots and 15 invocation-counter records bind the finite experiment. All three servers exited gracefully with code 0; all 12 worker generations completed awaited shutdown. The recorded-result replay used no Activity worker, retained the same result reference, and left its handler count at one. The [qualification evidence](temporal-qualification-evidence.md) separates these observations from the still-unproven cases.
 
-No server, native executable, solver, cancellation/recovery protocol or remote write was used for this candidate. SDK-only scheduling fakes and ActivityEnvironment tests do not close the server gate.
+Lost acknowledgment remains uncertain, never converted to a recovery success. Consumer Workflow and operator controls must exclude retries, resets and resubmission loops for the admitted use. Matching local CAS access, reviewed exact handler/validator binding, worker concurrency and grants remain deployment-specific requirements. Omitted-policy refusal is covered by the SDK/pure contract checks; the hosted run's five received Info records contain the required policy and exact timeouts. If a different server configuration omits or normalizes required metadata incompatibly, that configuration is NO-GO. This finite qualification does not accept other deployments or arbitrary handlers.
+
+### Historical SDK-only checkpoint
+
+Before the hosted qualification, only scheduling fakes and ActivityEnvironment checks had run, and the real-server gate was unresolved. The earlier statement, “No server, native executable, solver, cancellation/recovery protocol or remote write was used for this candidate,” describes that SDK-only checkpoint. The later accepted run adds the explicitly scoped hosted server evidence above; it does not relabel historical `NOT_RUN` cases or the two earlier failed hosted runs. No service or native execution was performed for this documentation update.
 
 ## Upstream attribution
 
