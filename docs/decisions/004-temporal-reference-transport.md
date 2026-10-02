@@ -374,3 +374,39 @@ Temporal workflow; docs/temporal-batch-qualification.md; and the transport guide
 No hosted execution, acquisition, publication, native lifetime probe or provider
 operation is authorized by this amendment. Later execution needs exact-candidate
 approval and explicit manual dispatch. See the batch protocol for limits.
+
+## 2026-10-02 public batch projection retention preparation
+
+Status: LOCAL PREPARATION ONLY; the new export and future retention run are NOT RUN
+in hosted CI. The first real batch's source-bound trusted-host summary remains
+historical evidence; missing first-run rows must never be reconstructed or inferred.
+
+A narrow exception admits an optional strict PUBLIC_PROJECTION bundle, constructed
+by the existing verifier from the same bounded bytes it validated. Closed schemas,
+source/environment bindings, exact collection/JUnit identities, cleanup, admission
+and original-validation declarations remain mandatory. Stable regular-file snapshots,
+ancestor/link rejection, complete size ceilings and mutation checks precede publication
+of a fresh dedicated output directory. No raw SDK history, original CAS or receipt,
+private log, pip report, token, header or private path is included. This is one
+validation owner and an export only, not a second store or orchestrator.
+
+The future workflow input defaults false. Only explicit manual batch200 selection,
+a successful strict export and the official immutable upload-artifact v7.0.1 pin
+043fb46d1a93c77aae656e7c1c64a875d1fc6a0a may retain that dedicated directory. Request
+30 days, reject a configured retention cap below 30, forbid overwrite and hidden
+files, preserve contents: read and persist-credentials: false. Downloads may require
+GitHub login/read access; expiration or deletion removes access. It is not permanent
+public archival. No persistent credential, token grant or security permission is added.
+
+Eight paths only: AGENTS.md; this ADR; ci/verify_temporal_server_gate.py;
+tests/test_temporal_server_gate_verifier.py; ci/temporal-batch-nodes.txt;
+.github/workflows/temporal-server.yml; docs/temporal-batch-qualification.md; and the
+single static upload guard amendment in tests/test_temporal_server_harness_unit.py.
+Production source, test harness implementation and old seven-case behavior stay
+unchanged. Offline projection rechecking recomputes the retained values with this
+same validator; it does not revalidate omitted originals, run SDK replay, prove host
+authenticity or strengthen overlap/scientific claims. Peak one stays NOT_DEMONSTRATED.
+Only local pure tests using existing locked tooling are admitted. Any future hosted
+run/publication needs later exact-candidate approval, for evidence retention rather
+than a retry until a favorable outcome. See the appended protocol for official
+source/API/license review and the complete retention contract.
