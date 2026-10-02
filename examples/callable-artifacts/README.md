@@ -1,7 +1,7 @@
 # Callable writes a canonical artifact
 
 This small standard-library example uses both existing owners from the single
-`opendot-engineering==0.3.0a4` candidate distribution. Use its matching
+`opendot-engineering==0.3.0a5` candidate distribution. Use its matching
 [installed guide](../../docs/installed-quickstart.md); earlier results remain historical. It is finite local software work with
 invented text. No model, native solver, device, controller, or remote service runs.
 

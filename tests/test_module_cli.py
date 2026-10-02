@@ -77,9 +77,9 @@ def test_help_is_successful_and_describes_the_bounded_package(tmp_path, args):
     assert result.stderr == ""
     for text in (
         "usage: python -m opendot_engineering", "--help", "--version",
-        "First useful result (0.3.0a4, ALPHA / NOT_SCORED)",
-        "https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4",
-        "https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md",
+        "First useful result (0.3.0a5, ALPHA / NOT_SCORED)",
+        "https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5",
+        "https://github.com/sddvacav/opendot/releases/download/v0.3.0a5/RELEASE-NOTES.md",
         "independently reviewed external SHA256SUMS pin",
         "does not verify publication",
         "bounded local artifact storage", "callable-only", "descriptive",

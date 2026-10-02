@@ -6,9 +6,12 @@ This explicit-import module provides a real stdlib HTTPS callback for the
 finite mocked qualification. No live destination is selected or authorized;
 live TLS/network/worker/model interoperability remains **NOT_RUN**.
 
-This is an **unreleased source-only addition after v0.3.0a4**. It is absent
-from the published a4 wheel, sdist and full-source assets; those frozen release
-artifacts remain unchanged.
+The **0.3.0a5 candidate** includes this optional module in its wheel, sdist
+and full source, with explicit import and no new dependency. Packaging does not
+establish publication or live qualification; use the matching [a5 installed guide](installed-quickstart.md)
+and exact-artifact receipts. It is absent from the published a4 wheel, sdist and
+full-source assets; those frozen release artifacts remain unchanged. Qualification
+remains finite and mocked only; the separate live gate remains **NOT_RUN**.
 
 ## API and ownership
 

@@ -1,30 +1,36 @@
 # OpenDot release checklist
 
-## Current 0.3.0a4 source/package candidate
+## Current 0.3.0a5 release preparation
 
-**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
-This coherent snapshot includes the optional [offline A2A worker-turn adapter](../docs/a2a-worker-turn.md),
-matching source examples and version-bound installation instructions. Default runtime
-dependencies remain empty. Use the [a4 installed guide](../docs/installed-quickstart.md)
-with its externally reviewed checksum-manifest pin; final exact identities and
-separately scoped qualification belong in the candidate's external release notes.
+**ALPHA / NOT_SCORED; candidate preparation, not a publication receipt.**
+Use the [a5 installed guide](../docs/installed-quickstart.md) only with its matching
+reviewed five-file bundle and independently accepted external SHA256SUMS digest.
+Exact source, installed and guide qualification require separate external receipts;
+no a4 acceptance transfers to this candidate.
 
-- Installed wheel: one dependency-free callable/artifact result, bounded reads,
-  read-only help and copied lightweight public fixtures; no source imports
-- Matching complete source: [measurement comparison](../examples/measurement-review/README.md)
-  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
-  it is not an installed-wheel workflow
-- [CAD/thermal plan](../examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
-  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
-  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
-  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
-- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
-  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
-  model, autonomous-agent or native-agent qualification is claimed
-- Source-only Temporal batch tools and historical hosted runs retain their own
-  evidence scopes; this candidate performs no fresh service run. The historical
-  [a3 component inventory](../docs/release-inventory/v0.3.0a3/README.md) is a3-only,
-  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+- Wheel: callable/artifact APIs, bounded reads, read-only help and the optional
+  explicit-import [HTTPS exchange](../docs/a2a-http-transport.md); default runtime
+  dependencies remain empty. Examples and documentation are not installed files
+- Sdist: wheel-rebuild input, not the complete runnable examples or test tree
+- Full source: [measurement comparison](../examples/measurement-review/README.md),
+  metadata-only [CAD/thermal plan](../examples/cad_cae/README.md) (`NOT_EXECUTED`),
+  the existing three-file [public STEP reference](../examples/cad_cae/native-geometry-reference/README.md),
+  and finite offline [utility `history`/`profile`](../examples/measurement-review/README.md#offline-incremental-utility-fixture-report).
+  These use the matching source tree; the STEP retains historical a4 provenance
+  and is a static projection, not a replayable native pack
+- HTTPS has finite mocked qualification only; live transport/worker/provider/model
+  interoperability is `NOT_RUN`. [A2A](../docs/a2a-worker-turn.md) still returns an
+  `UNACCEPTED` candidate. Real O3 remains `PROPOSED / NOT_RUN`; measured effort is `UNKNOWN`
+- This preparation adds no native or service run. Full CAD/thermal native execution
+  is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review `NOT_EVALUATED`,
+  mesh independence `NOT_ESTABLISHED`. Scientific/device authority stays false;
+  historical Temporal evidence and the [a3 inventory](../docs/release-inventory/v0.3.0a3/README.md)
+  retain their own scopes, without new agent-scale or UI claims
+
+The published predecessor is [0.3.0a4](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4), source commit
+`2d16190a8121410bbeea252869b196f7891e1696`. Its [pinned installed guide](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.md)
+and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md) retain the exact historical artifact and qualification scope;
+those frozen assets are unchanged.
 
 Historical a3 release, 2 October 2026: **[0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED**. The [released source commit](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d), tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`, and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) bind the exact assets to their separately scoped source, build, installed and independent checks. The [a3 main portable run](https://github.com/sddvacav/opendot/actions/runs/36982326482) and [a3 PR Temporal run](https://github.com/sddvacav/opendot/actions/runs/36981793339) are distinct source checks; the latter tested PR merge revision `7ab3c1f7be3dd22024239cf3d4d4813f7646a7d3` with the same source tree, not the later main commit. The five named public release downloads were checked against the accepted bytes. This does not establish production readiness, scientific acceptance or a supported-platform matrix.
 

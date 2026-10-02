@@ -1,4 +1,4 @@
-# 从精确 0.3.0a4 候选得到第一个结果
+# 从精确 0.3.0a5 候选得到第一个结果
 
 [English](installed-quickstart.md) · [仅源码路径](../README.zh-CN.md#运行合成示例)
 
@@ -8,21 +8,21 @@
 
 ## 1. 先建立外部信任输入，再离线安装
 
-此捆绑指南在发布前冻结，只标明 a4 发布目标，不证明已经发布或验证公开下载。
+此捆绑指南在发布前冻结，只标明 a5 发布目标，不证明已经发布或验证公开下载。
 需要可信 POSIX 环境、Python 3.12+（含 venv/pip）和可信 `/tmp` 父目录。
 Linux/CPython 3.12 是本地参考环境，不是完整支持矩阵。
 
-从已确认的 `sddvacav/opendot` 发布者取得[v0.3.0a4 发布页](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)
+从已确认的 `sddvacav/opendot` 发布者取得[v0.3.0a5 发布页](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5)
 的以下五个匹配文件（发布后），或使用经过单独复核的本地候选包：
 
-- `opendot_engineering-0.3.0a4-py3-none-any.whl`
-- `opendot_engineering-0.3.0a4.tar.gz`
-- `opendot-engineering-0.3.0a4-source.tar.gz`
+- `opendot_engineering-0.3.0a5-py3-none-any.whl`
+- `opendot_engineering-0.3.0a5.tar.gz`
+- `opendot-engineering-0.3.0a5-source.tar.gz`
 - `RELEASE-NOTES.md`
 - `SHA256SUMS`
 
 运行前，独立复核公开发布正文的来源前缀（或已接受的复核／发布凭据）。
-核对仓库、标签 `v0.3.0a4`、已接受源码提交及源码树与复核记录一致。
+核对仓库、标签 `v0.3.0a5`、已接受源码提交及源码树与复核记录一致。
 从单独复核的前缀／凭据取得最终 SHA256SUMS 的 SHA-256，并将 shell 变量
 `EXPECTED_SUMS_SHA256` 设为该精确的 64 位小写十六进制值。
 发布正文提供提交／树链接和外部摘要，不需要访问私聊。没有独立接受的固定值就停止。
@@ -32,12 +32,12 @@ Linux/CPython 3.12 是本地参考环境，不是完整支持矩阵。
 不假设存在签名、证明或密码学发布者身份保证。哈希只说明相对于可信输入的字节一致性，
 不证明作者身份、安全性或科学有效性。不要修改预期值来让陌生字节通过。
 
-[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md)
+[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a5/RELEASE-NOTES.md)
 记录精确归档标识与完整双语操作步骤。
-[SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/SHA256SUMS)
+[SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a5/SHA256SUMS)
 恰好包含三个归档和说明的摘要，不包含自身。清单摘要保留在这些文件之外，避免自哈希循环。
 sdist 仅为构建输入，区别于完整源码归档；本指南不安装 sdist 或额外依赖。
-不要替换为 GitHub 自动生成的归档或 a3 文件。
+不要使用 GitHub 自动生成的归档或 a3／a4 文件。
 
 仅替换 `RELEASE_DIR` 为包含五个已复核文件的绝对目录，必要时替换 `PYTHON`。
 按上述要求提供外部 `EXPECTED_SUMS_SHA256`，保持文件名与校验逻辑不变。
@@ -47,9 +47,9 @@ sdist 仅为构建输入，区别于完整源码归档；本指南不安装 sdis
 ```sh
 set -eu
 PYTHON=python3.12
-RELEASE_DIR='/absolute/path/to/reviewed-a4-files'
+RELEASE_DIR='/absolute/path/to/reviewed-a5-files'
 EXPECTED_SUMS_SHA256=${EXPECTED_SUMS_SHA256-}
-WHEEL="$RELEASE_DIR/opendot_engineering-0.3.0a4-py3-none-any.whl"
+WHEEL="$RELEASE_DIR/opendot_engineering-0.3.0a5-py3-none-any.whl"
 EXPECTED_SOURCE_SHA256=$("$PYTHON" -I -B - "$RELEASE_DIR" "$EXPECTED_SUMS_SHA256" <<'PYCODE'
 import hashlib, pathlib, re, sys
 if sys.version_info < (3, 12):
@@ -58,9 +58,9 @@ root, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
 if not re.fullmatch(r"[0-9a-f]{64}", expected):
     raise SystemExit("Supply an independently reviewed external SHA256SUMS SHA-256")
 names = {
-    "opendot_engineering-0.3.0a4-py3-none-any.whl",
-    "opendot_engineering-0.3.0a4.tar.gz",
-    "opendot-engineering-0.3.0a4-source.tar.gz",
+    "opendot_engineering-0.3.0a5-py3-none-any.whl",
+    "opendot_engineering-0.3.0a5.tar.gz",
+    "opendot-engineering-0.3.0a5-source.tar.gz",
     "RELEASE-NOTES.md",
 }
 manifest = root / "SHA256SUMS"
@@ -87,7 +87,7 @@ for name, digest in entries.items():
         raise SystemExit("Payload must be a regular local file: " + name)
     if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
         raise SystemExit("Payload hash mismatch: " + name)
-print(entries["opendot-engineering-0.3.0a4-source.tar.gz"])
+print(entries["opendot-engineering-0.3.0a5-source.tar.gz"])
 PYCODE
 )
 printf 'Externally pinned manifest and all four payloads match\n'
@@ -97,10 +97,10 @@ PY="$JOURNEY/venv/bin/python"
 "$PY" -I -B -m pip --isolated install --disable-pip-version-check \
   --no-index --no-deps --no-compile --no-cache-dir "$WHEEL"
 cd "$JOURNEY"
-"$PY" -I -B -c 'import importlib.metadata as m, pathlib, sys, opendot_engineering as p; assert p.__version__ == m.version("opendot-engineering") == "0.3.0a4"; assert pathlib.Path(p.__file__).is_relative_to(pathlib.Path(sys.prefix) / "lib"); print(p.__version__); print(p.__file__)'
+"$PY" -I -B -c 'import importlib.metadata as m, pathlib, sys, opendot_engineering as p; assert p.__version__ == m.version("opendot-engineering") == "0.3.0a5"; assert pathlib.Path(p.__file__).is_relative_to(pathlib.Path(sys.prefix) / "lib"); print(p.__version__); print(p.__file__)'
 ```
 
-预期版本为 `0.3.0a4`，导入路径位于新环境的 site-packages。
+预期版本为 `0.3.0a5`，导入路径位于新环境的 site-packages。
 `-I` 忽略源码目录导入捷径，`-B` 避免字节码写入；无需激活环境或设置 PYTHONPATH。
 没有注册 opendot 控制台命令。
 
@@ -179,7 +179,7 @@ wheel 不包含示例。使用外部固定清单中取得的源码摘要再次�
 只提取规范普通成员，再复制公开示例。这些轻量示例仍从安装 wheel 导入。
 
 ```sh
-SOURCE_ARCHIVE="$RELEASE_DIR/opendot-engineering-0.3.0a4-source.tar.gz"
+SOURCE_ARCHIVE="$RELEASE_DIR/opendot-engineering-0.3.0a5-source.tar.gz"
 "$PY" -I -B - "$SOURCE_ARCHIVE" "$EXPECTED_SOURCE_SHA256" "$JOURNEY/source" <<'PYCODE'
 import hashlib, pathlib, sys, tarfile
 archive, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
@@ -193,7 +193,7 @@ with tarfile.open(archive, "r:gz") as source:
         if (not member.isfile() or member.name in seen
                 or path.as_posix() != member.name or path.is_absolute()
                 or ".." in path.parts or len(path.parts) < 2
-                or path.parts[0] != "opendot-engineering-0.3.0a4"
+                or path.parts[0] != "opendot-engineering-0.3.0a5"
                 or member.mode not in (0o644, 0o755)):
             raise SystemExit("Noncanonical source member: stop")
         seen.add(member.name)
@@ -201,13 +201,13 @@ with tarfile.open(archive, "r:gz") as source:
     source.extractall(output, filter="data")
 print("Pinned source archive bytes and member paths match")
 PYCODE
-SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a4"
+SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a5"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"
 ```
 
-预期 synthetic_software_assertions_passed 为 true，package_version 为 0.3.0a4。
+预期 synthetic_software_assertions_passed 为 true，package_version 为 0.3.0a5。
 成功案例为 COMPLETED 并独立核验字节；语义拒绝为 FAILED，保留一个完整但未接受的产物；
 权限拒绝为 BLOCKED/PermissionDenied，处理器调用和存储对象数为零。
 存储构造仍创建空目录，失败不回滚副作用。
@@ -263,12 +263,21 @@ CHECKED 只表示计算一致性，不代表科学有效性。
 原生版本 NOT_CHECKED。人工 fixture 不是真实原生证据。CAD／Gmsh／CalculiX 执行为 NOT_RUN；
 物理验证 NOT_PERFORMED、独立审查 NOT_EVALUATED、网格无关性 NOT_ESTABLISHED。
 
+完整源码中的[公开 STEP 参考](../examples/cad_cae/native-geometry-reference/README.md)
+保留历史 a4 来源与标准库字节核验命令，不是可重放的原生证据包。
+仅源码的[离线效用报告](../examples/measurement-review/README.zh-CN.md#离线增量效用夹具报告)
+提供无额外依赖的 `history` 与 `profile` 命令；有限合成控制不证明真实收益。
+真实 O3 仍为 PROPOSED / NOT_RUN，测量投入 UNKNOWN。这些示例、研究固定值与 STEP
+不包含在 wheel 或构建用 sdist 中；请使用匹配的完整源码。
+
 可选 [A2A worker turn](a2a-worker-turn.md)至多调用一次外部提供的回调，返回 UNACCEPTED 候选。
 离线 fixture 不提供真实传输／提供方／模型执行结果；外部 live gate 为 NOT_RUN。
+a5 wheel 包含显式导入的 [HTTPS 模块](a2a-http-transport.md)，仅经过有限 mock 检查；
+打包不授权真实请求，也不证明真实互操作。默认导入与依赖不变。
 [Temporal 批次工具](temporal-batch-qualification.md)仅为源码验证工具，不是生产 wheel API。
 历史托管运行保持各自精确范围，不构成本候选验收；此处不执行新的服务／原生运行。
 默认依赖仍为空，Temporal SDK 与模拟 extras 需要单独准备，安装不自动启动服务。
-[a3 组件清单](release-inventory/v0.3.0a3/README.md)仅适用于 a3，不是 a4 SBOM。
+[a3 组件清单](release-inventory/v0.3.0a3/README.md)仅适用于 a3，不是 a5 SBOM。
 科学与设备权限保持 false。
 
 ## 保留证据并处理错误
@@ -291,6 +300,8 @@ OUTPUT_PARENT=$(mktemp -d /tmp/opendot-result.XXXXXX)
 参见[支持](../SUPPORT.md)、[函数边界](callable-execution.md)和[存储边界](canonical-artifacts.md)。
 本地操作不是托管 CI、公开下载验证、独立发行验收或科学审查。
 
+[历史 a4 指南](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.zh-CN.md)与已发布 a4 产物保持不变，其操作记录不构成 a5 验收。
+
 [历史 a3 修正版指南](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.zh-CN.md)
-与不可变产物保留各自固定值，a3 捆绑指南仍含 a2 文字；不要将历史步骤当作 a4 验收。
+与不可变产物保留各自固定值，a3 捆绑指南仍含 a2 文字；不要将历史步骤当作 a5 验收。
 [文档检查](documentation-checks.md)只比较双语八个逐字一致的 shell 代码块，不执行它们。

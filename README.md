@@ -1,32 +1,36 @@
 # OpenDot Engineering
 
-## Current 0.3.0a4 experimental prerelease
+## Current 0.3.0a5 release preparation
 
-**ALPHA / NOT_SCORED; [published experimental prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4).**
-The accepted release source is commit `2d16190a8121410bbeea252869b196f7891e1696`.
-The release includes the optional [offline A2A worker-turn adapter](docs/a2a-worker-turn.md),
-matching source examples and version-bound installation instructions. Default runtime
-dependencies remain empty. Use the [a4 installed guide](docs/installed-quickstart.md)
-with the independently reviewed checksum-manifest pin on the [release page](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4).
-Exact artifact identities and separately scoped qualification are recorded in the
-[released notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md).
+**ALPHA / NOT_SCORED; candidate preparation, not a publication receipt.**
+Use the [a5 installed guide](docs/installed-quickstart.md) only with its matching
+reviewed five-file bundle and independently accepted external SHA256SUMS digest.
+Exact source, installed and guide qualification require separate external receipts;
+no a4 acceptance transfers to this candidate.
 
-- Installed wheel: one dependency-free callable/artifact result, bounded reads,
-  read-only help and copied lightweight public fixtures; no source imports
-- Matching complete source: [measurement comparison](examples/measurement-review/README.md)
-  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
-  it is not an installed-wheel workflow
-- [CAD/thermal plan](examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
-  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
-  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
-  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
-- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
-  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
-  model, autonomous-agent or native-agent qualification is claimed
-- Source-only Temporal batch tools and historical hosted runs retain their own
-  evidence scopes; this candidate performs no fresh service run. The historical
-  [a3 component inventory](docs/release-inventory/v0.3.0a3/README.md) is a3-only,
-  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+- Wheel: callable/artifact APIs, bounded reads, read-only help and the optional
+  explicit-import [HTTPS exchange](docs/a2a-http-transport.md); default runtime
+  dependencies remain empty. Examples and documentation are not installed files
+- Sdist: wheel-rebuild input, not the complete runnable examples or test tree
+- Full source: [measurement comparison](examples/measurement-review/README.md),
+  metadata-only [CAD/thermal plan](examples/cad_cae/README.md) (`NOT_EXECUTED`),
+  the existing three-file [public STEP reference](examples/cad_cae/native-geometry-reference/README.md),
+  and finite offline [utility `history`/`profile`](examples/measurement-review/README.md#offline-incremental-utility-fixture-report).
+  These use the matching source tree; the STEP retains historical a4 provenance
+  and is a static projection, not a replayable native pack
+- HTTPS has finite mocked qualification only; live transport/worker/provider/model
+  interoperability is `NOT_RUN`. [A2A](docs/a2a-worker-turn.md) still returns an
+  `UNACCEPTED` candidate. Real O3 remains `PROPOSED / NOT_RUN`; measured effort is `UNKNOWN`
+- This preparation adds no native or service run. Full CAD/thermal native execution
+  is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review `NOT_EVALUATED`,
+  mesh independence `NOT_ESTABLISHED`. Scientific/device authority stays false;
+  historical Temporal evidence and the [a3 inventory](docs/release-inventory/v0.3.0a3/README.md)
+  retain their own scopes, without new agent-scale or UI claims
+
+The published predecessor is [0.3.0a4](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4), source commit
+`2d16190a8121410bbeea252869b196f7891e1696`. Its [pinned installed guide](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.md)
+and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md) retain the exact historical artifact and qualification scope;
+those frozen assets are unchanged.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/opendot-readme-banner-dark.svg">

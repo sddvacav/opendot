@@ -10,13 +10,13 @@
 
 ## 2026-10-02 当前状态补充
 
-本节补充下方原样保留的 10 月 1 日映射及“下一项决定”。历史 **18 条来源／22 条需求**、拟议判据与原有 **NOT_RUN** 状态不变；项目仍为 **ALPHA / NOT_SCORED**。当前源代码状态对应 [main d768a6b](https://github.com/sddvacav/opendot/commit/d768a6bf352beb9c3f401aa82b23dafae5bac8d8)：CAD 参考文件和 a4 之后的 HTTPS 增补已在该源码树中；冻结的 a4 发布产物保持不变。
+本节补充下方原样保留的 10 月 1 日映射及“下一项决定”。历史 **18 条来源／22 条需求**、拟议判据与原有 **NOT_RUN** 状态不变；项目仍为 **ALPHA / NOT_SCORED**。a5 发布准备基于已整合源码 [a96f560](https://github.com/sddvacav/opendot/commit/a96f5602b41681f9fa4424039c7f3122df9145d3)；候选打包将已接受的 HTTPS 模块加入 wheel，并在完整源码中提供现有公开 STEP 投影与离线效用软件。此处不声明 a5 已发布；冻结的 a4 发布产物不变。
 
-- **R10：** 实验性 [v0.3.0a4 版本](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)已发布。版本绑定的安装指南（[中文](docs/installed-quickstart.zh-CN.md)、[English](docs/installed-quickstart.md)）已有另行核验的第 1–6、8 个命令块；可选 Git 第 7 块仍为 NOT_RUN。精确产物的信任输入和平台资格仍以各自发布证据的范围为限。
+- **R10：** 实验性 [v0.3.0a4 版本](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)是已发布的前一版。其固定提交的安装指南（[中文](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.zh-CN.md)、[English](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.md)）已有另行核验的第 1–6、8 个命令块；可选 Git 第 7 块仍为 NOT_RUN。[a5 指南](docs/installed-quickstart.zh-CN.md)属于候选准备，需要本版的精确产物、安装与指南执行证据。Sdist 仅为重建 wheel 的输入，不是完整示例／测试树。
 - **R1/R3/R6：** 仅源代码可用的[测量比较](examples/measurement-review/README.zh-CN.md)在六行虚构数据上演示有界脚本算术及输入／证据绑定，不证明科学验收或独立人工复核。
-- **R7：** 当前源代码中的[公开合成 CAD 参考文件](examples/cad_cae/native-geometry-reference/README.md#中文)记录一次历史原生导出／回读，以及另行实现、使用相同内核的只读复核；它不验证完整 [CAD → 网格 → 热学流程](examples/cad_cae/README.zh-CN.md)，也不构成独立内核验证或科学／物理验收。
-- **R5/R9：** [历史 Temporal 批次证据](docs/temporal-batch-qualification.md)涉及 200 个合成工作流，不等于 200 个智能体或通用持久智能体恢复。[离线 A2A 接口](docs/a2a-worker-turn.md)与 [HTTPS 增补](docs/a2a-http-transport.md)不补足这些证据：HTTPS 是 a4 之后未发布的源代码增补，仅有有限模拟测试及代理／CA 环境拒绝；真实 worker／模型／网络互通仍为 NOT_RUN。
-- **下一项证据：** [O3 增量效用](docs/research/delta-20261002/README.md#five-bounded-proposals--五项限定提案)仍为 **P0 / PROPOSED / NOT_RUN**。仍需匹配的合格成果、全部尝试成本和人工复核投入比较；算术检查与工作流数量不能替代。
+- **R7：** 完整源码中的[公开合成 CAD 参考文件](examples/cad_cae/native-geometry-reference/README.md#中文)记录一次历史原生导出／回读，以及另行实现、使用相同内核的只读复核。静态 STEP 投影保留 a4 源码来源；打包不新增原生运行，也不验证完整 [CAD → 网格 → 热学流程](examples/cad_cae/README.zh-CN.md)，不构成独立内核验证或科学／物理验收。
+- **R5/R9：** [历史 Temporal 批次证据](docs/temporal-batch-qualification.md)涉及 200 个合成工作流，不等于 200 个智能体或通用持久智能体恢复。[离线 A2A 接口](docs/a2a-worker-turn.md)与可选、须显式导入的 [HTTPS 模块](docs/a2a-http-transport.md)不补足这些证据：a5 wheel 候选包含 HTTPS，仅有有限模拟资格验证及代理／CA 环境拒绝；真实传输／worker／提供方／模型互通仍为 NOT_RUN。
+- **下一项证据：** 完整源码中的[离线效用夹具报告](examples/measurement-review/README.zh-CN.md#离线增量效用夹具报告)现已提供有限的 `history`／`profile` 命令与合成对照。真实 [O3 增量效用](docs/research/delta-20261002/README.md#five-bounded-proposals--五项限定提案)仍为 **P0 / PROPOSED / NOT_RUN**，实测投入仍为 **UNKNOWN**。仍需匹配的合格成果、全部尝试成本和人工复核投入比较；合成对照、算术检查与工作流数量不能替代。
 
 ## 来源到验收的映射
 
