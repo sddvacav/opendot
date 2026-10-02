@@ -1052,9 +1052,9 @@ BATCH_UNCERTAINTY_REASONS = frozenset({
 BATCH_OWNER_SHA256 = {
     **OWNER_SHA256,
     "src/opendot_engineering/adapters/temporal_activity.py":
-        "cd2c277266239e57c10cb5aab743052f3322acf75be1d48156d715cef6fae5ae",
+        "3e084d5432c11d031385472b9eba32e1d62f06d4aa45e08acebd88bd803045f2",
     "src/opendot_engineering/adapters/temporal_workflow.py":
-        "d9307d0e78e4a925d92f021c5316a0515040bb091013182419bc6ccbb6a5ea38",
+        "a1723c70ccd8e440475ff0c359a5dfb1fa6e41ad2dff9881d2727879231434ac",
 }
 BATCH_SOURCE_PATHS = tuple(sorted(set(HARNESS_SOURCE_PATHS) | set(BATCH_OWNER_SHA256) | {
     "AGENTS.md", "docs/decisions/004-temporal-reference-transport.md",
@@ -1822,7 +1822,7 @@ def _read_real_table(path: Path, kind: str, maximum: int) -> list:
 PUBLIC_RETENTION_DAYS = 30
 PUBLIC_WORKFLOW_PATH = ".github/workflows/temporal-server.yml"
 # Updated only alongside an explicitly reviewed exact workflow candidate.
-PUBLIC_WORKFLOW_SHA256 = "b6d479131b8b1c811b4855df1bc6ae30ca8f34c945d226cdcb97e9fb2592f84c"
+PUBLIC_WORKFLOW_SHA256 = "077c826f6c06efc719a04ad7b478ae5cd57e9b775dfd3fa7b40782f83ef2dea0"
 
 
 def validate_public_batch_workflow(source: bytes) -> None:
