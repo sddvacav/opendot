@@ -1,8 +1,34 @@
 # OpenDot Engineering release overview
 
+## Current 0.3.0a4 source/package candidate
+
+**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
+This coherent snapshot includes the optional [offline A2A worker-turn adapter](docs/a2a-worker-turn.md),
+matching source examples and version-bound installation instructions. Default runtime
+dependencies remain empty. Use the [a4 installed guide](docs/installed-quickstart.md)
+with its externally reviewed checksum-manifest pin; final exact identities and
+separately scoped qualification belong in the candidate's external release notes.
+
+- Installed wheel: one dependency-free callable/artifact result, bounded reads,
+  read-only help and copied lightweight public fixtures; no source imports
+- Matching complete source: [measurement comparison](examples/measurement-review/README.md)
+  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
+  it is not an installed-wheel workflow
+- [CAD/thermal plan](examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
+  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
+  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
+  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
+- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
+  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
+  model, autonomous-agent or native-agent qualification is claimed
+- Source-only Temporal batch tools and historical hosted runs retain their own
+  evidence scopes; this candidate performs no fresh service run. The historical
+  [a3 component inventory](docs/release-inventory/v0.3.0a3/README.md) is a3-only,
+  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+
 [简体中文](OVERVIEW.zh-CN.md) · [Capabilities and evidence](CAPABILITIES.md) · [Research and priorities](RESEARCH-MAP.md)
 
-**Published version 0.3.0a3 · Experimental alpha · Evidence snapshot 2 October 2026**
+**Historical published version 0.3.0a3 · Experimental alpha · Evidence snapshot 2 October 2026**
 
 OpenDot Engineering provides a small, inspectable foundation for local engineering work: run a declared Python tool, inspect its acceptance result, store the output by its byte hash, and create controlled Git workspaces for separate tasks. The package is designed for developers and research engineers who need to examine what ran, what it produced, and which checks actually passed.
 
@@ -20,7 +46,7 @@ are packaged in 0.3.0a2. The unchanged v0.3.0a1 assets contain neither addition
 and retain their original hashes.
 [Historical 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
-The [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) is available. Follow the [exact-asset installation guide](docs/installed-quickstart.md) for its published wheel, matching full source and SHA-256 checks. The [historical a2 release](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and its evidence remain unchanged. The [historical 0.3.0a1 installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) and [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retain their separate version-specific pins; earlier-version results do not accept these artifacts.
+The [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) is available. Follow the [exact-asset installation guide](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md) for its published wheel, matching full source and SHA-256 checks. The [historical a2 release](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and its evidence remain unchanged. The [historical 0.3.0a1 installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) and [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retain their separate version-specific pins; earlier-version results do not accept these artifacts.
 
 The frozen a3 wheel adds opt-in [bounded artifact reads](docs/canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment); its full source includes only [pure finite-batch preparation](docs/temporal-batch-qualification.md). Later `main` work and CI do not alter or qualify those assets. The [three-role measurement comparison](examples/measurement-review/README.md#compare-a-and-b-against-a-declared-tolerance) is a later source-only example and is absent from the a3 wheel and full-source archive. Current-source evidence and its limits are tracked separately in [Capabilities](CAPABILITIES.md).
 
@@ -65,7 +91,7 @@ The [disposable example](examples/git-workspaces/README.md) creates two worktree
 
 The distribution is `opendot-engineering`; its Python import namespace is `opendot_engineering`. The default installation has no required runtime Python dependencies and needs Python 3.12 or newer. Several file-checking APIs require POSIX operations. The optional `temporal` extra pins `temporalio==1.34.0`; its dependencies need separate approval and preparation, and installation never starts a server. Simulation execution has an optional, pinned dependency set; native CAD/CAE execution requires its own backend environment. There is no registered console command.
 
-Start with the [0.3.0a3 installed quickstart](docs/installed-quickstart.md) for offline hash verification and a first result. For source use, see [Getting started](docs/getting-started.md) and the [small callable/artifact example](examples/callable-artifacts/README.md). Use the [Git example](examples/git-workspaces/README.md) only on an eligible local host. The [public repository](https://github.com/sddvacav/opendot) and [issues](https://github.com/sddvacav/opendot/issues) are verified. The [historical a6 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is separate; use [Releases](https://github.com/sddvacav/opendot/releases) to verify the available artifacts and their exact version before installation.
+Start with the [0.3.0a4 candidate installed quickstart](docs/installed-quickstart.md) for offline hash verification and a first result. For source use, see [Getting started](docs/getting-started.md) and the [small callable/artifact example](examples/callable-artifacts/README.md). Use the [Git example](examples/git-workspaces/README.md) only on an eligible local host. The [public repository](https://github.com/sddvacav/opendot) and [issues](https://github.com/sddvacav/opendot/issues) are verified. The [historical a6 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6) is separate; use [Releases](https://github.com/sddvacav/opendot/releases) to verify the available artifacts and their exact version before installation.
 
 ## The boundary that remains
 

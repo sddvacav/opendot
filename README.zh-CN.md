@@ -1,5 +1,25 @@
 # OpenDot Engineering
 
+## 当前 0.3.0a4 源码／软件包候选
+
+**ALPHA / NOT_SCORED；本地候选，此源码不证明已发布。**
+本次一致快照包含可选的[离线 A2A worker-turn 适配器](docs/a2a-worker-turn.md)、
+配套源码示例与版本固定的安装说明。默认运行时依赖仍为空。
+[a4 安装入门](docs/installed-quickstart.zh-CN.md)要求来自外部独立复核的校验清单摘要；
+最终精确标识与分别限定范围的验证结果记录在候选的外部发布说明中。
+
+- 安装 wheel：无额外依赖的函数／产物结果、有界读取、只读帮助与复制的轻量公开 fixture；不从源码导入
+- 匹配的完整源码：[测量比较](examples/measurement-review/README.zh-CN.md)使用 `PYTHONPATH=src`，
+  并验证规范所有者确实从同一源码树导入；不是安装 wheel 的工作流
+- [CAD／热传导计划](examples/cad_cae/README.zh-CN.md)仅检查元数据，结果为 `NOT_EXECUTED`。
+  人工构造的契约检查不证明原生执行。原生 CAD／Gmsh／CalculiX 为 `NOT_RUN`；
+  物理验证 `NOT_PERFORMED`、独立审查 `NOT_EVALUATED`、网格无关性 `NOT_ESTABLISHED`
+- A2A 至多调用一次外部提供的回调，仅返回 `UNACCEPTED` 候选；外部 live gate 为 `NOT_RUN`。
+  不包含传输实现，不声明提供方／模型执行、自治智能体或原生智能体验证
+- 仅源码的 Temporal 批次工具与历史托管运行保持各自范围；本候选不执行新的服务运行。
+  [a3 组件清单](docs/release-inventory/v0.3.0a3/README.md)仅适用于 a3，不是 a4 SBOM。
+  科学与设备权限仍为 false；不包含 UI 变更
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/opendot-readme-banner-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/brand/opendot-readme-banner-light.svg">
@@ -12,13 +32,13 @@ OpenDot Engineering 是一套用于本地工具执行和结果检查的 Python �
 
 它适合开发者与科研工程人员构建可复核的工作流原型：把函数输出连接到产物存储、复核合成测量数据的统计结果，或创建受控的本地 Git 工作副本。先运行下面的小示例，再按需要查看 [API 与示例](#按需要选择入口)。
 
-**实验性 alpha · 0.3.0a3 · NOT_SCORED。** 下载 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)，按[精确产物安装指南](docs/installed-quickstart.zh-CN.md)取得已发布 wheel、匹配的源码示例并核验 SHA-256。要求 Python 3.12+；默认软件包没有运行时 Python 依赖。已复核的环境是 Linux。
+**历史实验性 alpha · 0.3.0a3 · NOT_SCORED。** 下载 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)，按[精确产物安装指南](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.zh-CN.md)取得已发布 wheel、匹配的源码示例并核验 SHA-256。要求 Python 3.12+；默认软件包没有运行时 Python 依赖。已复核的环境是 Linux。
 
 **a3 产物新增：** 可选的[有界产物读取](docs/canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment) `get_bytes(..., max_bytes=N)`，以及完整源码中的[纯软件有限批次准备](docs/temporal-batch-qualification.md)。有界读取最多取得 N+1 个实际对象字节以检测超限；省略或传入 `None` 时仍读取整个对象。批次 fixture 模拟 200 个固定合成任务、16 个尚未验证终态的预留／工作流，以及八个外部 Activity 槽位／executor worker；它们不证明实际 200 任务服务运行、智能体数量、吞吐量或生产调度器。链接 API 说明中的较早“unreleased”标签属于源码检查点；固定的 a3 wheel 已包含有界读取 API。
 
 **沿用自 [0.3.0a2](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)：** [Gmsh 单文件大小限制修复](docs/gmsh-cpu-ceiling.md)与[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)。默认安装仍无运行时 Python 依赖；Temporal extra 需要另行批准并准备依赖，且不会自动启动服务。未改动的 v0.3.0a1 产物不含这两项新增内容；其[历史安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)保留原有固定值。
 
-本页的安装与发行声明针对冻结的 a3 产物。后续 `main` 变更与 CI 不会改变或验证该软件包；其批次内容仍仅为纯软件准备。下方三角色测量比较 `compare.py` 属于后续 `main` 源码，不在 a3 wheel 或完整源码产物中；a3 完整源码仍包含原有单角色 `demo.py`。
+上方历史 a3 段落的安装与发行声明仅针对冻结的 a3 产物。后续 `main` 变更与 CI 不会改变或验证该软件包；其批次内容仍仅为纯软件准备。下方三角色测量比较 `compare.py` 属于后续 `main` 源码，不在 a3 wheel 或完整源码产物中；a3 完整源码仍包含原有单角色 `demo.py`。
 
 ## 运行合成示例
 

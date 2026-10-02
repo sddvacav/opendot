@@ -1,12 +1,32 @@
 # OpenDot Engineering 版本概览
 
+## 当前 0.3.0a4 源码／软件包候选
+
+**ALPHA / NOT_SCORED；本地候选，此源码不证明已发布。**
+本次一致快照包含可选的[离线 A2A worker-turn 适配器](docs/a2a-worker-turn.md)、
+配套源码示例与版本固定的安装说明。默认运行时依赖仍为空。
+[a4 安装入门](docs/installed-quickstart.zh-CN.md)要求来自外部独立复核的校验清单摘要；
+最终精确标识与分别限定范围的验证结果记录在候选的外部发布说明中。
+
+- 安装 wheel：无额外依赖的函数／产物结果、有界读取、只读帮助与复制的轻量公开 fixture；不从源码导入
+- 匹配的完整源码：[测量比较](examples/measurement-review/README.zh-CN.md)使用 `PYTHONPATH=src`，
+  并验证规范所有者确实从同一源码树导入；不是安装 wheel 的工作流
+- [CAD／热传导计划](examples/cad_cae/README.zh-CN.md)仅检查元数据，结果为 `NOT_EXECUTED`。
+  人工构造的契约检查不证明原生执行。原生 CAD／Gmsh／CalculiX 为 `NOT_RUN`；
+  物理验证 `NOT_PERFORMED`、独立审查 `NOT_EVALUATED`、网格无关性 `NOT_ESTABLISHED`
+- A2A 至多调用一次外部提供的回调，仅返回 `UNACCEPTED` 候选；外部 live gate 为 `NOT_RUN`。
+  不包含传输实现，不声明提供方／模型执行、自治智能体或原生智能体验证
+- 仅源码的 Temporal 批次工具与历史托管运行保持各自范围；本候选不执行新的服务运行。
+  [a3 组件清单](docs/release-inventory/v0.3.0a3/README.md)仅适用于 a3，不是 a4 SBOM。
+  科学与设备权限仍为 false；不包含 UI 变更
+
 [English](OVERVIEW.md) · [能力与证据](CAPABILITIES.zh-CN.md) · [研究与优先级](RESEARCH-MAP.zh-CN.md)
 
-**0.3.0a3 版本 · 实验性 alpha · 证据截至 2026 年 10 月 2 日**
+**历史 0.3.0a3 版本 · 实验性 alpha · 证据截至 2026 年 10 月 2 日**
 
 OpenDot Engineering 为本地工程工作提供一个便于检查的小型基础包：执行具有明确声明的 Python 工具、查看验收结果、按字节哈希保存产物，并为不同任务创建受控的 Git 工作区。它面向需要检查“执行了什么、产生了什么、哪些检查确实通过”的开发者和科研工程人员。
 
-**实验性 alpha：0.3.0a3；NOT_SCORED。** 本版本整合
+**历史实验性 alpha：0.3.0a3；NOT_SCORED。** 本版本整合
 [结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
@@ -15,7 +35,7 @@ OpenDot Engineering 为本地工程工作提供一个便于检查的小型基础
 文件大小修复与[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)已打包进 0.3.0a2。未改动的 v0.3.0a1 发布产物不含这两项新增内容，原有哈希保持不变。
 [历史 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-[0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)现已提供。[精确产物安装指南](docs/installed-quickstart.zh-CN.md)固定其已发布 wheel、配套完整源码与 SHA-256。[历史 0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)及其既有证据保持不变。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
+[0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)现已提供。[精确产物安装指南](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.zh-CN.md)固定其已发布 wheel、配套完整源码与 SHA-256。[历史 0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)及其既有证据保持不变。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
 
 a3 产物新增[可选有限读取](docs/canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment)：
 `get_bytes(..., max_bytes=N)` 最多取得 N+1 个实际对象字节以识别超限，省略参数或
@@ -68,7 +88,7 @@ a3 产物新增[可选有限读取](docs/canonical-artifacts.md#optional-bounded
 
 分发包名为 `opendot-engineering`，Python 导入命名空间为 `opendot_engineering`。默认安装没有必需的运行时 Python 依赖，要求 Python 3.12 或更新版本。若干文件检查 API 需要 POSIX 操作。可选 `temporal` extra 固定 `temporalio==1.34.0`；其依赖需另行批准并准备，安装不会启动服务。模拟实验执行使用可选的固定版本依赖；原生 CAD/CAE 执行有单独的后端环境要求。当前没有注册独立控制台命令。
 
-先按 [精确 0.3.0a3 产物安装入门](docs/installed-quickstart.zh-CN.md)离线核验哈希并得到第一个结果。使用源码时，参见[入门说明](docs/getting-started.md)和[小型函数与产物组合示例](examples/callable-artifacts/README.md)。[Git 示例](examples/git-workspaces/README.md)仅适用于满足条件的本地主机。[公开仓库](https://github.com/sddvacav/opendot)与[议题](https://github.com/sddvacav/opendot/issues)已核实。[历史 a6 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)另行提供；安装前请在 [Releases](https://github.com/sddvacav/opendot/releases) 核对现有产物及其精确版本。
+先按 [精确 0.3.0a4 候选安装入门](docs/installed-quickstart.zh-CN.md)离线核验哈希并得到第一个结果。使用源码时，参见[入门说明](docs/getting-started.md)和[小型函数与产物组合示例](examples/callable-artifacts/README.md)。[Git 示例](examples/git-workspaces/README.md)仅适用于满足条件的本地主机。[公开仓库](https://github.com/sddvacav/opendot)与[议题](https://github.com/sddvacav/opendot/issues)已核实。[历史 a6 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.2.0a6)另行提供；安装前请在 [Releases](https://github.com/sddvacav/opendot/releases) 核对现有产物及其精确版本。
 
 ## 仍需遵守的边界
 
