@@ -1,0 +1,129 @@
+{
+  "artifact": {
+    "bytes": 15366,
+    "file": "beam.step",
+    "length_unit": "mm",
+    "normalized_header_timestamp": "2000-01-01T00:00:00",
+    "sha256": "6a58ae02b21d6f3c70505398c86193f7f3de4d4bbd20c36267400eeb08fa2ec9",
+    "step_length_declaration": "SI_UNIT(.MILLI.,.METRE.)",
+    "timestamp_is_execution_time": false
+  },
+  "description": "New public synthetic reference summary; not the canonical native pack or its receipt.",
+  "evidence_kind": "PUBLIC_PROJECTION",
+  "geometry": {
+    "bounds_mm": {
+      "max": [
+        200.0,
+        20.0,
+        3.0
+      ],
+      "min": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "edges": 12,
+    "faces": 6,
+    "input_dimensions_m": {
+      "length": 0.2,
+      "thickness": 0.003,
+      "width": 0.02
+    },
+    "solids": 1,
+    "valid": true,
+    "vertices": 8,
+    "volume_m3": 1.2e-05,
+    "volume_mm3": 12000.0
+  },
+  "historical_native_observations": {
+    "independent_check": {
+      "adapter_measurement_or_verifier_helpers_used": false,
+      "exchange_check_tolerances": {
+        "bounds_mm": {
+          "absolute": 1e-07,
+          "relative": 1e-10
+        },
+        "volume_mm3": {
+          "absolute": 1e-08,
+          "relative": 1e-09
+        }
+      },
+      "expectations": "Fixed dimensions, topology and volume supplied independently of the native receipt.",
+      "expected_dimensions_mm": [
+        200.0,
+        20.0,
+        3.0
+      ],
+      "export_count": 0,
+      "independent_kernel": false,
+      "measured_values_match_geometry": true,
+      "method": "One build123d.import_step; direct Open CASCADE BRepCheck_Analyzer validity, TopExp indexed topology maps, BRepBndLib.AddOptimal_s bounds, and BRepGProp.VolumeProperties_s volume.",
+      "same_stack": true,
+      "status": "PASS",
+      "step_import_count": 1,
+      "versions": {
+        "build123d": "0.10.0",
+        "cadquery-ocp": "7.8.1.1.post1"
+      }
+    },
+    "producer": {
+      "before_export_and_after_reimport_match_geometry": true,
+      "export_count": 1,
+      "same_kernel_reimport_count": 1,
+      "status": "GEOMETRY_BENCHMARK_PASS"
+    }
+  },
+  "limits": {
+    "cadquery_compatibility": "NOT_REQUESTED",
+    "cross_version_byte_stability": "NOT_CLAIMED",
+    "device_control_authorized": false,
+    "full_cad_mesh_thermal_workflow": "NOT_QUALIFIED_BY_THIS_REFERENCE",
+    "independent_kernel_validation": "NOT_PERFORMED",
+    "manufacturing_or_safety_acceptance": "NOT_EVALUATED",
+    "mesh": "NOT_PERFORMED",
+    "native_binaries_included": false,
+    "physical_validation": "NOT_PERFORMED",
+    "repeat_export_determinism": "NOT_TESTED",
+    "resource_bounds_or_native_lifetime_proof": "NOT_ESTABLISHED",
+    "scientific_acceptance": "NOT_EVALUATED",
+    "scientific_accepted": false,
+    "structural_solve": "NOT_PERFORMED",
+    "thermal_solve": "NOT_PERFORMED"
+  },
+  "public_recheck_scope": {
+    "canonical_full_pack_verifier_accepts_this_projection": false,
+    "geometry": "A separately chosen CAD reader can inspect the supplied STEP; it does not replay or authenticate the original native execution.",
+    "historical_records": "Native observations and selected versions are summarized claims. Original full-pack receipts and logs are not distributed in this projection.",
+    "standard_library": "Recompute STEP and public source size/SHA-256; read STEP units and normalized header metadata. This does not validate B-rep geometry."
+  },
+  "recipe": "geometry.synthetic_beam.v1",
+  "recorded_metadata_versions": {
+    "packages": {
+      "build123d": "0.10.0",
+      "cadquery-ocp": "7.8.1.1.post1",
+      "numpy": "2.3.5",
+      "vtk": "9.3.1"
+    },
+    "python": "3.12.14",
+    "scope": "Selected recorded distribution metadata; not a complete transitive SBOM or native-binary inventory."
+  },
+  "schema": "opendot.geometry.public-projection.v1",
+  "source": {
+    "bytes": 21462,
+    "module": "src/opendot_engineering/executors/geometry.py",
+    "native_receipt_git_fields": {
+      "repository_commit": null,
+      "repository_dirty": null,
+      "revision_status": "GIT_UNAVAILABLE_SOURCE_HASH_RECORDED",
+      "worktree": null
+    },
+    "separate_release_association": {
+      "basis": "Separately verified release commit/tree association and complete exported-source byte map; not Git metadata from the native directory.",
+      "commit": "2d16190a8121410bbeea252869b196f7891e1696",
+      "release": "v0.3.0a4",
+      "tree": "c6c2b015fc1e016b1dea2fb09990e53dc2af4996"
+    },
+    "sha256": "96e3626b68b86c21547cb930bba1591de7270f9bcffc3cdadfa0a9b9ac7a5edb"
+  }
+}
