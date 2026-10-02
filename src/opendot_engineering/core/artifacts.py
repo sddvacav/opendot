@@ -185,9 +185,32 @@ class ArtifactStore:
             raise ArtifactIntegrityError("invalid artifact digest")
         return self.objects / digest[:2] / digest[2:]
 
-    def get_bytes(self, ref: ArtifactRef | str) -> bytes:
+    def get_bytes(self, ref: ArtifactRef | str, *, max_bytes: int | None = None) -> bytes:
+        """Verify object bytes, optionally acquiring at most max_bytes + 1 bytes.
+
+        The opt-in bound assumes trusted regular local objects. Unbuffered reads
+        avoid Python read-ahead; this is not a peak-memory or wall-time bound.
+        None preserves the legacy whole-object read. Declared size is not used.
+        """
+        if max_bytes is not None:
+            if type(max_bytes) is not int:
+                raise TypeError("max_bytes must be int or None")
+            if max_bytes < 0:
+                raise ValueError("max_bytes must be nonnegative")
         digest = ref.sha256 if isinstance(ref, ArtifactRef) else ref.removeprefix("sha256:")
-        data = self._path(digest).read_bytes()
+        if max_bytes is None:
+            data = self._path(digest).read_bytes()
+        else:
+            acquired = bytearray()
+            with self._path(digest).open("rb", buffering=0) as handle:
+                while True:
+                    chunk = handle.read(min(65536, max_bytes + 1 - len(acquired)))
+                    if not chunk:
+                        break
+                    acquired.extend(chunk)
+                    if len(acquired) > max_bytes:
+                        raise ArtifactIntegrityError("artifact exceeds max_bytes")
+            data = bytes(acquired)
         if self.sha256(data) != digest:
             raise ArtifactIntegrityError(f"artifact {digest} failed integrity verification")
         return data
