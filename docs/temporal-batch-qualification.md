@@ -283,9 +283,10 @@ observed timeout/cancellation closes admission but does not prove remote work
 stopped. Unresolved shielded work stays explicitly pending until observed. Live
 RPC deadline/retry policy and loop-lifetime handling remain separate prerequisites.
 
-## Real hosted batch candidate, local preparation only (2026-10-02)
+## Historical real hosted batch preparation checkpoint (2026-10-02)
 
-Status: **NOT RUN on a real service**. The frozen v2 async preparation is the
+Historical status at this preparation checkpoint: **NOT RUN on a real service**.
+The frozen v2 async preparation is the
 base; its historical fabricated results remain unchanged. This candidate adds a
 separate explicit four-node acceptance file and manual `batch200` workflow
 choice. PR events and the default choice still select the original seven cases.
@@ -369,5 +370,118 @@ are collection-only locally. Public SDK ActivityEnvironment, bounded fake worker
 factories and public protobuf fixtures exercise observer/context/history edges;
 the exact live Worker context path remains unrun. Independent exact-source review
 and broader regressions are tracked in the external local qualification record.
-Hosted disposition stays **NOT RUN** until a separately authorized manual
-experiment completes.
+At this historical checkpoint, hosted disposition was **NOT RUN** pending a
+separately authorized manual experiment; see the first-run status below.
+
+## First real batch status (2026-10-02)
+
+The first separately authorized [manual run 36984666613](https://github.com/sddvacav/opendot/actions/runs/36984666613),
+[job 110766846040](https://github.com/sddvacav/opendot/actions/runs/36984666613/job/110766846040),
+on [PR 28](https://github.com/sddvacav/opendot/pull/28) completed successfully on
+revision 1b2e417cf9b303413b0696f8b1a17ae0860518fb. Its source-bound trusted-host
+receipt was accepted: 200 reported validated terminals, Activity interval peak 3,
+handler interval peak 1 and outstanding-reservation peak 16. Handler overlap was
+NOT_DEMONSTRATED; CPU parallelism stayed NOT_EVALUATED. No stronger claim follows.
+
+Only the published summary/table digests remain available for that run. The complete
+per-job trace and tables are unavailable; their missing rows cannot be independently
+rechecked, recovered from hashes or fabricated. This section preserves the first-run
+receipt and its source epoch. The new retention candidate below does not recover or
+retroactively strengthen that evidence and has NOT RUN in hosted CI.
+
+## Optional public projection retention candidate (2026-10-02)
+
+Status: LOCAL PREPARATION ONLY. No new hosted run, upload or publication has occurred.
+A future evidence-retention run requires root approval of the exact candidate and
+manual batch200 dispatch with retain_public_evidence=true. This boolean defaults
+false; reference/default/PR qualification cannot upload. Its purpose is retaining a
+reviewable projection, never rerunning until better overlap appears.
+
+### Closed bundle and validation
+
+The existing verifier accepts --public-bundle only for batch200. Before creating
+output it validates exact collection and JUnit identities, environment/source pins,
+all 200 job bindings, actual trace values and cleanup using its existing validation
+owners. It reads bounded regular-file snapshots, rejects symlinks (including
+ancestors), hardlinks, extra input files, unknown fields, invalid values, oversize,
+source/identity changes and observed mutation. A fresh dedicated sibling staging
+directory contains only canonical JSON from those already validated values, never
+unchecked rereads or a copy of the audit directory. Any refusal prevents the upload
+step. Failure summaries expose fixed codes rather than rejected contents.
+
+Exactly eight public files are constructed:
+
+- environment.json: existing closed environment and public source bindings, 64 KiB
+- batch-trace.json: actual monotonic trace, fixed plan/profile and source digests, 5 MiB
+- batch-metadata.json: validated received Activity metadata, 256 KiB
+- batch-histories.json: validated allowlisted history projections, 4 MiB
+- batch-outcomes.json: validated terminal/outcome projections, 256 KiB
+- batch-cleanup.json: validated bounded observed-cleanup values, 64 KiB
+- batch-summary.json: recomputed verdict, recorded passed node identities and explicit
+  omitted-original/replay caveats, 64 KiB
+- manifest.json: fixed PUBLIC_PROJECTION label, source/run identity, requested
+  run attempt, fixed workflow path/digest, retention and SHA-256/byte length for each of the seven payload files, 16 KiB
+
+All limits include each final newline; aggregate output is at most 10 MiB. Trace
+and row/event ceilings remain the existing 200/16/8 bounded profile. No original
+CAS objects/receipts, raw SDK histories, database, logs, JUnit diagnostics, pip
+reports, credentials, headers or private paths are exported. History digests and
+original-validation flags remain trusted-host consistency assertions about omitted
+originals; they are not independently replayable originals. Source-tree paths are
+only the verifier's fixed repository-relative public source allowlist.
+
+The trusted cooperative POSIX host and caller-controlled paths remain preconditions.
+Snapshot/identity checks reject observed mutation; they do not defeat a malicious
+host, eliminate every filesystem race, provide an OS sandbox or freeze a directory
+against hostile writes after verification. There is no second storage/runtime owner.
+
+### Rechecking retained projection bytes
+
+Use the exact reviewed source revision of the retained run, not a later verifier.
+After obtaining and unpacking the artifact, run the stdlib-only command:
+
+```sh
+python -B ci/verify_temporal_server_gate.py recheck-public-bundle \
+  --bundle /trusted/local/unpacked-public-bundle \
+  --expected-revision REVIEWED_40_HEX_REVISION \
+  --expected-run-url https://github.com/OWNER/REPOSITORY/actions/runs/RUN_ID \
+  --expected-run-attempt 1
+```
+
+The verifier requires the eight-file allowlist and manifest hashes, repeats the
+same environment/source/table/trace/cleanup value validators, and compares its
+recomputed summary with the retained summary. Success is PUBLIC_PROJECTION
+consistency only. It performs no service call, SDK replay, original CAS/receipt
+revalidation or independent authentication of the original host/run assertions.
+Natural Activity or handler peak one remains NOT_DEMONSTRATED. Fabricated unit
+records retain FABRICATED_UNIT_DATA and cannot enter production export/recheck.
+
+### Official action, access and expiry
+
+Reviewed official [v7.0.1 release](https://github.com/actions/upload-artifact/releases/tag/v7.0.1),
+[pinned action API](https://github.com/actions/upload-artifact/blob/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/action.yml),
+[source](https://github.com/actions/upload-artifact/tree/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/src),
+and [MIT license](https://github.com/actions/upload-artifact/blob/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/LICENSE).
+The immutable pin is 043fb46d1a93c77aae656e7c1c64a875d1fc6a0a. It uses Node 24 on
+GitHub-hosted ubuntu-24.04; no action source is copied into this repository.
+Its MIT notice applies to copies/substantial portions. The declared inputs are
+name, the exact dedicated public directory, if-no-files-found=error,
+retention-days=30, compression-level=6, overwrite=false, include-hidden-files=false,
+and archive=true. No glob, parent/audit directory or additional path is admitted.
+The action uses its normal short-lived runner artifact service credentials, with
+no saved credential, new token, OIDC grant or workflow-permission expansion.
+
+Requested retention is fixed at 30 days. The export step refuses a reported
+GITHUB_RETENTION_DAYS cap below 30 rather than silently requesting a shorter
+period. GitHub repository/organization policy and later deletion still apply;
+future run review must inspect actual artifact expires_at and the action's
+artifact-id, artifact-url and artifact-digest outputs. The artifact archive digest
+is distinct from the manifest's individual canonical JSON file digests.
+
+GitHub's [download documentation](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts)
+requires login and repository read access. PUBLIC_PROJECTION means the contents
+are explicitly approved public-safe values; it does not promise an anonymous
+URL. [Repository retention](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)
+limits and artifact/run/repository deletion can end access. This is bounded
+retention, not permanent public archival. Download promptly within the actual
+expiry window for later authorized review; no automatic external mirror is added.
