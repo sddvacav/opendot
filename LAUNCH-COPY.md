@@ -5,7 +5,7 @@ Current release copy for review, checked against the published-release record on
 
 ## English
 
-OpenDot Engineering 0.3.0a2 is available as an **experimental ALPHA prerelease**.
+OpenDot Engineering 0.3.0a3 is available as an **experimental ALPHA prerelease**.
 It is a Python toolkit for local callable execution and inspectable artifacts:
 run a permitted function, store its output by SHA-256, and distinguish intact
 bytes from an accepted result. Python 3.12+ is required; Linux is the reviewed
@@ -15,19 +15,22 @@ Start with the [version-pinned installed quickstart](docs/installed-quickstart.m
 Its first result uses only the released wheel, with no source checkout, model key,
 server or native solver. The next example shows success, semantic refusal and
 missing permission, including the intact but unaccepted output of a failed check.
-Downloads and exact evidence are in the [a2 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)
-and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md).
+Downloads and exact evidence are in the [a3 prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)
+and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md).
 
 The release includes the [Gmsh file-size-limit repair](docs/gmsh-cpu-ceiling.md)
 and [optional finite Temporal transport](docs/temporal-reference-transport.md).
-The later [bounded-artifact-read change](docs/decisions/005-bounded-artifact-reads.md)
-is not in the frozen a2 assets. This alpha does not establish a general agent
+The a3 wheel adds opt-in [bounded artifact reads](docs/decisions/005-bounded-artifact-reads.md);
+its full source includes pure finite-batch preparation only. Historically, the
+frozen a2 assets did not contain the bounded-read change and remain unchanged.
+Later `main` service evidence and the source-only three-role measurement comparison
+are not included in or acceptance for these a3 assets. This alpha does not establish a general agent
 runtime, OS sandbox, production recovery, scientific acceptance or device authority.
 Evidence remains **NOT_SCORED**; see [claim status](docs/claim-status.md).
 
 ## 简体中文
 
-OpenDot Engineering 0.3.0a2 已作为**实验性 ALPHA 预发布版**提供下载。
+OpenDot Engineering 0.3.0a3 已作为**实验性 ALPHA 预发布版**提供下载。
 它是一套用于本地函数执行和产物检查的 Python 工具包：执行获准的函数，按
 SHA-256 保存输出，并区分字节完整与结果被接受。要求 Python 3.12+；已复核的
 环境是 Linux，默认软件包没有运行时 Python 依赖。
@@ -35,12 +38,14 @@ SHA-256 保存输出，并区分字节完整与结果被接受。要求 Python 3
 从[版本固定的安装入门](docs/installed-quickstart.zh-CN.md)开始。第一个结果只需
 已发布的 wheel，无需源码副本、模型密钥、服务或原生求解器。下一项示例展示成功、
 语义拒绝与缺少权限三种情况，包括检查失败后仍保留的完整但未被接受的输出。
-下载与精确证据见 [a2 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)
-和[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)。
+下载与精确证据见 [a3 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)
+和[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md)。
 
 本次发布包含 [Gmsh 单文件大小限制修复](docs/gmsh-cpu-ceiling.md)与
-[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)。后续的
-[产物有界读取变更](docs/decisions/005-bounded-artifact-reads.md)不在冻结的 a2 产物中。
+[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)。a3 wheel 新增可选的
+[产物有界读取](docs/decisions/005-bounded-artifact-reads.md)，其完整源码仅包含纯软件有限批次准备。
+历史上冻结的 a2 产物不含有界读取变更，并保持不变。后续 `main` 服务执行证据与
+仅源码的三角色测量比较不包含在 a3 产物中，也不能据此验收这些 a3 产物。
 本 alpha 不证明通用智能体运行时、操作系统沙箱、生产恢复、科学验收或设备控制权限。
 证据状态仍为 **NOT_SCORED**；具体范围见[声明状态](docs/claim-status.md)。
 

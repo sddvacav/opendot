@@ -1,6 +1,6 @@
 # Scope-limited description drafts
 
-Current copy for the **0.3.0a2 ALPHA prerelease**, as of 2 October 2026.
+Current copy for the **0.3.0a3 ALPHA prerelease**, as of 2 October 2026.
 These descriptions are for review; this file does not publish them. Keep the
 release status and limits attached. Use the [announcement draft](../LAUNCH-COPY.md)
 for the fuller bilingual update and historical copy.
@@ -11,13 +11,13 @@ for the fuller bilingual update and historical copy.
 
 OpenDot Engineering is an experimental Python toolkit for local callable
 execution and inspectable artifacts. Store outputs by SHA-256 and check byte
-integrity separately from result acceptance. The 0.3.0a2 ALPHA prerelease is
+integrity separately from result acceptance. The 0.3.0a3 ALPHA prerelease is
 available; it is not a complete agent runtime or a scientifically qualified platform.
 
 **简体中文**
 
 OpenDot Engineering 是一套用于本地函数执行和产物检查的实验性 Python 工具包。
-按 SHA-256 保存输出，并分别检查字节完整性与结果验收。0.3.0a2 ALPHA
+按 SHA-256 保存输出，并分别检查字节完整性与结果验收。0.3.0a3 ALPHA
 预发布版已可下载；它不是完整的智能体运行时，也不是经过科学资格验证的平台。
 
 ## First action to pair with the description
@@ -39,11 +39,15 @@ examples retain a rejected result or block a call with missing permission.
 
 ## Release and review guardrails
 
-- Link the [published a2 assets](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2),
-  [exact release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
+- Link the [published a3 assets](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3),
+  [exact release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md)
   and [claim status](claim-status.md). No PyPI publication is claimed
-- The later [bounded-read change](decisions/005-bounded-artifact-reads.md) is not in
-  frozen a2 assets; current source documentation is not a new release
+- The a3 wheel includes the opt-in [bounded-read API](decisions/005-bounded-artifact-reads.md);
+  its full source includes pure finite-batch preparation only. The historical
+  frozen a2 assets lack the bounded-read change and remain unchanged
+- Later `main` service evidence and the source-only three-role measurement comparison
+  are separate from a3. Current source documentation is not a new release and
+  does not transfer acceptance to the frozen package
 - Keep optional dependency and trust requirements with optional-feature claims.
   Permissions are dispatch checks, and trusted-root storage follows symlinks;
   neither establishes an OS sandbox or scientific/device authority
