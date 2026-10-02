@@ -1,9 +1,9 @@
-# 从 0.3.0a2 预发布版得到第一个结果
+# 从精确 0.3.0a3 产物得到第一个结果
 
 [English](installed-quickstart.md) · [仅使用源码的路径](../README.zh-CN.md#运行合成示例)
 
 执行一个受权限检查的 Python callable，保存合成结果，并独立核对存储字节。
-第一个示例只需要已发布的 wheel，不需要源码仓库、模型密钥、网络服务、原生求解器或设备。
+第一个示例只需要固定的 wheel，不需要源码仓库、模型密钥、网络服务、原生求解器或设备。
 这是有限的本地软件操作，不是自治智能体运行时。
 
 结构默认返回值已变更，详见[迁移指南](structural-default-v2.md)。本入门教程仍使用行为未变的函数／产物流程。
@@ -14,42 +14,53 @@
 先前本地检查使用 Linux 和 CPython 3.12，不代表承诺支持所有平台。
 以下命令假设 `/tmp` 适合作为你信任的临时父目录。
 
-从 [0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)下载
-[opendot_engineering-0.3.0a2-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2-py3-none-any.whl)，
-保存到可信的本地目录。其精确 SHA-256 固定在下方命令中，也列于发布包的
-[SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/SHA256SUMS)。
-本文使用 GitHub 发布产物，不声明已发布到 PyPI。不要替换为名字相似的软件包，
-或先前具有相同版本号的构建。摘要一致仅核对文件字节，不能证明作者身份、安全性或科学有效性。
+从 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)下载下方列出的精确产物，
+保存在同一个可信目录。该 GitHub 预发布版于 2026 年 10 月 2 日发布，标签为
+`v0.3.0a3`；不声明已发布到 PyPI。下方命令使用本地文件，不下载依赖。
+不要替换为名字相似的软件包或先前同版本构建。
+摘要一致仅核对文件字节，不能证明作者身份、安全性或科学有效性。
 
-[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)将这些产物绑定至公开提交
-[359f781a5aa1650ae92b1af81cf369a17c444045](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045)。
+发布标签与固定产物对应[提交 `30610de43da81801e7b88517459fbdf0f667ca2d`](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d)，
+源码树为 `95ca23d9d36558680c809f2382bef188c6fc2ae4`。
+这次六文件文档后续更新不在上述冻结产物内；产物中的安装指南仍保留历史 a2 说明。
+本次操作请使用本文中的 a3 文件名与哈希。
+五个最终产物均已通过发布下载地址核验：一次使用已登录浏览器，另一次使用未配置
+凭据或 Cookie 的独立 HTTP 客户端。客户端请求审计确认初始及重定向请求均不含认证
+或 Cookie 请求头，正常代理策略保持不变。未核验匿名浏览器访问或未知中间服务身份。
+
+本指南针对冻结的 a3 软件包，其中只包含纯软件批量准备。
+后续 `main` 改动及 CI 不会改变这些产物，也不构成其新验收。
+
+[历史 0.3.0a2 发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)及其
+[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)、
 [历史 0.3.0a1 验证记录](structural-v2-candidate-verification.md)与
 [历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)
-保留原版本与固定值，不构成本 wheel 的验收。发布产物冻结在上述源码提交；产物内部文档
-保留构建时的下载说明，请使用本更新指南中的 0.3.0a2 固定值。
-[文档检查](documentation-checks.md)仅比较下方八个 shell 代码块，不执行这些命令。
+保留各自原版本与固定值，不构成 a3 的验收。结构默认行为变更见
+[迁移指南](structural-default-v2.md)。[文档检查](documentation-checks.md)
+仅比较下方八个 shell 代码块，不执行这些命令。
 
-### 精确下载标识
+### 精确已发布产物标识
 
 | 产物 | 字节数 | SHA-256 |
 | --- | ---: | --- |
-| `opendot_engineering-0.3.0a2-py3-none-any.whl` | 99,220 | `c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7` |
-| `opendot_engineering-0.3.0a2.tar.gz` | 231,217 | `2b7520119edd698d98ab4ce0cb052d03d55b4ec02c9e3e62ba9dba85ad3fc0c8` |
-| `opendot-engineering-0.3.0a2-source.tar.gz` | 611,307 | `928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2` |
+| [opendot_engineering-0.3.0a3-py3-none-any.whl](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/opendot_engineering-0.3.0a3-py3-none-any.whl) | 99,743 | `d5e08c8ee38b94b35707ac25f0e8b04fbd4cf46a539542e1e6ab95d19d51ea59` |
+| [opendot_engineering-0.3.0a3.tar.gz](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/opendot_engineering-0.3.0a3.tar.gz) | 243,517 | `3df5024d5878682f678049913ea8c3b4236fefdb1c63cf5f2bea089a9451d73b` |
+| [opendot-engineering-0.3.0a3-source.tar.gz](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/opendot-engineering-0.3.0a3-source.tar.gz) | 682,889 | `e651190162830d9fe15e388496e1231dce8966bfd5a6807207278e0d23053fa1` |
 
-[打包 sdist](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot_engineering-0.3.0a2.tar.gz)
-是独立的构建输入，并非步骤 3 获取示例所用的完整源码归档。
-本指南安装 wheel，不构建或安装 sdist。
+打包 sdist 是独立的构建输入，并非步骤 3 获取示例所用的完整源码归档。
+本指南安装 wheel，不构建或安装 sdist。同一[发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)还提供
+三个归档的配套 [RELEASE-NOTES.md](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) 与 [SHA256SUMS](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/SHA256SUMS)。
 
-只将 `WHEEL` 替换为已下载 wheel 的绝对路径。若 Python 3.12+ 的可执行文件
-名称不同，也请修改 `PYTHON`。保留固定 SHA-256 不变。所有代码块在同一个 shell
-会话运行。安装使用新环境，不下载任何依赖。
+只将 `RELEASE_DIR` 替换为包含上述精确 wheel 与完整源码归档的绝对目录。
+若 Python 3.12+ 可执行文件名称不同，也请修改 `PYTHON`。保留固定 SHA-256 不变。
+所有代码块在同一个 shell 会话运行。安装使用新环境，不下载任何依赖。
 
 ```sh
 set -eu
 PYTHON=python3.12
-WHEEL='/absolute/path/to/opendot_engineering-0.3.0a2-py3-none-any.whl'
-EXPECTED_WHEEL_SHA256='c1c35cb76557a3998e8ec26ca5d3097095835af832d565e3b79e3baf320d64d7'
+RELEASE_DIR='/absolute/path/to/reviewed-a3-files'
+WHEEL="$RELEASE_DIR/opendot_engineering-0.3.0a3-py3-none-any.whl"
+EXPECTED_WHEEL_SHA256='d5e08c8ee38b94b35707ac25f0e8b04fbd4cf46a539542e1e6ab95d19d51ea59'
 
 "$PYTHON" -I -B - "$WHEEL" "$EXPECTED_WHEEL_SHA256" <<'PYCODE'
 import hashlib, pathlib, sys
@@ -64,12 +75,13 @@ PYCODE
 JOURNEY=$(mktemp -d /tmp/opendot-first-run.XXXXXX)
 "$PYTHON" -I -B -m venv "$JOURNEY/venv"
 PY="$JOURNEY/venv/bin/python"
-"$PY" -I -B -m pip install --no-index --no-deps --no-compile --no-cache-dir "$WHEEL"
+"$PY" -I -B -m pip --isolated install --disable-pip-version-check \
+  --no-index --no-deps --no-compile --no-cache-dir "$WHEEL"
 cd "$JOURNEY"
 "$PY" -I -B -c 'import importlib.metadata as m, opendot_engineering as p; print(m.version("opendot-engineering")); print(p.__file__)'
 ```
 
-应看到版本 `0.3.0a2` 和位于新环境 `site-packages` 内的导入路径。
+应看到版本 `0.3.0a3` 和位于新环境 `site-packages` 内的导入路径。
 无需激活环境或设置 `PYTHONPATH`；`-I` 忽略源码目录导入捷径，`-B` 避免写入 Python
 字节码。软件包没有名为 `opendot` 的独立控制台命令。
 
@@ -96,7 +108,7 @@ OUTPUT_PARENT=$(mktemp -d /tmp/opendot-result.XXXXXX)
 "$PY" -I -B - "$OUTPUT_PARENT/result" <<'PYCODE'
 import hashlib, json, sys
 from pathlib import Path
-from opendot_engineering.core import ArtifactRef, ArtifactStore
+from opendot_engineering.core import ArtifactIntegrityError, ArtifactRef, ArtifactStore
 from opendot_engineering.tool_runtime import ToolRisk, ToolRuntime, ToolSpec
 
 output = Path(sys.argv[1])
@@ -118,7 +130,13 @@ ref, receipt = runtime.execute(
 )
 assert receipt.status == "COMPLETED" and receipt.semantic_valid
 assert ref is not None
-stored_bytes = store.get_bytes(ref)
+stored_bytes = store.get_bytes(ref, max_bytes=256)
+try:
+    store.get_bytes(ref, max_bytes=len(stored_bytes) - 1)
+except ArtifactIntegrityError as error:
+    assert str(error) == "artifact exceeds max_bytes"
+else:
+    raise AssertionError("Oversize input should have been refused")
 hash_matches = hashlib.sha256(stored_bytes).hexdigest() == ref.sha256
 assert hash_matches
 print(json.dumps({
@@ -126,6 +144,7 @@ print(json.dumps({
     "semantic_valid": receipt.semantic_valid,
     "artifact_id": ref.artifact_id,
     "independent_sha256_matches": hash_matches,
+    "bounded_read_and_refusal_passed": True,
     "output_directory": str(output),
     "scientific_accepted": False,
 }, indent=2))
@@ -133,44 +152,51 @@ PYCODE
 ```
 
 成功时退出码为零，输出 `status: "COMPLETED"`、`semantic_valid: true`、以
-`sha256:` 开头的 `artifact_id` 和 `independent_sha256_matches: true`。
+`sha256:` 开头的 `artifact_id`、`independent_sha256_matches: true` 和
+`bounded_read_and_refusal_passed: true`。
 `output_directory` 指向可检查的本地 CAS 目录；`scientific_accepted` 保持 `false`。
 
 此处语义检查器仅检查返回引用的类型，不验证科学结论。权限检查发生在分发时，并非
 操作系统沙箱。`REVERSIBLE_WRITE` 标签不实现撤销；CAS 信任存储根目录、跟随符号
 链接，也不是事务或恢复系统。
 
+上方 a3 可选读取使用 `max_bytes=256`，并检查故意缩小的预算会被拒绝。
+对于可信普通本地文件，预算 N 最多取得 N+1 个实际对象字节，用多出的字节识别超限。
+省略参数或传入 `None` 仍读取整个对象；写入与 verify 操作保留原行为。
+这不是恒定内存、时间、恶意文件系统或整个执行过程的限制。详见
+[有限读取与边界](canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment)。
+该节的“unreleased”标签属于先前源码检查点；本文固定的精确 a3 wheel 已包含此 API。
+
 ## 3. 观察成功、语义拒绝与缺少权限
 
-wheel 包含 Python 包，但不包含示例脚本和夹具。从同一版本下载配套的
-[完整源码归档](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/opendot-engineering-0.3.0a2-source.tar.gz)，
-将 `SOURCE_ARCHIVE` 替换为其绝对本地路径。请使用这个具名产物，而非范围更窄的打包
-sdist 或 GitHub 自动生成的源码链接；它们的字节不同。保留固定源码 SHA-256 不变。
+wheel 包含 Python 包，但不包含示例脚本和夹具。使用同一 `RELEASE_DIR`
+中的 `opendot-engineering-0.3.0a3-source.tar.gz`。这个具名完整源码产物的字节与
+范围更窄的打包 sdist 或 GitHub 自动生成的源码归档不同，不可替换。保留固定源码哈希。
 代码块先验证归档，再解压到全新的教程目录中，然后仅复制公开示例。
 Python 仍从已安装 wheel 导入。
 
 ```sh
-SOURCE_ARCHIVE='/absolute/path/to/opendot-engineering-0.3.0a2-source.tar.gz'
-EXPECTED_SOURCE_SHA256='928062b851e0431f493a6b7ae5d36b989323cb0e16e21198accbf928ba1bbdc2'
+SOURCE_ARCHIVE="$RELEASE_DIR/opendot-engineering-0.3.0a3-source.tar.gz"
+EXPECTED_SOURCE_SHA256='e651190162830d9fe15e388496e1231dce8966bfd5a6807207278e0d23053fa1'
 "$PY" -I -B - "$SOURCE_ARCHIVE" "$EXPECTED_SOURCE_SHA256" "$JOURNEY/source" <<'PYCODE'
 import hashlib, pathlib, sys, tarfile
 archive, expected = pathlib.Path(sys.argv[1]), sys.argv[2]
 if hashlib.sha256(archive.read_bytes()).hexdigest() != expected:
-    raise SystemExit("Source archive hash mismatch: stop and check the released asset")
+    raise SystemExit("Source archive hash mismatch: stop and check the reviewed asset")
 output = pathlib.Path(sys.argv[3])
 output.mkdir(exist_ok=False)
 with tarfile.open(archive, "r:gz") as source:
     source.extractall(output, filter="data")
 print("Pinned source archive bytes match")
 PYCODE
-SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a2"
+SOURCE="$JOURNEY/source/opendot-engineering-0.3.0a3"
 cp -R "$SOURCE/examples" "$JOURNEY/examples"
 "$PY" -I -B "$JOURNEY/examples/callable-artifacts/demo.py" \
   --output "$OUTPUT_PARENT/three-cases"
 ```
 
 应看到 `synthetic_software_assertions_passed: true` 和 `package_version:
-"0.3.0a2"`。三个场景的结果有意不同：
+"0.3.0a3"`。三个场景的结果有意不同：
 
 - `success`：`COMPLETED`、语义有效、字节通过独立哈希核对
 - `semantic_refusal`：`FAILED`，仍保留一个完整但**未获接受**的产物
@@ -235,7 +261,7 @@ PATH=/usr/local/bin:/usr/bin:/bin git --version
 
 ## 可选功能另行准备
 
-0.3.0a2 软件包包含 [Gmsh 单文件大小限制修复](gmsh-cpu-ceiling.md)和
+0.3.0a3 软件包保留 [Gmsh 单文件大小限制修复](gmsh-cpu-ceiling.md)和
 [有限范围 Temporal 参考传输](temporal-reference-transport.md)。本教程不执行原生后端
 或 Temporal。默认运行时 Python 依赖仍为空，默认导入也不会加载可选 Temporal 模块。
 
@@ -245,6 +271,12 @@ PATH=/usr/local/bin:/usr/bin:/bin git --version
 `synthetic.bounded_sum.v1`、静止状态下正常重启后的排队首次交付和已记录结果重放。
 它不证明执行中崩溃恢复、多主机运行、全局恰好一次副作用、生产部署、科学有效性或设备权限。
 参见[能力与证据边界](../CAPABILITIES.zh-CN.md)；`NOT_SCORED` 保持不变。
+
+完整源码归档还包含[纯软件有限批量准备](temporal-batch-qualification.md)：
+精确 200 个冻结合成任务、16 个已预留／已提交但尚未通过终态验证的工作流，以及八个
+外部 Activity 槽位／执行器 worker。这些是固定夹具与配置限制，不是实际 200 任务
+服务执行、200 个智能体、实测并发或吞吐量。仅供测试的批量脚本不是 wheel 中的生产 API。
+本教程不启动服务或原生后端。
 
 ## 常见首次运行错误
 
