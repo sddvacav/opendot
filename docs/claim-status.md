@@ -1,6 +1,32 @@
 # OpenDot Engineering claim status
 
-> Current release, 2 October 2026: **[0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED**. The
+## Current 0.3.0a4 source/package candidate
+
+**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
+This coherent snapshot includes the optional [offline A2A worker-turn adapter](../docs/a2a-worker-turn.md),
+matching source examples and version-bound installation instructions. Default runtime
+dependencies remain empty. Use the [a4 installed guide](../docs/installed-quickstart.md)
+with its externally reviewed checksum-manifest pin; final exact identities and
+separately scoped qualification belong in the candidate's external release notes.
+
+- Installed wheel: one dependency-free callable/artifact result, bounded reads,
+  read-only help and copied lightweight public fixtures; no source imports
+- Matching complete source: [measurement comparison](../examples/measurement-review/README.md)
+  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
+  it is not an installed-wheel workflow
+- [CAD/thermal plan](../examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
+  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
+  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
+  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
+- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
+  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
+  model, autonomous-agent or native-agent qualification is claimed
+- Source-only Temporal batch tools and historical hosted runs retain their own
+  evidence scopes; this candidate performs no fresh service run. The historical
+  [a3 component inventory](../docs/release-inventory/v0.3.0a3/README.md) is a3-only,
+  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+
+> Historical a3 release, 2 October 2026: **[0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED**. The
 > [released source commit](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d), tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`, and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) bind exact assets to their separately scoped source, installed and independent checks.
 > The structural schema-2 default predates a2; the explicit
 > [structural v2 migration](structural-default-v2.md) requires conditional
@@ -101,7 +127,7 @@ issue remain outside this change. Rechecking an older pack is output-only eviden
 | Optional source admission | Included; locally checked; narrow predecessor integration independently reviewed | Explicit root, independently reviewed manifest digest, flat pinned modules, and source-owned named exports; ordinary trusted Python authority | Review of each changed outgoing artifact; separate acceptance for each consumer; no inference of authorization, sandboxing, or complete code identity |
 | Synthetic qualification records | Included; locally checked | Invented fixture oracles can be checked; science/device flags stay false | Separate physical/scientific evidence for real qualification |
 | Optional simulated lab | Included; fake-only scope independently reviewed before combination | Internally constructed fake devices; finite fixed plan and strict pinned-document checks; runtime authority flags stay false | Exact combined-artifact review and separate evidence for any new platform or capability; no physical/scientific qualification |
-| Runnable examples | Released a3 installed checks and current guide checks are separately scoped | The [a3 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) record exact-artifact installed checks; the later [current guide](installed-quickstart.md) uses a3 pins. The frozen source archive retains historical a2 guide text. Historical 0.2.0a3 fresh journeys covered all eight blocks per language; 0.3.0a3 release qualification ran seven adjusted safe blocks per language and left the native Git block NOT RUN | Retain the exact guide revision, asset identities and executed scope; source-only parity and predecessor execution do not approve a changed guide |
+| Runnable examples | Historical a3 installed checks and corrected a3 guide checks are separately scoped | The [a3 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) record exact-artifact installed checks; the later [historical a3 guide](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md) uses a3 pins. The frozen source archive retains historical a2 guide text. Historical 0.2.0a3 fresh journeys covered all eight blocks per language; 0.3.0a3 release qualification ran seven adjusted safe blocks per language and left the native Git block NOT RUN | Retain the exact guide revision, asset identities and executed scope; source-only parity and predecessor execution do not approve a changed guide |
 | Wheel identity and imports | Released a3 assets and scoped checks recorded | The [a3 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) identify the exact wheel, matching source assets and isolated installed checks; public download bytes were verified | Separate supported-platform evidence and fresh exact-artifact review for changed releases; no PyPI publication is claimed |
 | Optional CAD/CAE adapters | Included | Fixed deterministic contracts and separately installed backends | Native execution and dependency/license review for each claimed environment |
 | Shared CalculiX version-declaration gate | Included; component independently reviewed | One complete declared 2.23 header required; ambiguous and repeated declarations refused by both thermal and structural verifiers | Exact integrated and artifact review; declaration consistency does not authenticate a binary/log or validate new physics |
@@ -127,4 +153,6 @@ For any stronger statement, record the exact artifact/configuration, evidence, r
 
 ## 中文摘要
 
-当前为已发布的 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)，NOT_SCORED。[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md)分别记录精确产物、源码、安装与独立检查；主分支可移植执行和同树 PR 的可选 Temporal 执行不能互换或相加。a3 新增可选有界读取与纯批次准备；后续真实批次及保留投影仅属于源码证据，不在冻结产物中。200 个合成任务不等于 200 个智能体，Activity 区间重叠不证明 handler 或 CPU 并行。当前指南使用 a3 固定值；冻结源码归档仍保留历史 a2 指南。历史 a2 已包含 Gmsh 文件大小上限修复与固定合成 Temporal 传输；未改变的 a1 发布产物不含这两项。a2 保留先前已引入的结构默认 schema 2，在声明的材料、历史与输出条件下要求逐单元能量一致性；科学验收仍为 false，无下溢仍为未验证假设，算术误差界限未证明。历史 artifact_v1 仅可显式选择，不自动回退。来源边界覆盖七项原始合成协议、八项未实现协议与另行计数的六个合成参数场景，仍无生产强制机制。历史后继候选预声明选择为 1,325 项可移植节点、1,484 项受控本地节点，结果由精确候选回执记录。历史 a6 字节与证据不变，不转移评分或验收；历史失败与 NOT_RUN 保持原状。可选 Temporal 的有界托管检查不证明运行中崩溃恢复、全局恰好一次或完整运行时。本次文档更新未执行原生求解、模型、设备或新托管检查。
+当前 0.3.0a4 为本地候选；安装、源码、CAD plan 和离线 A2A 范围分别记录。原生／外部 live gate 为 NOT_RUN；旧版本证据不构成本候选验收。
+
+历史已发布的 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)，NOT_SCORED。[发布说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md)分别记录精确产物、源码、安装与独立检查；主分支可移植执行和同树 PR 的可选 Temporal 执行不能互换或相加。a3 新增可选有界读取与纯批次准备；后续真实批次及保留投影仅属于源码证据，不在冻结产物中。200 个合成任务不等于 200 个智能体，Activity 区间重叠不证明 handler 或 CPU 并行。历史 a3 修正版指南使用 a3 固定值；冻结源码归档仍保留历史 a2 指南。历史 a2 已包含 Gmsh 文件大小上限修复与固定合成 Temporal 传输；未改变的 a1 发布产物不含这两项。a2 保留先前已引入的结构默认 schema 2，在声明的材料、历史与输出条件下要求逐单元能量一致性；科学验收仍为 false，无下溢仍为未验证假设，算术误差界限未证明。历史 artifact_v1 仅可显式选择，不自动回退。来源边界覆盖七项原始合成协议、八项未实现协议与另行计数的六个合成参数场景，仍无生产强制机制。历史后继候选预声明选择为 1,325 项可移植节点、1,484 项受控本地节点，结果由精确候选回执记录。历史 a6 字节与证据不变，不转移评分或验收；历史失败与 NOT_RUN 保持原状。可选 Temporal 的有界托管检查不证明运行中崩溃恢复、全局恰好一次或完整运行时。本次文档更新未执行原生求解、模型、设备或新托管检查。
