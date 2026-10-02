@@ -1,0 +1,322 @@
+{
+  "schema_version": "1.0",
+  "recordset_type": "PRIMARY_SOURCE_INTEROPERABILITY_RESEARCH_SUPPLEMENT",
+  "as_of": "2026-10-02",
+  "access_date": "2026-10-02",
+  "baseline": {
+    "paths_reviewed": [
+      "RESEARCH-MAP.md",
+      "docs/research/"
+    ],
+    "hashes": {
+      "RESEARCH-MAP.md": "ebfdeb6c98fb14036a9ed5902a4af5d3cd694c08b3ca062a0c7bba4d23c9987b",
+      "docs/research/source-needs-index.json": "659069c9887e456b84b94acb0b79e57d8964a858ef2926a9cf2ae3adf47372d6"
+    },
+    "deduplication": "Exact new source URLs/identifiers were absent from the reviewed research tree; existing source families and high-level needs were not recounted.",
+    "historical_counts": "UNCHANGED; no combined source/need total asserted"
+  },
+  "delta_counts": {
+    "new_to_collection_sources": 4,
+    "newly_published_after_previous_cutoff": 0,
+    "need_refinements": 3,
+    "specific_extension_hypotheses": 1,
+    "implemented_features": 0,
+    "executed_acceptance_protocols": 0
+  },
+  "global_limits": [
+    "All OpenDot needs, functions, acceptance criteria and priorities are project inferences.",
+    "Public policy, opinion, normative specifications and author-reported observations remain different evidence classes.",
+    "No customer interviews, procurement, funding, endorsement, policy eligibility, certification, adoption or OpenDot performance was established.",
+    "No original source bytes are archived; retrieval observations are not publisher-authenticated archives.",
+    "Research and documentation integration only; no executable-source edits, external account changes, software installation, native CAD/CAE execution or model-provider API invocation."
+  ],
+  "sources": [
+    {
+      "source_id": "miit-industrial-internet-ai-2025-76",
+      "title": "工业和信息化部办公厅关于印发《工业互联网和人工智能融合赋能行动方案》的通知",
+      "source_type": "FORMAL_MINISTERIAL_POLICY",
+      "evidence_class": "PUBLISHED_POLICY_DIRECTION_NOT_EMPIRICAL_PRODUCT_EVIDENCE",
+      "issuer": "工业和信息化部办公厅",
+      "document_number": "工信厅信管〔2025〕76号",
+      "composition_date": "2025-12-30",
+      "publication_date": "2026-01-06",
+      "displayed_time": "15:36",
+      "publication_timezone": null,
+      "access_date": "2026-10-02",
+      "url": "https://www.miit.gov.cn/jgsj/xgj/wjfb/art/2026/art_fe01c168527a406684144a921c5c948b.html",
+      "full_text_url": "https://www.miit.gov.cn/cms_files/filemanager/1226211233/attach/20261/6b2e7f276c5f4093a024c3b4104f8b2d.pdf",
+      "official_republication_url": "https://sdca.miit.gov.cn/zwgk/zcwj/wjfb/art/2026/art_cba8b40f5f1f44a1a0da3a7068adfe2e.html",
+      "republication_date": "2026-01-07",
+      "read_scope": [
+        "Issuer notice and dates",
+        "Original 7-page attachment text, especially II(2)-(3), III(4)-(6), printed pp. 3-5",
+        "Official Shandong communications-administration HTML republication"
+      ],
+      "verified_paraphrase": "The plan calls for compatible platform/data interfaces, matching cloud/edge/device compute, heterogeneous industrial data sharing, and reusable industrial-model interfaces.",
+      "collection_change": "NEW_TO_COLLECTION_EXISTING_PUBLICATION",
+      "related_need_ids": [
+        "deployment-profile-evidence"
+      ],
+      "limits": [
+        "A ministerial policy, not a new State Council document, mandatory technical conformance test, procurement specification or project endorsement.",
+        "The search/PDF metadata title contains an older-looking 2025-2027 title; this record follows the issuer notice and the body, whose target year is 2028.",
+        "PDF text was read. Screenshot requests did not expose inspectable image data, so no visual PDF verification or byte-equivalence with the republication is claimed.",
+        "Industry targets and resource/funding language do not establish OpenDot eligibility, support, savings or deployment."
+      ]
+    },
+    {
+      "source_id": "nist-gcr-16-003-pmi-transfer",
+      "title": "Validation for Downstream Computer Aided Manufacturing and Coordinate Metrology Processes",
+      "source_type": "ORIGINAL_COOPERATIVE_RESEARCH_REPORT_AND_INDUSTRIAL_INTEROPERABILITY_CASE",
+      "evidence_class": "AUTHOR_REPORTED_METHOD_AND_OBSERVATIONS_NOT_REPRODUCED",
+      "publisher": "NIST",
+      "author_on_report": "Asa Trainer, International TechneGroup Incorporated; prepared for NIST",
+      "publication_date": "2016-08-01",
+      "publication_date_basis": "NIST publication record",
+      "report_cover_date": "2015-09",
+      "reporting_period": "2015-04-01/2015-09-30",
+      "access_date": "2026-10-02",
+      "url": "https://nvlpubs.nist.gov/nistpubs/gcr/2016/NIST.GCR.16-003.pdf",
+      "metadata_url": "https://www.nist.gov/publications/validation-downstream-computer-aided-manufacturing-and-coordinate-metrology-processes-0",
+      "doi": "10.6028/NIST.GCR.16-003",
+      "read_scope": [
+        "Cover and disclaimer",
+        "Printed pp. 7, 9-15, 17-24; Table 1 and examples of lost geometry association, datum identifiers and dimension semantics"
+      ],
+      "verified_paraphrase": "The study compares paired PMI structures and property values, beyond counts. Reported problems include lost associations and altered identifiers. Some representation changes require better validation rules; an apparent angular conversion issue could originate in translation or validator display.",
+      "collection_change": "NEW_TO_COLLECTION_HISTORICAL_RESEARCH",
+      "related_need_ids": [
+        "cad-pmi-semantic-transfer"
+      ],
+      "limits": [
+        "Historical selected STEP/extended-ACIS/QIF models and software; no claim about current vendor quality or general CAD/CAE compatibility.",
+        "This is an original cooperative research report, not an industry certification or mandatory standard; its disclaimer says findings need not represent NIST views.",
+        "Report-cover date and publisher-record publication date are distinct and retained.",
+        "No CAD tool, archived model, conversion or benchmark was executed; PDF text review is not visual geometry inspection."
+      ]
+    },
+    {
+      "source_id": "fmi-3-0-2-contract",
+      "title": "Functional Mock-up Interface Specification 3.0.2",
+      "source_type": "ORIGINAL_VERSIONED_TECHNICAL_SPECIFICATION",
+      "evidence_class": "NORMATIVE_INTERFACE_CONTRACT_NOT_PERFORMANCE_EVIDENCE",
+      "publisher": "Modelica Association Project FMI",
+      "publication_date": "2024-11-27",
+      "publication_date_basis": "Version/date header",
+      "version": "3.0.2",
+      "access_date": "2026-10-02",
+      "url": "https://fmi-standard.org/docs/3.0.2/",
+      "read_scope": [
+        "2.3.2 co-simulation instantiation",
+        "2.5.1.4 platform-specific binaries and dependencies",
+        "4.2.1 fmi3DoStep semantics",
+        "4.4 Table 39 co-simulation capabilities"
+      ],
+      "verified_paraphrase": "Co-simulation negotiates Event Mode and early return. The returned actual time can differ from the requested endpoint even after OK without early return. The packaging rules distinguish platform-specific binaries and external dependencies; the coupling algorithm remains outside FMI scope.",
+      "collection_change": "NEW_TO_COLLECTION_EXISTING_SPECIFICATION",
+      "related_need_ids": [
+        "cosimulation-time-negotiation",
+        "deployment-profile-evidence"
+      ],
+      "limits": [
+        "Version-pinned design reference, not a claim that 3.0.2 is the latest release or that OpenDot implements FMI.",
+        "An allowed time mismatch is not automatically a spec violation; the importer must handle it deliberately.",
+        "The fixed-step alignment statement is guidance; the proposed project gate below may be stricter and is labeled as such.",
+        "Interface/packaging conformance does not establish numerical stability, physical fidelity, license availability, deployment security or end-to-end compatibility."
+      ]
+    },
+    {
+      "source_id": "workflow-run-ro-crate-2024",
+      "title": "Recording provenance of workflow runs with RO-Crate",
+      "source_type": "PEER_REVIEWED_ORIGINAL_RESEARCH",
+      "evidence_class": "AUTHOR_REPORTED_MODEL_AND_IMPLEMENTATION_STUDY_NOT_REPRODUCED",
+      "authors": "Simone Leo et al.",
+      "publisher": "PLOS ONE",
+      "publication_date": "2024-09-10",
+      "doi": "10.1371/journal.pone.0309210",
+      "version": "PLOS ONE 19(9): e0309210; paper describes Workflow Run RO-Crate profiles 0.5",
+      "access_date": "2026-10-02",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0309210",
+      "read_scope": [
+        "Abstract and publisher metadata",
+        "Section 2 profile granularity",
+        "Sections 3.4 and 3.7 implementation limitations",
+        "Section 5 discussion and 5.1/Table 3 metadata coverage"
+      ],
+      "verified_paraphrase": "The paper models planned workflows and actual executions at different detail levels across multiple workflow systems. Its implementations expose incomplete metadata transfer and restricted referenced resources, so an exported record need not contain everything required for replay.",
+      "collection_change": "NEW_TO_COLLECTION_HISTORICAL_RESEARCH",
+      "related_need_ids": [
+        "portable-provenance-loss-report"
+      ],
+      "limits": [
+        "Adds interoperable export and loss accounting to existing AiiDA coverage; does not justify a second execution runtime.",
+        "Paper-era profiles and implementation limits are historical, not a current audit of all RO-Crate tools.",
+        "No exported crate, workflow manager or paper experiment was run; metadata interoperability is not computational or scientific reproducibility by itself.",
+        "Restricted-resource references do not grant access or authorize copying, fetching, disclosure or re-execution."
+      ]
+    }
+  ],
+  "needs": [
+    {
+      "need_id": "deployment-profile-evidence",
+      "source_ids": [
+        "miit-industrial-internet-ai-2025-76",
+        "fmi-3-0-2-contract"
+      ],
+      "change_type": "REFINEMENT_OF_EXISTING_DEPLOYABILITY_NEED",
+      "refines": [
+        "RESEARCH-MAP.md R4",
+        "RESEARCH-MAP.md R10",
+        "refresh-20261001 policy-modular-delivery-handoff"
+      ],
+      "need_inferred": "An operator must distinguish where a workflow is intended to run from environments where that exact artifact has actually passed.",
+      "function_proposed": "A versioned deployment profile and preflight report separating declared requirements, observed host capabilities, required resources/network routes, and exact-environment acceptance receipts. For a future FMU include platform tuple, interface kind and dependency documentation.",
+      "acceptance_criteria": [
+        "A compatibility matrix cell is SUPPORTED only when linked to a test receipt for the exact package, backend and environment; declarations alone stay UNTESTED.",
+        "Negative fixtures cover wrong architecture/OS, missing external dependency, unavailable required resource and prohibited network route; dependent execution stays blocked or unknown.",
+        "An offline claim requires a separately authorized network-disabled run with all required resources available, not merely a configuration flag.",
+        "Check that an unavailable target cannot silently fall back to a cloud/provider path or copy restricted data."
+      ],
+      "priority": "P1",
+      "priority_basis": "Refine the next bounded deployment trial, without launching cloud/edge execution.",
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN",
+      "limits": [
+        "No new network control, installation, provider integration, cloud scheduler or production-security claim is proposed as already implemented.",
+        "The field schema and negative cases are project inferences, not fields prescribed by the MIIT notice."
+      ]
+    },
+    {
+      "need_id": "cad-pmi-semantic-transfer",
+      "source_ids": [
+        "nist-gcr-16-003-pmi-transfer"
+      ],
+      "change_type": "CONDITIONAL_REFINEMENT_OF_EXISTING_INTEROPERABILITY_NEED",
+      "refines": [
+        "RESEARCH-MAP.md R7",
+        "industry-cases.md multi-format semantics"
+      ],
+      "need_inferred": "When a CAD exchange promises PMI preservation, the receiving tool needs the same engineering meaning and geometry associations, not just a valid file or the same annotation count.",
+      "function_proposed": "A read-only, versioned source/target PMI semantic diff with an explicit entity mapping and supported-subset declaration; geometry validity and PMI preservation receive separate verdicts.",
+      "acceptance_criteria": [
+        "Freeze one annotated synthetic part, expected associations and normalized meanings, plus the exact source and target tool versions.",
+        "Require mappings for promised datum identifiers/types, associated geometry, dimension meaning and units/bounds, and feature-control-frame references/modifiers.",
+        "Negative cases keep entity counts constant while deleting a geometry link, changing a datum reference, dropping units or converting an untoleranced reference into a zero-tolerance requirement without retaining its meaning.",
+        "Permit representation changes only through independently checked, meaning-preserving conversion rules; test the comparator with equivalent limit/bilateral representations and known non-equivalent values.",
+        "Unmapped/unsupported fields and ambiguous conversions stay UNKNOWN or explicitly out of scope; never issue an unrestricted full-model pass."
+      ],
+      "priority": "P1_CONDITIONAL",
+      "priority_basis": "Apply when selecting a PMI-bearing exchange; do not add PMI as a prerequisite for the current unannotated thermal example.",
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN",
+      "limits": [
+        "A read-only diff does not implement STEP/PMI import/export or certify CAD, CAM, CMM or CAE compatibility.",
+        "Passing a fixture neither proves manufacturability nor establishes physical validation."
+      ]
+    },
+    {
+      "need_id": "cosimulation-time-negotiation",
+      "source_ids": [
+        "fmi-3-0-2-contract"
+      ],
+      "change_type": "NEW_SPECIFIC_EXTENSION_HYPOTHESIS",
+      "refines": [
+        "RESEARCH-MAP.md R7"
+      ],
+      "need_inferred": "A future coupled simulation must synchronize actual progress and negotiated capabilities instead of equating a successful call with the requested time endpoint.",
+      "function_proposed": "A proposed FMI trace/capability checker recording requested/returned time, Event Mode, early-return permission, termination and status; no FMU execution in this research.",
+      "acceptance_criteria": [
+        "Reject a clock-bearing FMU configuration without required Event Mode support, unsupported variable communication steps, and early return not negotiated as allowed.",
+        "Flag fixed-step misalignment against a declared project policy; do not mislabel the specification recommendation as a universal MUST.",
+        "An OK/no-early-return fixture at a different actual time must preserve that time and require an explicit importer synchronization decision under a predeclared numeric tolerance.",
+        "A same-time early return, termination request and failed/discarded step cannot silently advance the shared clock or be counted as accepted physical progress.",
+        "Numerical coupling accuracy and stability require separate analytic/convergence checks; a valid trace cannot set scientific_acceptance=true."
+      ],
+      "priority": "P2",
+      "priority_basis": "An extension after a single-backend CAD/CAE workflow is accepted; not a reason to expand the current runtime.",
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN",
+      "limits": [
+        "FMI is an interface contract; choosing or validating a co-simulation algorithm is separate work.",
+        "No FMU/native backend/provider execution or compatibility is established."
+      ]
+    },
+    {
+      "need_id": "portable-provenance-loss-report",
+      "source_ids": [
+        "workflow-run-ro-crate-2024"
+      ],
+      "change_type": "REFINEMENT_OF_EXISTING_REPRODUCIBILITY_NEED",
+      "refines": [
+        "RESEARCH-MAP.md R3",
+        "RESEARCH-MAP.md R7",
+        "oss-workflows A1"
+      ],
+      "need_inferred": "A recipient must know what an exported run record preserves, omits or cannot make accessible before treating it as replayable evidence.",
+      "function_proposed": "A proposed offline export mapping to a pinned Workflow Run RO-Crate profile with a field-by-field loss report and separate planned-workflow and actual-run identities; reuse existing artifact ownership.",
+      "acceptance_criteria": [
+        "Define a minimal synthetic run and a mandatory competency-question set: exact input/output identities, tool/configuration identity, each actual attempt, and task/run relationships.",
+        "A separate consumer must answer the same questions from native and exported records without OpenDot-specific hidden state.",
+        "Known omitted configuration, broken step links, absent payload and inaccessible referenced resources must be surfaced; mandatory gaps yield NOT_REPLAYABLE, not a nominal successful export.",
+        "Preserve retries as distinct actual attempts; never copy a planned step into the observed-run set without execution evidence.",
+        "Record metadata-schema validity, query coverage, authorized replay and scientific acceptance as distinct states."
+      ],
+      "priority": "P1",
+      "priority_basis": "Test one portable evidence package before broad ecosystem integration.",
+      "implementation_status": "PROPOSED",
+      "acceptance_status": "NOT_RUN",
+      "limits": [
+        "No current RO-Crate exporter, replay implementation, imported benchmark score or standards-conformance claim.",
+        "Loss-report fields and competency tests are project proposals."
+      ]
+    }
+  ],
+  "coverage_without_added_counts": [
+    {
+      "family": "STATE_COUNCIL",
+      "status": "EXISTING_SOURCE_RECHECK_NO_NEW_RECORD",
+      "url": "https://wap.miit.gov.cn/xwfb/szyw/art/2025/art_f8bd63905b384841a84e643c1b9455c7.html",
+      "publication_date": "2025-08-26",
+      "access_date": "2026-10-02",
+      "observation": "Reopened the existing official MIIT republication of 国发〔2025〕11号; no new State Council formal document is asserted."
+    },
+    {
+      "family": "SEQUOIA_CAPITAL",
+      "status": "EXISTING_SOURCE_RECHECK_NO_NEW_RECORD",
+      "url": "https://sequoiacap.com/article/own-your-intelligence-a-how-to-guide",
+      "publication_date": "2026-08-19",
+      "access_date": "2026-10-02",
+      "observation": "Re-read the original dated Sonya Huang essay. It explicitly does not mandate leaving frontier services; its domain-evaluation theme is already covered. No new buyer requirement or technical performance evidence."
+    },
+    {
+      "family": "HILLHOUSE",
+      "status": "NO_NEW_USABLE_ORIGINAL_VIEW_IN_BOUNDED_CHECK",
+      "url": "https://www.hillhouseinvestment.com/news/",
+      "publication_date": null,
+      "access_date": "2026-10-02",
+      "observation": "Official news/insights index was readable; the inspected list did not supply a new detailed 2026 CAD/CAE or agent position. Existing organizer-edited attributed remarks keep their prior limits. This is not evidence that newer statements do not exist."
+    },
+    {
+      "family": "LIDANG_X",
+      "status": "CURRENT_DIRECT_FETCH_UNVERIFIED_NO_NEW_RECORD",
+      "url": "https://x.com/lidangzzz/status/2105835837418250465",
+      "publication_date": null,
+      "previously_recorded_displayed_date": "2026-10-01",
+      "access_date": "2026-10-02",
+      "observation": "Direct web fetch of the known original returned an internal error without post text. Targeted date searches produced third-party listings, not a newly verified original. No new quote, date, source count or need is added. The earlier collection’s successful original-page observation is neither repeated nor invalidated."
+    },
+    {
+      "family": "INDUSTRY_CASES",
+      "status": "TARGETED_ADDITION_NOT_VENDOR_REFRESH",
+      "url": "https://nvlpubs.nist.gov/nistpubs/gcr/2016/NIST.GCR.16-003.pdf",
+      "publication_date": "2016-08-01",
+      "access_date": "2026-10-02",
+      "observation": "Added one historical original interoperability investigation; existing Siemens Fuse/EDA claims were not duplicated or treated as independently reproduced."
+    }
+  ],
+  "suggested_repo_paths": [
+    "docs/research/interoperability-delta-20261002/README.md",
+    "docs/research/interoperability-delta-20261002/source-needs-delta.json"
+  ],
+  "suggested_integration": "Linked from docs/research/README.md. Historical source/need rows, counts and earlier annexes are unchanged; only the compact index overview digest is updated for its navigation link. No implementation or current capability statement is upgraded by this research."
+}
