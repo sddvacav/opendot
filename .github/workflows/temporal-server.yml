@@ -1,0 +1,171 @@
+# Optional bounded service job. Enable only with the reviewed ADR004 CI exception.
+# A local source/test pass is not real-server acceptance.
+name: Optional Temporal real-server gate
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/temporal-server.yml'
+      - 'src/opendot_engineering/adapters/temporal_*.py'
+      - 'src/opendot_engineering/tool_runtime.py'
+      - 'src/opendot_engineering/core/**'
+      - 'tests/test_temporal*.py'
+      - 'tests/acceptance/temporal_server_gate.py'
+      - 'ci/*temporal*'
+      - 'ci/requirements.txt'
+      - 'pyproject.toml'
+      - 'AGENTS.md'
+      - 'docs/decisions/004-*'
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+
+# Avoid supersession cancellation during a graceful-only experiment.
+# Jobs remain bounded by timeout-minutes; this does not alter repository rules.
+concurrency:
+  group: temporal-server-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  temporal-server:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # existing v4.2.2 pin
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # existing v5.6.0 pin
+        with:
+          python-version: '3.12'
+
+      - name: Install exact public test and SDK wheels
+        id: install
+        timeout-minutes: 2
+        run: >-
+          PIP_CONFIG_FILE=/dev/null python -B -m pip --isolated install
+          --disable-pip-version-check --no-cache-dir --no-compile
+          --force-reinstall --report "$RUNNER_TEMP/opendot-temporal-pip-report.json"
+          --require-hashes --only-binary=':all:' --retries 0 --timeout 20
+          --index-url https://pypi.org/simple
+          -r ci/requirements.txt -r ci/temporal-sdk-requirements.txt
+
+      - name: Require exact SDK and pure harness contracts
+        id: unit_contracts
+        timeout-minutes: 1
+        env:
+          PYTHONPATH: src:ci
+        run: |
+          python -B - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+          from verify_temporal_server_gate import parse_junit
+
+          files = (
+              "tests/test_temporal_activity_contract.py",
+              "tests/test_temporal_transport_owner_boundaries.py",
+              "tests/test_temporal_workflow_contract.py",
+              "tests/test_temporal_cli_acquisition.py",
+              "tests/test_temporal_server_gate_verifier.py",
+              "tests/test_temporal_server_harness_unit.py",
+          )
+          expected = 818
+          temporary = Path(os.environ["RUNNER_TEMP"])
+          collection = temporary / "opendot-temporal-unit-collection.log"
+          junit = temporary / "opendot-temporal-unit-results.xml"
+          common = [sys.executable, "-B", "-m", "pytest", "-q", "--color=no",
+                    "-p", "no:cacheprovider", "-o", "xfail_strict=true"]
+          with collection.open("wb") as output:
+              collect = subprocess.run(common + ["--collect-only", *files],
+                                       stdout=output, stderr=subprocess.STDOUT, check=False)
+          with (temporary / "opendot-temporal-unit-private.log").open("wb") as output:
+              tests = subprocess.run(common + ["--tb=no", "--show-capture=no", *files,
+                  "--basetemp=" + str(temporary / "opendot-temporal-unit-tests"),
+                  "--junitxml=" + str(junit)], stdout=output, stderr=subprocess.STDOUT, check=False)
+          report = {"schema_version": "opendot.temporal.unit-gate.v1", "expected_node_count": expected,
+                    "collected_node_count": 0, "executed_node_count": 0, "passed_count": 0,
+                    "failed_count": 0, "error_count": 0, "skipped_count": 0,
+                    "collection_exit_code": collect.returncode, "test_exit_code": tests.returncode,
+                    "collection_sha256": None, "acceptance": "FAIL", "reason_code": "UNIT_EVIDENCE_INVALID"}
+          try:
+              prefixes = tuple(path + "::" for path in files)
+              nodes = [line for line in collection.read_text(encoding="utf-8").splitlines()
+                       if line.startswith(prefixes)]
+              cases = list(parse_junit(junit, maximum=2 * 1024 * 1024).iter("testcase"))
+              actual = [case.attrib["classname"].replace(".", "/") + ".py::" + case.attrib["name"]
+                        for case in cases]
+              report.update(collected_node_count=len(nodes), executed_node_count=len(cases),
+                            collection_sha256=hashlib.sha256("\n".join(nodes).encode()).hexdigest())
+              for tag, key in (("failure", "failed_count"), ("error", "error_count"), ("skipped", "skipped_count")):
+                  report[key] = sum(any(child.tag == tag for child in case) for case in cases)
+              report["passed_count"] = len(cases) - report["failed_count"] - report["error_count"] - report["skipped_count"]
+              if (collect.returncode == tests.returncode == 0 and len(nodes) == len(set(nodes)) == expected
+                      and len(actual) == len(set(actual)) == expected and sorted(actual) == sorted(nodes)
+                      and report["passed_count"] == expected and report["failed_count"] == report["error_count"] == report["skipped_count"] == 0):
+                  report.update(acceptance="PASS", reason_code="OK")
+          except Exception:
+              pass
+          encoded = json.dumps(report, sort_keys=True)
+          (temporary / "opendot-temporal-unit-summary.json").write_text(encoded + "\n", encoding="utf-8")
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as summary:
+              summary.write(encoded + "\n")
+          print(encoded)
+          sys.exit(0 if report["acceptance"] == "PASS" else 1)
+          PY
+
+      - name: Acquire and verify exact official CLI without executing it
+        id: acquire
+        timeout-minutes: 2
+        run: >-
+          python -B ci/acquire_temporal_cli.py
+          --output "$RUNNER_TEMP/opendot-temporal-cli"
+
+      - name: Assert every required real-server node
+        # If SDK/CLI acquisition failed, collect the full required set and fail
+        # its fixture; no optional dependency skip is accepted.
+        if: ${{ always() && !cancelled() }}
+        timeout-minutes: 4
+        env:
+          PYTHONPATH: src:ci
+          OPENDOT_TEMPORAL_EXECUTE: ${{ steps.install.outcome == 'success' && steps.unit_contracts.outcome == 'success' && steps.acquire.outcome == 'success' && '1' || '0' }}
+          OPENDOT_TEMPORAL_PIP_REPORT: ${{ runner.temp }}/opendot-temporal-pip-report.json
+          OPENDOT_TEMPORAL_GATE_ROOT: ${{ runner.temp }}/opendot-temporal-gate
+          OPENDOT_TEMPORAL_CLI: ${{ runner.temp }}/opendot-temporal-cli/temporal
+          OPENDOT_TEMPORAL_EXPECTED_REVISION: ${{ github.sha }}
+          OPENDOT_TEMPORAL_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t nodes < ci/temporal-server-nodes.txt
+          test "${#nodes[@]}" -eq 7
+          python -B -m pytest -q -ra --tb=no --show-capture=no -p no:cacheprovider \
+            "${nodes[@]}" \
+            --basetemp="$RUNNER_TEMP/opendot-temporal-pytest" \
+            --junitxml="$RUNNER_TEMP/opendot-temporal-results.xml" \
+            > "$RUNNER_TEMP/opendot-temporal-pytest-private.log" 2>&1
+
+      - name: Require complete evidence and graceful cleanup
+        if: always()
+        timeout-minutes: 1
+        # Stdlib-only; absence of pytest or any evidence still means failure.
+        # The verifier emits only an allowlisted summary, never raw logs/XML.
+        run: >-
+          python -B ci/verify_temporal_server_gate.py
+          --required ci/temporal-server-nodes.txt
+          --junit "$RUNNER_TEMP/opendot-temporal-results.xml"
+          --audit "$RUNNER_TEMP/opendot-temporal-gate/audit"
+          --expected-revision "${{ github.sha }}"
+          --summary "$GITHUB_STEP_SUMMARY"
+
+# No upload-artifact, service container, pull_request_target, permissions write,
+# automatic workflow dispatch, remote service account, secret or model provider.
+# A missing run for a path-filtered PR does not mean acceptance; merge evidence
+# must include this exact job on the candidate revision under review.

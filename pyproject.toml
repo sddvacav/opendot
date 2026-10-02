@@ -12,6 +12,7 @@ readme = "README.md"
 dependencies = []
 
 [project.optional-dependencies]
+temporal = ["temporalio==1.34.0"]
 test = ["pytest>=8,<10"]
 simulated-lab = ["bluesky==1.15.1", "ophyd==1.11.2", "event-model==1.24.0"]
 
