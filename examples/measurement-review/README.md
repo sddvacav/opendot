@@ -342,3 +342,81 @@ The CSV, example and focused tests are newly authored synthetic Apache-2.0 proje
 material. No private or third-party measurement is copied. Focused tests are in
 `tests/test_measurement_review_example.py`; their counts are reported in separate
 version-bound receipts, never promoted into a new platform benchmark.
+
+## Offline incremental-utility fixture report
+
+[`utility_report.py`](utility_report.py) is a separate source-only **offline fixture
+protocol**. **Real O3 comparison: NOT_RUN.** It reads the four original O3 cases
+from the pinned [research delta](../../docs/research/delta-20261002/source-needs-delta.json)
+without changing their historical status. Their invented aggregate effort is
+reported as `fixture_effort_units`, never measured minutes or savings. The positive
+fixture's declared “all known” flag is not audited measurement coverage.
+
+From the source root, using existing Python 3.12+ and no optional dependencies:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/measurement-review/utility_report.py history
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/measurement-review/utility_report.py profile
+```
+
+The frozen input contract and finite synthetic examples live in
+[`test_incremental_utility_report.py`](../../tests/test_incremental_utility_report.py).
+They define only two repeat slots of this existing measurement task, baseline and
+candidate arms, three attempts per arm maximum, and eight effort/eight charge rows
+per arm maximum. Each input/report is capped at 65,536 bytes and the text summary
+at 8,192 bytes. No trial is executed; no producer, runtime, CAS writer, network,
+model or native tool is invoked. All output goes to stdout/stderr; the script
+never creates or edits files. If retaining output, redirect to a fresh destination
+outside the checkout without overwriting prior evidence.
+
+`ledger` requires explicit `--ledger`, `--inventory`, `--ledger-sha256`,
+`--inventory-sha256` and `--profile-sha256`. Keep these pins independently of the
+candidate report. `verify` takes the same inputs plus `--report` and
+`--report-sha256`, recomputes the report read-only and refuses resealed changes
+against those retained pins. A pin read only from the candidate report is not
+independent evidence. `profile` binds exact source/rule/oracle bytes, including
+this consumer; code changes require a newly reviewed profile. Inputs must be
+trusted cooperative local regular files; reads reuse canonical symlink-refusing
+helpers. Reads may change atime. No hostile-concurrent-filesystem claim is made.
+
+The separately pinned synthetic inventory records attempts and expected accounting
+rows; it detects omitted records only relative to that retained inventory. It
+cannot prove real observation completeness or authenticate a reviewer. Both arms
+use the same existing frozen summary contract and named `fixture-reviewer`
+records, with no requirement for OpenDot's three role receipts. Correct hashes,
+`COMPLETED`, a reported acceptance boolean or agreeing LLMs cannot accept a result.
+Task acceptance counts once; every attempt, failed trial and repeated output stays
+visible. Runtime receipt attempts and latency are not all-trial or total-cost data.
+
+Person effort uses four explicitly invented observations: disjoint setup,
+execution/rework and review person-minutes, plus a separate wall-clock envelope in
+seconds. Setup is allocated wholly to the two admitted slots. The limited monetary
+fixture includes setup plus one all-incremental compute/tool/storage/idle charge
+per attempt, excluding monetized human labor. It is not a total project-cost model.
+Exact non-integral derived values use numerator/denominator objects. Different
+currencies are retained separately, never summed together. Missing/censored values
+stay null with missing-path reasons; zero accepted tasks gives null cost per
+accepted task. The strict fixture rule requires more accepted tasks and no added
+person effort with complete required evidence. Equal acceptance with lower effort
+does not pass this particular rule.
+
+`INVALID`, `NOT_COMPARABLE`, `INDETERMINATE`, `NO_FIXTURE_IMPROVEMENT` and
+`FIXTURE_IMPROVEMENT` are different outcomes. A produced classification exits 0,
+including negative/indeterminate/invalid classifications; refused input/pins exit
+2. A positive fixture classification establishes no real benefit, user study,
+scientific acceptance or device authority. Every report keeps measured effort
+`UNKNOWN`, real comparison `NOT_RUN`, science/device flags false and independent
+review `NOT_EVALUATED`. This adds no new source priority, production evaluator,
+benchmark, empirical false-acceptance estimate or utility claim.
+
+Counter correction in the v2 preparation: `output_counts` now counts only retained
+outputs. `candidate` counts non-null output bytes, and `inspected` counts those
+outputs with an ACCEPTED/REJECTED reviewer decision. Its accepted/rejected/
+unreviewed/pending buckets partition retained outputs, including repeated bytes.
+Separate `attempt_acceptance_counts` buckets partition every observed attempt,
+including FAILED/BLOCKED trials without outputs. Those trials remain in all-attempt
+denominators, dispositions and costs. The v1 preparation incorrectly included
+no-output rejected attempts under `output_counts.rejected`; v1 evidence is retained
+as historical, and the corrected source has a new profile pin.
