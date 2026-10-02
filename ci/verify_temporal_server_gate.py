@@ -14,6 +14,8 @@ import math
 import os
 from pathlib import Path
 import re
+import stat
+import tempfile
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -519,7 +521,7 @@ def trusted_run_url(expected_revision: str) -> str:
     return "https://github.com/" + repo + "/actions/runs/" + run_id
 
 
-def validate_environment(value: object, expected_revision: str) -> None:
+def validate_environment(value: object, expected_revision: str, *, recheck_run_url: str | None = None) -> None:
     shape(value, "schema_version candidate_revision requested_revision workflow_run_url source_kind "
           "python_version platform versions cli_version server_version cli_archive_sha256 "
           "cli_checksums_sha256 sdk_wheel_sha256 tool_lock_sha256 sdk_lock_sha256 "
@@ -528,8 +530,14 @@ def validate_environment(value: object, expected_revision: str) -> None:
     schema(value, "environment")
     for name in ("candidate_revision", "requested_revision"):
         exact(value[name], expected_revision, "REVISION_MISMATCH")
-    exact(checked_revision(), expected_revision, "REVISION_MISMATCH")
-    exact(value["workflow_run_url"], trusted_run_url(expected_revision), "CI_IDENTITY")
+    if recheck_run_url is None:
+        exact(checked_revision(), expected_revision, "REVISION_MISMATCH")
+        exact(value["workflow_run_url"], trusted_run_url(expected_revision), "CI_IDENTITY")
+    else:
+        # Offline projection consistency only; this cannot establish CI identity.
+        match(expected_revision, r"[0-9a-f]{40}", "REVISION_MISMATCH")
+        match(recheck_run_url, r"https://github\.com/[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}/actions/runs/[1-9][0-9]{0,19}", "CI_IDENTITY")
+        exact(value["workflow_run_url"], recheck_run_url, "CI_IDENTITY")
     exact(value["source_kind"], "public_source_checkout")
     match(value["python_version"], r"3\.12\.[0-9]{1,3}", "VERSION_MISMATCH")
     exact(value["platform"], "linux-x86_64", "VERSION_MISMATCH")
@@ -935,6 +943,9 @@ def make_acceptance(expected_revision: str, nodes: list[dict], collected: int,
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ["recheck-public-bundle"]:
+        return _public_bundle_main(argv[1:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--required", required=True, type=Path)
     parser.add_argument("--junit", required=True, type=Path)
@@ -942,7 +953,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--expected-revision", required=True)
     parser.add_argument("--summary", type=Path)
     parser.add_argument("--profile", choices=("reference", "batch200"), default="reference")
+    parser.add_argument("--public-bundle", type=Path,
+                        help="Optional fresh public projection directory; batch200 only")
     args = parser.parse_args(argv)
+    if args.public_bundle is not None and args.profile != "batch200":
+        parser.error("--public-bundle requires --profile batch200")
     if args.profile == "batch200":
         return _real_batch_main(args)
     reasons = []
@@ -1803,28 +1818,113 @@ def _read_real_table(path: Path, kind: str, maximum: int) -> list:
     return value["rows"]
 
 
-def validate_real_batch_audit(audit: Path, expected_revision: str) -> dict:
-    audit = Path(audit)
-    require(audit.is_dir() and not audit.is_symlink(), "MISSING_EVIDENCE")
+# An export is a fresh, bounded projection, never an upload of the audit tree.
+PUBLIC_RETENTION_DAYS = 30
+PUBLIC_WORKFLOW_PATH = ".github/workflows/temporal-server.yml"
+# Updated only alongside an explicitly reviewed exact workflow candidate.
+PUBLIC_WORKFLOW_SHA256 = "724bd1f342c9ba09f1badcb3049a15fb740b0d99a50035926d9827d559df67a3"
+
+
+def validate_public_batch_workflow(source: bytes) -> None:
+    # A closed byte contract is intentionally stricter than a permissive YAML
+    # subset parser. Quotes, aliases, extra actions, broadened conditions or
+    # permissions cannot bypass the guard by alternate YAML spelling.
+    require(type(source) is bytes and 0 < len(source) <= 65536, "SIZE_LIMIT")
+    exact(hashlib.sha256(source).hexdigest(), PUBLIC_WORKFLOW_SHA256, "SOURCE_MISMATCH")
+
+
+PUBLIC_FILE_LIMITS = {
+    "environment.json": 65536, "batch-trace.json": BATCH_TRACE_BYTES,
+    "batch-metadata.json": 256 * 1024, "batch-histories.json": 4 * 1024 * 1024,
+    "batch-outcomes.json": 256 * 1024, "batch-cleanup.json": 65536,
+    "batch-summary.json": BATCH_SUMMARY_BYTES,
+}
+PUBLIC_TOTAL_BYTES = 10 * 1024 * 1024
+PUBLIC_MANIFEST_BYTES = 16384
+
+
+def _plain_directory(path: Path) -> None:
+    # Trusted cooperative POSIX host only. Check ancestors too, without resolving
+    # links away. These checks do not provide hostile-filesystem race exclusion.
+    require(".." not in path.parts, "PRIVACY_REJECTED")
+    for part in (path.absolute(), *path.absolute().parents):
+        require(not part.is_symlink(), "PRIVACY_REJECTED")
+        require(part.is_dir(), "MISSING_EVIDENCE")
+
+
+def _file_identity(info) -> tuple:
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
+            info.st_mtime_ns, info.st_ctime_ns)
+
+
+def _snapshot_file(path: Path, maximum: int) -> tuple[bytes, tuple]:
+    _plain_directory(path.parent)
     try:
-        require({path.name for path in audit.iterdir()} <= set(REAL_BATCH_AUDIT_FILES)
-                | {"collection-receipt.json", "batch-acceptance.json"}, "PRIVACY_REJECTED")
+        before = path.lstat()
+        require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1, "PRIVACY_REJECTED")
+        require(0 < before.st_size <= maximum, "SIZE_LIMIT")
+        with path.open("rb") as stream:
+            opened = os.fstat(stream.fileno())
+            exact(_file_identity(opened), _file_identity(before), "SOURCE_MISMATCH")
+            data = stream.read(maximum + 1)
+            exact(_file_identity(os.fstat(stream.fileno())), _file_identity(before), "SOURCE_MISMATCH")
+        exact(_file_identity(path.lstat()), _file_identity(before), "SOURCE_MISMATCH")
+    except FileNotFoundError:
+        raise GateError("MISSING_EVIDENCE") from None
     except OSError:
         raise GateError("READ_FAILED") from None
-    read_real_batch_nodes(ROOT / "ci/temporal-real-batch-nodes.txt")
-    verify_real_batch_collection(audit / "collection-receipt.json")
-    environment = read_json(audit / "environment.json")
-    validate_environment(environment, expected_revision)
-    diagnostic = validate_diagnostic(read_json(audit / "diagnostic.json"), expected_revision)
-    exact(diagnostic["status"], "COMPLETE", "DIAGNOSTIC_FAILED")
-    trace = strict_json(read_bytes(audit / "batch-trace.json", BATCH_TRACE_BYTES))
+    require(0 < len(data) <= maximum and len(data) == before.st_size, "SIZE_LIMIT")
+    return data, _file_identity(before)
+
+
+def _directory_names(path: Path) -> set[str]:
+    _plain_directory(path)
+    try:
+        return {item.name for item in path.iterdir()}
+    except OSError:
+        raise GateError("READ_FAILED") from None
+
+
+def _batch_snapshot(audit: Path) -> tuple[dict, dict, set]:
+    limits = {name: limit for name, limit in PUBLIC_FILE_LIMITS.items() if name != "batch-summary.json"}
+    limits.update({"diagnostic.json": DIAGNOSTIC_MAX_BYTES, "collection-receipt.json": 65536})
+    names = _directory_names(audit)
+    require(set(limits) <= names <= set(limits) | {"batch-acceptance.json"}, "PRIVACY_REJECTED")
+    snapshot = {name: _snapshot_file(audit / name, limit) for name, limit in limits.items()}
+    if "batch-acceptance.json" in names:
+        # Optional prior CLI summary is not exported or trusted, but must still
+        # be a stable bounded regular file rather than an ignored link.
+        snapshot["batch-acceptance.json"] = _snapshot_file(audit / "batch-acceptance.json", BATCH_SUMMARY_BYTES)
+    return {name: strict_json(pair[0]) for name, pair in snapshot.items()}, snapshot, names
+
+
+def _same_snapshot(audit: Path, snapshot: dict, names: set) -> None:
+    exact(_directory_names(audit), names, "SOURCE_MISMATCH")
+    for name, (data, identity) in snapshot.items():
+        observed, stamp = _snapshot_file(audit / name, len(data))
+        exact(stamp, identity, "SOURCE_MISMATCH")
+        exact(observed, data, "SOURCE_MISMATCH")
+
+
+def _validate_real_batch_records(records: dict, expected_revision: str, *,
+                                 recheck_run_url: str | None = None) -> dict:
+    environment = records["environment.json"]
+    if recheck_run_url is None:
+        validate_environment(environment, expected_revision)
+    else:
+        validate_environment(environment, expected_revision, recheck_run_url=recheck_run_url)
+    trace = records["batch-trace.json"]
     require(type(trace) is dict, "INVALID_SCHEMA")
-    metadata = _read_real_table(audit / "batch-metadata.json", "metadata", 256 * 1024)
-    histories = _read_real_table(audit / "batch-histories.json", "history", 4 * 1024 * 1024)
-    outcomes = _read_real_table(audit / "batch-outcomes.json", "outcomes", 256 * 1024)
-    summary = validate_real_batch_trace(trace, trace.get("plan"), trace.get("profile"), metadata, histories,
-                                        outcomes, expected_revision=expected_revision)
-    cleanup = read_json(audit / "batch-cleanup.json")
+    tables = []
+    for name, kind in (("batch-metadata.json", "metadata"), ("batch-histories.json", "history"),
+                       ("batch-outcomes.json", "outcomes")):
+        value = records[name]
+        shape(value, "schema_version rows")
+        exact(value["schema_version"], REAL_BATCH_PREFIX + kind + ".v1", "INVALID_SCHEMA")
+        tables.append(value["rows"])
+    summary = validate_real_batch_trace(trace, trace.get("plan"), trace.get("profile"), *tables,
+                                        expected_revision=expected_revision)
+    cleanup = records["batch-cleanup.json"]
     validate_real_batch_cleanup(cleanup)
     for key in ("handler_entries", "handler_returns", "execution_uncertainty", "observation_uncertainty"):
         exact(cleanup[key], summary[key], "CLEANUP_UNCONFIRMED")
@@ -1839,8 +1939,158 @@ def validate_real_batch_audit(audit: Path, expected_revision: str) -> dict:
     return summary
 
 
+def _validate_real_batch_snapshot(records: dict, expected_revision: str) -> dict:
+    read_real_batch_nodes(ROOT / "ci/temporal-real-batch-nodes.txt")
+    collection = records["collection-receipt.json"]
+    shape(collection, "schema_version nodes")
+    exact(collection["schema_version"], REAL_BATCH_PREFIX + "collection.v1", "INVALID_SCHEMA")
+    checked_real_batch_nodes(collection["nodes"])
+    diagnostic = validate_diagnostic(records["diagnostic.json"], expected_revision)
+    exact(diagnostic["status"], "COMPLETE", "DIAGNOSTIC_FAILED")
+    return _validate_real_batch_records(records, expected_revision)
+
+
+def validate_real_batch_audit(audit: Path, expected_revision: str) -> dict:
+    audit = Path(audit)
+    records, snapshot, names = _batch_snapshot(audit)
+    summary = _validate_real_batch_snapshot(records, expected_revision)
+    _same_snapshot(audit, snapshot, names)
+    return summary
+
+
+def _public_summary(summary: dict) -> dict:
+    return {"schema_version": REAL_BATCH_PREFIX + "public-summary.v1",
+        "projection_kind": "PUBLIC_PROJECTION", "summary": summary,
+        "recorded_passed_nodes": list(REAL_BATCH_REQUIRED_NODES),
+        "original_cas_receipts_and_raw_history_included": False,
+        "independent_original_replay": "NOT_EVALUATED"}
+
+
+def export_real_batch_public_bundle(audit: Path, required: Path, junit: Path,
+                                    expected_revision: str, destination: Path) -> dict:
+    """Validate frozen actual bytes, construct only eight named public files.
+
+    No test-data switch, directory copying, raw evidence, or upload is performed.
+    Existing validation owners establish the exact allowlisted shapes and values.
+    """
+    validate_public_batch_workflow(read_bytes(ROOT / PUBLIC_WORKFLOW_PATH, 65536))
+    run_attempt = os.environ.get("GITHUB_RUN_ATTEMPT")
+    match(run_attempt, r"[1-9][0-9]{0,4}", "CI_IDENTITY")
+    run_attempt = int(run_attempt)
+    _plain_directory(destination.parent)
+    require(not destination.exists() and not destination.is_symlink(), "WRITE_FAILED")
+    require(destination.absolute() != audit.absolute()
+            and audit.absolute() not in destination.absolute().parents, "PRIVACY_REJECTED")
+    records, snapshot, names = _batch_snapshot(audit)
+    required_snapshot = _snapshot_file(required, 8192)
+    junit_snapshot = _snapshot_file(junit, 2 * 1024 * 1024)
+    read_real_batch_nodes(required)
+    nodes = verify_real_batch_junit(junit)
+    require(all(row["outcome"] == "PASS" for row in nodes), "TEST_FAILED")
+    summary = _validate_real_batch_snapshot(records, expected_revision)
+    exact(summary["delivery_admission_acceptance"], "PASS", "OUTCOME_MISMATCH")
+    # Serialization uses only values from the already validated snapshot, never
+    # a second unchecked audit read. Canonical JSON strips source formatting.
+    values = {name: records[name] for name in PUBLIC_FILE_LIMITS if name != "batch-summary.json"}
+    values["batch-summary.json"] = _public_summary(summary)
+    encoded = {name: _real_encoded(value, PUBLIC_FILE_LIMITS[name] - 1) + b"\n"
+               for name, value in values.items()}
+    manifest = {"schema_version": REAL_BATCH_PREFIX + "public-bundle.v1",
+        "projection_kind": "PUBLIC_PROJECTION", "evidence_kind": summary["evidence_kind"],
+        "revision": expected_revision, "workflow_run_url": summary["workflow_run_url"],
+        "run_attempt": run_attempt, "workflow_path": PUBLIC_WORKFLOW_PATH,
+        "workflow_sha256": records["batch-trace.json"]["source_sha256"][PUBLIC_WORKFLOW_PATH],
+        "retention_days": PUBLIC_RETENTION_DAYS,
+        "provenance": "RECORDED_HOSTED_ASSERTIONS_NOT_INDEPENDENT_PROOF",
+        "files": {name: {"sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)}
+                  for name, data in encoded.items()}}
+    encoded["manifest.json"] = _real_encoded(manifest, PUBLIC_MANIFEST_BYTES - 1) + b"\n"
+    require(sum(map(len, encoded.values())) <= PUBLIC_TOTAL_BYTES, "SIZE_LIMIT")
+    _same_snapshot(audit, snapshot, names)
+    exact(_snapshot_file(required, 8192), required_snapshot, "SOURCE_MISMATCH")
+    exact(_snapshot_file(junit, 2 * 1024 * 1024), junit_snapshot, "SOURCE_MISMATCH")
+    try:
+        # Private sibling staging never matches the workflow's dedicated path.
+        with tempfile.TemporaryDirectory(prefix=".opendot-public-stage-", dir=destination.parent) as staging:
+            stage = Path(staging)
+            for name, data in encoded.items():
+                with (stage / name).open("xb") as output:
+                    output.write(data)
+            exact(_directory_names(stage), set(encoded), "WRITE_FAILED")
+            for name, data in encoded.items():
+                exact(_snapshot_file(stage / name, len(data))[0], data, "WRITE_FAILED")
+            _same_snapshot(audit, snapshot, names)
+            exact(_snapshot_file(required, 8192), required_snapshot, "SOURCE_MISMATCH")
+            exact(_snapshot_file(junit, 2 * 1024 * 1024), junit_snapshot, "SOURCE_MISMATCH")
+            require(not destination.exists() and not destination.is_symlink(), "WRITE_FAILED")
+            exact(real_batch_source_digests(), records["batch-trace.json"]["source_sha256"], "SOURCE_MISMATCH")
+            stage.rename(destination)
+    except OSError:
+        raise GateError("WRITE_FAILED") from None
+    return manifest
+
+
+def recheck_real_batch_public_bundle(bundle: Path, expected_revision: str, expected_run_url: str,
+                                     expected_run_attempt: int) -> dict:
+    """Recompute projection consistency against this exact reviewed source tree.
+
+    This is not original CAS/receipt validation or SDK replay, and does not
+    independently authenticate assertions made by the original trusted host.
+    """
+    integer(expected_run_attempt, 1, 99999, "CI_IDENTITY")
+    names = _directory_names(bundle)
+    exact(names, set(PUBLIC_FILE_LIMITS) | {"manifest.json"}, "PRIVACY_REJECTED")
+    limits = PUBLIC_FILE_LIMITS | {"manifest.json": PUBLIC_MANIFEST_BYTES}
+    snapshot = {name: _snapshot_file(bundle / name, maximum) for name, maximum in limits.items()}
+    require(sum(len(pair[0]) for pair in snapshot.values()) <= PUBLIC_TOTAL_BYTES, "SIZE_LIMIT")
+    values = {name: strict_json(pair[0]) for name, pair in snapshot.items()}
+    manifest = values["manifest.json"]
+    shape(manifest, "schema_version projection_kind evidence_kind revision workflow_run_url run_attempt workflow_path workflow_sha256 retention_days provenance files")
+    for key, value in {"schema_version": REAL_BATCH_PREFIX + "public-bundle.v1",
+        "projection_kind": "PUBLIC_PROJECTION", "evidence_kind": values["batch-trace.json"].get("evidence_kind"),
+        "revision": expected_revision, "workflow_run_url": expected_run_url,
+        "run_attempt": expected_run_attempt, "workflow_path": PUBLIC_WORKFLOW_PATH,
+        "workflow_sha256": values["batch-trace.json"]["source_sha256"][PUBLIC_WORKFLOW_PATH],
+        "retention_days": PUBLIC_RETENTION_DAYS,
+        "provenance": "RECORDED_HOSTED_ASSERTIONS_NOT_INDEPENDENT_PROOF"}.items():
+        exact(manifest[key], value, "INVALID_SCHEMA")
+    shape(manifest["files"], set(PUBLIC_FILE_LIMITS))
+    for name in PUBLIC_FILE_LIMITS:
+        entry = manifest["files"][name]
+        shape(entry, "sha256 bytes")
+        data = snapshot[name][0]
+        exact(entry["bytes"], len(data), "SIZE_LIMIT")
+        exact(entry["sha256"], hashlib.sha256(data).hexdigest(), "SOURCE_MISMATCH")
+    summary = _validate_real_batch_records(values, expected_revision, recheck_run_url=expected_run_url)
+    exact(summary["delivery_admission_acceptance"], "PASS", "OUTCOME_MISMATCH")
+    exact(_real_encoded(values["batch-summary.json"], BATCH_SUMMARY_BYTES),
+          _real_encoded(_public_summary(summary), BATCH_SUMMARY_BYTES), "OUTCOME_MISMATCH")
+    _same_snapshot(bundle, snapshot, names)
+    return {"schema_version": REAL_BATCH_PREFIX + "public-recheck.v1",
+        "projection_consistency": "PASS", "revision": expected_revision,
+        "workflow_run_url": expected_run_url, "run_attempt": expected_run_attempt, "summary": summary,
+        "independent_original_replay": "NOT_EVALUATED"}
+
+
+def _public_bundle_main(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(description="Offline public projection consistency only; no service or SDK replay")
+    parser.add_argument("--bundle", required=True, type=Path)
+    parser.add_argument("--expected-revision", required=True)
+    parser.add_argument("--expected-run-url", required=True)
+    parser.add_argument("--expected-run-attempt", required=True, type=int)
+    args = parser.parse_args(argv)
+    try:
+        result = recheck_real_batch_public_bundle(args.bundle, args.expected_revision, args.expected_run_url, args.expected_run_attempt)
+    except GateError as error:
+        result = {"projection_consistency": "FAIL", "reason_code": error.code}
+    except Exception:
+        result = {"projection_consistency": "FAIL", "reason_code": "INTERNAL_ERROR"}
+    print(_encode(result))
+    return 0 if result["projection_consistency"] == "PASS" else 1
+
+
 def _real_batch_main(args) -> int:
-    """The only hosted batch CLI route. Never publish raw evidence tables."""
+    """Hosted batch route; optionally construct the exact validated public projection."""
     reasons, summary = [], None
     nodes = [{"node_id": node, "outcome": "NOT_RUN", "reason_code": "NOT_RUN"}
              for node in REAL_BATCH_REQUIRED_NODES]
@@ -1894,6 +2144,21 @@ def _real_batch_main(args) -> int:
         target.write_bytes(_real_encoded(report, BATCH_SUMMARY_BYTES - 1) + b"\n")
     except (OSError, GateError):
         failed_write()
+    if args.public_bundle is not None and report["delivery_admission_acceptance"] == "PASS":
+        try:
+            export_real_batch_public_bundle(args.audit, args.required, args.junit,
+                                            args.expected_revision, args.public_bundle)
+        except GateError as error:
+            report["delivery_admission_acceptance"] = "FAIL"
+            report["reason_codes"] = sorted(set(report["reason_codes"]) - {"OK"} | {error.code})
+        except Exception:
+            report["delivery_admission_acceptance"] = "FAIL"
+            report["reason_codes"] = sorted(set(report["reason_codes"]) - {"OK"} | {"INTERNAL_ERROR"})
+        if report["delivery_admission_acceptance"] == "FAIL":
+            try:
+                target.write_bytes(_real_encoded(report, BATCH_SUMMARY_BYTES - 1) + b"\n")
+            except (OSError, GateError):
+                failed_write()
     if args.summary:
         try:
             require(not args.summary.is_symlink(), "WRITE_FAILED")

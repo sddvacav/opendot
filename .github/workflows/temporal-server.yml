@@ -12,6 +12,10 @@ on:
         options:
           - reference
           - batch200
+      retain_public_evidence:
+        description: Retain validated public projection for 30 days (batch200 only; later exact-candidate approval required)
+        type: boolean
+        default: false
   pull_request:
     paths:
       - '.github/workflows/temporal-server.yml'
@@ -85,7 +89,7 @@ jobs:
               "tests/test_temporal_server_gate_verifier.py",
               "tests/test_temporal_server_harness_unit.py",
           )
-          expected = 1092
+          expected = 1164
           temporary = Path(os.environ["RUNNER_TEMP"])
           collection = temporary / "opendot-temporal-unit-collection.log"
           junit = temporary / "opendot-temporal-unit-results.xml"
@@ -196,18 +200,45 @@ jobs:
             > "$RUNNER_TEMP/opendot-temporal-batch200-private.log" 2>&1
 
       - name: Require separate batch evidence and observed cleanup
+        id: batch_evidence
         if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.qualification == 'batch200' }}
         timeout-minutes: 1
-        run: >-
-          python -B ci/verify_temporal_server_gate.py
-          --profile batch200
-          --required ci/temporal-real-batch-nodes.txt
-          --junit "$RUNNER_TEMP/opendot-temporal-batch200-results.xml"
-          --audit "$RUNNER_TEMP/opendot-temporal-batch200-gate/audit"
-          --expected-revision "${{ github.sha }}"
-          --summary "$GITHUB_STEP_SUMMARY"
+        env:
+          OPENDOT_PUBLIC_BATCH_EVIDENCE: ${{ inputs.retain_public_evidence && '1' || '0' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          public_args=()
+          if [ "$OPENDOT_PUBLIC_BATCH_EVIDENCE" = 1 ]; then
+            # Do not silently shorten the documented requested retention.
+            [[ "${GITHUB_RETENTION_DAYS:-}" =~ ^[0-9]+$ ]]
+            test "$GITHUB_RETENTION_DAYS" -ge 30
+            public_args=(--public-bundle "$RUNNER_TEMP/opendot-temporal-batch200-public")
+          fi
+          python -B ci/verify_temporal_server_gate.py \
+            --profile batch200 \
+            --required ci/temporal-real-batch-nodes.txt \
+            --junit "$RUNNER_TEMP/opendot-temporal-batch200-results.xml" \
+            --audit "$RUNNER_TEMP/opendot-temporal-batch200-gate/audit" \
+            --expected-revision "${{ github.sha }}" \
+            --summary "$GITHUB_STEP_SUMMARY" "${public_args[@]}"
 
-# No upload-artifact, service container, pull_request_target, permissions write,
+      - name: Retain only validated batch public projection
+        if: ${{ success() && !cancelled() && github.event_name == 'workflow_dispatch' && inputs.qualification == 'batch200' && inputs.retain_public_evidence && steps.batch_evidence.outcome == 'success' }}
+        timeout-minutes: 1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # official v7.0.1, MIT, Node24
+        with:
+          name: temporal-batch200-public-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/opendot-temporal-batch200-public
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+          archive: true
+
+# Only the explicit manual batch public-projection upload above is admitted.
+# No service container, pull_request_target, permissions write,
 # automatic workflow dispatch, remote service account, secret or model provider.
 # A missing run for a path-filtered PR does not mean acceptance; merge evidence
 # must include this exact job on the candidate revision under review.

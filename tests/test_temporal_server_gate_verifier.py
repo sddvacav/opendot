@@ -1890,3 +1890,292 @@ def test_real_batch_acceptance_file_cap_includes_final_newline(tmp_path, monkeyp
         over_file, over_report = run("over")
         assert "WRITE_FAILED" in over_report["reason_codes"]
         assert not over_file.exists() or over_file.stat().st_size <= maximum - 1
+
+# Export mechanics use clearly labelled FABRICATED_UNIT_DATA throughout. This
+# fixture replaces only the existing hosted trace kind boundary for pure tests;
+# production export/audit/recheck/CLI expose no test-mode switch.
+@pytest.fixture
+def public_projection_fixture(tmp_path, monkeypatch):
+    trace, metadata, histories, outcomes = _real_batch_fixture(1)
+    trace["source_sha256"] = gate.real_batch_source_digests()
+    original_validator = gate.validate_real_batch_trace
+    def fixture_validator(*args, **kwargs):
+        assert args[0]["evidence_kind"] == "FABRICATED_UNIT_DATA"
+        return original_validator(*args, allow_test_data=True, **kwargs)
+    monkeypatch.setattr(gate, "validate_real_batch_trace", fixture_validator)
+    monkeypatch.setattr(gate, "checked_revision", lambda: REVISION)
+    for key, value in {"GITHUB_ACTIONS": "true", "GITHUB_SHA": REVISION,
+        "GITHUB_SERVER_URL": "https://github.com", "GITHUB_REPOSITORY": "unit-fixture/unit-fixture",
+        "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "1"}.items():
+        monkeypatch.setenv(key, value)
+    environment = {"schema_version": gate.PREFIX + "environment.v1",
+        "candidate_revision": REVISION, "requested_revision": REVISION,
+        "workflow_run_url": "https://github.com/unit-fixture/unit-fixture/actions/runs/123",
+        "source_kind": "public_source_checkout", "python_version": "3.12.0", "platform": "linux-x86_64",
+        "versions": gate.SDK_VERSIONS | gate.TOOL_VERSIONS, "cli_version": "1.9.1", "server_version": "1.32.0",
+        "cli_archive_sha256": gate.CLI_ARCHIVE_SHA256, "cli_checksums_sha256": gate.CLI_CHECKSUMS_SHA256,
+        "sdk_wheel_sha256": gate.SDK_WHEEL_SHA256, **gate.current_source_digests(),
+        "owner_sha256": gate.OWNER_SHA256.copy(), "server_profile": gate.SERVER_PROFILE.copy(),
+        "preflight_status": "PASS", "preflight_code": "OK"}
+    records = {"environment.json": environment, "batch-trace.json": trace,
+        "batch-cleanup.json": _real_cleanup(), "diagnostic.json": _fabricated_records()["diagnostic.json"],
+        "collection-receipt.json": {"schema_version": gate.REAL_BATCH_PREFIX + "collection.v1",
+                                    "nodes": list(gate.REAL_BATCH_REQUIRED_NODES)}}
+    for name, kind, rows in (("batch-metadata.json", "metadata", metadata),
+        ("batch-histories.json", "history", histories), ("batch-outcomes.json", "outcomes", outcomes)):
+        records[name] = {"schema_version": gate.REAL_BATCH_PREFIX + kind + ".v1", "rows": rows}
+    audit = tmp_path / "fabricated-audit"
+    audit.mkdir()
+    for name, value in records.items():
+        _write(audit / name, value)
+    required = SOURCE / "ci/temporal-real-batch-nodes.txt"
+    junit = tmp_path / "fabricated-junit.xml"
+    junit.write_text('<testsuite>' + ''.join('<testcase classname="tests.acceptance.temporal_real_batch_gate" name="'
+        + name + '"><system-out>PRIVATE_CANARY</system-out></testcase>'
+        for name in gate.REAL_BATCH_NODE_NAMES) + '</testsuite>')
+    return audit, required, junit, records, original_validator
+
+
+def _export_public(fixture, destination):
+    audit, required, junit, _, _ = fixture
+    return gate.export_real_batch_public_bundle(audit, required, junit, REVISION, destination)
+
+
+def _recheck_public(path):
+    return gate.recheck_real_batch_public_bundle(path, REVISION,
+        "https://github.com/unit-fixture/unit-fixture/actions/runs/123", 1)
+
+
+def test_public_projection_fixture_roundtrip_retains_rows_hashes_and_peak_one(public_projection_fixture, tmp_path):
+    bundle = tmp_path / "public"
+    manifest = _export_public(public_projection_fixture, bundle)
+    assert manifest["evidence_kind"] == "FABRICATED_UNIT_DATA"
+    assert manifest["projection_kind"] == "PUBLIC_PROJECTION" and manifest["retention_days"] == 30
+    assert set(p.name for p in bundle.iterdir()) == set(gate.PUBLIC_FILE_LIMITS) | {"manifest.json"}
+    result = _recheck_public(bundle)
+    assert result["projection_consistency"] == "PASS"
+    summary = result["summary"]
+    assert summary["evidence_kind"] == "FABRICATED_UNIT_DATA"
+    assert summary["validated_terminal"] == 200 and summary["observed_activity_peak"] == 1
+    assert summary["activity_overlap"] == summary["handler_overlap"] == "NOT_DEMONSTRATED"
+    assert result["independent_original_replay"] == "NOT_EVALUATED"
+    all_bytes = b"".join(p.read_bytes() for p in bundle.iterdir())
+    assert b"PRIVATE_CANARY" not in all_bytes and str(tmp_path).encode() not in all_bytes
+    assert b"system-out" not in all_bytes and b"diagnostic.json" not in all_bytes
+    for name, row in manifest["files"].items():
+        actual = (bundle / name).read_bytes()
+        assert row == {"sha256": hashlib.sha256(actual).hexdigest(), "bytes": len(actual)}
+    assert sum(p.stat().st_size for p in bundle.iterdir()) <= gate.PUBLIC_TOTAL_BYTES
+
+
+@pytest.mark.parametrize("stage", ("audit", "export", "recheck"))
+def test_public_projection_never_accepts_fixture_as_hosted(public_projection_fixture, tmp_path, monkeypatch, stage):
+    bundle = tmp_path / "public"
+    if stage == "recheck":
+        _export_public(public_projection_fixture, bundle)
+    monkeypatch.setattr(gate, "validate_real_batch_trace", public_projection_fixture[4])
+    with pytest.raises(gate.GateError, match="INVALID_SCHEMA"):
+        if stage == "audit": gate.validate_real_batch_audit(public_projection_fixture[0], REVISION)
+        elif stage == "export": _export_public(public_projection_fixture, bundle)
+        else: _recheck_public(bundle)
+    assert stage == "recheck" or not bundle.exists()
+
+
+@pytest.mark.parametrize("name", tuple(gate.PUBLIC_FILE_LIMITS)[:-1] + ("diagnostic.json", "collection-receipt.json"))
+def test_public_projection_unknown_fields_fail_before_output(public_projection_fixture, tmp_path, name):
+    audit, _, _, records, _ = public_projection_fixture
+    records[name]["private_token"] = "PRIVATE_CANARY"
+    _write(audit / name, records[name])
+    with pytest.raises(gate.GateError): _export_public(public_projection_fixture, tmp_path / "public")
+    assert not (tmp_path / "public").exists()
+
+
+@pytest.mark.parametrize("fault", ("extra_file", "extra_dir", "symlink_file", "symlink_parent", "hardlink",
+                                  "oversize", "malformed_json", "duplicate_json", "incomplete_cleanup", "failed_junit"))
+def test_public_projection_rejects_unsafe_or_invalid_inputs(public_projection_fixture, tmp_path, fault):
+    audit, required, junit, records, validator = public_projection_fixture
+    selected = public_projection_fixture
+    if fault == "extra_file": (audit / "private.log").write_text("PRIVATE_CANARY")
+    if fault == "extra_dir": (audit / "raw-history").mkdir()
+    if fault == "symlink_file":
+        target = audit / "batch-trace.json"
+        target.rename(tmp_path / "trace.json")
+        target.symlink_to(tmp_path / "trace.json")
+    if fault == "symlink_parent":
+        alias = tmp_path / "alias"; alias.symlink_to(audit, target_is_directory=True)
+        selected = (alias, required, junit, records, validator)
+    if fault == "hardlink":
+        import os
+        os.link(audit / "batch-trace.json", tmp_path / "hardlink.json")
+    if fault == "oversize": (audit / "batch-trace.json").write_bytes(b" " * (gate.BATCH_TRACE_BYTES + 1))
+    if fault == "malformed_json": (audit / "batch-trace.json").write_bytes(b"PRIVATE_CANARY")
+    if fault == "duplicate_json": (audit / "batch-trace.json").write_bytes(b'{"private":1,"private":2}')
+    if fault == "incomplete_cleanup":
+        records["batch-cleanup.json"]["active_activity_calls"] = 1
+        _write(audit / "batch-cleanup.json", records["batch-cleanup.json"])
+    if fault == "failed_junit": junit.write_text(junit.read_text().replace('<system-out>', '<failure/> <system-out>', 1))
+    with pytest.raises(gate.GateError): _export_public(selected, tmp_path / "public")
+    assert not (tmp_path / "public").exists()
+
+
+@pytest.mark.parametrize("target", ("batch-trace.json", "junit", "required", "new_file", "output"))
+def test_public_projection_detects_mutation_before_publish(public_projection_fixture, tmp_path, monkeypatch, target):
+    audit, required, junit, records, validator = public_projection_fixture
+    if target == "required":
+        copy = tmp_path / "required.txt"; copy.write_bytes(required.read_bytes())
+        public_projection_fixture = (audit, copy, junit, records, validator)
+        required = copy
+    original = gate._same_snapshot
+    calls = 0
+    def changed(path, snapshot, names):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            if target == "new_file": (audit / "private.log").write_text("PRIVATE_CANARY")
+            elif target == "output": (tmp_path / "public").mkdir()
+            else:
+                selected = junit if target == "junit" else required if target == "required" else audit / target
+                selected.write_bytes(selected.read_bytes() + b" ")
+        return original(path, snapshot, names)
+    monkeypatch.setattr(gate, "_same_snapshot", changed)
+    with pytest.raises(gate.GateError): _export_public(public_projection_fixture, tmp_path / "public")
+    assert not (tmp_path / "public").exists() or not list((tmp_path / "public").iterdir())
+    assert not list(tmp_path.glob(".opendot-public-stage-*"))
+
+
+@pytest.mark.parametrize("fault", ("existing", "symlink", "parent_symlink", "inside_audit", "write_failure"))
+def test_public_projection_rejects_output_contamination(public_projection_fixture, tmp_path, monkeypatch, fault):
+    destination = tmp_path / "public"
+    if fault == "existing": destination.mkdir(); (destination / "private.log").write_text("PRIVATE_CANARY")
+    if fault == "symlink": destination.symlink_to(tmp_path / "absent")
+    if fault == "parent_symlink":
+        alias = tmp_path / "alias"; alias.symlink_to(tmp_path, target_is_directory=True); destination = alias / "public"
+    if fault == "inside_audit": destination = public_projection_fixture[0] / "public"
+    if fault == "write_failure":
+        original = gate.Path.open
+        def fail(path, *args, **kwargs):
+            if args == ("xb",): raise OSError("PRIVATE_CANARY")
+            return original(path, *args, **kwargs)
+        monkeypatch.setattr(gate.Path, "open", fail)
+    with pytest.raises(gate.GateError): _export_public(public_projection_fixture, destination)
+    assert not list(tmp_path.glob(".opendot-public-stage-*"))
+
+
+@pytest.mark.parametrize("fault", ("row_mutation", "rehash_mutation", "extra_field", "missing_file", "extra_file",
+                                  "manifest_retention", "manifest_revision", "manifest_kind", "summary_bool", "source_changed"))
+def test_public_projection_recheck_rejects_tampering(public_projection_fixture, tmp_path, monkeypatch, fault):
+    bundle = tmp_path / "public"; manifest = _export_public(public_projection_fixture, bundle)
+    if fault in {"row_mutation", "rehash_mutation", "extra_field", "summary_bool"}:
+        name = "batch-summary.json" if fault == "summary_bool" else "batch-metadata.json"
+        data = json.loads((bundle / name).read_bytes())
+        if fault == "extra_field": data["private_token"] = "PRIVATE_CANARY"
+        elif fault == "summary_bool": data["summary"]["outstanding"] = False
+        else: data["rows"][0]["attempt"] = 2
+        _write(bundle / name, data)
+        if fault != "row_mutation":
+            raw = (bundle / name).read_bytes()
+            manifest["files"][name] = {"sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)}
+    if fault == "missing_file": (bundle / "batch-outcomes.json").unlink()
+    if fault == "extra_file": (bundle / "private.log").write_text("PRIVATE_CANARY")
+    if fault == "manifest_retention": manifest["retention_days"] = 90
+    if fault == "manifest_revision": manifest["revision"] = "b" * 40
+    if fault == "manifest_kind": manifest["projection_kind"] = "ORIGINAL_EVIDENCE"
+    if fault == "source_changed": monkeypatch.setattr(gate, "real_batch_source_digests", lambda source=None: {})
+    _write(bundle / "manifest.json", manifest)
+    with pytest.raises(gate.GateError): _recheck_public(bundle)
+
+
+def test_public_projection_cli_failure_emits_fixed_code_only(tmp_path, capsys):
+    assert gate.main(["recheck-public-bundle", "--bundle", str(tmp_path / "PRIVATE_CANARY"),
+        "--expected-revision", "PRIVATE_CANARY", "--expected-run-url", "PRIVATE_CANARY", "--expected-run-attempt", "1"]) == 1
+    output = capsys.readouterr().out
+    assert "PRIVATE_CANARY" not in output
+    assert json.loads(output)["projection_consistency"] == "FAIL"
+
+
+def test_public_projection_cli_is_opt_in_and_reference_refuses(tmp_path):
+    with pytest.raises(SystemExit):
+        gate.main(["--required", "unused", "--junit", "unused", "--audit", str(tmp_path),
+            "--expected-revision", REVISION, "--public-bundle", str(tmp_path / "public")])
+
+
+@pytest.mark.parametrize("attempt", (None, "0", "-1", "01", "1.0", "100000", "PRIVATE_CANARY"))
+def test_public_projection_export_requires_bounded_run_attempt(public_projection_fixture, tmp_path, monkeypatch, attempt):
+    if attempt is None: monkeypatch.delenv("GITHUB_RUN_ATTEMPT", raising=False)
+    else: monkeypatch.setenv("GITHUB_RUN_ATTEMPT", attempt)
+    with pytest.raises(gate.GateError, match="CI_IDENTITY"):
+        _export_public(public_projection_fixture, tmp_path / "public")
+    assert not (tmp_path / "public").exists()
+
+
+@pytest.mark.parametrize("field,value", (("run_attempt", 2), ("run_attempt", True),
+    ("workflow_path", ".github/workflows/private.yml"), ("workflow_sha256", "b" * 64)))
+def test_public_projection_recheck_binds_run_attempt_and_workflow(public_projection_fixture, tmp_path, field, value):
+    bundle = tmp_path / "public"; manifest = _export_public(public_projection_fixture, bundle)
+    manifest[field] = value; _write(bundle / "manifest.json", manifest)
+    with pytest.raises(gate.GateError): _recheck_public(bundle)
+
+
+@pytest.mark.parametrize("before,after", (
+    ("steps.batch_evidence.outcome == 'success' }}", "steps.batch_evidence.outcome == 'success' || true }}"),
+    ("        with:\n          name: temporal-batch200", "        with:\n          name: temporal-batch200" + "\n      - uses: 'actions/upload-artifact@other'\n#"),
+    ("043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", "ea165f8d65b6e75b540449e92b4886f43607fa02"),
+    ("path: ${{ runner.temp }}/opendot-temporal-batch200-public", "path: ${{ runner.temp }}/opendot-temporal-batch200-gate/audit"),
+    ("path: ${{ runner.temp }}/opendot-temporal-batch200-public", "path: ${{ runner.temp }}/**"),
+    ("contents: read", "contents: write"),
+    ("permissions:\n  contents: read", "permissions:\n  contents: read\n  actions: write"),
+    ("include-hidden-files: false", "include-hidden-files: true"),
+    ("overwrite: false", "overwrite: true"), ("retention-days: 30", "retention-days: 90"),
+    ("inputs.qualification == 'batch200' && inputs.retain_public_evidence", "inputs.qualification == 'reference' && inputs.retain_public_evidence"),
+    ("if-no-files-found: error", "if-no-files-found: ignore"),
+))
+def test_public_projection_workflow_closed_guard_rejects_semantic_or_spelling_bypass(before, after):
+    source = (SOURCE / gate.PUBLIC_WORKFLOW_PATH).read_bytes()
+    gate.validate_public_batch_workflow(source)
+    assert before.encode() in source and before != after
+    with pytest.raises(gate.GateError, match="SOURCE_MISMATCH"):
+        gate.validate_public_batch_workflow(source.replace(before.encode(), after.encode()))
+
+
+@pytest.mark.parametrize("fault", ("none", "export_error", "summary_error"))
+def test_public_projection_main_gates_output_and_fails_closed(public_projection_fixture, tmp_path, monkeypatch, capsys, fault):
+    audit, required, junit, _, _ = public_projection_fixture
+    destination = tmp_path / "public"
+    summary = tmp_path / "summary.txt" if fault != "summary_error" else tmp_path / "absent" / "summary.txt"
+    if fault == "export_error":
+        def fail(*args, **kwargs): raise gate.GateError("PRIVACY_REJECTED")
+        monkeypatch.setattr(gate, "export_real_batch_public_bundle", fail)
+    result = gate.main(["--profile", "batch200", "--required", str(required), "--junit", str(junit),
+        "--audit", str(audit), "--expected-revision", REVISION, "--summary", str(summary),
+        "--public-bundle", str(destination)])
+    report = json.loads(capsys.readouterr().out.splitlines()[0])
+    assert result == (0 if fault == "none" else 1)
+    assert (report["delivery_admission_acceptance"] == "PASS") == (fault == "none")
+    assert json.loads((audit / "batch-acceptance.json").read_bytes()) == report
+    if destination.exists():
+        manifest = json.loads((destination / "manifest.json").read_bytes())
+        assert manifest["evidence_kind"] == "FABRICATED_UNIT_DATA"
+    assert fault != "export_error" or not destination.exists()
+
+
+def test_public_projection_default_main_has_no_export_side_effect(public_projection_fixture, tmp_path, capsys):
+    audit, required, junit, _, _ = public_projection_fixture
+    assert gate.main(["--profile", "batch200", "--required", str(required), "--junit", str(junit),
+        "--audit", str(audit), "--expected-revision", REVISION]) == 0
+    capsys.readouterr()
+    assert not list(tmp_path.glob("*public*")) and not list(tmp_path.glob(".opendot-public-stage-*"))
+
+
+def test_public_projection_successful_offline_cli_does_not_consult_host_identity(public_projection_fixture, tmp_path, monkeypatch, capsys):
+    destination = tmp_path / "public"; _export_public(public_projection_fixture, destination)
+    def forbidden(*args, **kwargs): raise AssertionError("host identity must not be consulted for offline recheck")
+    monkeypatch.setattr(gate, "checked_revision", forbidden)
+    monkeypatch.setattr(gate, "trusted_run_url", forbidden)
+    for key in ("GITHUB_ACTIONS", "GITHUB_SHA", "GITHUB_RUN_ATTEMPT"):
+        monkeypatch.delenv(key, raising=False)
+    assert gate.main(["recheck-public-bundle", "--bundle", str(destination), "--expected-revision", REVISION,
+        "--expected-run-url", "https://github.com/unit-fixture/unit-fixture/actions/runs/123",
+        "--expected-run-attempt", "1"]) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["projection_consistency"] == "PASS" and result["summary"]["evidence_kind"] == "FABRICATED_UNIT_DATA"
+    assert result["independent_original_replay"] == "NOT_EVALUATED"
