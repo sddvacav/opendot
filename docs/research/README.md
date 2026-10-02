@@ -6,6 +6,8 @@
 
 [2026-10-02 互操作与部署研究补充 / Interoperability and deployability supplement](interoperability-delta-20261002/README.md)：补充CAD语义交换、联合仿真时间契约、可移植来源记录和部署证据；四条既有来源新纳入，历史18/22计数不变，全部建议为PROPOSED / NOT_RUN。
 
+[2026-10-02 高瓴相关原始来源补充 / Hillhouse-related source addition](hillhouse-delta-20261002/README.md)：新收录2026-02-23的历史商业观点，仅作既有O3的INFERENCE / REFERENCE_ONLY；不新增需求或优先级，仍为PROPOSED / NOT_RUN。
+
 [结构化来源与需求索引](source-needs-index.json)收录日期、原文链接、证据限制、需求推断、候选功能、验收建议和优先级。索引中的全部功能映射为 PROPOSED；它不自动将需求升级为已实现能力。
 
 ## 阅读顺序

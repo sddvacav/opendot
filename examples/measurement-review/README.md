@@ -34,9 +34,34 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
 cat "$CMP_PARENT/demo/summary.txt"
 ```
 
-The result is `CHECKED`, exit **0**: A has count 3, sum 6, mean 2; B has count 3,
-sum 12, mean 4. The exact absolute mean difference is **2/1**, the agreeing
-tolerance sources contain `2` and `2.0`, and `within_tolerance=true`.
+### Preview: a checked synthetic result
+
+This excerpt from `$CMP_PARENT/demo/summary.txt` is produced by the command above:
+
+```text
+Measurement comparison: CHECKED
+Evidence: synthetic (local/private by default)
+A: count=3, sum=6.0, mean=2.0 au
+B: count=3, sum=12.0, mean=4.0 au
+Absolute mean difference: 2/1 au
+Declared tolerance: 2/1 au
+Within tolerance
+Scientific acceptance: false; device control: false; independent review: NOT_EVALUATED
+```
+
+In `report.json`, the means are `summary.conditions.A.mean` and
+`summary.conditions.B.mean`. Both `comparison.absolute_mean_difference` and
+`comparison.tolerance` are `{"numerator": 2, "denominator": 1}`;
+`comparison.within_tolerance=true`, `status="CHECKED"` and `checked=true`.
+The agreeing tolerance sources contain `2` and `2.0`.
+
+**`CHECKED` means the arithmetic was checked, even if a result is outside tolerance.**
+It does not mean an experiment or scientific conclusion was accepted. These are
+six invented rows in arbitrary units `au`, with `evidence_role="synthetic"`,
+`scientific_accepted=false`, `device_control_authorized=false` and
+`independent_review="NOT_EVALUATED"`. The demo exits **0**; the [read-only
+verification below](#verify-saved-output-without-writing-to-it) checks the saved
+result against separately retained receipt pins.
 
 The JSON receipt goes to stdout; the human summary goes to stderr and
 `summary.txt`. The fresh output also contains `report.json` and canonical

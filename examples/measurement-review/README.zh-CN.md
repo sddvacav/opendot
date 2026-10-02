@@ -29,9 +29,32 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
 cat "$CMP_PARENT/demo/summary.txt"
 ```
 
-预期状态为 `CHECKED`，退出码 **0**。A：数量 3、总和 6、均值 2；
-B：数量 3、总和 12、均值 4。精确均值绝对差为 **2/1**；两个容差来源
-分别为 `2`、`2.0`，数值一致，`within_tolerance=true`。
+### 预览：已复核的合成结果
+
+运行上面的命令后，`$CMP_PARENT/demo/summary.txt` 的实际输出摘录如下（程序输出为英文）：
+
+```text
+Measurement comparison: CHECKED
+Evidence: synthetic (local/private by default)
+A: count=3, sum=6.0, mean=2.0 au
+B: count=3, sum=12.0, mean=4.0 au
+Absolute mean difference: 2/1 au
+Declared tolerance: 2/1 au
+Within tolerance
+Scientific acceptance: false; device control: false; independent review: NOT_EVALUATED
+```
+
+`report.json` 中的均值字段是 `summary.conditions.A.mean` 和
+`summary.conditions.B.mean`。`comparison.absolute_mean_difference` 与
+`comparison.tolerance` 均为 `{"numerator": 2, "denominator": 1}`；
+`comparison.within_tolerance=true`、`status="CHECKED"`、`checked=true`。
+两个容差来源分别为 `2`、`2.0`，数值一致。
+
+**`CHECKED` 表示算术已复核，超出容差的结果也可以是 `CHECKED`。**
+它不代表实验或科学结论获准。这是六行虚构数据，使用任意单位 `au`，
+`evidence_role="synthetic"`、`scientific_accepted=false`、
+`device_control_authorized=false`、`independent_review="NOT_EVALUATED"`。
+demo 退出码为 **0**；[下方的只读验证](#只读验证已有输出)使用单独保留的回执哈希核验已保存结果。
 
 JSON 回执输出到 stdout，文字摘要输出到 stderr 并保存为 `summary.txt`。
 新输出目录还包含 `report.json` 和 canonical `artifacts/` 对象。

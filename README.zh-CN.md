@@ -1,12 +1,13 @@
 # OpenDot Engineering
 
-## 当前 0.3.0a4 源码／软件包候选
+## 当前 0.3.0a4 实验性预发布版
 
-**ALPHA / NOT_SCORED；本地候选，此源码不证明已发布。**
-本次一致快照包含可选的[离线 A2A worker-turn 适配器](docs/a2a-worker-turn.md)、
+**ALPHA / NOT_SCORED；[实验性预发布版已发布](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)。**
+已接受的发行源码对应提交 `2d16190a8121410bbeea252869b196f7891e1696`。
+该发行版包含可选的[离线 A2A worker-turn 适配器](docs/a2a-worker-turn.md)、
 配套源码示例与版本固定的安装说明。默认运行时依赖仍为空。
-[a4 安装入门](docs/installed-quickstart.zh-CN.md)要求来自外部独立复核的校验清单摘要；
-最终精确标识与分别限定范围的验证结果记录在候选的外部发布说明中。
+请按 [a4 安装入门](docs/installed-quickstart.zh-CN.md)，使用[发行页面](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)上来自独立复核的校验清单摘要。
+精确产物标识与分别限定范围的验证结果记录在[已发布的发行说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md)中。
 
 - 安装 wheel：无额外依赖的函数／产物结果、有界读取、只读帮助与复制的轻量公开 fixture；不从源码导入
 - 匹配的完整源码：[测量比较](examples/measurement-review/README.zh-CN.md)使用 `PYTHONPATH=src`，
@@ -31,6 +32,17 @@
 OpenDot Engineering 是一套用于本地工具执行和结果检查的 Python 工具包。为函数声明权限与验收器，按 SHA-256 保存输出，再分别检查保存的字节是否完整、结果是否被接受。
 
 它适合开发者与科研工程人员构建可复核的工作流原型：把函数输出连接到产物存储、复核合成测量数据的统计结果，或创建受控的本地 Git 工作副本。先运行下面的小示例，再按需要查看 [API 与示例](#按需要选择入口)。
+
+**合成结果预览** · [运行示例并核验已保存的输出](examples/measurement-review/README.zh-CN.md#预览已复核的合成结果)
+
+`A.mean=2.0` · `B.mean=4.0` · 精确差值 `2/1` · 容差 `2/1`（单位均为 `au`）  
+`CHECKED` · `within_tolerance=true`
+
+`summary.txt` 提供文字摘要；`report.json` 中的对应字段为 `summary.conditions`、
+`comparison` 和 `status`。这是仅源码示例，不是安装 wheel 后的 API；
+它使用六行虚构数据，并非实验数据。`CHECKED` 表示算术已复核，超出容差的结果也可以是
+`CHECKED`，不代表科学验收。所有结果保持 `scientific_accepted=false`、
+`device_control_authorized=false`、`independent_review="NOT_EVALUATED"`。
 
 **历史实验性 alpha · 0.3.0a3 · NOT_SCORED。** 下载 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)，按[精确产物安装指南](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.zh-CN.md)取得已发布 wheel、匹配的源码示例并核验 SHA-256。要求 Python 3.12+；默认软件包没有运行时 Python 依赖。已复核的环境是 Linux。
 
