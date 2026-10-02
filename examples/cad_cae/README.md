@@ -6,6 +6,15 @@ One source-only command composes the existing geometry, Gmsh mesh and CalculiX
 thermal adapters for a public synthetic bar. It replaces the three manual adapter
 commands without adding a solver, scheduler, process wrapper or artifact store.
 
+The qualification paragraph below retains the historical full-workflow preparation
+status. A later, separate [native geometry reference](native-geometry-reference/README.md)
+provides one reviewed static synthetic STEP and a new public evidence summary:
+one CAD-only export/reimport plus an independently implemented check using the same
+Open CASCADE stack. It does not qualify the full CAD/mesh/thermal workflow. That
+reference's three fixed files are the sole reviewed static exception to this
+page's generated-output exclusion; arbitrary runtime outputs, raw receipts,
+dependency wheels and native binaries still do not belong in the source tree.
+
 **Qualification for this candidate is fabricated contract tests only. Actual CAD,
 Gmsh and CalculiX execution has not been performed.** The preparation environment
 has Python 3.12.14 and a separate existing pytest 9.1.1 environment. The default
