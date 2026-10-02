@@ -485,3 +485,21 @@ URL. [Repository retention](https://docs.github.com/en/repositories/managing-you
 limits and artifact/run/repository deletion can end access. This is bounded
 retention, not permanent public archival. Download promptly within the actual
 expiry window for later authorized review; no automatic external mirror is added.
+
+## Local evidence presentation (separate allowance)
+
+The [local evidence inspector](evidence-viewer/README.md) opens the exact eight
+public projection files through an explicit local file selection. Its bounded
+200-job ledger and event detail preserve sequence for equal timestamps, distinguish
+missing/null from zero, and label Activity and handler overlap separately. The
+built-in three-job demonstration is explicitly synthetic and unverified; it does
+not reconstruct the unavailable first-run per-job evidence.
+
+The browser establishes only that selected bytes match a supplied manifest.
+Reported delivery, cleanup and semantic values remain assertions; this does not
+authenticate a run, establish scientific validity, or replay original evidence.
+The existing revision-bound Python public-bundle recheck above remains the
+projection-consistency authority. This separate documentation/presentation
+allowance changes no Python owner or ADR 004 runtime scope. Its Node tests and
+required browser visual/accessibility QA are separate from all Python/hosted
+acceptance counts; blocked visual QA must not be reported as passed.
