@@ -67,7 +67,7 @@ jobs:
           from pathlib import Path
           import subprocess
           import sys
-          from verify_temporal_server_gate import parse_junit
+          from verify_temporal_server_gate import verify_collected_unit_junit
 
           files = (
               "tests/test_temporal_activity_contract.py",
@@ -77,7 +77,7 @@ jobs:
               "tests/test_temporal_server_gate_verifier.py",
               "tests/test_temporal_server_harness_unit.py",
           )
-          expected = 818
+          expected = 849
           temporary = Path(os.environ["RUNNER_TEMP"])
           collection = temporary / "opendot-temporal-unit-collection.log"
           junit = temporary / "opendot-temporal-unit-results.xml"
@@ -99,14 +99,13 @@ jobs:
               prefixes = tuple(path + "::" for path in files)
               nodes = [line for line in collection.read_text(encoding="utf-8").splitlines()
                        if line.startswith(prefixes)]
-              cases = list(parse_junit(junit, maximum=2 * 1024 * 1024).iter("testcase"))
-              actual = [case.attrib["classname"].replace(".", "/") + ".py::" + case.attrib["name"]
-                        for case in cases]
+              cases = verify_collected_unit_junit(nodes, junit, files=files, expected_count=expected)
+              actual = [case["node_id"] for case in cases]
               report.update(collected_node_count=len(nodes), executed_node_count=len(cases),
                             collection_sha256=hashlib.sha256("\n".join(nodes).encode()).hexdigest())
-              for tag, key in (("failure", "failed_count"), ("error", "error_count"), ("skipped", "skipped_count")):
-                  report[key] = sum(any(child.tag == tag for child in case) for case in cases)
-              report["passed_count"] = len(cases) - report["failed_count"] - report["error_count"] - report["skipped_count"]
+              for outcome, key in (("FAIL", "failed_count"), ("ERROR", "error_count"), ("SKIP", "skipped_count")):
+                  report[key] = sum(case["outcome"] == outcome for case in cases)
+              report["passed_count"] = sum(case["outcome"] == "PASS" for case in cases)
               if (collect.returncode == tests.returncode == 0 and len(nodes) == len(set(nodes)) == expected
                       and len(actual) == len(set(actual)) == expected and sorted(actual) == sorted(nodes)
                       and report["passed_count"] == expected and report["failed_count"] == report["error_count"] == report["skipped_count"] == 0):
