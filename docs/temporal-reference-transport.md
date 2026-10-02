@@ -2,21 +2,25 @@
 
 Historical implementation qualification, 2 October 2026: optional source feature merged in [PR #18](https://github.com/sddvacav/opendot/pull/18), with an independently accepted bounded real-server qualification. The [exact hosted run and bilingual evidence summary](temporal-qualification-evidence.md) record 818 SDK/pure passes and seven real-server passes on the exact tree merged to `main`. This establishes only single-host loopback queued first delivery after a graceful quiescent restart and recorded-result replay for `synthetic.bounded_sum.v1`. No in-flight crash recovery, multi-host execution, global exactly-once, production deployment, scientific validity or full MVP is established; `NOT_SCORED` is unchanged.
 
-Current release status: this optional feature is packaged in the [0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and absent from unchanged published v0.3.0a1 assets. The [version-pinned installed guide](installed-quickstart.md) now uses the a2 assets; it does not install or run Temporal. The [a2 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md) bind the [released source commit](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045) to exact assets and the fresh [a2 Temporal qualification run](https://github.com/sddvacav/opendot/actions/runs/36963928744). That run tested a PR merge revision with the same tree as the released source, not the later main commit; it is separate from the earlier qualification above. The dated [ADR 004](decisions/004-temporal-reference-transport.md) and [failure matrix](temporal-reference-failure-matrix.md) retain their historical decisions, SDK-only checkpoint and unexecuted cases; later qualification does not retroactively turn them into passes.
+Current release status: this optional feature is packaged in the [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3), together with the optional bounded-read API and pure finite-batch preparation. The [a3 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) bind [released source commit `30610de43da81801e7b88517459fbdf0f667ca2d`](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d), tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`, to exact assets. The [a3 Temporal qualification run](https://github.com/sddvacav/opendot/actions/runs/36981793339) tested PR merge revision `7ab3c1f7be3dd22024239cf3d4d4813f7646a7d3` with that same tree: 849 SDK/pure passes and the original seven real-server passes, not a live 200-job batch. The [current version-pinned installed guide](installed-quickstart.md) uses a3 assets and does not install or run Temporal; it is a later documentation follow-on because the frozen source archive retains historical a2 guide text.
+
+Historical a2 release status: the optional feature was already packaged in [0.3.0a2](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and is absent from unchanged published v0.3.0a1 assets. The [a2 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md) bind the [a2 released source commit](https://github.com/sddvacav/opendot/commit/359f781a5aa1650ae92b1af81cf369a17c444045) to exact assets and the [a2 Temporal qualification run](https://github.com/sddvacav/opendot/actions/runs/36963928744). That run tested a PR merge revision with the same tree as the a2 released source, not the later main commit; it is separate from the earlier qualification above. The dated [ADR 004](decisions/004-temporal-reference-transport.md) and [failure matrix](temporal-reference-failure-matrix.md) retain their historical decisions, SDK-only checkpoint and unexecuted cases; later qualification does not retroactively turn them into passes.
 
 
-Unreleased source increment: [ADR 005](decisions/005-bounded-artifact-reads.md)
-changes only the same canonical store's optional bounded-read branch and this
-Activity's fixed input allowance. The new input call acquires at most 257 object
-bytes for its 256-byte limit before oversize refusal. Fresh
+Historical PR #23 source-increment qualification, now packaged in a3:
+[ADR 005](decisions/005-bounded-artifact-reads.md) changes only the same canonical
+store's optional bounded-read branch and this Activity's fixed input allowance.
+The input call acquires at most 257 object bytes for its 256-byte limit before
+oversize refusal. The
 [PR 23 CI evidence](pr23-ci-evidence.json) records 818 SDK/pure passes and
 seven finite real-server passes at PR merge revision
 `2459aa7ac50420cd910f8a934428ca666feb3460`, with the same source tree as
 main merge commit `26e301795bcd6bf2ad26274e25fed7c8fc2106a8`. The public
 projections and hosted verifier result do not recover missing historical local
-logs or the complete hosted audit directory. These source checks do not qualify
-a new installed wheel. The released a2 wheel and its historical real-server
-PASS above remain unchanged.
+logs or the complete hosted audit directory. Those PR #23 source checks alone did not qualify
+a new installed wheel; the separate a3 release evidence above supplies its own
+exact-artifact scope. The released a2 wheel and its historical real-server PASS
+above remain unchanged.
 
 ## What is implemented
 
@@ -35,7 +39,7 @@ The finite pure profile accepts exactly integer `left` and `right` in [-1,000,00
 
 The real SDK `activity.info()` is the metadata source. Attempt must be exact integer 1, mode non-local, actual RetryPolicy present with exact integer maximum 1, and both received timeouts exactly the fixed profile values. Activity type, namespace, queue and nonempty bounded Workflow/run IDs must match the admitted mode. Missing/unknown/malformed metadata refuses. Submission options alone are not evidence about actual received server metadata.
 
-All those checks, strict request/reference checks and the declaration-signature recheck happen before per-invocation CAS access. Canonical references are reconstructed as the original ArtifactRef type; a claimed integrity flag is reset before canonical verified-byte retrieval. The current unreleased increment calls `get_bytes(ref, max_bytes=256)`;
+All those checks, strict request/reference checks and the declaration-signature recheck happen before per-invocation CAS access. Canonical references are reconstructed as the original ArtifactRef type; a claimed integrity flag is reset before canonical verified-byte retrieval. The current source and released a3 Activity call `get_bytes(ref, max_bytes=256)`;
 actual-vs-declared size is still checked after the bounded verified read.
 An oversize object refuses before hashing or decoding. The canonical source-audit JSON decoder rejects duplicate keys/nonfinite literals, and exact schema validation rejects floating values, overflowing exponents, nested data, unexpected keys and booleans-as-integers.
 
@@ -58,7 +62,7 @@ Runtime exceptions are not wrapped. SDK conversion, completion, deadlines and mi
 
 ## Trust limits and qualified integration scope
 
-Only synthetic, nonsensitive data in one trusted operator domain is admitted. Producer, Workflow author, registrar, worker, store owner and reader need an independently owned authorization boundary. Anyone able to schedule this endpoint can exercise its fixed worker authority. Queue names/digests are not authentication. Only one trusted local CAS and one writer process with one concurrent profile Activity are admitted; no multi-host availability or multi-process safety is provided. Root ancestors and ordinary regular local objects are trusted. The unreleased
+Only synthetic, nonsensitive data in one trusted operator domain is admitted. Producer, Workflow author, registrar, worker, store owner and reader need an independently owned authorization boundary. Anyone able to schedule this endpoint can exercise its fixed worker authority. Queue names/digests are not authentication. The original seven-case reference qualification admits only one trusted local CAS and one writer process with one concurrent profile Activity; the separate finite batch below has its own bounded eight-slot configuration. Neither provides multi-host availability or multi-process safety. Root ancestors and ordinary regular local objects are trusted. The a3
 opt-in input read uses unbuffered requests and acquires at most 257 object bytes,
 independently of declared size, under [ADR 005](decisions/005-bounded-artifact-reads.md).
 It does not bound kernel I/O, peak memory, wall time, hostile filesystem races or
@@ -67,7 +71,7 @@ operations are unchanged; this is not a global adversarial-memory guarantee.
 
 At most one runtime invocation is admitted per current Activity invocation. A separate submission can execute again, even with the same digest and fixed Activity ID. No global uniqueness, exactly-once effects, durable callable recovery, eventual delivery, arbitrary read-only introspection, scientific acceptance or per-result independent acceptance is claimed. Temporal owns scheduling/history; OpenDot owns no new orchestrator, registry or store.
 
-The accepted hosted configuration used Ubuntu 24.04 / Python 3.12.14, SDK 1.34.0, CLI 1.9.1 and server 1.32.0, with the same trusted local CAS and SQLite across three server generations. Five actual received Info records, eight history snapshots and 15 invocation-counter records bind the finite experiment. All three servers exited gracefully with code 0; all 12 worker generations completed awaited shutdown. The recorded-result replay used no Activity worker, retained the same result reference, and left its handler count at one. The [qualification evidence](temporal-qualification-evidence.md) separates these observations from the still-unproven cases.
+The historical seven-case accepted hosted configuration used Ubuntu 24.04 / Python 3.12.14, SDK 1.34.0, CLI 1.9.1 and server 1.32.0, with the same trusted local CAS and SQLite across three server generations. Five actual received Info records, eight history snapshots and 15 invocation-counter records bind the finite experiment. All three servers exited gracefully with code 0; all 12 worker generations completed awaited shutdown. The recorded-result replay used no Activity worker, retained the same result reference, and left its handler count at one. The [qualification evidence](temporal-qualification-evidence.md) separates these observations from the still-unproven cases.
 
 Lost acknowledgment remains uncertain, never converted to a recovery success. Consumer Workflow and operator controls must exclude retries, resets and resubmission loops for the admitted use. Matching local CAS access, reviewed exact handler/validator binding, worker concurrency and grants remain deployment-specific requirements. Omitted-policy refusal is covered by the SDK/pure contract checks; the hosted run's five received Info records contain the required policy and exact timeouts. If a different server configuration omits or normalizes required metadata incompatibly, that configuration is NO-GO. This finite qualification does not accept other deployments or arbitrary handlers.
 
@@ -79,10 +83,43 @@ Before the hosted qualification, only scheduling fakes and ActivityEnvironment c
 
 The optional Temporal Python SDK is published by Temporal Technologies under the MIT license: [SDK 1.34.0 license](https://github.com/temporalio/sdk-python/blob/1.34.0/LICENSE). The SDK is an external pinned dependency; no SDK source is vendored into this candidate. Official wheel/source/license metadata and hashes are retained with the separate dependency qualification evidence. OpenDot's existing Apache license and NOTICE remain unchanged.
 
-### Separate 200-job preparation (2026-10-02)
+### Later source-only 200-job qualification (2026-10-02)
 
-The [finite batch protocol](temporal-batch-qualification.md) now describes a
-separate manual-only `batch200` qualification candidate. Its real causal schema,
-shared admission boundary and original result/history binding are local
-preparation only. The historical seven-case reference selection remains intact.
-No hosted 200-job run or observed concurrency result is established by this code.
+The [finite batch protocol](temporal-batch-qualification.md) preserves its earlier
+preparation checkpoints and defines the separate manual-only `batch200` profile.
+The later real-batch and public-retention changes are source-only follow-ons;
+they are absent from the frozen a3 wheel and source archives. The historical
+seven-case reference selection remains intact.
+
+The [first hosted 200-job run](https://github.com/sddvacav/opendot/actions/runs/36984666613)
+retains its original evidence limitation: its complete raw 200-row table and
+2,200-row trace were not retained for public download. A later run does not
+recover those missing first-run bytes or retroactively strengthen that receipt.
+
+Merged [PR #30](https://github.com/sddvacav/opendot/pull/30), main commit
+[`0a56a8e08e5271b88933e7083ce974b54d6e7dc5`](https://github.com/sddvacav/opendot/commit/0a56a8e08e5271b88933e7083ce974b54d6e7dc5),
+adds bounded public-projection retention. Its separate
+[retention run `36993534524`](https://github.com/sddvacav/opendot/actions/runs/36993534524)
+ran feature revision `e17ef8332a2279161e309941a5ff65c071ba049c`, with the same
+source tree as that main merge. The actual retained PUBLIC_PROJECTION bytes
+contain the complete 200-row public tables and 2,200-row causal trace; byte verification and
+the exact run-source recheck passed. This is consistency rechecking of retained
+public projections, not independent replay of omitted original CAS objects,
+receipts, raw SDK histories or the private audit directory. Future rechecks must
+use that exact run-source revision, not a later documentation/source tree.
+
+The retained run reports all 200 synthetic jobs accepted under the fixed limits
+of 16 outstanding reservations and eight configured Activity slots/executor
+workers. Observed peak Activity interval overlap was 3; peak handler interval
+overlap was 1, so handler concurrency is NOT_DEMONSTRATED. Configured capacity,
+observed intervals and CPU parallelism are separate; none of these results is a
+200-agent, CPU-parallelism, throughput, multi-host or scientific-acceptance claim.
+
+The run's [retained artifact](https://github.com/sddvacav/opendot/actions/runs/36993534524/artifacts/11220402167)
+has ID `11220402167`; its archive SHA-256 is
+`5a6bee3558820195377cd2c9c2f46f293afa9ba440775df3282121e42f2f5329`.
+As verified on 2 October 2026, GitHub reports expiry at
+`2026-11-01T10:06:54Z`. Download through the linked run may require login and
+repository read access. Deletion or expiry can end access; this is bounded
+retention, not permanent archival. Private original evidence remains omitted.
+ALPHA and NOT_SCORED are unchanged.
