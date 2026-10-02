@@ -12,9 +12,13 @@ OpenDot Engineering 是一套用于本地工具执行和结果检查的 Python �
 
 它适合开发者与科研工程人员构建可复核的工作流原型：把函数输出连接到产物存储、复核合成测量数据的统计结果，或创建受控的本地 Git 工作副本。先运行下面的小示例，再按需要查看 [API 与示例](#按需要选择入口)。
 
-**实验性 alpha · 0.3.0a2 · NOT_SCORED。** 下载 [0.3.0a2 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)，按[版本固定的安装指南](docs/installed-quickstart.zh-CN.md)取得 wheel、匹配的源码示例并核验 SHA-256。要求 Python 3.12+；默认软件包没有运行时 Python 依赖。已复核的环境是 Linux。
+**实验性 alpha · 0.3.0a3 · NOT_SCORED。** 下载 [0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)，按[精确产物安装指南](docs/installed-quickstart.zh-CN.md)取得已发布 wheel、匹配的源码示例并核验 SHA-256。要求 Python 3.12+；默认软件包没有运行时 Python 依赖。已复核的环境是 Linux。
 
-**0.3.0a2 已包含：** [Gmsh 单文件大小限制修复](docs/gmsh-cpu-ceiling.md)与[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)。默认安装仍无运行时 Python 依赖；Temporal extra 需要另行批准并准备依赖，且不会自动启动服务。未改动的 v0.3.0a1 产物不含这两项新增内容；其[历史安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)保留原有固定值。
+**a3 产物新增：** 可选的[有界产物读取](docs/canonical-artifacts.md#optional-bounded-retrieval-unreleased-source-increment) `get_bytes(..., max_bytes=N)`，以及完整源码中的[纯软件有限批次准备](docs/temporal-batch-qualification.md)。有界读取最多取得 N+1 个实际对象字节以检测超限；省略或传入 `None` 时仍读取整个对象。批次 fixture 模拟 200 个固定合成任务、16 个尚未验证终态的预留／工作流，以及八个外部 Activity 槽位／executor worker；它们不证明实际 200 任务服务运行、智能体数量、吞吐量或生产调度器。链接 API 说明中的较早“unreleased”标签属于源码检查点；固定的 a3 wheel 已包含有界读取 API。
+
+**沿用自 [0.3.0a2](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)：** [Gmsh 单文件大小限制修复](docs/gmsh-cpu-ceiling.md)与[可选有限范围 Temporal 传输](docs/temporal-reference-transport.md)。默认安装仍无运行时 Python 依赖；Temporal extra 需要另行批准并准备依赖，且不会自动启动服务。未改动的 v0.3.0a1 产物不含这两项新增内容；其[历史安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)保留原有固定值。
+
+本页的安装与发行声明针对冻结的 a3 产物。后续 `main` 变更与 CI 不会改变或验证该软件包；其批次内容仍仅为纯软件准备。下方三角色测量比较 `compare.py` 属于后续 `main` 源码，不在 a3 wheel 或完整源码产物中；a3 完整源码仍包含原有单角色 `demo.py`。
 
 ## 运行合成示例
 

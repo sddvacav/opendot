@@ -1,5 +1,18 @@
 # Changelog
 
+## Current publication status — 2 October 2026
+
+**Published release: [v0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED.**
+Use the [exact-asset installed quickstart](docs/installed-quickstart.md) and
+[a3 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md).
+The frozen assets bind to [commit `30610de43da81801e7b88517459fbdf0f667ca2d`](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d),
+source tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`. They include the opt-in
+bounded-read API and full-source pure finite-batch preparation, not later `main`
+service-run evidence or the source-only three-role measurement comparison.
+Later source and CI do not alter or qualify these release assets; see the
+[current-source evidence ledger](CAPABILITIES.md) for their separate scope.
+The preparation and implementation checkpoints below remain historical records.
+
 ## Preparation-time status checkpoint — 2 October 2026
 
 This checkpoint was recorded before any a3 release. It preserves the published
