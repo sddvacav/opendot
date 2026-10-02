@@ -1,6 +1,10 @@
 # Changelog
 
-## Current status — 2 October 2026
+## Preparation-time status checkpoint — 2 October 2026
+
+This checkpoint was recorded before any a3 release. It preserves the published
+a2 status at preparation time; later publication status belongs to the
+corresponding release-specific notes, not a reinterpretation of this checkpoint.
 
 **Latest published release: [v0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2); NOT_SCORED.**
 Use the [installed quickstart](docs/installed-quickstart.md) for exact download
@@ -12,6 +16,15 @@ transport and Gmsh file-size-limit repair; frozen a1 assets remain unchanged.
 adds the opt-in [bounded-artifact-read API](docs/decisions/005-bounded-artifact-reads.md).
 That change is not in frozen v0.3.0a2 assets. Main-branch source and its checks do
 not change the published wheel or transfer acceptance to a new distribution.
+
+## 0.3.0a3 — local installable alpha preparation checkpoint (2026-10-02)
+
+- Package the merged PR #23 bounded-artifact-read change: optional `ArtifactStore.get_bytes(..., max_bytes=...)` bounds actual bytes acquired for trusted regular local objects, and the fixed Temporal reference Activity supplies a 256-byte input limit
+- Preserve omitted/`None` whole-read behavior and existing trusted-root/symlink preconditions; no constant-memory, wall-time, hostile-filesystem, sandbox or broader execution guarantee is added
+- Include the current bilingual capability/research documentation and merged PR #26 pure finite-batch preparation: 200 frozen synthetic jobs, 16 pending reservations and eight external Activity slots are a test-only preparation profile, not a live 200-job service result or concurrent-agent claim
+- Keep the existing canonical owners, empty default dependencies, optional pinned Temporal SDK, seven-case hosted service path and all frozen a2 assets unchanged
+- This source candidate is based on merged commit `b0a74ba437ecb3304904e5309a4301aa98e3b356`; only package-version declarations and this checkpoint differ. Fresh a3 build, install and selected-test receipts are separate from historical checks
+- Local packaging and qualification only; no tag, GitHub release, PyPI upload, service execution or publication is performed. ALPHA and NOT_SCORED remain unchanged
 
 ## Historical implementation records
 
