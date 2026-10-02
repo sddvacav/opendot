@@ -282,3 +282,92 @@ new wall-clock deadline. The callback or outer caller supplies any start timeout
 observed timeout/cancellation closes admission but does not prove remote work
 stopped. Unresolved shielded work stays explicitly pending until observed. Live
 RPC deadline/retry policy and loop-lifetime handling remain separate prerequisites.
+
+## Real hosted batch candidate, local preparation only (2026-10-02)
+
+Status: **NOT RUN on a real service**. The frozen v2 async preparation is the
+base; its historical fabricated results remain unchanged. This candidate adds a
+separate explicit four-node acceptance file and manual `batch200` workflow
+choice. PR events and the default choice still select the original seven cases.
+Actual hosted execution requires later root approval of the exact candidate and
+manual dispatch. Neither a local unit pass nor an available workflow is approval.
+
+### Causal observation and original binding
+
+A single shared admission owner reserves attempts and a 16-job outstanding
+window. Exactly 200 fixed synthetic payloads are seeded in the canonical store;
+no all-at-once coroutine queue is constructed. One retained start operation and
+at most 16 terminal observers account for reserved work. The public SDK's default
+transport retries are declared explicitly: one logical application start is not
+a count of physical transmissions. There is no application resubmission.
+
+A shared brief lock serializes reservation, logical public-client entry and
+thread-side uncertainty. Stop after reservation but before client entry consumes
+that reservation without entering the client. A stop after entry can leave the
+already-admitted retained operation in flight. The lock is never held over an
+await, handler, CAS read or disk write. Missing observations independently close
+admission; a failed recorder cannot accidentally produce acceptance.
+
+The real stream samples `time.monotonic_ns()` under that lock and records elapsed
+microseconds, permitting equal timestamps. Activity Info and a ContextVar bind
+workflow/run/Activity/attempt through the SDK interceptor, outer executor and
+nested canonical handler. Activity events may precede acknowledgment. Result
+settlement requires acknowledgment plus all original receipt, input, output,
+canonical bounded CAS and terminal history bindings. All sums are 199; equal
+output alone never establishes association. Receipt native fields remain private,
+and no native observation/probe is added.
+
+### Fixed ceilings and scope
+
+- 200 reserved application attempts; 16 unvalidated reservations; eight Activity
+  slots and eight external executor workers; one Activity and one workflow poller
+- Workflow task capacity one, cache zero, eager execution disabled; unchanged
+  one-second callable, 10/60-second Activity and 120/120/10-second Workflow settings
+- Existing 180-second work deadline, at most 40-second observation-only drain,
+  existing bounded public shutdown and ten-minute hosted job limit
+- Input at most 256 bytes; result at most 16,384 bytes; 3,276,800 result-payload
+  bytes reserved before submission, maximum input-plus-result allowance 3,328,000
+- Trace at most 4,096 rows / 1,024 bytes per row / 5 MiB; metadata and outcome rows
+  at most 200 / 1,024 bytes each; no truncation-to-success
+- Each terminal history at most 64 events / 64 KiB raw / 16 KiB projected;
+  aggregates at most 16 MiB private raw and 4 MiB projected; public summary 64 KiB
+
+These are evidence/payload allowances, not host memory/disk/thread quotas. No CPU
+parallelism, speedup, native lifetime, multi-host, 200-agent, scientific/device or
+general exactly-once claim follows.
+
+### Evidence, verdicts and cleanup
+
+Real evidence uses `opendot.temporal.real-batch.*.v1`,
+`HOSTED_REAL_SERVICE` and `HOST_MONOTONIC_OBSERVATIONS`. Offline live-shaped test
+fixtures must be `FABRICATED_UNIT_DATA` and cannot use the hosted verifier path.
+Source closure includes the twelve candidate paths, protected canonical and
+adapter owners, old selection, acquisition/pins and unit/default import closure.
+The summary separately reports `delivery_admission_acceptance` and
+`activity_overlap`. Natural peak one is `NOT_DEMONSTRATED`; peaks two through eight
+show only overlap of instrumented Activity-call intervals. Handler overlap is
+measured separately and does not prove CPU parallelism. No sleep, barrier, latch
+or repeat-until-favorable experiment manufactures overlap.
+
+On the first unknown start, observation/runtime fault, invalid original result or
+transport interruption, admission stays closed. Observation-only cleanup retains
+existing operations and never retries starts or terminal observations, cancels
+remote workflows, resets, restarts, probes descendants or force-stops processes.
+Public shutdown requires all possible reservations accounted for, no unresolved
+operations, balanced handler observations, no execution/observer uncertainty, one
+server generation and exactly one workflow/Activity pair. A late acknowledgment
+can account for its original reservation without clearing qualification failure.
+Unknown cleanup stays `UNCONFIRMED`. Private logs, histories, SQLite and CAS remain
+job-local; only strictly validated bounded summaries may be published.
+
+### Local disposition
+
+Fresh six-file local collection/execution is **1,092 passed**, with **138 passing
+subtests** (subtests are not extra nodes). The pure preparation manifest selects
+274 collected identities, a subset of those 1,092. The four real acceptance nodes
+are collection-only locally. Public SDK ActivityEnvironment, bounded fake worker
+factories and public protobuf fixtures exercise observer/context/history edges;
+the exact live Worker context path remains unrun. Independent exact-source review
+and broader regressions are tracked in the external local qualification record.
+Hosted disposition stays **NOT RUN** until a separately authorized manual
+experiment completes.

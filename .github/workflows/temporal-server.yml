@@ -4,6 +4,14 @@ name: Optional Temporal real-server gate
 
 on:
   workflow_dispatch:
+    inputs:
+      qualification:
+        description: Explicit qualification profile (batch200 requires exact-candidate approval)
+        type: choice
+        default: reference
+        options:
+          - reference
+          - batch200
   pull_request:
     paths:
       - '.github/workflows/temporal-server.yml'
@@ -77,7 +85,7 @@ jobs:
               "tests/test_temporal_server_gate_verifier.py",
               "tests/test_temporal_server_harness_unit.py",
           )
-          expected = 849
+          expected = 1092
           temporary = Path(os.environ["RUNNER_TEMP"])
           collection = temporary / "opendot-temporal-unit-collection.log"
           junit = temporary / "opendot-temporal-unit-results.xml"
@@ -130,7 +138,7 @@ jobs:
       - name: Assert every required real-server node
         # If SDK/CLI acquisition failed, collect the full required set and fail
         # its fixture; no optional dependency skip is accepted.
-        if: ${{ always() && !cancelled() }}
+        if: ${{ always() && !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.qualification == 'batch200') }}
         timeout-minutes: 4
         env:
           PYTHONPATH: src:ci
@@ -152,7 +160,7 @@ jobs:
             > "$RUNNER_TEMP/opendot-temporal-pytest-private.log" 2>&1
 
       - name: Require complete evidence and graceful cleanup
-        if: always()
+        if: ${{ always() && !(github.event_name == 'workflow_dispatch' && inputs.qualification == 'batch200') }}
         timeout-minutes: 1
         # Stdlib-only; absence of pytest or any evidence still means failure.
         # The verifier emits only an allowlisted summary, never raw logs/XML.
@@ -161,6 +169,41 @@ jobs:
           --required ci/temporal-server-nodes.txt
           --junit "$RUNNER_TEMP/opendot-temporal-results.xml"
           --audit "$RUNNER_TEMP/opendot-temporal-gate/audit"
+          --expected-revision "${{ github.sha }}"
+          --summary "$GITHUB_STEP_SUMMARY"
+
+
+      - name: Assert separate manually selected 200-job batch
+        if: ${{ always() && !cancelled() && github.event_name == 'workflow_dispatch' && inputs.qualification == 'batch200' }}
+        timeout-minutes: 4
+        env:
+          PYTHONPATH: src:ci
+          OPENDOT_TEMPORAL_QUALIFICATION: batch200
+          OPENDOT_TEMPORAL_EXECUTE: ${{ steps.install.outcome == 'success' && steps.unit_contracts.outcome == 'success' && steps.acquire.outcome == 'success' && '1' || '0' }}
+          OPENDOT_TEMPORAL_PIP_REPORT: ${{ runner.temp }}/opendot-temporal-pip-report.json
+          OPENDOT_TEMPORAL_GATE_ROOT: ${{ runner.temp }}/opendot-temporal-batch200-gate
+          OPENDOT_TEMPORAL_CLI: ${{ runner.temp }}/opendot-temporal-cli/temporal
+          OPENDOT_TEMPORAL_EXPECTED_REVISION: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t nodes < ci/temporal-real-batch-nodes.txt
+          test "${#nodes[@]}" -eq 4
+          python -B -m pytest -q -ra --tb=no --show-capture=no -p no:cacheprovider \
+            "${nodes[@]}" \
+            --basetemp="$RUNNER_TEMP/opendot-temporal-batch200-pytest" \
+            --junitxml="$RUNNER_TEMP/opendot-temporal-batch200-results.xml" \
+            > "$RUNNER_TEMP/opendot-temporal-batch200-private.log" 2>&1
+
+      - name: Require separate batch evidence and observed cleanup
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.qualification == 'batch200' }}
+        timeout-minutes: 1
+        run: >-
+          python -B ci/verify_temporal_server_gate.py
+          --profile batch200
+          --required ci/temporal-real-batch-nodes.txt
+          --junit "$RUNNER_TEMP/opendot-temporal-batch200-results.xml"
+          --audit "$RUNNER_TEMP/opendot-temporal-batch200-gate/audit"
           --expected-revision "${{ github.sha }}"
           --summary "$GITHUB_STEP_SUMMARY"
 

@@ -941,7 +941,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--audit", required=True, type=Path)
     parser.add_argument("--expected-revision", required=True)
     parser.add_argument("--summary", type=Path)
+    parser.add_argument("--profile", choices=("reference", "batch200"), default="reference")
     args = parser.parse_args(argv)
+    if args.profile == "batch200":
+        return _real_batch_main(args)
     reasons = []
     nodes = [{"node_id": n, "outcome": "NOT_RUN", "reason_code": "NOT_RUN"} for n in REQUIRED_NODES]
     records = None
@@ -1316,6 +1319,597 @@ def validate_batch_trace(value: object, expected_revision: str,
                "cohorts": cohorts, "jobs": rows}
     _batch_encoded(summary, BATCH_SUMMARY_BYTES)
     return summary
+
+
+# The live profile is a separate trust boundary. Pure tests must explicitly use
+# FABRICATED_UNIT_DATA and never emit a hosted-service acceptance verdict.
+REAL_BATCH_PREFIX = "opendot.temporal.real-batch."
+REAL_BATCH_NODE_NAMES = (
+    "test_real_batch_delivers_200_bound_results",
+    "test_real_batch_reservations_never_exceed_16",
+    "test_real_batch_records_received_metadata_and_occupancy",
+    "test_real_batch_observed_quiescence_and_shutdown",
+)
+REAL_BATCH_REQUIRED_NODES = tuple(
+    "tests/acceptance/temporal_real_batch_gate.py::" + name for name in REAL_BATCH_NODE_NAMES)
+REAL_BATCH_SOURCE_PATHS = tuple(sorted(set(BATCH_SOURCE_PATHS) | {
+    "ci/requirements.txt", "pyproject.toml", "ci/temporal-real-batch-nodes.txt",
+    "tests/acceptance/temporal_real_batch_gate.py", "docs/temporal-reference-transport.md",
+    "tests/test_temporal_activity_contract.py", "tests/test_temporal_workflow_contract.py",
+    "tests/test_temporal_transport_owner_boundaries.py",
+    "src/opendot_engineering/__init__.py", "src/opendot_engineering/core/__init__.py",
+    "src/opendot_engineering/adapters/__init__.py",
+    "src/opendot_engineering/adapters/source_audit.py",
+}))
+REAL_BATCH_RETRY_DECLARATION = {
+    "policy": "SDK_DEFAULT", "retry_config_supplied": False,
+    "high_level_start_retry": True, "physical_rpc_count_claimed": False,
+}
+REAL_BATCH_AUDIT_FILES = (
+    "environment.json", "batch-trace.json", "batch-metadata.json",
+    "batch-histories.json", "batch-outcomes.json", "batch-cleanup.json", "diagnostic.json",
+)
+REAL_BATCH_ERRORS = frozenset({"handler_error", "execute_error", "activity_error", "uncertainty"})
+REAL_BATCH_EVENTS = frozenset({
+    "reservation", "rpc_enter", "acknowledgment", "activity_enter", "execute_enter",
+    "handler_enter", "handler_return", "execute_return", "activity_exit",
+    "workflow_result", "validated_terminal",
+}) | REAL_BATCH_ERRORS
+_RUN_PATTERN = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+
+
+def _real_encoded(value: object, maximum: int) -> bytes:
+    """Bound plain data without invoking hooks or exposing rejected values."""
+    budget = [300000]
+    def plain(item, depth=0):
+        budget[0] -= 1
+        require(budget[0] >= 0 and depth <= 12, "SIZE_LIMIT")
+        if item is None or type(item) is bool:
+            return
+        if type(item) is int:
+            require(abs(item) <= 10 ** 15, "SIZE_LIMIT")
+            return
+        if type(item) is float:
+            require(math.isfinite(item) and abs(item) <= 10 ** 15, "INVALID_TYPE")
+            return
+        if type(item) is str:
+            require(len(item) <= 256, "SIZE_LIMIT")
+            return
+        if type(item) is list:
+            require(len(item) <= BATCH_MAX_EVENTS, "SIZE_LIMIT")
+            for child in item:
+                plain(child, depth + 1)
+            return
+        require(type(item) is dict and len(item) <= 64, "INVALID_TYPE")
+        for key, child in item.items():
+            require(type(key) is str and len(key) <= 128, "INVALID_SCHEMA")
+            plain(child, depth + 1)
+    plain(value)
+    data = json.dumps(value, sort_keys=True, separators=(",", ":"),
+                      ensure_ascii=True, allow_nan=False).encode("ascii")
+    require(0 < len(data) <= maximum, "SIZE_LIMIT")
+    return data
+
+
+def real_batch_source_digests(source: Path | None = None) -> dict:
+    source = ROOT if source is None else Path(source)
+    result = {path: _sha(source / path) for path in REAL_BATCH_SOURCE_PATHS}
+    for path, expected in BATCH_OWNER_SHA256.items():
+        exact(result[path], expected, "OWNER_MISMATCH")
+    return result
+
+
+def checked_real_batch_nodes(nodes: object) -> tuple[str, ...]:
+    require(type(nodes) in (list, tuple) and all(type(n) is str for n in nodes)
+            and tuple(nodes) == REAL_BATCH_REQUIRED_NODES, "REQUIRED_NODES")
+    return REAL_BATCH_REQUIRED_NODES
+
+
+def read_real_batch_nodes(path: Path) -> tuple[str, ...]:
+    try:
+        return checked_real_batch_nodes(read_bytes(path, 8192).decode("ascii").splitlines())
+    except UnicodeError:
+        raise GateError("REQUIRED_NODES") from None
+
+
+def verify_real_batch_collection(path: Path) -> list[str]:
+    value = read_json(path)
+    shape(value, "schema_version nodes")
+    exact(value["schema_version"], REAL_BATCH_PREFIX + "collection.v1", "INVALID_SCHEMA")
+    checked_real_batch_nodes(value["nodes"])
+    return value["nodes"]
+
+
+def verify_real_batch_junit(path: Path) -> list[dict]:
+    return verify_collected_unit_junit(list(REAL_BATCH_REQUIRED_NODES), path,
+        files=("tests/acceptance/temporal_real_batch_gate.py",), expected_count=4)
+
+
+def _real_rows(value: object, maximum: int) -> list:
+    require(type(value) is list and len(value) <= 200, "SIZE_LIMIT")
+    for row in value:
+        _real_encoded(row, maximum)
+    return value
+
+
+def validate_real_batch_metadata(row: object, job: dict, run_id: str | None = None) -> dict:
+    _real_encoded(row, 1024)
+    shape(row, "job_id entry_sequence workflow_id run_id activity_id activity_type namespace task_queue "
+          "attempt is_local retry_policy_present maximum_attempts start_to_close_seconds "
+          "schedule_to_close_seconds input_artifact_id metadata_source")
+    expected = {"job_id": job["job_id"], "workflow_id": job["workflow_id"],
+        "activity_id": ACTIVITY_ID, "activity_type": ACTIVITY_TYPE,
+        "namespace": "default", "task_queue": "opendot-temporal-gate", "attempt": 1,
+        "is_local": False, "retry_policy_present": True, "maximum_attempts": 1,
+        "start_to_close_seconds": 10, "schedule_to_close_seconds": 60,
+        "input_artifact_id": job["input_artifact_id"], "metadata_source": "real_sdk_activity_info"}
+    for key, value in expected.items():
+        exact(row[key], value, "METADATA_MISMATCH")
+    integer(row["entry_sequence"], 1, BATCH_MAX_EVENTS, "METADATA_MISMATCH")
+    match(row["run_id"], _RUN_PATTERN, "METADATA_MISMATCH")
+    if run_id is not None:
+        exact(row["run_id"], run_id, "METADATA_MISMATCH")
+    return dict(row)
+
+
+def validate_real_batch_outcome(row: object, job: dict, run_id: str | None = None) -> dict:
+    _real_encoded(row, 1024)
+    shape(row, "terminal original_validation receipt_report_kind scientific_validity "
+          "device_control_authority independent_review owner_integration")
+    terminal = row["terminal"]
+    require(type(terminal) is dict, "OUTCOME_MISMATCH")
+    result = validate_batch_terminal(terminal, job,
+        terminal.get("run_id") if run_id is None else run_id)
+    for key, expected in {
+        "original_validation": "CAS_RECEIPT_INPUT_BOUND",
+        "receipt_report_kind": "serialized_runtime_report_not_live_proof",
+        "scientific_validity": False, "device_control_authority": False,
+        "independent_review": "NOT_EVALUATED", "owner_integration": "NOT_EVALUATED",
+    }.items():
+        exact(row[key], expected, "OUTCOME_MISMATCH")
+    return result
+
+
+def validate_real_batch_history(row: object, job: dict, run_id: str,
+                                terminal_projection: dict) -> dict:
+    """Check bounded server-event linkage, independently from host event order.
+
+    Raw histories remain private. Their digests and size declarations are
+    consistency projections, not independent replay or a malicious-host proof.
+    """
+    _real_encoded(row, 16384)
+    shape(row, "job_id workflow_id run_id raw_history_sha256 raw_history_bytes events")
+    for key, expected in {"job_id": job["job_id"], "workflow_id": job["workflow_id"],
+                          "run_id": run_id}.items():
+        exact(row[key], expected, "HISTORY_MISMATCH")
+    match(run_id, _RUN_PATTERN, "HISTORY_MISMATCH")
+    digest(row["raw_history_sha256"])
+    integer(row["raw_history_bytes"], 1, 65536, "SIZE_LIMIT")
+    terminal = validate_batch_terminal(terminal_projection, job, run_id)
+    events = row["events"]
+    require(type(events) is list and 1 <= len(events) <= 64, "SIZE_LIMIT")
+    allowed = set(EVENT_FIELDS) - {"ActivityTaskFailed", "WorkflowExecutionFailed", "WorkflowExecutionSignaled"}
+    found = {name: [] for name in allowed}
+    indexed, scheduled, started, completed = {}, set(), set(), set()
+    for number, event in enumerate(events, 1):
+        shape(event, "event_id event_type attributes")
+        exact(event["event_id"], number, "HISTORY_LINKAGE")
+        name, attrs = event["event_type"], event["attributes"]
+        require(type(name) is str and name in allowed, "HISTORY_MISMATCH")
+        fields = EVENT_FIELDS[name]
+        if name == "WorkflowExecutionStarted":
+            fields += " workflow_id original_execution_run_id first_execution_run_id attempt continued_execution_run_id"
+        shape(attrs, fields)
+        require(not found["WorkflowExecutionCompleted"], "HISTORY_LINKAGE")
+        if name == "WorkflowExecutionStarted":
+            exact(number, 1, "HISTORY_LINKAGE")
+            for key, expected in {"workflow_type": "ReferenceBatchWorkflow", "task_queue": "opendot-temporal-gate",
+                "execution_timeout_seconds": 120, "run_timeout_seconds": 120,
+                "task_timeout_seconds": 10, "maximum_attempts": 1,
+                "workflow_id": job["workflow_id"], "original_execution_run_id": run_id,
+                "first_execution_run_id": run_id, "attempt": 1, "continued_execution_run_id": ""}.items():
+                exact(attrs[key], expected, "HISTORY_MISMATCH")
+        elif name == "WorkflowTaskScheduled":
+            scheduled.add(number)
+        elif name == "ActivityTaskScheduled":
+            require(bool(found["WorkflowTaskCompleted"]), "HISTORY_LINKAGE")
+            for key, expected in {"activity_type": ACTIVITY_TYPE, "activity_id": ACTIVITY_ID,
+                "task_queue": "opendot-temporal-gate", "maximum_attempts": 1,
+                "start_to_close_seconds": 10, "schedule_to_close_seconds": 60}.items():
+                exact(attrs[key], expected, "HISTORY_MISMATCH")
+        elif name in {"ActivityTaskStarted", "ActivityTaskCompleted", "WorkflowTaskStarted", "WorkflowTaskCompleted"}:
+            is_activity = name.startswith("Activity")
+            schedule_type = "ActivityTaskScheduled" if is_activity else "WorkflowTaskScheduled"
+            sid = attrs["scheduled_event_id"]
+            integer(sid, 1, number - 1, "HISTORY_LINKAGE")
+            require(indexed[sid]["event_type"] == schedule_type, "HISTORY_LINKAGE")
+            if name.endswith("Started"):
+                if is_activity:
+                    exact(attrs["attempt"], 1, "HISTORY_MISMATCH")
+                    exact(attrs["identity"], "opendot-gate-activity-worker", "HISTORY_MISMATCH")
+                else:
+                    require(sid not in started, "HISTORY_LINKAGE")
+                    started.add(sid)
+                    exact(attrs["identity"], "opendot-gate-workflow-worker", "HISTORY_MISMATCH")
+            else:
+                tid = attrs["started_event_id"]
+                integer(tid, 1, number - 1, "HISTORY_LINKAGE")
+                require(indexed[tid]["event_type"] == schedule_type.replace("Scheduled", "Started")
+                        and indexed[tid]["attributes"]["scheduled_event_id"] == sid, "HISTORY_LINKAGE")
+                if is_activity:
+                    _result_attributes(attrs, terminal["result_artifact_id"])
+                    exact(attrs["result_size_bytes"], terminal["result_size_bytes"], "HISTORY_MISMATCH")
+                else:
+                    require(sid not in completed, "HISTORY_LINKAGE")
+                    completed.add(sid)
+                    exact(attrs["identity"], "opendot-gate-workflow-worker", "HISTORY_MISMATCH")
+        elif name == "WorkflowExecutionCompleted":
+            _result_attributes(attrs, terminal["result_artifact_id"])
+            exact(attrs["result_size_bytes"], terminal["result_size_bytes"], "HISTORY_MISMATCH")
+            require(bool(found["ActivityTaskCompleted"]) and number > 1
+                    and indexed[number - 1]["event_type"] == "WorkflowTaskCompleted"
+                    and scheduled == started == completed, "HISTORY_LINKAGE")
+            require(found["WorkflowTaskCompleted"][-1]["event_id"]
+                    > found["ActivityTaskCompleted"][-1]["event_id"], "HISTORY_LINKAGE")
+        indexed[number] = event
+        found[name].append(event)
+    for name in ("WorkflowExecutionStarted", "ActivityTaskScheduled", "ActivityTaskStarted",
+                 "ActivityTaskCompleted", "WorkflowExecutionCompleted"):
+        exact(len(found[name]), 1, "HISTORY_MISMATCH")
+    require(scheduled == started == completed and len(completed) >= 2, "HISTORY_LINKAGE")
+    return dict(row)
+
+
+def validate_real_batch_cleanup(value: object) -> None:
+    _real_encoded(value, 65536)
+    shape(value, "schema_version server_generations worker_generations all_reservations_accounted "
+          "unresolved_start_operations unresolved_result_operations active_activity_calls handler_entries "
+          "handler_returns execution_uncertainty observation_uncertainty in_flight_shutdown_attempted "
+          "forced_termination_used cleanup_status cleanup_code elapsed_seconds")
+    exact(value["schema_version"], REAL_BATCH_PREFIX + "cleanup.v1", "INVALID_SCHEMA")
+    exact(value["all_reservations_accounted"], True, "CLEANUP_UNCONFIRMED")
+    for key in ("unresolved_start_operations", "unresolved_result_operations", "active_activity_calls"):
+        exact(value[key], 0, "CLEANUP_UNCONFIRMED")
+    for key in ("execution_uncertainty", "observation_uncertainty", "in_flight_shutdown_attempted", "forced_termination_used"):
+        exact(value[key], False, "CLEANUP_UNCONFIRMED")
+    integer(value["handler_entries"], 0, 200, "CLEANUP_UNCONFIRMED")
+    exact(value["handler_returns"], value["handler_entries"], "CLEANUP_UNCONFIRMED")
+    exact(value["cleanup_status"], "PASS", "CLEANUP_UNCONFIRMED")
+    exact(value["cleanup_code"], "OK", "CLEANUP_UNCONFIRMED")
+    finite(value["elapsed_seconds"], 240, "CLEANUP_UNCONFIRMED")
+    servers = value["server_generations"]
+    require(type(servers) is list and len(servers) == 1, "CLEANUP_UNCONFIRMED")
+    for row in servers:
+        shape(row, "generation shutdown_requested_signal graceful_exit_observed exit_code readiness_seconds shutdown_seconds")
+        for key, expected in {"generation": 1, "shutdown_requested_signal": "SIGINT",
+                               "graceful_exit_observed": True, "exit_code": 0}.items():
+            exact(row[key], expected, "CLEANUP_UNCONFIRMED")
+        finite(row["readiness_seconds"], 10, "CLEANUP_UNCONFIRMED")
+        finite(row["shutdown_seconds"], 8, "CLEANUP_UNCONFIRMED")
+    workers = value["worker_generations"]
+    require(type(workers) is list and len(workers) == 2, "CLEANUP_UNCONFIRMED")
+    for number, (row, kind) in enumerate(zip(workers, ("workflow", "activity")), 1):
+        shape(row, "generation type public_shutdown_called public_shutdown_completed")
+        for key, expected in {"generation": number, "type": kind,
+                             "public_shutdown_called": True, "public_shutdown_completed": True}.items():
+            exact(row[key], expected, "CLEANUP_UNCONFIRMED")
+
+
+def validate_real_batch_trace(trace: object, plan: object, profile: object,
+                              metadata: object, histories: object, outcomes: object, *,
+                              allow_test_data: bool = False, expected_revision: str | None = None,
+                              source: Path | None = None) -> dict:
+    _real_encoded(trace, BATCH_TRACE_BYTES)
+    shape(trace, "schema_version evidence_kind revision source_sha256 clock_scope sdk_transport_retries plan profile events")
+    exact(trace["schema_version"], REAL_BATCH_PREFIX + "trace.v1", "INVALID_SCHEMA")
+    exact(type(allow_test_data), bool, "INVALID_TYPE")
+    evidence_kind = "FABRICATED_UNIT_DATA" if allow_test_data else "HOSTED_REAL_SERVICE"
+    exact(trace["evidence_kind"], evidence_kind, "INVALID_SCHEMA")
+    exact(trace["clock_scope"], "HOST_MONOTONIC_OBSERVATIONS", "INVALID_SCHEMA")
+    match(trace["revision"], r"[0-9a-f]{40}", "REVISION_MISMATCH")
+    if expected_revision is not None:
+        exact(trace["revision"], expected_revision, "REVISION_MISMATCH")
+    exact(trace["source_sha256"], real_batch_source_digests(source), "SOURCE_MISMATCH")
+    shape(trace["sdk_transport_retries"], set(REAL_BATCH_RETRY_DECLARATION))
+    for key, value in REAL_BATCH_RETRY_DECLARATION.items():
+        exact(trace["sdk_transport_retries"][key], value, "METADATA_MISMATCH")
+    plan, profile = validate_batch_plan(plan), validate_batch_profile(profile)
+    exact(validate_batch_plan(trace["plan"]), plan, "INVALID_SCHEMA")
+    exact(validate_batch_profile(trace["profile"]), profile, "INVALID_SCHEMA")
+    jobs = {job["job_id"]: job for job in plan["jobs"]}
+    metas, finals, history_rows = {}, {}, {}
+    seen_receipts, seen_results, history_digests = set(), set(), set()
+    for row in _real_rows(metadata, 1024):
+        require(type(row) is dict and type(row.get("job_id")) is str
+                and row["job_id"] in jobs and row["job_id"] not in metas, "METADATA_MISMATCH")
+        metas[row["job_id"]] = validate_real_batch_metadata(row, jobs[row["job_id"]])
+    for row in _real_rows(outcomes, 1024):
+        require(type(row) is dict and type(row.get("terminal")) is dict, "OUTCOME_MISMATCH")
+        job_id = row["terminal"].get("job_id")
+        require(type(job_id) is str and job_id in jobs and job_id not in finals, "OUTCOME_MISMATCH")
+        terminal = validate_real_batch_outcome(row, jobs[job_id])
+        require(terminal["receipt_id"] not in seen_receipts and terminal["result_artifact_id"] not in seen_results,
+                "OUTCOME_MISMATCH")
+        seen_receipts.add(terminal["receipt_id"])
+        seen_results.add(terminal["result_artifact_id"])
+        finals[job_id] = terminal
+    for row in _real_rows(histories, 16384):
+        require(type(row) is dict and type(row.get("job_id")) is str
+                and row["job_id"] in finals and row["job_id"] not in history_rows, "HISTORY_MISMATCH")
+        job_id = row["job_id"]
+        result = validate_real_batch_history(row, jobs[job_id], finals[job_id]["run_id"], finals[job_id])
+        require(result["raw_history_sha256"] not in history_digests, "HISTORY_MISMATCH")
+        history_digests.add(result["raw_history_sha256"])
+        history_rows[job_id] = result
+    _real_encoded(metadata, 256 * 1024)
+    _real_encoded(outcomes, 256 * 1024)
+    _real_encoded(histories, 4 * 1024 * 1024)
+    require(sum(row["raw_history_bytes"] for row in history_rows.values()) <= 16 * 1024 * 1024, "SIZE_LIMIT")
+    states = {job_id: {"reserved": False, "rpc": False, "ack": False, "run": None,
+        "phase": 0, "result": False, "terminal": False, "failed": False, "entry": None}
+        for job_id in jobs}
+    runs, active, handlers = {}, set(), set()
+    reserved = outstanding = peak_outstanding = peak_activity = peak_handler = 0
+    pending_submission = None
+    latched = False
+    execution_uncertainty = observation_uncertainty = False
+    last_us = 0
+    events = trace["events"]
+    require(type(events) is list and len(events) <= BATCH_MAX_EVENTS, "SIZE_LIMIT")
+    for number, row in enumerate(events, 1):
+        _real_encoded(row, 1024)
+        shape(row, "sequence elapsed_us event job_id run_id activity_id attempt reason_code")
+        exact(row["sequence"], number, "COUNTER_MISMATCH")
+        integer(row["elapsed_us"], 0, 600000000, "COUNTER_MISMATCH")
+        require(row["elapsed_us"] >= last_us, "COUNTER_MISMATCH")
+        last_us = row["elapsed_us"]
+        job_id, event = row["job_id"], row["event"]
+        require(type(event) is str and event in REAL_BATCH_EVENTS, "INVALID_SCHEMA")
+        if event in REAL_BATCH_ERRORS:
+            require(type(row["reason_code"]) is str and row["reason_code"] in BATCH_UNCERTAINTY_REASONS,
+                    "INVALID_VALUE")
+            if row["reason_code"] == "OBSERVER_FAILURE":
+                observation_uncertainty = True
+            if event != "uncertainty" or row["reason_code"] in {"RUNTIME_EXCEPTION", "RECONCILIATION_REQUIRED"}:
+                execution_uncertainty = True
+        else:
+            exact(row["reason_code"], "OK")
+        if job_id is None:
+            require(event == "uncertainty", "OUTCOME_MISMATCH")
+            for key in ("run_id", "activity_id", "attempt"):
+                exact(row[key], None, "HISTORY_LINKAGE")
+            latched = True
+            continue
+        require(type(job_id) is str and job_id in jobs, "OUTCOME_MISMATCH")
+        state = states[job_id]
+        invocation_event = event.startswith(("activity_", "execute_", "handler_"))
+        if invocation_event:
+            exact(row["activity_id"], ACTIVITY_ID, "HISTORY_LINKAGE")
+            exact(row["attempt"], 1, "HISTORY_LINKAGE")
+        else:
+            exact(row["activity_id"], None, "HISTORY_LINKAGE")
+            exact(row["attempt"], None, "HISTORY_LINKAGE")
+        if event in {"reservation", "rpc_enter"}:
+            exact(row["run_id"], None, "HISTORY_LINKAGE")
+        elif row["run_id"] is None:
+            require(event == "uncertainty", "HISTORY_LINKAGE")
+        else:
+            match(row["run_id"], _RUN_PATTERN, "HISTORY_LINKAGE")
+            require(row["run_id"] not in runs or runs[row["run_id"]] == job_id, "HISTORY_LINKAGE")
+            require(state["run"] is None or state["run"] == row["run_id"], "HISTORY_LINKAGE")
+            state["run"], runs[row["run_id"]] = row["run_id"], job_id
+        if event == "reservation":
+            require(not latched and not state["reserved"] and reserved < 200
+                    and job_id == plan["jobs"][reserved]["job_id"] and outstanding < 16
+                    and pending_submission is None,
+                    "COUNTER_MISMATCH")
+            pending_submission = job_id
+            state["reserved"] = True
+            reserved += 1
+            outstanding += 1
+            peak_outstanding = max(peak_outstanding, outstanding)
+            continue
+        require(state["reserved"], "COUNTER_MISMATCH")
+        if event == "uncertainty":
+            latched = True
+            if row["reason_code"] in {"RUNTIME_EXCEPTION", "RECONCILIATION_REQUIRED", "OBSERVER_FAILURE"}:
+                state["failed"] = True
+            continue
+        if event == "rpc_enter":
+            require(not latched and not state["rpc"] and pending_submission == job_id, "COUNTER_MISMATCH")
+            state["rpc"] = True
+            continue
+        require(state["rpc"], "COUNTER_MISMATCH")
+        if event == "acknowledgment":
+            require(not state["ack"] and pending_submission == job_id, "HISTORY_LINKAGE")
+            state["ack"] = True
+            pending_submission = None
+        elif event == "activity_enter":
+            require(state["phase"] == 0 and job_id in metas, "COUNTER_MISMATCH")
+            validate_real_batch_metadata(metas[job_id], jobs[job_id], state["run"])
+            exact(metas[job_id]["entry_sequence"], number, "METADATA_MISMATCH")
+            state["phase"], state["entry"] = 1, number
+            active.add(job_id)
+            require(len(active) <= 8, "COUNTER_MISMATCH")
+            peak_activity = max(peak_activity, len(active))
+        elif event in {"execute_enter", "handler_enter", "handler_return", "handler_error",
+                        "execute_return", "execute_error", "activity_exit", "activity_error"}:
+            phase = {"execute_enter": 1, "handler_enter": 2, "handler_return": 3,
+                "handler_error": 3, "execute_return": 4, "execute_error": 4,
+                "activity_exit": 5, "activity_error": 5}[event]
+            # An exception may prevent entry into the inner callable entirely.
+            allowed_phases = {phase} if event not in {"execute_error", "activity_error"} else (
+                {2, 4} if event == "execute_error" else {1, 5})
+            require(state["phase"] in allowed_phases and job_id in active, "COUNTER_MISMATCH")
+            state["phase"] = phase + 1
+            if event == "handler_enter":
+                handlers.add(job_id)
+                peak_handler = max(peak_handler, len(handlers))
+            elif event in {"handler_return", "handler_error"}:
+                require(job_id in handlers, "COUNTER_MISMATCH")
+                handlers.remove(job_id)
+            elif event in {"activity_exit", "activity_error"}:
+                active.remove(job_id)
+            if event in REAL_BATCH_ERRORS:
+                state["failed"] = latched = True
+        elif event == "workflow_result":
+            require(state["ack"] and state["phase"] == 6 and not state["result"], "HISTORY_LINKAGE")
+            state["result"] = True
+        elif event == "validated_terminal":
+            require(state["ack"] and state["phase"] == 6 and state["result"] and not state["terminal"]
+                    and job_id in metas and job_id in finals and job_id in history_rows, "OUTCOME_MISMATCH")
+            validate_real_batch_metadata(metas[job_id], jobs[job_id], state["run"])
+            terminal = validate_batch_terminal(finals[job_id], jobs[job_id], state["run"])
+            require(batch_terminal_accepted(terminal) and not state["failed"], "OUTCOME_MISMATCH")
+            state["terminal"] = True
+            outstanding -= 1
+    require(set(metas) == {j for j, s in states.items() if s["entry"] is not None}, "METADATA_MISMATCH")
+    require(set(finals) <= {j for j, s in states.items() if s["result"]}, "OUTCOME_MISMATCH")
+    accepted = sum(state["terminal"] for state in states.values())
+    passed = (reserved == accepted == len(metas) == len(finals) == len(history_rows) == 200
+        and not outstanding and not latched and not active and not handlers)
+    tables = {"source": trace["source_sha256"], "metadata": metadata,
+              "history": histories, "outcomes": outcomes}
+    summary = {"schema_version": REAL_BATCH_PREFIX + ("fixture-verdict.v1" if allow_test_data else "verdict.v1"),
+        "evidence_kind": evidence_kind, "revision": trace["revision"],
+        "delivery_admission_acceptance": "PASS" if passed else "FAIL",
+        "activity_overlap": "DEMONSTRATED" if peak_activity >= 2 and not active else "NOT_DEMONSTRATED",
+        "handler_overlap": "DEMONSTRATED" if peak_handler >= 2 and not handlers else "NOT_DEMONSTRATED",
+        "observed_activity_peak": peak_activity, "observed_handler_peak": peak_handler,
+        "configured_activity_slots": 8, "planned": 200, "reserved_attempts": reserved,
+        "peak_outstanding": peak_outstanding,
+        "logical_application_starts": sum(state["rpc"] for state in states.values()),
+        "validated_terminal": accepted, "outstanding": outstanding, "unsubmitted": 200 - reserved,
+        "uncertainty_latched": latched, "active_at_end": len(active), "handlers_active_at_end": len(handlers),
+        "handler_entries": sum(row["event"] == "handler_enter" for row in events),
+        "handler_returns": sum(row["event"] == "handler_return" for row in events),
+        "execution_uncertainty": execution_uncertainty, "observation_uncertainty": observation_uncertainty,
+        "clock_scope": "HOST_MONOTONIC_OBSERVATIONS", "observed_duration_us": last_us,
+        "sdk_transport_retries": dict(REAL_BATCH_RETRY_DECLARATION),
+        "table_sha256": {key: hashlib.sha256(_real_encoded(value, 4 * 1024 * 1024)).hexdigest()
+                         for key, value in tables.items()},
+        "table_cardinalities": {key: len(value) for key, value in tables.items()},
+        "cpu_parallelism": "NOT_EVALUATED", "scientific_validity": False,
+        "device_control_authority": False, "independent_review": "NOT_EVALUATED"}
+    _real_encoded(summary, BATCH_SUMMARY_BYTES)
+    return summary
+
+
+def _read_real_table(path: Path, kind: str, maximum: int) -> list:
+    value = strict_json(read_bytes(path, maximum))
+    shape(value, "schema_version rows")
+    exact(value["schema_version"], REAL_BATCH_PREFIX + kind + ".v1", "INVALID_SCHEMA")
+    require(type(value["rows"]) is list, "INVALID_TYPE")
+    return value["rows"]
+
+
+def validate_real_batch_audit(audit: Path, expected_revision: str) -> dict:
+    audit = Path(audit)
+    require(audit.is_dir() and not audit.is_symlink(), "MISSING_EVIDENCE")
+    try:
+        require({path.name for path in audit.iterdir()} <= set(REAL_BATCH_AUDIT_FILES)
+                | {"collection-receipt.json", "batch-acceptance.json"}, "PRIVACY_REJECTED")
+    except OSError:
+        raise GateError("READ_FAILED") from None
+    read_real_batch_nodes(ROOT / "ci/temporal-real-batch-nodes.txt")
+    verify_real_batch_collection(audit / "collection-receipt.json")
+    environment = read_json(audit / "environment.json")
+    validate_environment(environment, expected_revision)
+    diagnostic = validate_diagnostic(read_json(audit / "diagnostic.json"), expected_revision)
+    exact(diagnostic["status"], "COMPLETE", "DIAGNOSTIC_FAILED")
+    trace = strict_json(read_bytes(audit / "batch-trace.json", BATCH_TRACE_BYTES))
+    require(type(trace) is dict, "INVALID_SCHEMA")
+    metadata = _read_real_table(audit / "batch-metadata.json", "metadata", 256 * 1024)
+    histories = _read_real_table(audit / "batch-histories.json", "history", 4 * 1024 * 1024)
+    outcomes = _read_real_table(audit / "batch-outcomes.json", "outcomes", 256 * 1024)
+    summary = validate_real_batch_trace(trace, trace.get("plan"), trace.get("profile"), metadata, histories,
+                                        outcomes, expected_revision=expected_revision)
+    cleanup = read_json(audit / "batch-cleanup.json")
+    validate_real_batch_cleanup(cleanup)
+    for key in ("handler_entries", "handler_returns", "execution_uncertainty", "observation_uncertainty"):
+        exact(cleanup[key], summary[key], "CLEANUP_UNCONFIRMED")
+    exact(summary["outstanding"], 0, "CLEANUP_UNCONFIRMED")
+    exact(summary["active_at_end"], cleanup["active_activity_calls"], "CLEANUP_UNCONFIRMED")
+    exact(summary["handlers_active_at_end"], 0, "CLEANUP_UNCONFIRMED")
+    if summary["delivery_admission_acceptance"] == "PASS":
+        exact(cleanup["handler_entries"], 200, "CLEANUP_UNCONFIRMED")
+    summary["cleanup_verified"] = True
+    summary["workflow_run_url"] = environment["workflow_run_url"]
+    _real_encoded(summary, BATCH_SUMMARY_BYTES)
+    return summary
+
+
+def _real_batch_main(args) -> int:
+    """The only hosted batch CLI route. Never publish raw evidence tables."""
+    reasons, summary = [], None
+    nodes = [{"node_id": node, "outcome": "NOT_RUN", "reason_code": "NOT_RUN"}
+             for node in REAL_BATCH_REQUIRED_NODES]
+    collected = 0
+    for operation in (lambda: read_real_batch_nodes(args.required),
+                      lambda: verify_real_batch_collection(args.audit / "collection-receipt.json")):
+        try:
+            result = operation()
+            collected = len(result) if type(result) is list else collected
+        except GateError as error:
+            reasons.append(error.code)
+        except Exception:
+            reasons.append("INTERNAL_ERROR")
+    try:
+        nodes = verify_real_batch_junit(args.junit)
+        reasons.extend(row["reason_code"] for row in nodes if row["outcome"] != "PASS")
+    except GateError as error:
+        reasons.append(error.code)
+    except Exception:
+        reasons.append("INTERNAL_ERROR")
+    try:
+        summary = validate_real_batch_audit(args.audit, args.expected_revision)
+        if summary["delivery_admission_acceptance"] != "PASS":
+            reasons.append("OUTCOME_MISMATCH")
+    except GateError as error:
+        reasons.append(error.code)
+    except Exception:
+        reasons.append("INTERNAL_ERROR")
+    diagnostic = read_safe_diagnostic(args.audit, args.expected_revision)
+    if diagnostic["validation"] != "VALID":
+        reasons.append(diagnostic["reason_code"])
+    elif diagnostic["diagnostic"]["status"] != "COMPLETE":
+        reasons.append("DIAGNOSTIC_FAILED")
+    # This distinct envelope has no unqualified PASS that could imply overlap.
+    revision = args.expected_revision if type(args.expected_revision) is str and re.fullmatch(
+        r"[0-9a-f]{40}", args.expected_revision) else None
+    report = {"schema_version": REAL_BATCH_PREFIX + "acceptance.v1", "profile": "batch200",
+        "evidence_kind": "HOSTED_REAL_SERVICE", "revision": revision,
+        "required_node_count": 4, "collected_node_count": collected, "nodes": nodes,
+        "delivery_admission_acceptance": "PASS" if not reasons and summary is not None else "FAIL",
+        "activity_overlap": summary["activity_overlap"] if summary is not None else "NOT_DEMONSTRATED",
+        "reason_codes": sorted(set(reasons)) or ["OK"], "summary": summary}
+    def failed_write():
+        report["delivery_admission_acceptance"] = "FAIL"
+        report["reason_codes"] = sorted(set(report["reason_codes"]) - {"OK"} | {"WRITE_FAILED"})
+    try:
+        require(not args.audit.is_symlink(), "WRITE_FAILED")
+        args.audit.mkdir(parents=True, exist_ok=True)
+        target = args.audit / "batch-acceptance.json"
+        require(not target.is_symlink(), "WRITE_FAILED")
+        target.write_bytes(_real_encoded(report, BATCH_SUMMARY_BYTES - 1) + b"\n")
+    except (OSError, GateError):
+        failed_write()
+    if args.summary:
+        try:
+            require(not args.summary.is_symlink(), "WRITE_FAILED")
+            with args.summary.open("a", encoding="utf-8") as output:
+                output.write("Temporal batch delivery/admission: " + report["delivery_admission_acceptance"]
+                    + "; Activity overlap: " + report["activity_overlap"] + "\n" + _encode(report) + "\n")
+        except (OSError, GateError):
+            failed_write()
+            try:
+                require(not args.audit.is_symlink() and not (args.audit / "batch-acceptance.json").is_symlink(), "WRITE_FAILED")
+                (args.audit / "batch-acceptance.json").write_bytes(_real_encoded(report, BATCH_SUMMARY_BYTES - 1) + b"\n")
+            except (OSError, GateError):
+                pass
+    print(_encode(report))
+    print(_encode(diagnostic))
+    return 0 if report["delivery_admission_acceptance"] == "PASS" else 1
 
 
 if __name__ == "__main__":
