@@ -83,22 +83,99 @@ def test_workflow_imports_only_public_scheduling_dependencies():
     tree = ast.parse(MODULE_PATH.read_text(encoding="utf-8"))
     imports = [node for node in ast.walk(tree) if isinstance(node, (ast.Import, ast.ImportFrom))]
     assert all(isinstance(node, ast.ImportFrom) and node.level == 0 for node in imports)
-    assert [(node.module, [(name.name, name.asname) for name in node.names]) for node in imports] == [
-        ("__future__", [("annotations", None)]),
-        ("datetime", [("timedelta", None)]),
-        ("typing", [("Any", None)]),
-        ("temporalio", [("workflow", None)]),
-        ("temporalio.common", [("RetryPolicy", None)]),
+    actual = [(node.module, tuple((name.name, name.asname) for name in node.names)) for node in imports]
+    original = [
+        ("__future__", (("annotations", None),)),
+        ("datetime", (("timedelta", None),)),
+        ("typing", (("Any", None),)),
+        ("temporalio", (("workflow", None),)),
+        ("temporalio.common", (("RetryPolicy", None),)),
     ]
-    # Importing this module performs no bootstrap, registration or I/O calls.
-    assert all(isinstance(node, (ast.Expr, ast.ImportFrom, ast.AsyncFunctionDef)) for node in tree.body)
+    added = [
+        ("asyncio", (("CancelledError", None),)),
+        ("copy", (("deepcopy", None),)),
+        ("hashlib", (("sha256", None),)),
+        ("json", (("dumps", None),)),
+        ("re", (("fullmatch", None),)),
+        ("temporalio.exceptions", (("ApplicationError", None),)),
+    ]
+    # The old public helper's imports remain exact and ordered. ADR 008 adds
+    # only this deterministic stdlib/public-SDK allowlist, never an I/O owner.
+    assert [item for item in actual if item in original] == original
+    assert len(actual) == len(set(actual))
+    assert set(actual) == set(original + added)
+    assert all(isinstance(node, (ast.Expr, ast.ImportFrom, ast.Assign,
+                                ast.AnnAssign, ast.FunctionDef, ast.AsyncFunctionDef,
+                                ast.ClassDef)) for node in tree.body)
     assert all(isinstance(node.value, ast.Constant) and isinstance(node.value.value, str)
                for node in tree.body if isinstance(node, ast.Expr))
+    assert [node.name for node in tree.body if isinstance(node, ast.ClassDef)] == ["DependentSumWorkflow"]
+    helpers = {"execute_reference", "dag_workflow_id", "dag_effect_id", "_dag_check",
+               "_dag_shape", "_dag_canonical", "_dag_hex", "_dag_label",
+               "_dag_reference_fields", "_dag_validate_reference", "_dag_validate_step",
+               "_dag_validate_inspection"}
+    assert {node.name for node in tree.body
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))} == helpers
+    constants = {
+        "DAG_PROFILE", "DAG_PLAN_SHA256", "DAG_HANDLER_SOURCE_SHA256", "DAG_REGISTRATION_SHA256",
+        "DAG_SEED_SHA256", "DAG_INPUT_SHA256", "DAG_OUTPUT_SHA256", "DAG_WORKFLOW_NAME",
+        "DAG_ACTIVITY_NAME", "DAG_INSPECT_ACTIVITY_NAME", "DAG_RESULT_PRODUCER",
+        "_DAG_REF_FIELDS", "_DAG_STEP_FIELDS", "_DAG_INSPECT_FIELDS", "_DAG_UPDATE_FIELDS",
+        "_DAG_TERMINAL", "_DAG_INSPECTION_REASONS",
+    }
+    assigned = set()
+    def pure_constant(value):
+        if isinstance(value, ast.Constant):
+            return type(value.value) in {str, int, float, bool, type(None)}
+        if isinstance(value, (ast.Tuple, ast.List, ast.Set)):
+            return all(pure_constant(item) for item in value.elts)
+        if isinstance(value, ast.Dict):
+            return all(key is not None and pure_constant(key) and pure_constant(item)
+                       for key, item in zip(value.keys, value.values))
+        if isinstance(value, ast.Name):
+            return value.id in assigned
+        if isinstance(value, ast.BinOp):
+            return isinstance(value.op, ast.BitOr) and pure_constant(value.left) and pure_constant(value.right)
+        if isinstance(value, ast.Call):
+            return (isinstance(value.func, ast.Name) and value.func.id == "frozenset"
+                    and len(value.args) == 1 and not value.keywords and pure_constant(value.args[0]))
+        return False
+    for node in tree.body:
+        if isinstance(node, (ast.Assign, ast.AnnAssign)):
+            assert isinstance(node, ast.Assign) and len(node.targets) == 1
+            assert isinstance(node.targets[0], ast.Name) and node.targets[0].id in constants
+            assert node.targets[0].id not in assigned and pure_constant(node.value)
+            assigned.add(node.targets[0].id)
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            assert not node.decorator_list
+            assert all(pure_constant(value) for value in node.args.defaults)
+            assert all(value is None or pure_constant(value) for value in node.args.kw_defaults)
+    assert assigned == constants
+    owner = next(node for node in tree.body if isinstance(node, ast.ClassDef))
+    assert [ast.unparse(value) for value in owner.decorator_list] == ["workflow.defn(name=DAG_WORKFLOW_NAME)"]
+    assert not owner.bases and not owner.keywords
+    allowed_decorators = {
+        "dag_state": ["workflow.query(name='dag_state')"],
+        "reconcile_result": ["workflow.update(name='reconcile_result')"],
+        "validate_reconcile_result": ["reconcile_result.validator"],
+        "run": ["workflow.run"],
+    }
+    for node in owner.body:
+        if isinstance(node, ast.Expr):
+            assert isinstance(node.value, ast.Constant) and isinstance(node.value.value, str)
+        else:
+            assert isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            assert [ast.unparse(value) for value in node.decorator_list] == allowed_decorators.get(node.name, [])
+            assert all(pure_constant(value) for value in node.args.defaults)
+            assert all(value is None or pure_constant(value) for value in node.args.kw_defaults)
 
 
 def test_workflow_has_one_await_and_no_retry_io_or_override_path():
     tree = ast.parse(MODULE_PATH.read_text(encoding="utf-8"))
-    functions = [node for node in tree.body if isinstance(node, ast.AsyncFunctionDef)]
+    # Preserve every assertion on the original helper subtree; the new fixed
+    # Workflow class is independently bounded below, never counted as v1.
+    functions = [node for node in tree.body if isinstance(node, ast.AsyncFunctionDef)
+                 and node.name == "execute_reference"]
     assert len(functions) == 1
     function = functions[0]
     assert function.name == "execute_reference"
@@ -279,3 +356,35 @@ def test_off_workflow_call_uses_sdk_refusal_without_client_fallback(bridge, requ
 
     with pytest.raises(_NotInWorkflowEventLoopError):
         asyncio.run(bridge.execute_reference(request_envelope, task_queue="reviewed-queue"))
+
+
+def test_fixed_dag_uses_only_reviewed_public_workflow_surface():
+    tree = ast.parse(MODULE_PATH.read_text(encoding="utf-8"))
+    owner = next(node for node in tree.body if isinstance(node, ast.ClassDef)
+                 and node.name == "DependentSumWorkflow")
+    public = {"defn", "run", "update", "query", "info", "Info", "time", "now",
+              "cancellation_reason", "all_handlers_finished", "wait_condition",
+              "start_activity", "ActivityCancellationType", "HandlerUnfinishedPolicy"}
+    attrs = {node.attr for node in ast.walk(tree) if isinstance(node, ast.Attribute)
+             and isinstance(node.value, ast.Name) and node.value.id == "workflow"}
+    assert attrs <= public | {"execute_activity"}  # execute_activity belongs to the unchanged v1 helper.
+    assert not any(isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+                   and node.func.id in {"open", "eval", "exec", "__import__"}
+                   for node in ast.walk(tree))
+    calls = [node for node in ast.walk(owner) if isinstance(node, ast.Call)]
+    assert any(ast.unparse(node.func) == "workflow.start_activity" for node in calls)
+    assert any(ast.unparse(node.func) == "workflow.wait_condition" for node in calls)
+    assert any(ast.unparse(node.func) == "workflow.cancellation_reason" for node in calls)
+    assert any(ast.unparse(node.func) == "workflow.all_handlers_finished" for node in calls)
+    assert not any(isinstance(node, (ast.AsyncFor, ast.For)) for node in ast.walk(owner)
+                   if any(isinstance(call, ast.Call) and ast.unparse(call.func) == "workflow.start_activity"
+                          for call in ast.walk(node)))
+    for call in calls:
+        if ast.unparse(call.func) == "workflow.start_activity":
+            options = {keyword.arg: ast.unparse(keyword.value) for keyword in call.keywords}
+            assert options["retry_policy"] == "RetryPolicy(maximum_attempts=1)"
+            assert options["start_to_close_timeout"] == "timedelta(seconds=10)"
+            assert options["schedule_to_close_timeout"] == "timedelta(seconds=60)"
+            assert options["cancellation_type"] == "workflow.ActivityCancellationType.TRY_CANCEL"
+            assert set(options) == {"activity_id", "task_queue", "retry_policy",
+                                    "start_to_close_timeout", "schedule_to_close_timeout", "cancellation_type"}
