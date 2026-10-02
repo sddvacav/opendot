@@ -1,0 +1,4 @@
+tests/acceptance/temporal_real_batch_gate.py::test_real_batch_delivers_200_bound_results
+tests/acceptance/temporal_real_batch_gate.py::test_real_batch_reservations_never_exceed_16
+tests/acceptance/temporal_real_batch_gate.py::test_real_batch_records_received_metadata_and_occupancy
+tests/acceptance/temporal_real_batch_gate.py::test_real_batch_observed_quiescence_and_shutdown
