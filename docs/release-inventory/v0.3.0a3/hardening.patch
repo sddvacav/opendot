@@ -1,0 +1,187 @@
+--- pre-hardening/build_inventory.py
++++ hardened/build_inventory.py
+@@ -74,9 +74,26 @@
+     return git_object('tree', b''.join(value for _, value in sorted(entries)))
+ 
+ 
+-def safe_name(name):
+-    p = pathlib.PurePosixPath(name)
+-    require(name and not p.is_absolute() and '..' not in p.parts and '\\' not in name, 'Unsafe archive name')
++def safe_name(name, is_directory=False):
++    # Check raw spelling before PurePath can normalize dot/empty components.
++    require(isinstance(name, str) and name, 'Empty archive name refused')
++    require('\\' not in name and not name.startswith('/'), 'Unsafe archive name')
++    require(not pathlib.PureWindowsPath(name).drive, 'Drive-qualified archive name refused')
++    require(not any(ord(c) < 32 or ord(c) == 127 for c in name), 'Control character in archive name')
++    canonical = name[:-1] if is_directory and name.endswith('/') else name
++    require(canonical and all(part not in ('', '.', '..') for part in canonical.split('/')), 'Noncanonical archive name refused')
++
++
++def validate_zip_members(items):
++    require(len({item.filename for item in items}) == len(items), 'Duplicate ZIP member')
++    for item in items:
++        directory = item.is_dir()
++        safe_name(item.filename, is_directory=directory)
++        if item.create_system == 3:
++            kind = stat.S_IFMT(item.external_attr >> 16)
++            require(kind in (0, stat.S_IFREG, stat.S_IFDIR), 'Nonregular/nondirectory ZIP member refused')
++            require(kind != stat.S_IFDIR or directory, 'ZIP directory type/name mismatch')
++            require(kind != stat.S_IFREG or not directory, 'ZIP regular-file type/name mismatch')
+ 
+ 
+ def file_info(name, data):
+@@ -85,11 +102,9 @@
+ 
+ def wheel_read(path):
+     with zipfile.ZipFile(path) as z:
+-        items = [x for x in z.infolist() if not x.is_dir()]
+-        require(len({x.filename for x in items}) == len(items), 'Duplicate wheel member')
+-        for item in items:
+-            safe_name(item.filename)
+-            require(not stat.S_ISLNK(item.external_attr >> 16), 'Wheel symlink refused')
++        all_items = z.infolist()
++        validate_zip_members(all_items)
++        items = [item for item in all_items if not item.is_dir()]
+         payloads = {x.filename: z.read(x) for x in items}
+     roots = [n for n in payloads if re.fullmatch(r'[^/]+\.dist-info/METADATA', n)]
+     require(len(roots) == 1, 'Expected one top-level wheel metadata file')
+@@ -217,7 +232,7 @@
+             seen = set()
+             with tarfile.open(path, mode='r:gz') as archive:
+                 for entry in archive.getmembers():
+-                    safe_name(entry.name)
++                    safe_name(entry.name, is_directory=entry.isdir())
+                     require(entry.name not in seen, 'Duplicate tar member')
+                     seen.add(entry.name)
+                     if entry.isdir():
+--- pre-hardening/test_inventory.py
++++ hardened/test_inventory.py
+@@ -11,6 +11,7 @@
+ import stat
+ import tempfile
+ import unittest
++import warnings
+ import zipfile
+ 
+ HERE = pathlib.Path(__file__).resolve().parent
+@@ -143,9 +144,77 @@
+                     with self.assertRaises(ValueError):
+                         builder.wheel_read(p)
+ 
++    def test_reviewed_directory_name_and_type_refusals(self):
++        # Every regular member has a valid RECORD row so name/type refusal is
++        # tested independently of missing-member/hash checks.
++        def tiny(path, mutation=None):
++            meta = 'check-1.dist-info/METADATA'
++            record_name = 'check-1.dist-info/RECORD'
++            files = {meta: b'Name: check\nVersion: 1\n'}
++            directories = ['valid/'] if mutation is None else []
++            names = {'dot-alias': 'a/./b', 'double-separator': 'a//b', 'drive-qualified': 'C:/bad'}
++            if mutation in names:
++                files[names[mutation]] = b'harmless control'
++            if mutation == 'unsafe-directory':
++                directories = ['../bad/']
++            if mutation == 'duplicate-directory':
++                directories = ['a/', 'a/']
++            if mutation == 'fifo':
++                files['special'] = b'harmless control'
++            rows = [[n, 'sha256=' + base64.urlsafe_b64encode(hashlib.sha256(v).digest()).decode().rstrip('='), str(len(v))] for n, v in files.items()]
++            rows.append([record_name, '', ''])
++            sio = io.StringIO()
++            csv.writer(sio, lineterminator='\n').writerows(rows)
++            files[record_name] = sio.getvalue().encode()
++            with warnings.catch_warnings():
++                warnings.simplefilter('ignore', UserWarning)
++                with zipfile.ZipFile(path, 'w') as z:
++                    for name, content in files.items():
++                        if name == 'special':
++                            info = zipfile.ZipInfo(name)
++                            info.create_system = 3
++                            info.external_attr = (stat.S_IFIFO | 0o644) << 16
++                            z.writestr(info, content)
++                        else:
++                            z.writestr(name, content)
++                    for name in directories:
++                        z.writestr(name, b'')
++        with tempfile.TemporaryDirectory() as folder:
++            p = pathlib.Path(folder) / 'synthetic.whl'
++            tiny(p)
++            _, _, result = builder.wheel_read(p)
++            self.assertEqual(result['record_hashed_member_count'], 1)
++            for mutation in ('unsafe-directory', 'duplicate-directory', 'dot-alias', 'double-separator', 'drive-qualified', 'fifo'):
++                with self.subTest(mutation=mutation):
++                    tiny(p, mutation)
++                    with self.assertRaises(ValueError):
++                        builder.wheel_read(p)
++
++    def test_raw_name_and_unix_type_boundaries(self):
++        for name, directory in [('a/b', False), ('a/b/', True), ('a', True)]:
++            builder.safe_name(name, is_directory=directory)
++        for name in ('', '.', './a', 'a/.', 'a//b', 'a/../b', 'a/', 'C:bad', 'C:/bad', '/bad', 'a\\b', 'a\x00b'):
++            with self.subTest(name=name):
++                with self.assertRaises(ValueError):
++                    builder.safe_name(name)
++        for kind in (stat.S_IFLNK, stat.S_IFIFO, stat.S_IFSOCK, stat.S_IFCHR, stat.S_IFBLK):
++            info = zipfile.ZipInfo('member')
++            info.create_system = 3
++            info.external_attr = (kind | 0o644) << 16
++            with self.subTest(kind=kind):
++                with self.assertRaises(ValueError):
++                    builder.validate_zip_members([info])
++        for name, kind in [('directory', stat.S_IFDIR), ('regular/', stat.S_IFREG)]:
++            info = zipfile.ZipInfo(name)
++            info.create_system = 3
++            info.external_attr = (kind | 0o644) << 16
++            with self.subTest(type_name_mismatch=name):
++                with self.assertRaises(ValueError):
++                    builder.validate_zip_members([info])
++
+ 
+ if __name__ == '__main__':
+     suite = unittest.defaultTestLoader.loadTestsFromTestCase(InventoryTests)
+     result = unittest.TextTestRunner(verbosity=2).run(suite)
+-    print(json.dumps({'status': 'PASS' if result.wasSuccessful() else 'FAIL', 'test_methods': result.testsRun, 'wheel_refusal_subcases': 10, 'failures': len(result.failures), 'errors': len(result.errors), 'skips': len(result.skipped)}, sort_keys=True))
++    print(json.dumps({'status': 'PASS' if result.wasSuccessful() else 'FAIL', 'test_methods': result.testsRun, 'wheel_refusal_subcases': 16, 'raw_name_refusal_subcases': 12, 'unix_type_refusal_subcases': 7, 'failures': len(result.failures), 'errors': len(result.errors), 'skips': len(result.skipped)}, sort_keys=True))
+     raise SystemExit(not result.wasSuccessful())
+--- pre-hardening/README.md
++++ hardened/README.md
+@@ -47,6 +47,11 @@
+ - `test_inventory.py`: deterministic positive/refusal controls
+ - `validation-results.json`: fresh generation/recheck and refusal-test results
+ - `SHA256SUMS`: supplement file hashes; this file does not hash itself
++- `hardening-review.json`: exact pre/post hardening identities and the sole
++  inventory JSON change, `/generator/script_sha256`
++- `pre-hardening-evidence/`: unchanged earlier files, report, checksums and
++  sealed bundle, retained separately for review history and excluded from the
++  current delivery archive
+ 
+ ## License interpretation
+ 
+@@ -91,6 +96,12 @@
+    final bounded document with a conforming validator. This custom inventory
+    makes no such conformance claim
+ 
++This helper is for the exact trusted, hash-pinned local inputs described above.
++It does not impose generic source-tree, file-size or archive-expansion resource
++limits. The added raw-path, all-entry and Unix-type refusals are bounded parser
++hardening, not a general archive-security certification. It never extracts archive
++contents or runs archive code.
++
+ The complete exclusions are machine-readable under `known_gaps`. Empty default
+ Python requirements do not imply an empty system dependency graph. A recipe's
+ version pin is not an artifact hash or a proven dependency closure.
+@@ -99,8 +110,12 @@
+ 
+ Prerequisites: an existing Python 3.12 environment with `packaging` 26.3, the
+ unchanged a3 full source tree and five-file packet, the existing ten locked
+-CI/Temporal wheels, and the separately pinned setuptools 84.0.0 wheel. No
+-inventoried package code, native backend, service, model or provider is invoked.
++CI/Temporal wheels, and the separately pinned setuptools 84.0.0 wheel. No code is loaded from the inspected wheels, and no native backend, service,
++model or provider is invoked. Existing installed `packaging` 26.3 is deliberately
++imported as inventory tooling. The JSON field
++`generator.inventoried_package_code_imported: false` means no code is imported
++from the inspected archive inputs; it does not deny use of that installed
++`packaging` tool.
+ The supplied generator version is identified by its own SHA-256; its tool fields
+ record the actual Python and packaging versions used.
+ 

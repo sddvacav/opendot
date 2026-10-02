@@ -4,6 +4,8 @@ Current release, 2 October 2026: **[0.3.0a3 ALPHA prerelease](https://github.com
 
 The frozen a3 assets include the optional bounded-read API and pure finite-batch preparation. Later [source-only live-batch and retention evidence](temporal-reference-transport.md#later-source-only-200-job-qualification-2026-10-02), including merged [PR #30](https://github.com/sddvacav/opendot/pull/30), does not change those assets or add installed-release acceptance. The [current installed guide](installed-quickstart.md) is a later documentation follow-on with a3 pins; the frozen source archive retains its historical a2 guide text. Release-asset preparation wording and historical records remain unchanged.
 
+The [bounded a3 component inventory](release-inventory/v0.3.0a3/README.md) is an additive custom-JSON supplement for the unchanged a3 assets; it is not a full transitive/native SBOM or legal/security certification.
+
 Historical a2 release checks: the [a2 main portable run](https://github.com/sddvacav/opendot/actions/runs/36964156448) and [a2 PR Temporal run](https://github.com/sddvacav/opendot/actions/runs/36963928744) retain their own source scopes. The latter tested a PR merge revision with the a2 released source tree, not the later main commit. Their [a2 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md) do not qualify a3.
 
 Historical pre-release checkpoint for the source-only follow-on to **0.3.0a1**:

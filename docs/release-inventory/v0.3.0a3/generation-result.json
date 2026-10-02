@@ -1,0 +1,25 @@
+{
+  "action": "generate",
+  "archive_regular_files": {
+    "opendot-engineering-0.3.0a3-source.tar.gz": 249,
+    "opendot_engineering-0.3.0a3-py3-none-any.whl": 27,
+    "opendot_engineering-0.3.0a3.tar.gz": 74
+  },
+  "components": 69,
+  "inspected_external_wheels": 11,
+  "not_claimed": [
+    "SPDX or CycloneDX conformance",
+    "full transitive or native SBOM",
+    "legal/security certification"
+  ],
+  "output_sha256": {
+    "component-inventory.json": "0f65712d1fe8ec6b9392ae0957d2fa39450ccf7de508e8eb13a36a0c7a25f434",
+    "temporal-rust-lock-inventory.json": "4c1b7aae20e991a2ecf722afe3f21aa27f3df709395fb5e5317c71bfbf548827"
+  },
+  "record_hashed_payloads_checked": 2150,
+  "relationships": 89,
+  "release_assets": 5,
+  "rust_lock_packages_not_license_audited": 369,
+  "source_files": 249,
+  "status": "PASS"
+}

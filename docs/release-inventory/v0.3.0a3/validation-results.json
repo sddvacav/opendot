@@ -1,0 +1,86 @@
+{
+  "date_utc": "2026-10-02",
+  "exact_regeneration_verification": {
+    "action": "verify",
+    "archive_regular_files": {
+      "opendot-engineering-0.3.0a3-source.tar.gz": 249,
+      "opendot_engineering-0.3.0a3-py3-none-any.whl": 27,
+      "opendot_engineering-0.3.0a3.tar.gz": 74
+    },
+    "components": 69,
+    "inspected_external_wheels": 11,
+    "not_claimed": [
+      "SPDX or CycloneDX conformance",
+      "full transitive or native SBOM",
+      "legal/security certification"
+    ],
+    "output_sha256": {
+      "component-inventory.json": "0f65712d1fe8ec6b9392ae0957d2fa39450ccf7de508e8eb13a36a0c7a25f434",
+      "temporal-rust-lock-inventory.json": "4c1b7aae20e991a2ecf722afe3f21aa27f3df709395fb5e5317c71bfbf548827"
+    },
+    "record_hashed_payloads_checked": 2150,
+    "relationships": 89,
+    "release_assets": 5,
+    "rust_lock_packages_not_license_audited": 369,
+    "source_files": 249,
+    "status": "PASS"
+  },
+  "generation": {
+    "action": "generate",
+    "archive_regular_files": {
+      "opendot-engineering-0.3.0a3-source.tar.gz": 249,
+      "opendot_engineering-0.3.0a3-py3-none-any.whl": 27,
+      "opendot_engineering-0.3.0a3.tar.gz": 74
+    },
+    "components": 69,
+    "inspected_external_wheels": 11,
+    "not_claimed": [
+      "SPDX or CycloneDX conformance",
+      "full transitive or native SBOM",
+      "legal/security certification"
+    ],
+    "output_sha256": {
+      "component-inventory.json": "0f65712d1fe8ec6b9392ae0957d2fa39450ccf7de508e8eb13a36a0c7a25f434",
+      "temporal-rust-lock-inventory.json": "4c1b7aae20e991a2ecf722afe3f21aa27f3df709395fb5e5317c71bfbf548827"
+    },
+    "record_hashed_payloads_checked": 2150,
+    "relationships": 89,
+    "release_assets": 5,
+    "rust_lock_packages_not_license_audited": 369,
+    "source_files": 249,
+    "status": "PASS"
+  },
+  "generator_sha256": "dc7b5d11f1bf40ec3bb7d3517320675e1fd3cb80d070305c37183c537cf70381",
+  "input_mutation_controls": [
+    {
+      "control": "changed-source",
+      "reason": "Exact source manifest mismatch",
+      "result": "EXPECTED_REFUSAL"
+    },
+    {
+      "control": "changed-release-wheel",
+      "reason": "Release asset changed: opendot_engineering-0.3.0a3-py3-none-any.whl",
+      "result": "EXPECTED_REFUSAL"
+    },
+    {
+      "control": "missing-locked-wheel",
+      "reason": "Pinned wheel unavailable: python:pytest@9.1.1",
+      "result": "EXPECTED_REFUSAL"
+    }
+  ],
+  "pre_hardening_evidence_preserved": true,
+  "published_assets_or_source_modified": false,
+  "status": "PASS_WITH_EXPLICIT_SCOPE_LIMITS",
+  "test_script_sha256": "ad17db749f445a60e4290e55c31b7e8c044c789669471af2c355e4b782462b9c",
+  "tool_version_claims": "Actual interpreter and installed packaging versions are recorded in the inventory. No code is loaded from inspected wheels. No SBOM tool or standard validator is claimed.",
+  "unit_and_wheel_refusal_controls": {
+    "errors": 0,
+    "failures": 0,
+    "raw_name_refusal_subcases": 12,
+    "skips": 0,
+    "status": "PASS",
+    "test_methods": 15,
+    "unix_type_refusal_subcases": 7,
+    "wheel_refusal_subcases": 16
+  }
+}
