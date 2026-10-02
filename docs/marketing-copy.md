@@ -1,6 +1,6 @@
 # Scope-limited description drafts
 
-Current copy for the **0.3.0a3 ALPHA prerelease**, as of 2 October 2026.
+Historical copy for the **0.3.0a3 ALPHA prerelease**, as of 2 October 2026.
 These descriptions are for review; this file does not publish them. Keep the
 release status and limits attached. Use the [announcement draft](../LAUNCH-COPY.md)
 for the fuller bilingual update and historical copy.
@@ -24,7 +24,7 @@ OpenDot Engineering 是一套用于本地函数执行和产物检查的实验性
 
 **English**
 
-Try the [version-pinned installed quickstart](installed-quickstart.md). Its first
+Try the [version-pinned installed quickstart](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md). Its first
 callable-to-artifact result needs only the released wheel and Python 3.12+ in a
 trusted POSIX environment. No model key, service or native solver is needed.
 The guide shows what success looks like, where bytes are saved, and how later
@@ -32,7 +32,7 @@ examples retain a rejected result or block a call with missing permission.
 
 **简体中文**
 
-试用[版本固定的安装入门](installed-quickstart.zh-CN.md)。在可信 POSIX 环境中，
+试用[版本固定的安装入门](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.zh-CN.md)。在可信 POSIX 环境中，
 第一个从函数到产物的结果只需已发布的 wheel 与 Python 3.12+，无需模型密钥、
 服务或原生求解器。指南说明成功输出、字节保存位置，以及后续示例如何保留被拒绝
 的结果或阻止缺少权限的调用。

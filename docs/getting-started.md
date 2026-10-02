@@ -1,9 +1,9 @@
 # Choose your first OpenDot result
 
-For a first installation, use the **[0.3.0a3 installed quickstart](installed-quickstart.md)**
+For a first installation, use the **[0.3.0a4 candidate installed quickstart](installed-quickstart.md)**
 or **[中文安装入门](installed-quickstart.zh-CN.md)**. Steps 1–2 install the pinned wheel
-and produce one inspectable result; you can stop there before downloading source
-examples or preparing any optional dependencies.
+and produce one inspectable result. The complete five-file bundle is verified first;
+source extraction and optional dependencies are not needed for that first result.
 
 You will run one permitted callable, store its output, and see `COMPLETED`,
 `semantic_valid: true` and `independent_sha256_matches: true`. The guide identifies
@@ -19,18 +19,33 @@ The default package needs no model key, server or native solver.
 - **Want read-only fixture checks?** Continue below with the two source-audit and
   qualification commands
 
-**Version boundary:** the installed guide uses frozen v0.3.0a3 release assets,
-which include the [optional bounded-read API](decisions/005-bounded-artifact-reads.md)
-and pure finite-batch preparation. The current guide is a later documentation
-follow-on; guides inside the frozen source archive still use historical a2 pins.
-Use the linked current guide for a3. Later
-[source-only live-batch and retained-evidence work](temporal-reference-transport.md#later-source-only-200-job-qualification-2026-10-02)
-is not in those assets. The fixed measurement comparison from merged
-[PR #31](https://github.com/sddvacav/opendot/pull/31),
-[commit `a2c1eac45a5d7530c254e954adfdce485d44476a`](https://github.com/sddvacav/opendot/commit/a2c1eac45a5d7530c254e954adfdce485d44476a),
-is also a later source-only example, absent from the frozen a3 artifacts.
-Keep released examples and package versions matched; a source-tree example or
-documentation update does not release new package bytes.
+## Current 0.3.0a4 source/package candidate
+
+**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
+This coherent snapshot includes the optional [offline A2A worker-turn adapter](../docs/a2a-worker-turn.md),
+matching source examples and version-bound installation instructions. Default runtime
+dependencies remain empty. Use the [a4 installed guide](../docs/installed-quickstart.md)
+with its externally reviewed checksum-manifest pin; final exact identities and
+separately scoped qualification belong in the candidate's external release notes.
+
+- Installed wheel: one dependency-free callable/artifact result, bounded reads,
+  read-only help and copied lightweight public fixtures; no source imports
+- Matching complete source: [measurement comparison](../examples/measurement-review/README.md)
+  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
+  it is not an installed-wheel workflow
+- [CAD/thermal plan](../examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
+  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
+  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
+  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
+- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
+  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
+  model, autonomous-agent or native-agent qualification is claimed
+- Source-only Temporal batch tools and historical hosted runs retain their own
+  evidence scopes; this candidate performs no fresh service run. The historical
+  [a3 component inventory](../docs/release-inventory/v0.3.0a3/README.md) is a3-only,
+  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+
+Historical a3 instructions and exact pins remain in the [corrected a3 guide](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md). The a3 full source had pure batch preparation and no three-role comparison; its bundled guides retained historical a2 pins. Those facts and earlier receipts are unchanged.
 
 ## Read-only synthetic source checks
 
@@ -57,7 +72,7 @@ PYTHONPATH=src python -B -m opendot_engineering.adapters.lab_qualification \
 - For both synthetic examples, POSIX descriptor-relative no-symlink file reads; unsupported platforms fail closed
 - No model key, network service, native CAD backend, or solver is needed for these two examples
 
-The default package has no required runtime Python dependencies. The [v0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) provides verified public wheel and matching source downloads; use the [installed guide](installed-quickstart.md) and its exact SHA-256 pins. No PyPI publication or broader supported-platform matrix is claimed. Do not install a similarly named package or guess a repository URL.
+The default package has no required runtime Python dependencies. This a4 source is a local candidate, not a publication receipt. Use its [installed guide](installed-quickstart.md) only with the matching reviewed five-file bundle and external SHA256SUMS pin. No PyPI publication or broader supported-platform matrix is claimed. Do not substitute a similarly named package.
 
 ## What to inspect
 
@@ -95,6 +110,6 @@ A future runtime tutorial must separately demonstrate task permissions, resource
 
 ## 中文摘要
 
-首次安装请先完成[中文安装入门](installed-quickstart.zh-CN.md)的第 1–2 步：只用固定版本 wheel 生成并检查第一个本地产物，无需下载源码示例或准备可选依赖。若只想检查本地夹具，可运行本文上方的两条只读命令。模型、服务、原生求解器与设备均不是这些入门示例的前提。
+首次安装请先完成[中文安装入门](installed-quickstart.zh-CN.md)的第 1–2 步：先核验完整五文件包，再只用固定版本 wheel 生成并检查第一个本地产物，无需提取源码示例或准备可选依赖。若只想检查本地夹具，可运行本文上方的两条只读命令。模型、服务、原生求解器与设备均不是这些入门示例的前提。
 
-当前安装指南对应冻结的 v0.3.0a3 产物，已包含可选有界读取与纯批次准备；冻结源码归档内的旧指南仍使用历史 a2 固定值，请使用本文链接的当前指南。后续真实批次与保留证据工作仅属于源码范围，不在 a3 产物中。安装包检查与源目录检查分别记录；ALPHA、NOT_SCORED 不变，完整运行时的中断、恢复和清理行为仍需独立实现与验证。
+当前安装指南对应 0.3.0a4 本地候选，要求外部独立复核的 SHA256SUMS 摘要；此处不证明已发布。测量比较须从匹配完整源码导入，CAD plan 为 NOT_EXECUTED，原生执行与 A2A 外部 live gate 为 NOT_RUN。历史 a3 产物仅含可选有界读取与纯批次准备，其捆绑指南保留历史 a2 固定值；应使用版本固定的历史 a3 修正版指南。后续真实批次与保留证据工作不改变 a3 产物。安装包检查与源目录检查分别记录；ALPHA、NOT_SCORED 不变，完整运行时的中断、恢复和清理行为仍需独立实现与验证。

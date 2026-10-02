@@ -1,6 +1,6 @@
 # OpenDot Engineering announcement draft
 
-Current release copy for review, checked against the published-release record on
+Historical a3 release copy for review, checked against the published-release record on
 2 October 2026. This document does not itself publish an announcement.
 
 ## English
@@ -11,7 +11,7 @@ run a permitted function, store its output by SHA-256, and distinguish intact
 bytes from an accepted result. Python 3.12+ is required; Linux is the reviewed
 environment, and the default package has no runtime Python dependencies.
 
-Start with the [version-pinned installed quickstart](docs/installed-quickstart.md).
+Start with the [version-pinned installed quickstart](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md).
 Its first result uses only the released wheel, with no source checkout, model key,
 server or native solver. The next example shows success, semantic refusal and
 missing permission, including the intact but unaccepted output of a failed check.
@@ -35,7 +35,7 @@ OpenDot Engineering 0.3.0a3 已作为**实验性 ALPHA 预发布版**提供下�
 SHA-256 保存输出，并区分字节完整与结果被接受。要求 Python 3.12+；已复核的
 环境是 Linux，默认软件包没有运行时 Python 依赖。
 
-从[版本固定的安装入门](docs/installed-quickstart.zh-CN.md)开始。第一个结果只需
+从[版本固定的安装入门](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.zh-CN.md)开始。第一个结果只需
 已发布的 wheel，无需源码副本、模型密钥、服务或原生求解器。下一项示例展示成功、
 语义拒绝与缺少权限三种情况，包括检查失败后仍保留的完整但未被接受的输出。
 下载与精确证据见 [a3 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)

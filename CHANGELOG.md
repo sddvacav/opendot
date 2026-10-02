@@ -1,9 +1,9 @@
 # Changelog
 
-## Current publication status — 2 October 2026
+## Historical a3 publication status — 2 October 2026
 
 **Published release: [v0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED.**
-Use the [exact-asset installed quickstart](docs/installed-quickstart.md) and
+Use the [historical a3 installed quickstart](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md) and
 [a3 release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md).
 The frozen assets bind to [commit `30610de43da81801e7b88517459fbdf0f667ca2d`](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d),
 source tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`. They include the opt-in
@@ -20,7 +20,7 @@ a2 status at preparation time; later publication status belongs to the
 corresponding release-specific notes, not a reinterpretation of this checkpoint.
 
 **Latest published release: [v0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2); NOT_SCORED.**
-Use the [installed quickstart](docs/installed-quickstart.md) for exact download
+Use the [historical a2 installed quickstart](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) for exact download
 pins and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
 for separately scoped checks. The release includes the optional finite Temporal
 transport and Gmsh file-size-limit repair; frozen a1 assets remain unchanged.
@@ -29,6 +29,15 @@ transport and Gmsh file-size-limit repair; frozen a1 assets remain unchanged.
 adds the opt-in [bounded-artifact-read API](docs/decisions/005-bounded-artifact-reads.md).
 That change is not in frozen v0.3.0a2 assets. Main-branch source and its checks do
 not change the published wheel or transfer acceptance to a new distribution.
+
+## 0.3.0a4 — coherent local prerelease candidate (2026-10-02)
+
+- Based on merged `1af48392ea55c254a8ff68f7cf59a426928687f4` (tree `7b99a5eb74ca91acd57ac7206b327a706e6eb8b1`), including the offline A2A adapter, source-only measurement comparison, fixed CAD/thermal plan and existing source-only Temporal batch tools
+- Keep canonical runtime/store/contracts/admission/execution owners, dependencies and workflow bytes unchanged; only static package-help guide text and package version change in `src`
+- Reconcile English/Chinese installed guides with the same a4 wheel and complete source. Require an independently reviewed external SHA256SUMS digest before verifying the exact four payload names; never embed an archive's own hash in its bundled guide
+- Separate installed lightweight checks, matching-source measurement imports, metadata-only CAD `plan`, historical service evidence and offline A2A fixtures. External A2A live gate and native CAD execution remain NOT_RUN
+- Fresh source, offline build, installed and exact-artifact review receipts are external and candidate-specific. Historical a3 assets, receipts, component inventory and corrected version-pinned guide remain immutable
+- Local candidate only: no tag, GitHub release, PyPI upload, native/service/provider run or UI change is established. ALPHA / NOT_SCORED and false scientific/device authority remain unchanged
 
 ## 0.3.0a3 — local installable alpha preparation checkpoint (2026-10-02)
 

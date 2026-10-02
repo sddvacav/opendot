@@ -1,10 +1,36 @@
 # OpenDot Engineering capabilities and evidence
 
+## Current 0.3.0a4 source/package candidate
+
+**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
+This coherent snapshot includes the optional [offline A2A worker-turn adapter](docs/a2a-worker-turn.md),
+matching source examples and version-bound installation instructions. Default runtime
+dependencies remain empty. Use the [a4 installed guide](docs/installed-quickstart.md)
+with its externally reviewed checksum-manifest pin; final exact identities and
+separately scoped qualification belong in the candidate's external release notes.
+
+- Installed wheel: one dependency-free callable/artifact result, bounded reads,
+  read-only help and copied lightweight public fixtures; no source imports
+- Matching complete source: [measurement comparison](examples/measurement-review/README.md)
+  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
+  it is not an installed-wheel workflow
+- [CAD/thermal plan](examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
+  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
+  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
+  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
+- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
+  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
+  model, autonomous-agent or native-agent qualification is claimed
+- Source-only Temporal batch tools and historical hosted runs retain their own
+  evidence scopes; this candidate performs no fresh service run. The historical
+  [a3 component inventory](docs/release-inventory/v0.3.0a3/README.md) is a3-only,
+  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+
 [简体中文](CAPABILITIES.zh-CN.md) · [Overview](OVERVIEW.md) · [Research map](RESEARCH-MAP.md)
 
-Snapshot: 2 October 2026. This matrix describes the frozen experimental 0.3.0a3 release boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
+Snapshot: 2 October 2026. The following historical checkpoint describes the frozen experimental 0.3.0a3 release boundary and preserves the exact scope of a4 and earlier evidence. It is a traceability map, not a score. “Implemented” means code is present; an independent predecessor pass does not independently approve successor changes.
 
-**Experimental alpha: 0.3.0a3; NOT_SCORED.** This version
+**Historical experimental alpha: 0.3.0a3; NOT_SCORED.** This version
 integrates [structural default verification v2](docs/structural-default-v2.md):
 conditional per-element energy consistency, schema 2 and explicit historical
 `artifact_v1` compatibility. Scientific acceptance remains false. The source-boundary
@@ -17,7 +43,7 @@ The file-size repair and optional Temporal transport are packaged in 0.3.0a2;
 unchanged v0.3.0a1 release assets contain neither and retain their original hashes.
 [Historical 0.3.0a1 verification scope](docs/structural-v2-candidate-verification.md)
 
-The [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) is available. The [exact-asset installation guide](docs/installed-quickstart.md) pins its released wheel and matching full source. The [historical 0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and its existing evidence remain unchanged. The [historical 0.3.0a1 installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) and [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retain their separate version-specific pins; earlier-version results do not accept these artifacts.
+The [0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3) is available. The [exact-asset installation guide](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md) pins its released wheel and matching full source. The [historical 0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2) and its existing evidence remain unchanged. The [historical 0.3.0a1 installation guide](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.md) and [historical a6 installation guide](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.md) retain their separate version-specific pins; earlier-version results do not accept these artifacts.
 
 ## 0.3.0a3 released asset scope
 

@@ -1,8 +1,34 @@
 # OpenDot release checklist
 
-Current release, 2 October 2026: **[0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED**. The [released source commit](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d), tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`, and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) bind the exact assets to their separately scoped source, build, installed and independent checks. The [a3 main portable run](https://github.com/sddvacav/opendot/actions/runs/36982326482) and [a3 PR Temporal run](https://github.com/sddvacav/opendot/actions/runs/36981793339) are distinct source checks; the latter tested PR merge revision `7ab3c1f7be3dd22024239cf3d4d4813f7646a7d3` with the same source tree, not the later main commit. The five named public release downloads were checked against the accepted bytes. This does not establish production readiness, scientific acceptance or a supported-platform matrix.
+## Current 0.3.0a4 source/package candidate
 
-The frozen a3 assets include the optional bounded-read API and pure finite-batch preparation. Later [source-only live-batch and retention evidence](temporal-reference-transport.md#later-source-only-200-job-qualification-2026-10-02), including merged [PR #30](https://github.com/sddvacav/opendot/pull/30), does not change those assets or add installed-release acceptance. The [current installed guide](installed-quickstart.md) is a later documentation follow-on with a3 pins; the frozen source archive retains its historical a2 guide text. Release-asset preparation wording and historical records remain unchanged.
+**ALPHA / NOT_SCORED; local candidate, publication not established by this source.**
+This coherent snapshot includes the optional [offline A2A worker-turn adapter](../docs/a2a-worker-turn.md),
+matching source examples and version-bound installation instructions. Default runtime
+dependencies remain empty. Use the [a4 installed guide](../docs/installed-quickstart.md)
+with its externally reviewed checksum-manifest pin; final exact identities and
+separately scoped qualification belong in the candidate's external release notes.
+
+- Installed wheel: one dependency-free callable/artifact result, bounded reads,
+  read-only help and copied lightweight public fixtures; no source imports
+- Matching complete source: [measurement comparison](../examples/measurement-review/README.md)
+  uses `PYTHONPATH=src` and verifies canonical import origins in that same source;
+  it is not an installed-wheel workflow
+- [CAD/thermal plan](../examples/cad_cae/README.md) is metadata-only `NOT_EXECUTED`.
+  Fabricated contract checks do not establish native execution. Native CAD/Gmsh/
+  CalculiX is `NOT_RUN`; physical validation `NOT_PERFORMED`, independent review
+  `NOT_EVALUATED`, mesh independence `NOT_ESTABLISHED`
+- A2A uses at most one externally supplied callback and returns an `UNACCEPTED`
+  candidate; its external live gate is `NOT_RUN`. No included transport, provider,
+  model, autonomous-agent or native-agent qualification is claimed
+- Source-only Temporal batch tools and historical hosted runs retain their own
+  evidence scopes; this candidate performs no fresh service run. The historical
+  [a3 component inventory](../docs/release-inventory/v0.3.0a3/README.md) is a3-only,
+  not an a4 SBOM. Scientific and device authority remain false; UI changes are excluded
+
+Historical a3 release, 2 October 2026: **[0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED**. The [released source commit](https://github.com/sddvacav/opendot/commit/30610de43da81801e7b88517459fbdf0f667ca2d), tree `95ca23d9d36558680c809f2382bef188c6fc2ae4`, and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a3/RELEASE-NOTES.md) bind the exact assets to their separately scoped source, build, installed and independent checks. The [a3 main portable run](https://github.com/sddvacav/opendot/actions/runs/36982326482) and [a3 PR Temporal run](https://github.com/sddvacav/opendot/actions/runs/36981793339) are distinct source checks; the latter tested PR merge revision `7ab3c1f7be3dd22024239cf3d4d4813f7646a7d3` with the same source tree, not the later main commit. The five named public release downloads were checked against the accepted bytes. This does not establish production readiness, scientific acceptance or a supported-platform matrix.
+
+The frozen a3 assets include the optional bounded-read API and pure finite-batch preparation. Later [source-only live-batch and retention evidence](temporal-reference-transport.md#later-source-only-200-job-qualification-2026-10-02), including merged [PR #30](https://github.com/sddvacav/opendot/pull/30), does not change those assets or add installed-release acceptance. The [historical a3 installed guide](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.md) is a later documentation follow-on with a3 pins; the frozen source archive retains its historical a2 guide text. Release-asset preparation wording and historical records remain unchanged.
 
 The [bounded a3 component inventory](release-inventory/v0.3.0a3/README.md) is an additive custom-JSON supplement for the unchanged a3 assets; it is not a full transitive/native SBOM or legal/security certification.
 

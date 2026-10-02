@@ -1,10 +1,30 @@
 # OpenDot Engineering 能力与证据
 
+## 当前 0.3.0a4 源码／软件包候选
+
+**ALPHA / NOT_SCORED；本地候选，此源码不证明已发布。**
+本次一致快照包含可选的[离线 A2A worker-turn 适配器](docs/a2a-worker-turn.md)、
+配套源码示例与版本固定的安装说明。默认运行时依赖仍为空。
+[a4 安装入门](docs/installed-quickstart.zh-CN.md)要求来自外部独立复核的校验清单摘要；
+最终精确标识与分别限定范围的验证结果记录在候选的外部发布说明中。
+
+- 安装 wheel：无额外依赖的函数／产物结果、有界读取、只读帮助与复制的轻量公开 fixture；不从源码导入
+- 匹配的完整源码：[测量比较](examples/measurement-review/README.zh-CN.md)使用 `PYTHONPATH=src`，
+  并验证规范所有者确实从同一源码树导入；不是安装 wheel 的工作流
+- [CAD／热传导计划](examples/cad_cae/README.zh-CN.md)仅检查元数据，结果为 `NOT_EXECUTED`。
+  人工构造的契约检查不证明原生执行。原生 CAD／Gmsh／CalculiX 为 `NOT_RUN`；
+  物理验证 `NOT_PERFORMED`、独立审查 `NOT_EVALUATED`、网格无关性 `NOT_ESTABLISHED`
+- A2A 至多调用一次外部提供的回调，仅返回 `UNACCEPTED` 候选；外部 live gate 为 `NOT_RUN`。
+  不包含传输实现，不声明提供方／模型执行、自治智能体或原生智能体验证
+- 仅源码的 Temporal 批次工具与历史托管运行保持各自范围；本候选不执行新的服务运行。
+  [a3 组件清单](docs/release-inventory/v0.3.0a3/README.md)仅适用于 a3，不是 a4 SBOM。
+  科学与设备权限仍为 false；不包含 UI 变更
+
 [English](CAPABILITIES.md) · [版本概览](OVERVIEW.zh-CN.md) · [研究映射](RESEARCH-MAP.zh-CN.md)
 
 截至 2026 年 10 月 2 日。本表描述冻结的实验性 0.3.0a3 发布版边界，并保留 a4 及更早证据的精确范围。这是可追溯性映射，不是评分。“已实现”表示代码存在；前一版独立通过不会自动批准后继改动。
 
-**实验性 alpha：0.3.0a3；NOT_SCORED。** 本版本整合
+**历史实验性 alpha：0.3.0a3；NOT_SCORED。** 本版本整合
 [结构默认验证 v2](docs/structural-default-v2.md)：在声明条件下要求逐单元能量一致性，
 返回 schema 2，并仅通过显式 `artifact_v1` 保留历史兼容行为。科学验收仍为 false。
 来源边界示例覆盖七项原始合成协议，其余八项仍未实现；六个合成参数场景另行计数，
@@ -13,7 +33,7 @@
 文件大小修复与可选 Temporal 传输已打包进 0.3.0a2；未改动的 v0.3.0a1 发布产物不含这两项新增内容，原有哈希保持不变。
 [历史 0.3.0a1 验证范围](docs/structural-v2-candidate-verification.md)
 
-[0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)现已提供。[精确产物安装指南](docs/installed-quickstart.zh-CN.md)固定其已发布 wheel 与配套完整源码。[历史 0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)及其既有证据保持不变。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
+[0.3.0a3 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3)现已提供。[精确产物安装指南](https://github.com/sddvacav/opendot/blob/8d5d8667d65734fb5c40fa0526709a3159b7f165/docs/installed-quickstart.zh-CN.md)固定其已发布 wheel 与配套完整源码。[历史 0.3.0a2 ALPHA 预发布版](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2)及其既有证据保持不变。[历史 0.3.0a1 安装指南](https://github.com/sddvacav/opendot/blob/359f781a5aa1650ae92b1af81cf369a17c444045/docs/installed-quickstart.zh-CN.md)与[历史 a6 安装指南](https://github.com/sddvacav/opendot/blob/eec73193594ee212ba091a9d7310c8762a4b0003/docs/installed-quickstart.zh-CN.md)保留各自独立的版本固定值；先前版本的结果不构成本次产物的验收。
 
 ## 0.3.0a3 已发布产物范围
 
