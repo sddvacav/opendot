@@ -1,12 +1,21 @@
 # Exact portable CI boundary
 
-The [overview](../OVERVIEW.md) and [claim status](../docs/claim-status.md) identify the current release and its separate evidence scopes; **NOT_SCORED** remains unchanged. The portable manifests select **1,325 distinct
-portable nodes**: a6's 1,183 plus 59 [structural-v2 cases](solver-crosscheck-nodes.txt)
-and 48 new [source-conflict cases](source-boundary-nodes.txt), plus 35 fake-only
-[Gmsh resource-ceiling cases](solver-crosscheck-nodes.txt). The existing nine
-workflow manifests select each node exactly once. Adding 78 Git and 81 source-
-provenance cases gives **1,484 controlled-local nodes**. These are selected counts,
-not outcomes. The [historical successor scope](../docs/structural-v2-candidate-verification.md) retains its original checkpoint.
+The [overview](../OVERVIEW.md) and [claim status](../docs/claim-status.md) identify the current release and its separate evidence scopes; **NOT_SCORED** remains unchanged.
+The current unreleased source manifests select **1,382 distinct portable nodes**:
+the released a2 source's historical 1,325 plus 57 opt-in bounded artifact-read
+cases appended to the [read-only artifact manifest](readonly-artifact-nodes.txt)
+under [ADR 005](../docs/decisions/005-bounded-artifact-reads.md). The existing nine
+workflow manifests still select each node exactly once. Adding the separately
+scoped 78 Git and 81 source-provenance cases gives **1,541 controlled-local nodes**.
+These are selection counts, not hosted outcomes or release acceptance.
+
+The released a2 selection remains **1,325 portable nodes**: a6's 1,183 plus 59
+[structural-v2 cases](solver-crosscheck-nodes.txt), 48
+[source-conflict cases](source-boundary-nodes.txt) and 35 fake-only
+[Gmsh resource-ceiling cases](solver-crosscheck-nodes.txt). Its corresponding
+controlled-local selection was 1,484 nodes. Published a2 assets and historical
+receipts are unchanged; they do not contain or qualify the new bounded-read
+increment. The [historical successor scope](../docs/structural-v2-candidate-verification.md) retains its original checkpoint.
 The file-size follow-on added 16 net Gmsh nodes to the prior 1,309-node portable
 selection; the repair is now packaged as described in the current overview.
 Existing v0.3.0a1 assets and their receipts retain their original hashes and scope.

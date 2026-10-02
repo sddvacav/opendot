@@ -77,7 +77,7 @@ DIAGNOSTIC_REASON_CODES = DIAGNOSTIC_GATE_REASONS | frozenset(DIAGNOSTIC_GENERIC
 DIAGNOSTIC_EXCEPTION_CATEGORIES = frozenset(DIAGNOSTIC_GENERIC_REASONS) | {"gate_refusal"}
 OWNER_SHA256 = {
     "src/opendot_engineering/tool_runtime.py": "7c5011e02b2cf07e5f15ad7854905ce0738271e167b873bad9256a8ed169199c",
-    "src/opendot_engineering/core/artifacts.py": "91fde8d32f6f7498fc96c0e883b9ba658440e95b0cc92f69f172e4de3d7b7856",
+    "src/opendot_engineering/core/artifacts.py": "4606b7b11a81044267b30fee332d9b6fd6540d862726a9579655ee27c7d9a883",
     "src/opendot_engineering/core/contracts.py": "9462415baf84668825ad2c8cfc3f4f3df68332f65d1f1f4b301fbf01cf8537ca",
 }
 SDK_VERSIONS = {"temporalio": "1.34.0", "nexus-rpc": "1.4.0", "protobuf": "7.36.2",
