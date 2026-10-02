@@ -1,0 +1,33 @@
+{
+  "cause": "Independent review accepted the exact pinned input inventory but found six unsafe/noncanonical ZIP-header cases accepted by the generic helper.",
+  "date_utc": "2026-10-02",
+  "expected_new_refusals": [
+    "ZIP directory ../bad/",
+    "duplicate ZIP directory a/",
+    "regular a/./b with valid RECORD",
+    "regular a//b with valid RECORD",
+    "regular C:/bad with valid RECORD",
+    "Unix FIFO with valid RECORD"
+  ],
+  "hardened_inventory_sha256": "0f65712d1fe8ec6b9392ae0957d2fa39450ccf7de508e8eb13a36a0c7a25f434",
+  "independent_review": "Must be established by the separate independent review receipt; this author record does not self-certify it.",
+  "limits": [
+    "Exact trusted inputs only; no generic file/source-tree/expansion resource limits.",
+    "No general archive-security certification.",
+    "No full dependency/native SBOM or license/security certification.",
+    "Existing installed packaging is used as a tool; no code imported from inspected wheels."
+  ],
+  "preservation_directory": "pre-hardening-evidence",
+  "preserved_files_verified": 13,
+  "previous_bundle_sha256": "a7d742450c7c66cb52a60b3834d9d3e39dbaa2aa311b056f37be0a090f315603",
+  "previous_inventory_sha256": "ae5d5ce7a27ce27e9ec5ea87b2e57ef76799c61d819c377cd07e4e7e5d5e0cd8",
+  "scope": "Existing inventory generator only: raw member name checks, all-ZipInfo checks before directory filtering, duplicate directory rejection, Unix special-file rejection; no extraction or package installation.",
+  "semantic_inventory_records_unchanged": true,
+  "sole_component_inventory_json_delta": {
+    "after": "dc7b5d11f1bf40ec3bb7d3517320675e1fd3cb80d070305c37183c537cf70381",
+    "before": "d3a488c1fa603285f181cea84937a553a38a542e5e4acf3d607a4df929cce31a",
+    "json_pointer": "/generator/script_sha256"
+  },
+  "status": "AUTHOR_HARDENING_VERIFIED",
+  "temporal_rust_projection_bytes_unchanged": true
+}

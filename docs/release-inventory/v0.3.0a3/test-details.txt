@@ -1,0 +1,20 @@
+test_archive_member_mappings_are_consistent (__main__.InventoryTests.test_archive_member_mappings_are_consistent) ... ok
+test_changed_source_count_refused (__main__.InventoryTests.test_changed_source_count_refused) ... ok
+test_dangling_relationship_refused (__main__.InventoryTests.test_dangling_relationship_refused) ... ok
+test_default_profile_empty_optional_profiles_bounded (__main__.InventoryTests.test_default_profile_empty_optional_profiles_bounded) ... ok
+test_duplicate_component_refused (__main__.InventoryTests.test_duplicate_component_refused) ... ok
+test_external_shipped_claim_refused (__main__.InventoryTests.test_external_shipped_claim_refused) ... ok
+test_invalid_file_hash_refused (__main__.InventoryTests.test_invalid_file_hash_refused) ... ok
+test_legal_conclusion_refused (__main__.InventoryTests.test_legal_conclusion_refused) ... ok
+test_no_fictitious_standard_claim (__main__.InventoryTests.test_no_fictitious_standard_claim) ... ok
+test_raw_name_and_unix_type_boundaries (__main__.InventoryTests.test_raw_name_and_unix_type_boundaries) ... ok
+test_reviewed_directory_name_and_type_refusals (__main__.InventoryTests.test_reviewed_directory_name_and_type_refusals) ... ok
+test_rust_projection_not_a_shipped_license_claim (__main__.InventoryTests.test_rust_projection_not_a_shipped_license_claim) ... ok
+test_source_manifest_recomputed_independently (__main__.InventoryTests.test_source_manifest_recomputed_independently) ... ok
+test_valid_document (__main__.InventoryTests.test_valid_document) ... ok
+test_wheel_record_valid_control_and_refusals (__main__.InventoryTests.test_wheel_record_valid_control_and_refusals) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.025s
+
+OK
