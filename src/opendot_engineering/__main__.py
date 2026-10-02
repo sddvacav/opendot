@@ -6,11 +6,11 @@ import argparse
 from . import __version__
 
 
-_GUIDE = """First useful result (0.3.0a4, ALPHA / NOT_SCORED):
+_GUIDE = """First useful result (0.3.0a5, ALPHA / NOT_SCORED):
   Run a permitted callable, store its result, and independently check its bytes.
   Exact-version installation and bilingual first-result recipe:
-  https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4
-  https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md
+  https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5
+  https://github.com/sddvacav/opendot/releases/download/v0.3.0a5/RELEASE-NOTES.md
   Require the independently reviewed external SHA256SUMS pin before installation.
   These links name the release target; this static help does not verify publication.
 
