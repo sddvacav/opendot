@@ -1107,3 +1107,458 @@ def test_storage_interruption_survives_ordinary_capture_failure(tmp_path, diagno
     assert caught.value is original and calls == ["cases", "cleanup", "audit"]
     report = diagnostic_verifier.read_safe_diagnostic(tmp_path / "audit", "0" * 40)
     assert report["validation"] == "UNAVAILABLE" and report["diagnostic"] is None
+
+
+# BATCH_PREPARATION_TESTS: self-contained stdlib section, also collectable by pytest.
+import unittest as _batch_unittest
+import sys as _batch_sys
+import importlib as _batch_importlib
+from copy import deepcopy as _batch_copy
+from pathlib import Path as _BatchPath
+import hashlib as _batch_hashlib
+
+_batch_root = _BatchPath(__file__).resolve().parents[1]
+if str(_batch_root / "ci") not in _batch_sys.path:
+    _batch_sys.path.insert(0, str(_batch_root / "ci"))
+_batch_gate = _batch_importlib.import_module("verify_temporal_server_gate")
+_batch_harness = _batch_importlib.import_module("run_temporal_server_gate")
+
+
+def _batch_ack(job):
+    index = int(job["job_id"][-3:])
+    return {"job_id": job["job_id"], "workflow_id": job["workflow_id"],
+            "run_id": f"00000000-0000-0000-0000-{index + 1:012x}"}
+
+
+def _batch_harness_result(job):
+    index = int(job["job_id"][-3:])
+    return {**_batch_ack(job), "activity_id": _batch_gate.ACTIVITY_ID,
+            "invocation_id": f"inv-{index:03d}", "attempt": 1, "receipt_id": f"{index + 1:024x}",
+            "input_artifact_id": job["input_artifact_id"],
+            "result_artifact_id": "sha256:" + _batch_hashlib.sha256(("result-" + job["job_id"]).encode()).hexdigest(),
+            "result_input_artifact_id": job["input_artifact_id"], "result_size_bytes": 1024,
+            "tool_status": "COMPLETED", "semantic_valid": True, "output": 199,
+            "reconciliation_required": False, "transport_status": "COMPLETED"}
+
+
+class BatchHarnessPreparationTests(_batch_unittest.TestCase):
+    def fresh(self):
+        return _batch_harness.BatchAdmission(_batch_gate.frozen_batch_plan(), dict(_batch_gate.BATCH_PROFILE))
+
+    def finish(self, controller, index):
+        result = _batch_harness_result(_batch_gate.frozen_batch_plan()["jobs"][index])
+        controller.record_outcome(result)
+        self.assertTrue(controller.observe_terminal(result))
+        return result
+
+    def test_batch_rejects_invalid_or_over_budget_plan_before_submission(self):
+        for mutation in ("empty", "199", "201", "duplicate", "unknown", "payload", "order", "overflow", "boolean"):
+            with self.subTest(mutation=mutation):
+                plan = _batch_gate.frozen_batch_plan()
+                if mutation == "empty": plan["jobs"] = []
+                if mutation == "199": plan["jobs"].pop()
+                if mutation == "201": plan["jobs"].append(_batch_copy(plan["jobs"][0]))
+                if mutation == "duplicate": plan["jobs"][1] = _batch_copy(plan["jobs"][0])
+                if mutation == "unknown": plan["jobs"][0]["job_id"] = "private-canary"
+                if mutation == "payload": plan["jobs"][0]["payload"]["right"] = 200
+                if mutation == "order": plan["jobs"].reverse()
+                if mutation == "overflow": plan["output_allowance_bytes"] += 1
+                if mutation == "boolean": plan["jobs"][0]["payload"]["left"] = False
+                with self.assertRaises(_batch_gate.GateError):
+                    _batch_harness.BatchAdmission(plan, dict(_batch_gate.BATCH_PROFILE))
+                calls = []
+                with self.assertRaises(_batch_gate.GateError):
+                    _batch_harness.build_batch_factory_fixture(plan, dict(_batch_gate.BATCH_PROFILE),
+                        executor_factory=lambda **kw: calls.append(kw), worker_factory=lambda **kw: calls.append(kw))
+                self.assertEqual(calls, [])
+
+    def test_batch_reserves_attempt_before_rpc_and_never_refunds_unknown_ack(self):
+        for unknown in ("raise", "none", "wrong_job", "malformed"):
+            with self.subTest(unknown=unknown):
+                controller = self.fresh()
+                calls = []
+                def rpc(job):
+                    state = controller.snapshot()
+                    self.assertEqual(state["reserved_attempt_allowance"], 200)
+                    self.assertEqual(state["reserved_output_allowance_bytes"], 3276800)
+                    self.assertEqual((state["attempts_consumed"], state["outstanding"]), (1, 1))
+                    self.assertTrue(state["jobs"][job["job_id"]]["reserved"])
+                    calls.append(job["job_id"])
+                    if unknown == "raise": raise RuntimeError("PRIVATE_EXCEPTION_MUST_NOT_ESCAPE")
+                    if unknown == "none": return None
+                    if unknown == "wrong_job": return _batch_ack(_batch_gate.frozen_batch_plan()["jobs"][1])
+                    return {**_batch_ack(job), "private_path": "/private/canary"}
+                with self.assertRaisesRegex(_batch_harness.GateRunError, "^BATCH_RPC_UNCERTAIN$"):
+                    controller.submit_next(rpc)
+                self.assertEqual(calls, ["batch-000"])
+                self.assertEqual(controller.snapshot()["outstanding"], 1)
+                self.assertEqual(controller.snapshot()["attempts_consumed"], 1)
+                with self.assertRaises(_batch_harness.GateRunError): controller.submit_next(rpc)
+                self.assertEqual(calls, ["batch-000"])
+
+    def test_batch_window_stops_at_sixteen_and_refills_only_validated_terminal(self):
+        controller, calls = self.fresh(), []
+        def rpc(job):
+            calls.append(job["job_id"])
+            return _batch_ack(job)
+        for _ in range(16): self.assertIsNotNone(controller.submit_next(rpc))
+        for _ in range(1000): self.assertIsNone(controller.submit_next(rpc))
+        self.assertEqual(len(calls), 16)
+        result = _batch_harness_result(_batch_gate.frozen_batch_plan()["jobs"][0])
+        controller.record_outcome(result)
+        self.assertIsNone(controller.submit_next(rpc))
+        self.assertTrue(controller.observe_terminal(result))
+        self.assertEqual(controller.submit_next(rpc), "batch-016")
+        self.assertIsNone(controller.submit_next(rpc))
+        self.assertEqual(controller.snapshot()["peak_outstanding"], 16)
+
+    def test_batch_duplicate_completion_does_not_release_capacity_twice(self):
+        controller = self.fresh()
+        for _ in range(16): controller.submit_next(_batch_ack)
+        result = self.finish(controller, 0)
+        with self.assertRaises(_batch_harness.GateRunError): controller.observe_terminal(result)
+        self.assertEqual(controller.snapshot()["outstanding"], 15)
+        self.assertTrue(controller.snapshot()["uncertainty_latched"])
+        with self.assertRaises(_batch_harness.GateRunError): controller.submit_next(_batch_ack)
+
+    def test_batch_liveness_uncertainty_latches_and_prohibits_further_submission(self):
+        for reason in sorted(_batch_gate.BATCH_UNCERTAINTY_REASONS):
+            with self.subTest(reason=reason):
+                controller = self.fresh()
+                controller.submit_next(_batch_ack)
+                controller.mark_uncertain("batch-000", reason)
+                self.finish(controller, 0)
+                self.assertTrue(controller.snapshot()["uncertainty_latched"])
+                self.assertEqual(controller.snapshot()["attempts_consumed"], 1)
+                with self.assertRaises(_batch_harness.GateRunError): controller.submit_next(_batch_ack)
+        controller = self.fresh()
+        with self.assertRaises(_batch_harness.GateRunError): controller.submit_next(lambda _: None)
+        controller.acknowledge(_batch_ack(_batch_gate.frozen_batch_plan()["jobs"][0]))
+        self.finish(controller, 0)
+        self.assertTrue(controller.snapshot()["uncertainty_latched"])
+        with self.assertRaises(_batch_harness.GateRunError): controller.submit_next(_batch_ack)
+
+    def test_batch_worker_caps_match_external_executor_without_owner_mutation(self):
+        calls = []
+        def factory(**kwargs):
+            calls.append(kwargs)
+            return object()
+        created = _batch_harness.build_batch_factory_fixture(_batch_gate.frozen_batch_plan(),
+            dict(_batch_gate.BATCH_PROFILE), executor_factory=factory, worker_factory=factory)
+        self.assertEqual(calls[0]["max_workers"], 8)
+        self.assertEqual(calls[1]["max_concurrent_activities"], 8)
+        self.assertIs(calls[1]["activity_executor"], created["executor"])
+        self.assertEqual(calls[1]["max_concurrent_activity_task_polls"], 1)
+        self.assertEqual(calls[2]["max_concurrent_workflow_tasks"], 1)
+        self.assertEqual(calls[2]["max_concurrent_workflow_task_polls"], 1)
+        self.assertEqual(calls[2]["max_cached_workflows"], 0)
+        self.assertTrue(calls[1]["disable_eager_activity_execution"])
+        self.assertTrue(calls[2]["disable_eager_activity_execution"])
+        for key in _batch_gate.BATCH_PROFILE:
+            with self.subTest(key=key):
+                profile = dict(_batch_gate.BATCH_PROFILE)
+                del profile[key]
+                before = len(calls)
+                with self.assertRaises(_batch_gate.GateError):
+                    _batch_harness.build_batch_factory_fixture(_batch_gate.frozen_batch_plan(), profile,
+                        executor_factory=factory, worker_factory=factory)
+                self.assertEqual(len(calls), before)
+        for path, expected in _batch_gate.BATCH_OWNER_SHA256.items():
+            self.assertEqual(_batch_hashlib.sha256((_batch_root / path).read_bytes()).hexdigest(), expected)
+
+    def test_batch_finishes_exactly_two_hundred_with_no_extra_submission(self):
+        controller, calls = self.fresh(), []
+        def rpc(job):
+            calls.append(job["job_id"])
+            return _batch_ack(job)
+        for index in range(200):
+            self.assertEqual(controller.submit_next(rpc), f"batch-{index:03d}")
+            self.finish(controller, index)
+        self.assertIsNone(controller.submit_next(rpc))
+        state = controller.snapshot()
+        self.assertEqual((state["attempts_consumed"], state["validated_terminal"], state["outstanding"]), (200, 200, 0))
+        self.assertEqual(len(set(calls)), 200)
+        self.assertFalse(state["uncertainty_latched"])
+
+    def test_batch_unknown_duplicate_or_swapped_results_do_not_release_capacity(self):
+        for mutation in ("no_original", "unknown", "run", "attempt", "swapped", "failed", "reconciliation", "duplicate_ack"):
+            with self.subTest(mutation=mutation):
+                controller = self.fresh()
+                controller.submit_next(_batch_ack)
+                result = _batch_harness_result(_batch_gate.frozen_batch_plan()["jobs"][0])
+                if mutation == "duplicate_ack":
+                    with self.assertRaises(_batch_harness.GateRunError): controller.acknowledge(_batch_ack(_batch_gate.frozen_batch_plan()["jobs"][0]))
+                else:
+                    if mutation != "no_original": controller.record_outcome(result)
+                    if mutation == "unknown": result["job_id"] = "batch-199"
+                    if mutation == "run": result["run_id"] = "00000000-0000-0000-0000-000000000002"
+                    if mutation == "attempt": result["attempt"] = 2
+                    if mutation == "swapped": result["result_artifact_id"] = "sha256:" + "0" * 64
+                    if mutation == "failed": result["tool_status"] = "FAILED"
+                    if mutation == "reconciliation": result["reconciliation_required"] = True
+                    with self.assertRaises(_batch_harness.GateRunError): controller.observe_terminal(result)
+                self.assertEqual(controller.snapshot()["outstanding"], 1)
+                self.assertTrue(controller.snapshot()["uncertainty_latched"])
+
+    def test_batch_input_and_snapshot_mutation_cannot_change_reserved_original(self):
+        plan = _batch_gate.frozen_batch_plan()
+        controller = _batch_harness.BatchAdmission(plan, dict(_batch_gate.BATCH_PROFILE))
+        plan["jobs"][0]["payload"]["left"] = 999
+        def rpc(job):
+            self.assertEqual(job["payload"]["left"], 0)
+            ack = _batch_ack(job)
+            job["payload"]["left"] = 777
+            state = controller.snapshot()
+            state["jobs"]["batch-000"]["reserved"] = False
+            return ack
+        controller.submit_next(rpc)
+        self.finish(controller, 0)
+        self.assertEqual(controller.snapshot()["validated_terminal"], 1)
+
+
+# V2: Future-controlled asyncio preparation. No sleeps or real service.
+import asyncio as _batch_asyncio
+
+
+async def _batch_async_turn():
+    ready = _batch_asyncio.get_running_loop().create_future()
+    _batch_asyncio.get_running_loop().call_soon(ready.set_result, None)
+    await ready
+
+
+class BatchAsyncPreparationTests(_batch_unittest.TestCase):
+    def fresh(self):
+        return _batch_harness.BatchAdmission(_batch_gate.frozen_batch_plan(), dict(_batch_gate.BATCH_PROFILE))
+
+    def settle(self, controller, index):
+        result = _batch_harness_result(_batch_gate.frozen_batch_plan()["jobs"][index])
+        controller.record_outcome(result)
+        self.assertTrue(controller.observe_terminal(result))
+
+    def test_async_reserves_before_callback_invocation_and_await(self):
+        async def exercise():
+            for asynchronous in (False, True):
+                controller = self.fresh()
+                def check(job):
+                    state = controller.snapshot()
+                    self.assertEqual((state["attempts_consumed"], state["outstanding"]), (1, 1))
+                    self.assertEqual(state["reserved_attempt_allowance"], 200)
+                    self.assertEqual(state["reserved_output_allowance_bytes"], 3276800)
+                    self.assertTrue(state["jobs"][job["job_id"]]["reserved"])
+                    self.assertIsNone(state["jobs"][job["job_id"]]["run_id"])
+                    return _batch_ack(job)
+                def sync_callback(job):
+                    result = _batch_asyncio.get_running_loop().create_future()
+                    result.set_result(check(job))
+                    return result
+                async def async_callback(job):
+                    return check(job)
+                self.assertEqual(await controller.submit_next_async(
+                    async_callback if asynchronous else sync_callback), "batch-000")
+                self.assertFalse(controller.snapshot()["start_observation_pending"])
+                self.settle(controller, 0)
+        _batch_asyncio.run(exercise())
+
+    def test_async_single_producer_blocks_overlap_mixed_modes_and_foreign_owners(self):
+        async def exercise():
+            controller = self.fresh()
+            entered = _batch_asyncio.Event()
+            release = _batch_asyncio.get_running_loop().create_future()
+            calls = []
+            def callback(job):
+                calls.append(job["job_id"])
+                entered.set()
+                return release
+            task = _batch_asyncio.create_task(controller.submit_next_async(callback))
+            await entered.wait()
+            with self.assertRaises(_batch_harness.GateRunError):
+                await controller.submit_next_async(callback)
+            with self.assertRaises(_batch_harness.GateRunError):
+                controller.submit_next(_batch_ack)
+            thread = controller._owner_thread
+            controller._owner_thread = thread + 1
+            with self.assertRaises(_batch_harness.GateRunError):
+                controller.mark_uncertain("batch-000", "UNKNOWN_ACK")
+            controller._owner_thread = thread
+            self.assertFalse(controller.snapshot()["uncertainty_latched"])
+            release.set_result(_batch_ack(_batch_gate.frozen_batch_plan()["jobs"][0]))
+            self.assertEqual(await task, "batch-000")
+            with self.assertRaises(_batch_harness.GateRunError):
+                await controller.submit_next_async(callback)
+            self.assertEqual(calls, ["batch-000"])
+            return controller
+        controller = _batch_asyncio.run(exercise())
+        async def other_loop():
+            with self.assertRaises(_batch_harness.GateRunError):
+                await controller.submit_next_async(lambda _: self.fail("foreign loop callback"))
+        _batch_asyncio.run(other_loop())
+        self.assertEqual(controller.snapshot()["attempts_consumed"], 1)
+        synchronous = self.fresh()
+        synchronous.submit_next(_batch_ack)
+        async def cannot_mix():
+            with self.assertRaises(_batch_harness.GateRunError):
+                await synchronous.submit_next_async(lambda _: self.fail("mixed callback"))
+        _batch_asyncio.run(cannot_mix())
+
+    def test_async_cancellation_before_entry_or_already_pending_issues_no_rpc(self):
+        async def exercise():
+            controller = self.fresh()
+            task = _batch_asyncio.create_task(controller.submit_next_async(
+                lambda _: self.fail("unstarted cancelled callback")))
+            task.cancel()
+            with self.assertRaises(_batch_asyncio.CancelledError): await task
+            self.assertEqual(controller.snapshot()["attempts_consumed"], 0)
+            self.assertFalse(controller.snapshot()["uncertainty_latched"])
+            self.assertIsNone(controller.snapshot()["submission_mode"])
+            pending = self.fresh()
+            async def cancelled_producer():
+                _batch_asyncio.current_task().cancel()
+                await pending.submit_next_async(lambda _: self.fail("already cancelling callback"))
+            task = _batch_asyncio.create_task(cancelled_producer())
+            with self.assertRaises(_batch_asyncio.CancelledError): await task
+            self.assertEqual(pending.snapshot()["attempts_consumed"], 0)
+            self.assertTrue(pending.snapshot()["uncertainty_latched"])
+        _batch_asyncio.run(exercise())
+
+    def test_async_cancelled_start_retains_and_observes_late_ack_without_reopening(self):
+        async def exercise():
+            controller = self.fresh()
+            entered = _batch_asyncio.Event()
+            reply = _batch_asyncio.get_running_loop().create_future()
+            def start(job):
+                entered.set()
+                return reply
+            producer = _batch_asyncio.create_task(controller.submit_next_async(start))
+            await entered.wait()
+            owned = controller._pending_start["task"]
+            # A server-side event may already have occurred here; it is not an
+            # invented ack or input to the ack-first fabricated trace schema.
+            self.assertIsNone(controller.snapshot()["jobs"]["batch-000"]["run_id"])
+            producer.cancel()
+            with self.assertRaises(_batch_asyncio.CancelledError): await producer
+            state = controller.snapshot()
+            self.assertTrue(state["uncertainty_latched"])
+            self.assertTrue(state["start_observation_pending"])
+            self.assertEqual((state["attempts_consumed"], state["outstanding"]), (1, 1))
+            self.assertFalse(owned.cancelled())
+            reply.set_result(_batch_ack(_batch_gate.frozen_batch_plan()["jobs"][0]))
+            await owned
+            await _batch_async_turn()
+            self.assertFalse(controller.snapshot()["start_observation_pending"])
+            self.assertIsNotNone(controller.snapshot()["jobs"]["batch-000"]["run_id"])
+            self.settle(controller, 0)
+            self.assertEqual(controller.snapshot()["outstanding"], 0)
+            self.assertTrue(controller.snapshot()["uncertainty_latched"])
+            with self.assertRaises(_batch_harness.GateRunError):
+                await controller.submit_next_async(lambda _: self.fail("uncertain refill"))
+            with self.assertRaises(_batch_harness.GateRunError):
+                controller.acknowledge(_batch_ack(_batch_gate.frozen_batch_plan()["jobs"][0]))
+        _batch_asyncio.run(exercise())
+
+    def test_async_done_future_and_swallowed_cancellation_never_pass_cleanly(self):
+        async def exercise():
+            for swallowed in (False, True):
+                controller = self.fresh()
+                def immediate(job):
+                    _batch_asyncio.current_task().cancel()
+                    ready = _batch_asyncio.get_running_loop().create_future()
+                    ready.set_result(_batch_ack(job))
+                    return ready
+                async def swallowing(job):
+                    _batch_asyncio.current_task().cancel()
+                    try:
+                        await _batch_asyncio.get_running_loop().create_future()
+                    except _batch_asyncio.CancelledError:
+                        return _batch_ack(job)
+                producer = _batch_asyncio.create_task(controller.submit_next_async(
+                    swallowing if swallowed else immediate))
+                with self.assertRaises(_batch_asyncio.CancelledError): await producer
+                pending = controller._pending_start
+                if pending is not None:
+                    await pending["task"]
+                await _batch_async_turn()
+                state = controller.snapshot()
+                self.assertTrue(state["uncertainty_latched"])
+                self.assertEqual((state["attempts_consumed"], state["outstanding"]), (1, 1))
+                self.assertFalse(state["start_observation_pending"])
+        _batch_asyncio.run(exercise())
+
+    def test_async_exceptions_timeouts_invalid_awaitables_and_foreign_futures_latch(self):
+        foreign = _batch_asyncio.new_event_loop()
+        foreign_ready = foreign.create_future()
+        foreign_ready.set_result(_batch_ack(_batch_gate.frozen_batch_plan()["jobs"][0]))
+        async def exercise():
+            for mode in ("before_await", "during_await", "timeout", "malformed", "nonawaitable", "foreign", "hostile_exception"):
+                with self.subTest(mode=mode):
+                    controller = self.fresh()
+                    def callback(job):
+                        if mode == "before_await": raise ValueError("PRIVATE_CALLBACK_EXCEPTION")
+                        if mode == "hostile_exception":
+                            class HostileError(RuntimeError):
+                                @property
+                                def __class__(self):
+                                    raise AssertionError("must not inspect foreign exception attributes")
+                            raise HostileError("PRIVATE_HOSTILE_EXCEPTION")
+                        if mode == "nonawaitable": return _batch_ack(job)
+                        if mode == "foreign": return foreign_ready
+                        if mode == "during_await":
+                            async def failing(): raise RuntimeError("PRIVATE_ASYNC_EXCEPTION")
+                            return failing()
+                        ready = _batch_asyncio.get_running_loop().create_future()
+                        if mode == "timeout": ready.set_exception(TimeoutError("PRIVATE_TIMEOUT"))
+                        else: ready.set_result({})
+                        return ready
+                    with self.assertRaisesRegex(_batch_harness.GateRunError, "^BATCH_RPC_UNCERTAIN$"):
+                        await controller.submit_next_async(callback)
+                    state = controller.snapshot()
+                    self.assertTrue(state["uncertainty_latched"])
+                    self.assertEqual((state["attempts_consumed"], state["outstanding"]), (1, 1))
+                    self.assertFalse(state["start_observation_pending"])
+                    with self.assertRaises(_batch_harness.GateRunError):
+                        await controller.submit_next_async(lambda _: self.fail("uncertain replacement"))
+        try:
+            _batch_asyncio.run(exercise())
+        finally:
+            foreign.close()
+
+    def test_async_sixteen_window_and_two_hundred_terminal_cardinality_share_core(self):
+        async def exercise():
+            controller, calls = self.fresh(), []
+            def callback(job):
+                calls.append(job["job_id"])
+                ready = _batch_asyncio.get_running_loop().create_future()
+                ready.set_result(_batch_ack(job))
+                return ready
+            for _ in range(16): self.assertIsNotNone(await controller.submit_next_async(callback))
+            for _ in range(100): self.assertIsNone(await controller.submit_next_async(callback))
+            self.assertEqual(len(calls), 16)
+            for index in range(200):
+                self.settle(controller, index)
+                if index + 16 < 200:
+                    self.assertEqual(await controller.submit_next_async(callback), f"batch-{index + 16:03d}")
+            self.assertIsNone(await controller.submit_next_async(callback))
+            state = controller.snapshot()
+            self.assertEqual((state["attempts_consumed"], state["validated_terminal"], state["outstanding"]), (200, 200, 0))
+            self.assertEqual(state["peak_outstanding"], 16)
+            self.assertEqual(len(set(calls)), 200)
+            self.assertFalse(state["uncertainty_latched"])
+        _batch_asyncio.run(exercise())
+
+    def test_async_reentry_and_callback_mutation_cannot_change_reserved_original(self):
+        async def exercise():
+            controller = self.fresh()
+            async def callback(job):
+                acknowledgment = _batch_ack(job)
+                with self.assertRaises(_batch_harness.GateRunError):
+                    await controller.submit_next_async(lambda _: self.fail("reentrant async callback"))
+                with self.assertRaises(_batch_harness.GateRunError):
+                    controller.submit_next(lambda _: self.fail("reentrant sync callback"))
+                job["job_id"], job["payload"]["left"] = "batch-199", 999
+                snapshot = controller.snapshot()
+                snapshot["jobs"]["batch-000"]["reserved"] = False
+                return acknowledgment
+            self.assertEqual(await controller.submit_next_async(callback), "batch-000")
+            self.settle(controller, 0)
+            self.assertEqual(controller.snapshot()["attempts_consumed"], 1)
+            self.assertFalse(controller.snapshot()["uncertainty_latched"])
+        _batch_asyncio.run(exercise())
