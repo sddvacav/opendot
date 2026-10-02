@@ -13,6 +13,157 @@ using the arbitrary unit `au`. It is not experimental data. The independently
 specified arithmetic is A: count 3, sum 6, mean 2; B: count 3, sum 12, mean 4.
 No CAD, solver, model, instrument, task scheduler or new runtime owner runs.
 
+## Compare A and B against a declared tolerance
+
+[`compare.py`](compare.py) composes three fixed scripted roles: resolve tolerance,
+summarize measurements, then independently check the arithmetic using `Fraction`.
+It reuses the existing producers and canonical runtime/store. It is source-only,
+requires Python 3.12+ and no optional packages, and runs from the source root on a
+trusted local Linux/POSIX filesystem. It does not run autonomous agents.
+
+### One-command synthetic comparison
+
+Create an output parent outside the checkout, then pass a fresh child path;
+do not create the child first:
+
+```sh
+CMP_PARENT=$(mktemp -d /tmp/opendot-comparison.XXXXXX)
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/measurement-review/compare.py run --demo \
+  --output "$CMP_PARENT/demo" > "$CMP_PARENT/demo-receipt.json"
+cat "$CMP_PARENT/demo/summary.txt"
+```
+
+The result is `CHECKED`, exit **0**: A has count 3, sum 6, mean 2; B has count 3,
+sum 12, mean 4. The exact absolute mean difference is **2/1**, the agreeing
+tolerance sources contain `2` and `2.0`, and `within_tolerance=true`.
+
+The JSON receipt goes to stdout; the human summary goes to stderr and
+`summary.txt`. The fresh output also contains `report.json` and canonical
+`artifacts/` objects. The receipt supplies `report_sha256`, `input_sha256`,
+`parameters_sha256` and `profile_sha256`. `report.json` records the status,
+input/profile bindings, each role's outcome, comparison and available artifact
+references, including rejected outputs. The report is capped at 64 KiB and
+the summary at 8 KiB. A failure may retain useful artifacts without accepting
+them; no rollback is promised.
+
+### Supply your own matching local files
+
+This complete example still uses invented data; it exercises the explicit-input
+mode without extracting or modifying the frozen fixture:
+
+```sh
+cat > "$CMP_PARENT/input.csv" <<'CSV'
+condition,replicate,value,unit
+A,1,0.1,au
+A,2,0.2,au
+A,3,0.3,au
+B,1,0.2,au
+B,2,0.3,au
+B,3,0.4,au
+CSV
+cat > "$CMP_PARENT/parameters.json" <<'JSON'
+{
+  "task": {"scenario": "bench-A", "unit": "au"},
+  "sources": [
+    {"source": "tolerance_note", "scenario": "bench-A", "unit": "au", "raw_value": "0.1"}
+  ]
+}
+JSON
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/measurement-review/compare.py run \
+  --input "$CMP_PARENT/input.csv" --parameters "$CMP_PARENT/parameters.json" \
+  --output "$CMP_PARENT/custom" > "$CMP_PARENT/custom-receipt.json"
+cat "$CMP_PARENT/custom/summary.txt"
+```
+
+Expected exact means are 1/5 and 3/10, the absolute mean difference is **1/10**,
+and the equality boundary passes. The observed float summaries are retained;
+they are not used to decide the tolerance boundary. This mode is labelled
+`user_supplied_unvalidated`, even when you supply synthetic rows. Do not combine
+`--demo` with `--input` or `--parameters`.
+
+- CSV: exact header shown above; exactly six rows, A/B × replicates 1/2/3 once
+  each; `au` only; at most 64 KiB. Values are decimal text, at most 32 characters,
+  at most 12 fractional digits, and absolute value at most 1,000,000. No exponent,
+  NaN or infinity. Use canonical forms such as `0.1`, not `.1`
+- Parameter JSON: at most 64 KiB; exactly the shown `task` and at most eight
+  source records. Each source has `source`, `scenario`, `unit`, `raw_value`;
+  source names are unique, 1–64 ASCII letters/digits/underscores/hyphens. Tolerance
+  values are strings, with at most six integer digits, no leading zeroes except
+  zero itself, up to 12 fractional digits and at most 32 characters. Use `0.1`,
+  not `.1`, an exponent or a JSON number. The measurement limit of 1,000,000 does
+  not extend the existing tolerance grammar to seven integer digits
+- Unknown/null/missing values or applicability, conflicting or invalid evidence,
+  and negative selected tolerance block dependent analysis. Zero is valid.
+  Explicitly inapplicable sources are excluded; they cannot supply a tolerance
+- Use only values genuinely represented in arbitrary units `au`; never silently
+  relabel millimetres, seconds or other physical units. Larger datasets, other
+  groups, unit conversion, statistical inference and data acquisition are outside
+  this profile
+
+### Verify saved output without writing to it
+
+Keep all four expected pins through a separately trusted source. For this local
+demo, the receipt captured outside the output directory is the retained expected
+record. Protect it separately before treating the output as untrusted. A receipt
+modified together with the output provides no independent trust. Never obtain
+expected pins only from the candidate `report.json`.
+
+In the same shell, use the trusted retained receipt:
+
+```sh
+receipt_pin() {
+  python -B -c \
+    'import json, sys; print(json.load(open(sys.argv[1]))[sys.argv[2]])' \
+    "$CMP_PARENT/demo-receipt.json" "$1"
+}
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/measurement-review/compare.py verify --output "$CMP_PARENT/demo" \
+  --report-sha256 "$(receipt_pin report_sha256)" \
+  --input-sha256 "$(receipt_pin input_sha256)" \
+  --parameters-sha256 "$(receipt_pin parameters_sha256)" \
+  --profile-sha256 "$(receipt_pin profile_sha256)"
+```
+
+To verify the custom run, change both `demo` references to `custom` (the receipt
+filename and output child). The profile binds the current consumer source,
+canonical owners, producer sources and frozen fixtures. Changing source or
+fixture bytes requires a matching reviewed profile, not a copied self-declared
+hash. Verification reparses captured input/evidence with independent rational
+arithmetic, checks receipt/reference bindings and uses bounded canonical reads
+with `read_only=True`. It does not rerun producers or modify bytes, permissions
+or directory entries. Ordinary reads may update atime.
+
+### Interpret the comparison result
+
+| Status | Exit | Meaning |
+| --- | --- | --- |
+| `CHECKED` | 0 | Computation checked, whether inside **or outside** tolerance |
+| `BLOCKED` / `REFUSED` | 2 | Missing/conflicting/invalid evidence, denied work or refused input/configuration |
+| `FAILED` | 1 | Execution or verification failed |
+
+For the demo measurements, tolerance `1.999` gives `within_tolerance=false` and
+still exits **0** when checked. Denial, error or unresolved execution prevents
+dependent dispatch; each of the three roles is attempted at most once, with no
+retry. An existing output path is preserved: choose a new child path rather than
+reusing or deleting the old result. Nonzero exits may stop a shell using `set -e`.
+
+These results are descriptive software checks. All outcomes keep
+`scientific_accepted=false`, `device_control_authorized=false` and
+`independent_review=NOT_EVALUATED`. An independent arithmetic implementation is
+not scientific peer review, calibration or evidence of causation. Inputs, CAS
+objects, receipts and reports are private by default, with no automatic upload;
+numerical data may be sensitive even without identifiers. Paths and ancestors
+must remain trusted and caller-controlled. Canonical CAS paths follow symlinks;
+source/input/report reads reuse the existing symlink-refusing audit helpers. The exact
+profile and source boundary are in [ADR 006](../../docs/decisions/006-fixed-measurement-composition.md).
+
+## Existing single-role demo
+
+The original `demo.py` cases below remain unchanged. Their diagnostic receipt,
+`replay` command and exit conventions are separate from `compare.py` above.
+
 ## Start here: three source-example cases
 
 Use Python 3.12+ on a trusted Linux/POSIX checkout. No optional packages are

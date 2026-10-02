@@ -1,0 +1,299 @@
+{
+  "cases": [
+    {
+      "A": [
+        "1",
+        "2",
+        "3"
+      ],
+      "B": [
+        "2",
+        "4",
+        "6"
+      ],
+      "difference": {
+        "denominator": 1,
+        "numerator": 2
+      },
+      "id": "demo",
+      "means": {
+        "A": {
+          "denominator": 1,
+          "numerator": 2
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": 4
+        }
+      },
+      "sums": {
+        "A": {
+          "denominator": 1,
+          "numerator": 6
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": 12
+        }
+      },
+      "tolerance": "2",
+      "within_tolerance": true
+    },
+    {
+      "A": [
+        "1",
+        "2",
+        "3"
+      ],
+      "B": [
+        "2",
+        "4",
+        "6"
+      ],
+      "difference": {
+        "denominator": 1,
+        "numerator": 2
+      },
+      "id": "below_boundary",
+      "means": {
+        "A": {
+          "denominator": 1,
+          "numerator": 2
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": 4
+        }
+      },
+      "sums": {
+        "A": {
+          "denominator": 1,
+          "numerator": 6
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": 12
+        }
+      },
+      "tolerance": "1.999",
+      "within_tolerance": false
+    },
+    {
+      "A": [
+        "0.1",
+        "0.2",
+        "0.3"
+      ],
+      "B": [
+        "0.2",
+        "0.3",
+        "0.4"
+      ],
+      "difference": {
+        "denominator": 10,
+        "numerator": 1
+      },
+      "id": "decimals",
+      "means": {
+        "A": {
+          "denominator": 5,
+          "numerator": 1
+        },
+        "B": {
+          "denominator": 10,
+          "numerator": 3
+        }
+      },
+      "sums": {
+        "A": {
+          "denominator": 5,
+          "numerator": 3
+        },
+        "B": {
+          "denominator": 10,
+          "numerator": 9
+        }
+      },
+      "tolerance": "0.1",
+      "within_tolerance": true
+    },
+    {
+      "A": [
+        "0",
+        "0",
+        "1"
+      ],
+      "B": [
+        "0",
+        "0",
+        "2"
+      ],
+      "difference": {
+        "denominator": 3,
+        "numerator": 1
+      },
+      "id": "thirds",
+      "means": {
+        "A": {
+          "denominator": 3,
+          "numerator": 1
+        },
+        "B": {
+          "denominator": 3,
+          "numerator": 2
+        }
+      },
+      "sums": {
+        "A": {
+          "denominator": 1,
+          "numerator": 1
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": 2
+        }
+      },
+      "tolerance": "0.333333333333",
+      "within_tolerance": false
+    },
+    {
+      "A": [
+        "-3",
+        "-2",
+        "-1"
+      ],
+      "B": [
+        "-6",
+        "-4",
+        "-2"
+      ],
+      "difference": {
+        "denominator": 1,
+        "numerator": 2
+      },
+      "id": "negative",
+      "means": {
+        "A": {
+          "denominator": 1,
+          "numerator": -2
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": -4
+        }
+      },
+      "sums": {
+        "A": {
+          "denominator": 1,
+          "numerator": -6
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": -12
+        }
+      },
+      "tolerance": "2",
+      "within_tolerance": true
+    },
+    {
+      "A": [
+        "1000000",
+        "-1000000",
+        "0.000000000001"
+      ],
+      "B": [
+        "0",
+        "0",
+        "0"
+      ],
+      "difference": {
+        "denominator": 3000000000000,
+        "numerator": 1
+      },
+      "id": "cancellation",
+      "means": {
+        "A": {
+          "denominator": 3000000000000,
+          "numerator": 1
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": 0
+        }
+      },
+      "sums": {
+        "A": {
+          "denominator": 1000000000000,
+          "numerator": 1
+        },
+        "B": {
+          "denominator": 1,
+          "numerator": 0
+        }
+      },
+      "tolerance": "0",
+      "within_tolerance": false
+    },
+    {
+      "A": [
+        "-1000000",
+        "-1000000",
+        "-999999.999999999999"
+      ],
+      "B": [
+        "1000000",
+        "1000000",
+        "999999.999999999999"
+      ],
+      "difference": {
+        "denominator": 1500000000000,
+        "numerator": 2999999999999999999
+      },
+      "id": "maximum",
+      "means": {
+        "A": {
+          "denominator": 3000000000000,
+          "numerator": -2999999999999999999
+        },
+        "B": {
+          "denominator": 3000000000000,
+          "numerator": 2999999999999999999
+        }
+      },
+      "sums": {
+        "A": {
+          "denominator": 1000000000000,
+          "numerator": -2999999999999999999
+        },
+        "B": {
+          "denominator": 1000000000000,
+          "numerator": 2999999999999999999
+        }
+      },
+      "tolerance": "999999",
+      "within_tolerance": false
+    }
+  ],
+  "demo_parameters": {
+    "sources": [
+      {
+        "raw_value": "2",
+        "scenario": "bench-A",
+        "source": "spec_a",
+        "unit": "au"
+      },
+      {
+        "raw_value": "2.0",
+        "scenario": "bench-A",
+        "source": "spec_b",
+        "unit": "au"
+      }
+    ],
+    "task": {
+      "scenario": "bench-A",
+      "unit": "au"
+    }
+  },
+  "evidence_role": "synthetic",
+  "schema": "measurement-comparison-fixtures/v1"
+}
