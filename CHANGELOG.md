@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0a5 — coherent offline release preparation (2026-10-02)
+
+- Based on merged commit `a96f5602b41681f9fa4424039c7f3122df9145d3`, tree `3b64696709a600c337763c260baf495d6abad336`; no new feature or dependency
+- Package the already accepted explicit-import HTTPS module with finite mocked qualification only; live worker/network/provider/model gate remains NOT_RUN
+- Complete source retains the historical a4 public STEP projection and source-only offline utility report; real O3 stays PROPOSED / NOT_RUN and measured effort UNKNOWN
+- Align English/Chinese status, exact-version installation and read-only help; require independently accepted external SHA256SUMS trust input and separate installed/full-source evidence
+- Preserve prior owners, oracles, node identities, workflows, default imports, licenses and immutable a3/a4 artifacts. Sdist is wheel-rebuild input, not the complete examples tree
+- Preparation only: no a5 publication, native/service/model execution or scientific/device authority is established. Exact candidate-specific acceptance is recorded separately; ALPHA / NOT_SCORED remains
+
 ## Historical a3 publication status — 2 October 2026
 
 **Published release: [v0.3.0a3 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a3); NOT_SCORED.**

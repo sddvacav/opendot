@@ -1,25 +1,31 @@
 # OpenDot Engineering
 
-## 当前 0.3.0a4 实验性预发布版
+## 当前 0.3.0a5 发布准备
 
-**ALPHA / NOT_SCORED；[实验性预发布版已发布](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)。**
-已接受的发行源码对应提交 `2d16190a8121410bbeea252869b196f7891e1696`。
-该发行版包含可选的[离线 A2A worker-turn 适配器](docs/a2a-worker-turn.md)、
-配套源码示例与版本固定的安装说明。默认运行时依赖仍为空。
-请按 [a4 安装入门](docs/installed-quickstart.zh-CN.md)，使用[发行页面](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)上来自独立复核的校验清单摘要。
-精确产物标识与分别限定范围的验证结果记录在[已发布的发行说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md)中。
+**ALPHA / NOT_SCORED；候选准备，不是发布回执。**
+[a5 安装入门](docs/installed-quickstart.zh-CN.md)仅适用于匹配且已复核的五文件包，
+并要求来自外部独立验收的 SHA256SUMS 摘要。源码、安装与指南执行资格需要各自的外部回执；
+a4 验收不会转移到本候选。
 
-- 安装 wheel：无额外依赖的函数／产物结果、有界读取、只读帮助与复制的轻量公开 fixture；不从源码导入
-- 匹配的完整源码：[测量比较](examples/measurement-review/README.zh-CN.md)使用 `PYTHONPATH=src`，
-  并验证规范所有者确实从同一源码树导入；不是安装 wheel 的工作流
-- [CAD／热传导计划](examples/cad_cae/README.zh-CN.md)仅检查元数据，结果为 `NOT_EXECUTED`。
-  人工构造的契约检查不证明原生执行。原生 CAD／Gmsh／CalculiX 为 `NOT_RUN`；
-  物理验证 `NOT_PERFORMED`、独立审查 `NOT_EVALUATED`、网格无关性 `NOT_ESTABLISHED`
-- A2A 至多调用一次外部提供的回调，仅返回 `UNACCEPTED` 候选；外部 live gate 为 `NOT_RUN`。
-  不包含传输实现，不声明提供方／模型执行、自治智能体或原生智能体验证
-- 仅源码的 Temporal 批次工具与历史托管运行保持各自范围；本候选不执行新的服务运行。
-  [a3 组件清单](docs/release-inventory/v0.3.0a3/README.md)仅适用于 a3，不是 a4 SBOM。
-  科学与设备权限仍为 false；不包含 UI 变更
+- Wheel：函数／产物 API、有界读取、只读帮助，以及可选、须显式导入的
+  [HTTPS 交换模块](docs/a2a-http-transport.md)；默认运行时依赖仍为空。示例与文档不作为安装文件提供
+- Sdist：用于重建 wheel 的输入，不是完整可运行示例或测试树
+- 完整源码：[测量比较](examples/measurement-review/README.zh-CN.md)、仅元数据的
+  [CAD／热传导计划](examples/cad_cae/README.zh-CN.md)（`NOT_EXECUTED`）、现有三文件
+  [公开 STEP 参考](examples/cad_cae/native-geometry-reference/README.md#中文)，以及有限离线
+  [效用 `history`／`profile`](examples/measurement-review/README.zh-CN.md#离线增量效用夹具报告)。
+  这些工作流使用匹配源码树；STEP 保留历史 a4 来源，是静态投影，不是可重放的原生执行包
+- HTTPS 仅有有限模拟资格验证；真实传输／worker／提供方／模型互通为 `NOT_RUN`。
+  [A2A](docs/a2a-worker-turn.md)仍仅返回 `UNACCEPTED` 候选。
+  真实 O3 保持 `PROPOSED / NOT_RUN`，实测投入为 `UNKNOWN`
+- 本次准备不新增原生或服务运行。完整 CAD／热传导原生执行为 `NOT_RUN`；
+  物理验证 `NOT_PERFORMED`、独立审查 `NOT_EVALUATED`、网格无关性 `NOT_ESTABLISHED`。
+  科学／设备权限仍为 false；历史 Temporal 证据和 [a3 清单](docs/release-inventory/v0.3.0a3/README.md)
+  保留各自范围，不新增智能体规模或 UI 声明
+
+已发布的前一版为 [0.3.0a4](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4)，源码提交为
+`2d16190a8121410bbeea252869b196f7891e1696`。其[固定版本安装指南](https://github.com/sddvacav/opendot/blob/2d16190a8121410bbeea252869b196f7891e1696/docs/installed-quickstart.zh-CN.md)
+和[发行说明](https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md)保留精确的历史产物与资格范围；冻结产物不变。
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/brand/opendot-readme-banner-dark.svg">
