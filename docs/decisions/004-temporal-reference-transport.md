@@ -269,3 +269,77 @@ The reviewed harness first runs the explicit six SDK/pure test files, requiring 
 Explicit exclusions remain: local service or CLI/native executable execution; in-flight kill; proc, namespace, descendant or lifetime investigation; arbitrary tool profiles; general cancellation/recovery protocols; deployment; credentials/providers; and general durability, exactly-once effects, global duplicate suppression or scientific acceptance claims. No local install or new acquisition is authorized by preparing this integration. This candidate may not be pushed, merged, dispatched or otherwise executed in hosted CI until root approves its exact final identity.
 
 The CI change budget adds only .github/workflows/temporal-server.yml, ci/acquire_temporal_cli.py, ci/run_temporal_server_gate.py, ci/temporal-sdk-requirements.txt, ci/temporal-server-nodes.txt, ci/verify_temporal_server_gate.py, tests/acceptance/temporal_server_gate.py, tests/test_temporal_cli_acquisition.py, tests/test_temporal_server_gate_verifier.py and tests/test_temporal_server_harness_unit.py. AGENTS.md and this ADR receive only the matching bounded amendment. The historical ten-path production candidate remains otherwise exact. Current public-main README English/Chinese bytes and every unrelated current-main file must be preserved.
+
+## Finite batch preparation amendment (2026-10-02)
+
+Status: APPROVED FOR LOCAL PREPARATION ONLY. This append-only decision does not
+change historical seven-case evidence or authorize hosted execution.
+
+The existing test-only harness/verifier may prepare exactly 200 frozen synthetic
+jobs on one trusted host and canonical CAS, with at most 16 reserved or submitted
+workflows lacking validated terminal evidence, eight external Temporal Activity
+slots, and a matching eight-worker executor. One helper call and one Activity
+attempt per Workflow, exact 10/60-second Activity deadlines, and the original
+one-second callable policy remain unchanged. Reserve all finite job/attempt/output
+allowances before any RPC. Unknown acknowledgment or liveness never refunds a
+reservation or permits blind replay; it latches new admission closed.
+
+Preserve exact ToolRuntime, ArtifactStore, contracts, Activity, Workflow and
+deny-only guard bytes. No production owner, scheduler, registry or service is
+added. The only admitted change paths are AGENTS.md, this ADR,
+ci/run_temporal_server_gate.py, ci/verify_temporal_server_gate.py,
+ci/temporal-batch-nodes.txt, tests/test_temporal_server_harness_unit.py,
+tests/test_temporal_server_gate_verifier.py and docs/temporal-batch-qualification.md.
+Freeze expected fixture verdicts before implementation. Preparation admits only
+pure deterministic fixture/trace tests, with no sleeps or native probes. The
+existing hosted workflow, seven-case acceptance file, node manifest and transport
+guide remain unchanged. A later separately approved exact candidate must wire
+and qualify the hosted path; this preparation provides no service evidence.
+
+No local Temporal service/CLI, native process/namespace/descendant/lifetime or
+recovery investigation, models/providers, paid/private input, remote action,
+multi-host deployment, device action, lease or permission owner is authorized.
+Configured slots are not observed overlap; 200 jobs are not 200 agents. No
+throughput, speedup, fairness, hard memory/thread limit, termination, cancellation,
+recovery, general exactly-once or scientific acceptance claim follows.
+
+The pre-implementation acceptance matrix and schema are frozen in
+[the batch protocol](../temporal-batch-qualification.md).
+
+### Local collection-identity integration follow-on (2026-10-02)
+
+After actual locked pytest qualification of the initial preparation source, a
+confirmed integration defect was found: replacing dots in a JUnit classname
+with slashes does not reconstruct collected unittest-class node IDs. Local
+preparation may therefore additionally modify .github/workflows/temporal-server.yml
+only to reuse a pure strict one-to-one collected-node/JUnit identity helper in
+the existing verifier and set the pure/SDK expected count from a fresh actual
+collection after its focused tests are added. Preserve the six-file selection,
+count/uniqueness/all-pass gates, acquisition and seven-case service path. This is
+a ninth-path local allowance, not hosted execution or publication approval. The
+initial eight-path preparation results remain historical with their exact scope.
+
+### V2 asynchronous admission preparation (2026-10-02)
+
+Root approved a separate local v2 preparation candidate, preserving the accepted
+nine-path v1 candidate and receipts. Within those same nine paths, the existing
+test-only BatchAdmission may share one reservation/ack settlement implementation
+between its synchronous fixture wrapper and a bounded asynchronous start wrapper.
+Reservation precedes callback invocation and await. An explicit single-thread,
+single-loop, single-producer policy excludes mixed submission modes and concurrent
+producers; it does not add arbitrary cross-thread mutation or a lock across await.
+
+Cancellation/timeout/unknown acknowledgment after reservation consumes the attempt
+and outstanding slot and permanently closes admission. At most one shielded start
+operation may remain owned for bounded-identity late observation, without retry or
+replacement. A valid late ack binds only its original reservation and cannot clear
+uncertainty or release capacity. A cancellation request already pending before
+admission issues no RPC; a task cancelled before wrapper entry does no work.
+
+Activity execution and server-side completion can precede the client's observed
+start ack. The existing ack-before-entry FABRICATED_UNIT_DATA schema remains
+fixture-only and unchanged. Live correlation/buffering and cross-thread observation
+need separate future review; no event may be fabricated or reordered to satisfy
+that fixture. No new live evidence, service/native execution, hosted wiring or
+publication is authorized. Deterministic future-controlled tests and fresh actual
+locked pytest collection must precede any workflow-count adjustment.
