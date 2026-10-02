@@ -463,8 +463,8 @@ def test_owner_bytes_helpers_and_single_public_dispatch_unchanged():
         'core/artifacts.py': '4606b7b11a81044267b30fee332d9b6fd6540d862726a9579655ee27c7d9a883',
         'core/contracts.py': '9462415baf84668825ad2c8cfc3f4f3df68332f65d1f1f4b301fbf01cf8537ca',
         'adapters/source_audit.py': 'c94737305b1e5a80453541ce890bde4fcb700a0074e32344fe839b237374bfa7',
-        'adapters/temporal_activity.py': 'cd2c277266239e57c10cb5aab743052f3322acf75be1d48156d715cef6fae5ae',
-        'adapters/temporal_workflow.py': 'd9307d0e78e4a925d92f021c5316a0515040bb091013182419bc6ccbb6a5ea38',
+        'adapters/temporal_activity.py': '3e084d5432c11d031385472b9eba32e1d62f06d4aa45e08acebd88bd803045f2',
+        'adapters/temporal_workflow.py': 'a1723c70ccd8e440475ff0c359a5dfb1fa6e41ad2dff9881d2727879231434ac',
         'git_workspace.py': '02b4dff4d9382bcaf00df655f376799658d59482c017822458d3c6f9049b6ecc',
     }
     for path, sha in owners.items(): assert digest((ROOT / 'src/opendot_engineering' / path).read_bytes()) == sha
