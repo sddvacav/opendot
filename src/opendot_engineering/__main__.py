@@ -6,7 +6,15 @@ import argparse
 from . import __version__
 
 
-_GUIDE = """Python APIs (import explicitly):
+_GUIDE = """First useful result (0.3.0a4, ALPHA / NOT_SCORED):
+  Run a permitted callable, store its result, and independently check its bytes.
+  Exact-version installation and bilingual first-result recipe:
+  https://github.com/sddvacav/opendot/releases/tag/v0.3.0a4
+  https://github.com/sddvacav/opendot/releases/download/v0.3.0a4/RELEASE-NOTES.md
+  Require the independently reviewed external SHA256SUMS pin before installation.
+  These links name the release target; this static help does not verify publication.
+
+Python APIs (import explicitly):
   opendot_engineering.core.artifacts.ArtifactStore
     Canonical local bytes; trusted roots, no transaction or recovery guarantee.
   opendot_engineering.core.contracts.ArtifactRef, Capability, AgentManifest
