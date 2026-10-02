@@ -296,7 +296,7 @@ class ReferenceActivity:
         except Exception:
             raise _failure("TemporalAdmissionRejected", "admission", "ADMISSION_REFUSED") from None
         try:
-            data = self.store.get_bytes(ref)
+            data = self.store.get_bytes(ref, max_bytes=256)
             _require(type(data) is bytes and len(data) == ref.size_bytes and len(data) <= 256,
                      "INPUT_SIZE")
             payload = _decode(data)

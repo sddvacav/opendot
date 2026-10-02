@@ -133,3 +133,16 @@ preserved. Measurement replay now opts into that mode. Tests and documentation
 are newly authored Apache-2.0 project material. No private runtime, evidence
 receipt, registry or second storage owner is included. Earlier byte-preservation
 statements above describe their original extractions, not this later change.
+
+## Unreleased opt-in bounded artifact-read increment
+
+The same canonical `core.artifacts` owner gains an optional keyword-only
+`get_bytes(..., max_bytes=...)` branch under
+[ADR 005](decisions/005-bounded-artifact-reads.md). The existing optional
+ReferenceActivity supplies its fixed 256-byte input allowance. This newly
+authored increment retains the Apache license, notices, reference identity,
+exact callable/contracts owners and default whole-read behavior; no second store
+or third-party implementation is imported. ADR 005 records the before/after
+owner hashes, precise trusted-local-file boundary and qualification scope.
+Earlier extraction and released a2 acceptance describe their original bytes,
+not this unreleased increment or its pending real-server qualification.
