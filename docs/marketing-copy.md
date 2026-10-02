@@ -1,27 +1,55 @@
 # Scope-limited description drafts
 
-These descriptions are for review. Nothing here authorizes publication or announces a supported public release. Keep the status sentence attached to the description.
+Current copy for the **0.3.0a2 ALPHA prerelease**, as of 2 October 2026.
+These descriptions are for review; this file does not publish them. Keep the
+release status and limits attached. Use the [announcement draft](../LAUNCH-COPY.md)
+for the fuller bilingual update and historical copy.
 
 ## Short description
 
 **English**
 
-OpenDot Engineering is an early-stage standalone package for local source auditing, optional trusted-source admission, synthetic qualification-record checks, a finite fake-instrument simulation, and optional deterministic CAD/CAE contracts. The source candidate is unreleased; it is not a complete agent runtime or engineering platform.
+OpenDot Engineering is an experimental Python toolkit for local callable
+execution and inspectable artifacts. Store outputs by SHA-256 and check byte
+integrity separately from result acceptance. The 0.3.0a2 ALPHA prerelease is
+available; it is not a complete agent runtime or a scientifically qualified platform.
 
 **简体中文**
 
-OpenDot Engineering 是一个早期独立软件包，提供本地来源审计、可选的可信源代码准入、合成资格记录检查、有限的模拟仪器实验，以及可选的确定性 CAD/CAE 契约。当前源代码候选版本尚未发布，不是完整的智能体运行时或工程平台。
+OpenDot Engineering 是一套用于本地函数执行和产物检查的实验性 Python 工具包。
+按 SHA-256 保存输出，并分别检查字节完整性与结果验收。0.3.0a2 ALPHA
+预发布版已可下载；它不是完整的智能体运行时，也不是经过科学资格验证的平台。
 
-## Longer introduction
+## First action to pair with the description
 
 **English**
 
-Start with two small standard-library examples: audit pinned local synthetic evidence and check invented qualification records against explicit oracles. Optional source admission loads explicitly reviewed local Python modules with ordinary process authority; it is not a sandbox. The optional simulated-lab adapter runs a fixed Bluesky plan on internally constructed ophyd fake instruments, with at most 16 setpoint/read steps and separately verifiable raw documents. Running it requires the exact optional dependency versions. Scientific acceptance and physical-device authority remain false. Optional CAD/CAE contracts require separately prepared native backends. Task coordination, durable recovery, and live agent evaluation remain outside this package. Narrow local review results do not establish a supported public release.
+Try the [version-pinned installed quickstart](installed-quickstart.md). Its first
+callable-to-artifact result needs only the released wheel and Python 3.12+ in a
+trusted POSIX environment. No model key, service or native solver is needed.
+The guide shows what success looks like, where bytes are saved, and how later
+examples retain a rejected result or block a call with missing permission.
 
 **简体中文**
 
-先从两个只需标准库的小型示例开始：审计固定的本地合成证据，并将人为构造的资格记录与明确的预期结果核对。可选来源准入以普通进程权限加载经过明确复核的本地 Python 模块，不提供沙箱。可选模拟实验适配器使用内部构造的 ophyd 假仪器执行固定 Bluesky 计划，最多包含 16 个设定与读取步骤，并生成可单独验证的原始文档；执行需要指定版本的可选依赖。科学认可和实体设备权限保持为假。可选 CAD/CAE 契约需要另外准备原生后端。任务协调、持久恢复和真实智能体评估仍在本包范围以外。范围受限的本地复核结果不代表已经正式公开发布或建立支持承诺。
+试用[版本固定的安装入门](installed-quickstart.zh-CN.md)。在可信 POSIX 环境中，
+第一个从函数到产物的结果只需已发布的 wheel 与 Python 3.12+，无需模型密钥、
+服务或原生求解器。指南说明成功输出、字节保存位置，以及后续示例如何保留被拒绝
+的结果或阻止缺少权限的调用。
 
-## Review guardrails
+## Release and review guardrails
 
-Link claims to [claim status](claim-status.md). Keep [source-admission boundaries](source-admission.md) and [simulation limits](simulated-lab.md) attached when describing those options. Do not imply production readiness, unmeasured scale, sandboxing, security certification, scientific validation, support guarantees, or peer integration. Preserve the actual [LICENSE](../LICENSE), [NOTICE](../NOTICE), and [AI-assisted artwork notice](../assets/brand/NOTICE). Do not invent badges, endorsements, source URLs, private contacts, adoption counts, or launch dates.
+- Link the [published a2 assets](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2),
+  [exact release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
+  and [claim status](claim-status.md). No PyPI publication is claimed
+- The later [bounded-read change](decisions/005-bounded-artifact-reads.md) is not in
+  frozen a2 assets; current source documentation is not a new release
+- Keep optional dependency and trust requirements with optional-feature claims.
+  Permissions are dispatch checks, and trusted-root storage follows symlinks;
+  neither establishes an OS sandbox or scientific/device authority
+- Preserve **NOT_SCORED**. Do not infer production readiness, general recovery,
+  unmeasured scale, security certification, adoption, support guarantees,
+  endorsement, affiliation or peer integration from a local check or reference
+- Preserve [LICENSE](../LICENSE), [NOTICE](../NOTICE) and the separate
+  [artwork notice](../assets/brand/NOTICE). Do not invent badges, testimonials,
+  source URLs, private contacts, adoption counts or launch dates

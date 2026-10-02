@@ -1,9 +1,30 @@
-# Run the bounded synthetic examples
+# Choose your first OpenDot result
 
-For a first useful result from a reviewed local wheel, follow the complete
-[installed quickstart](installed-quickstart.md) or
-[中文安装入门](installed-quickstart.zh-CN.md). Its first example needs only the
-wheel and standard library; later steps copy the matching public fixtures.
+For a first installation, use the **[0.3.0a2 installed quickstart](installed-quickstart.md)**
+or **[中文安装入门](installed-quickstart.zh-CN.md)**. Steps 1–2 install the pinned wheel
+and produce one inspectable result; you can stop there before downloading source
+examples or preparing any optional dependencies.
+
+You will run one permitted callable, store its output, and see `COMPLETED`,
+`semantic_valid: true` and `independent_sha256_matches: true`. The guide identifies
+the output directory and explains why `scientific_accepted` stays `false`.
+The default package needs no model key, server or native solver.
+
+## Choose the next step
+
+- **Already have a source checkout?** Run the [callable/artifact example](../README.md#run-the-synthetic-examples)
+  to inspect success, semantic refusal and missing permission
+- **Want a concrete data workflow?** Follow the [synthetic CSV measurement review](../examples/measurement-review/README.md)
+  for input/result provenance, retained rejected output and independent byte checks
+- **Want read-only fixture checks?** Continue below with the two source-audit and
+  qualification commands
+
+**Version boundary:** the installed guide uses frozen v0.3.0a2 release assets.
+The later [optional bounded-read API](decisions/005-bounded-artifact-reads.md) is
+not in those assets. Keep released examples and package versions matched; a
+source-tree example or documentation update does not release new package bytes.
+
+## Read-only synthetic source checks
 
 The source-only route below validates invented local records; it does not start agents or control devices. Run from the source root with Python 3.12+ on a supported POSIX system. The installed route above keeps imports isolated from the source tree.
 
@@ -66,4 +87,6 @@ A future runtime tutorial must separately demonstrate task permissions, resource
 
 ## 中文摘要
 
-请运行本文上方的两条源码合成示例命令；它们只读取本地夹具并输出 JSON，不需要模型、网络、原生 CAD 后端或设备。[中文安装入门](installed-quickstart.zh-CN.md)另含实际写入本地产物的独立环境示例。安装包检查与源目录检查分别记录；完整运行时的中断、恢复和清理行为仍需独立实现与验证。
+首次安装请先完成[中文安装入门](installed-quickstart.zh-CN.md)的第 1–2 步：只用固定版本 wheel 生成并检查第一个本地产物，无需下载源码示例或准备可选依赖。若只想检查本地夹具，可运行本文上方的两条只读命令。模型、服务、原生求解器与设备均不是这些入门示例的前提。
+
+安装指南对应冻结的 v0.3.0a2 产物；后续合入的可选有界读取变更不在其中。安装包检查与源目录检查分别记录；完整运行时的中断、恢复和清理行为仍需独立实现与验证。

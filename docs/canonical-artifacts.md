@@ -74,7 +74,7 @@ filesystem changes, devices/FIFOs and object lifetime are outside the guarantee.
 `verify`, `verify_id`, `put_file`, put collision comparisons and other readers
 retain legacy whole-read behavior. Only the fixed Temporal Activity input is
 migrated here, with literal 256, and it still separately checks declared length.
-Its changed source requires fresh qualification; earlier a2 results are historical.
+Fresh [PR 23 CI evidence](pr23-ci-evidence.json) records qualification of the bounded-read implementation at tree `6f2f8bdad9ab1dc7ff1c311fe3c581a5eec71634`: 1,382 portable passes plus 141 separate subtests, and 818 SDK/pure plus seven finite real-server passes. The same tree passed portable checks after merge as `26e301795bcd6bf2ad26274e25fed7c8fc2106a8`. These overlapping source scopes do not qualify a new installed wheel; released a2 assets and earlier receipts remain unchanged.
 
 ## Optional non-mutating verification
 

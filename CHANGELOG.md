@@ -1,5 +1,25 @@
 # Changelog
 
+## Current status — 2 October 2026
+
+**Latest published release: [v0.3.0a2 ALPHA prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a2); NOT_SCORED.**
+Use the [installed quickstart](docs/installed-quickstart.md) for exact download
+pins and [release notes](https://github.com/sddvacav/opendot/releases/download/v0.3.0a2/RELEASE-NOTES.md)
+for separately scoped checks. The release includes the optional finite Temporal
+transport and Gmsh file-size-limit repair; frozen a1 assets remain unchanged.
+
+**Merged source follow-on, not a new release:** [PR #23](https://github.com/sddvacav/opendot/pull/23)
+adds the opt-in [bounded-artifact-read API](docs/decisions/005-bounded-artifact-reads.md).
+That change is not in frozen v0.3.0a2 assets. Main-branch source and its checks do
+not change the published wheel or transfer acceptance to a new distribution.
+
+## Historical implementation records
+
+The entries below retain their original checkpoint wording, including
+prepublication uses of “unreleased.” They describe the status and evidence at
+those checkpoints; the dated current-status section above identifies what is
+published now. No historical evidence or release asset is rewritten.
+
 ## 0.3.0a2 — unreleased installable alpha candidate (2026-10-02)
 
 - Package the merged optional finite Temporal reference transport and its qualification documentation; the explicit `temporal` extra pins SDK 1.34.0, while default runtime dependencies remain empty

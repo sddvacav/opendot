@@ -8,10 +8,15 @@ Current release status: this optional feature is packaged in the [0.3.0a2 ALPHA 
 Unreleased source increment: [ADR 005](decisions/005-bounded-artifact-reads.md)
 changes only the same canonical store's optional bounded-read branch and this
 Activity's fixed input allowance. The new input call acquires at most 257 object
-bytes for its 256-byte limit before oversize refusal. Local/SDK-only and
-installed-wheel checks apply separately to these new owner bytes; fresh
-real-server qualification remains pending. The released a2 wheel and its
-historical real-server PASS above remain unchanged.
+bytes for its 256-byte limit before oversize refusal. Fresh
+[PR 23 CI evidence](pr23-ci-evidence.json) records 818 SDK/pure passes and
+seven finite real-server passes at PR merge revision
+`2459aa7ac50420cd910f8a934428ca666feb3460`, with the same source tree as
+main merge commit `26e301795bcd6bf2ad26274e25fed7c8fc2106a8`. The public
+projections and hosted verifier result do not recover missing historical local
+logs or the complete hosted audit directory. These source checks do not qualify
+a new installed wheel. The released a2 wheel and its historical real-server
+PASS above remain unchanged.
 
 ## What is implemented
 
