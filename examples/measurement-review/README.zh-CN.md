@@ -291,3 +291,63 @@ replay 与取回命令显式使用 `ArtifactStore(..., read_only=True)`，包括
 哈希证明字节一致，不证明科学正确、作者身份或完整元数据真实性；CAS 可能保留首次写入者的元数据。权限只在分发时检查，没有操作系统沙箱。风险标签不实现撤销，重试关闭，失败可以留下产物，没有事务或自动回滚。
 
 没有模型、设备、原生求解器、多机、自治智能体或生产消费者迁移。代码、CSV 和测试均为新写的合成 Apache-2.0 项目材料，不包含私密测量数据。完整边界见[执行器](../../docs/callable-execution.md)和[产物存储](../../docs/canonical-artifacts.md)。
+
+## 离线增量效用夹具报告
+
+[`utility_report.py`](utility_report.py) 是独立的源码示例，仅实现**离线夹具协议**；
+**真实 O3 比较仍为 NOT_RUN**。它直接读取已固定摘要的
+[研究增量](../../docs/research/delta-20261002/source-needs-delta.json) 中原有四条 O3
+记录，不改写历史状态。虚构的总投入保留为 `fixture_effort_units`，不称为实测分钟、
+成本或节省时间；正例的“全部已知”声明不代表已审计的测量覆盖率。
+
+在源码根目录使用已有 Python 3.12+，无需可选依赖：
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/measurement-review/utility_report.py history
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/measurement-review/utility_report.py profile
+```
+
+完整的冻结输入协议与有限合成样例位于
+[`test_incremental_utility_report.py`](../../tests/test_incremental_utility_report.py)。
+仅允许现有测量任务的两个重复任务槽、基线和候选两个分支；每分支最多三次尝试、
+八行投入记录和八行费用记录。单个输入及报告上限 65,536 字节，摘要上限 8,192 字节。
+脚本不执行试验，不调用生产者、运行时、CAS 写入、网络、模型或原生工具；仅向
+stdout/stderr 输出，不创建或修改文件。保存时使用源码树之外的新目标，勿覆盖旧证据。
+
+`ledger` 必须显式提供 `--ledger`、`--inventory`、`--ledger-sha256`、
+`--inventory-sha256` 和 `--profile-sha256`。这些摘要应独立保存，不从候选报告自取。
+`verify` 还需 `--report` 和 `--report-sha256`，以只读方式重新计算并核对结果。
+`profile` 绑定消费者、规则、既有预期结果及规范辅助函数的精确源码；源码变更需
+重新评审 profile。输入须为可信、协作式本地普通文件；沿用规范的拒绝符号链接读取，
+普通读取可能更新 atime，不声称防御恶意并发文件系统。
+
+单独固定摘要的合成清单记录所有尝试及应有账目，只能核对相对于清单的留存记录，
+不能证明真实观测完整性或评审者身份。两分支共用既有固定摘要契约与具名的合成
+`fixture-reviewer` 记录，不要求手工/脚本基线产生 OpenDot 三角色回执。
+摘要正确、`COMPLETED`、自报已接受布尔值或多个 LLM 赞同均不足以接受结果。
+每任务最多计一次合格结果，失败、重试及重复输出的尝试与费用仍保留。
+运行时回执中的尝试数与耗时不是全部试验或项目总成本。
+
+投入协议包含虚构的接入、执行/返工、复核三个互不重叠的人时区间，以及单独的
+墙钟秒数包络；接入全部分摊给两个已纳入任务。有限费用边界为接入加每次尝试的
+计算/工具/存储/空闲综合费用，不含人力折价，并非项目总成本模型。
+非整数派生值以分子/分母表示；不同货币分别保留，禁止相加。
+缺失或删失值保持 null 并列出缺失路径，零合格任务时单个合格任务成本为 null。
+严格夹具规则要求更多合格任务且人时不增加，所需证据完整；同样合格数量但投入降低
+也不满足此特定规则。
+
+`INVALID`、`NOT_COMPARABLE`、`INDETERMINATE`、`NO_FIXTURE_IMPROVEMENT` 与
+`FIXTURE_IMPROVEMENT` 分别报告。产生分类（含负面、不确定或无效分类）时退出 0；
+输入或摘要被拒绝时退出 2。所有结果保持实测投入 `UNKNOWN`、真实比较 `NOT_RUN`、
+科学/设备授权为 false、独立评审 `NOT_EVALUATED`。不增加来源优先级、生产评估框架、
+基准测试、实测误接受率或真实效用结论。
+
+v2 准备版修正了计数语义：`output_counts` 仅统计有留存输出的记录。`candidate`
+统计非 null 输出，`inspected` 统计其中已有 ACCEPTED/REJECTED 评审决定的输出；
+accepted/rejected/unreviewed/pending 分别统计输出状态，重复字节仍逐次保留。
+独立的 `attempt_acceptance_counts` 对每次已观测尝试计数，包含无输出的 FAILED/
+BLOCKED 尝试；这些失败仍计入全部尝试分母、处置状态和成本。v1 准备版错误地将
+无输出的拒收尝试计入 `output_counts.rejected`，旧证据保持留存；修正版具有新的
+源码 profile 摘要，不能把旧结果说成已经符合修正后的定义。
