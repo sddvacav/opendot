@@ -122,8 +122,8 @@ def test_public_workflow_has_readonly_permissions_and_private_logs():
     source = (ROOT / ".github/workflows/temporal-server.yml").read_text()
     assert "contents: read" in source and "timeout-minutes: 10" in source
     assert "cancel-in-progress: false" in source
-    assert "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683" in source
-    assert "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065" in source
+    assert "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8" in source
+    assert "actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c" in source
     assert 'opendot-temporal-pytest-private.log" 2>&1' in source
     assert "--force-reinstall --report" in source and "--require-hashes" in source
     # The whole reviewed workflow has a closed byte contract: alternate YAML
