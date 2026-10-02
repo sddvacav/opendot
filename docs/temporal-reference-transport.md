@@ -78,3 +78,11 @@ Before the hosted qualification, only scheduling fakes and ActivityEnvironment c
 ## Upstream attribution
 
 The optional Temporal Python SDK is published by Temporal Technologies under the MIT license: [SDK 1.34.0 license](https://github.com/temporalio/sdk-python/blob/1.34.0/LICENSE). The SDK is an external pinned dependency; no SDK source is vendored into this candidate. Official wheel/source/license metadata and hashes are retained with the separate dependency qualification evidence. OpenDot's existing Apache license and NOTICE remain unchanged.
+
+### Separate 200-job preparation (2026-10-02)
+
+The [finite batch protocol](temporal-batch-qualification.md) now describes a
+separate manual-only `batch200` qualification candidate. Its real causal schema,
+shared admission boundary and original result/history binding are local
+preparation only. The historical seven-case reference selection remains intact.
+No hosted 200-job run or observed concurrency result is established by this code.
