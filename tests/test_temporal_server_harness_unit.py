@@ -112,9 +112,10 @@ def test_sdk_report_faults(tmp_path, mutation):
 def test_no_kill_cancellation_proc_or_dependency_fallback():
     tree = ast.parse((ROOT / "ci/run_temporal_server_gate.py").read_text())
     calls = [n for n in ast.walk(tree) if isinstance(n,ast.Call)]
-    forbidden = {"kill","terminate","killpg","cancel","reset_workflow_execution","start_time_skipping","start_local","importorskip"}
+    forbidden = {"kill","terminate","killpg","reset_workflow_execution","start_time_skipping","start_local","importorskip"}
+    _assert_dag2_cancellation_boundary(tree)
     assert not any(isinstance(n.func,ast.Attribute) and n.func.attr in forbidden for n in calls)
-    assert not any(isinstance(n.func,ast.Name) and n.func.id in forbidden for n in calls)
+    assert not any(isinstance(n.func,ast.Name) and n.func.id in (forbidden | {"cancel"}) for n in calls)
     assert not any(isinstance(n,ast.Constant) and isinstance(n.value,str) and "/proc" in n.value for n in ast.walk(tree))
 
 
@@ -2365,3 +2366,978 @@ def test_real_saturated_consumer_fault_stays_closed_after_late_valid_results(tmp
         finally:
             await control.finish_owned_tasks()
     _real_asyncio.run(exercise())
+
+
+# DAG2 stage-one independent controls. FABRICATED_UNIT_DATA only: these literal
+# expectations were frozen before the harness increment. They are never live
+# histories, service-origin evidence, or a way to authenticate a hosted run.
+DAG2_LITERAL_CAPS = {'diagnostic_bytes': 4096,
+ 'evidence_pytest_overhead_seconds': 30,
+ 'final_stop_seconds': 20,
+ 'history_bytes_each': 2097152,
+ 'history_poll_interval_ms': 100,
+ 'job_seconds': 600,
+ 'mission_records': 3,
+ 'nodes': 7,
+ 'observation_cleanup_seconds': 40,
+ 'observer_events': 512,
+ 'pack_admitted_commands': 18,
+ 'private_evidence_total_bytes': 27262976,
+ 'production_commands_per_mission': 6,
+ 'projection_total_bytes': 262144,
+ 'query_poll_interval_ms': 100,
+ 'raw_history_total_bytes': 14680064,
+ 'result_bytes': 16384,
+ 'retained_history_snapshots': 7,
+ 'rpc_observer_wait_seconds': 3,
+ 'rpc_operation_records': 64,
+ 'rpc_timeout_seconds': 2,
+ 'seed_bytes': 256,
+ 'service_step_seconds': 240,
+ 'state_bytes': 16384,
+ 'summary_bytes': 8192,
+ 'trace_bytes': 262144,
+ 'whole_scenario_seconds': 150,
+ 'wire_envelope_bytes': 4096}
+
+DAG2_LITERAL_AGGREGATE = {'accepted_updates': 1,
+ 'active_workflows_max': 1,
+ 'activity_entries': 9,
+ 'activity_executor_shutdowns': 4,
+ 'activity_executor_threads_max': 1,
+ 'activity_returns': 9,
+ 'activity_schedules': 9,
+ 'activity_slots_max': 1,
+ 'completed_update_fetches': 1,
+ 'distinct_refused_updates': 2,
+ 'endpoint_cas_reads': 11,
+ 'handler_entries': 5,
+ 'handler_returns': 5,
+ 'observer_cas_reads': 0,
+ 'result_bytes_reserved': 98304,
+ 'result_puts': 5,
+ 'retained_originals': 4,
+ 'runtime_entries': 5,
+ 'runtime_returns': 5,
+ 'same_id_repeats': 1,
+ 'seed_puts': 3,
+ 'server_starts': 1,
+ 'server_stops': 1,
+ 'verification_cas_reads': 4,
+ 'worker_shutdowns': 8,
+ 'workflow_handle_cancel_calls': 1,
+ 'workflow_starts': 3}
+
+DAG2_LITERAL_NODES = ['tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_real_a_to_b_and_original_receipts',
+ 'tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_quiescent_worker_replacement_preserves_state',
+ 'tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_recorded_history_replay_has_no_activity_execution',
+ 'tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_original_put_reconciliation_never_reexecutes_a',
+ 'tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_unknown_without_reference_blocks_b',
+ 'tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_cancellation_keeps_unadmitted_b_closed',
+ 'tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_duplicate_and_stale_updates_consume_no_allowance']
+
+DAG2_LITERAL_ORIGINAL = {'body': {'activity_id': 'dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30',
+          'device_control_authority': False,
+          'effect_id': 'sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30',
+          'independent_review': 'NOT_EVALUATED',
+          'input_payload_sha256': '897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02',
+          'mission_id': 'hosted-normal',
+          'namespace': 'default',
+          'node_id': 'A',
+          'observation_provenance': 'serialized_runtime_report_not_live_proof',
+          'output': 5,
+          'owner_integration': 'NOT_EVALUATED',
+          'parent_result_ref': None,
+          'plan_sha256': '19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63',
+          'profile': 'synthetic.dependent_sum.v1',
+          'receipt_report': {'attempts': 1,
+                             'breaker_state': 'closed',
+                             'call_id': '000000000000000000000003',
+                             'error_type': None,
+                             'execution_liveness': {},
+                             'execution_observation': {'dispatcher_pid': 101,
+                                                       'execution_id': '00000000000000000000000000000003',
+                                                       'execution_kind': 'in_process',
+                                                       'input_sha256': '897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02',
+                                                       'read_only_declared': True,
+                                                       'registration_sha256': '5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3',
+                                                       'review_target_sha256': None,
+                                                       'worker_pid': 101},
+                             'input_hash': '897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02',
+                             'latency_s': 0.0,
+                             'output_hash': 'ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d',
+                             'semantic_valid': True,
+                             'status': 'COMPLETED',
+                             'tool_id': 'synthetic.bounded_sum',
+                             'tool_version': '1'},
+          'registration_sha256': '5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3',
+          'schema_version': 'opendot.temporal.dag-result.v1',
+          'scientific_validity': False,
+          'seed_ref': {'artifact_id': 'sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02',
+                       'integrity_verified': False,
+                       'mime_type': 'application/json',
+                       'producer': 'opendot.temporal.dag-seed.v1',
+                       'schema_version': '1.0.0',
+                       'sha256': '897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02',
+                       'size_bytes': 40,
+                       'source_refs': [],
+                       'task_id': 'seed',
+                       'uri': 'artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02'},
+          'workflow_id': 'opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63',
+          'workflow_run_id': '11111111-1111-4111-8111-111111111111'},
+ 'body_sha256': 'b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f',
+ 'canonical_body_utf8': '{"activity_id":"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30","device_control_authority":false,"effect_id":"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30","independent_review":"NOT_EVALUATED","input_payload_sha256":"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02","mission_id":"hosted-normal","namespace":"default","node_id":"A","observation_provenance":"serialized_runtime_report_not_live_proof","output":5,"owner_integration":"NOT_EVALUATED","parent_result_ref":null,"plan_sha256":"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63","profile":"synthetic.dependent_sum.v1","receipt_report":{"attempts":1,"breaker_state":"closed","call_id":"000000000000000000000003","error_type":null,"execution_liveness":{},"execution_observation":{"dispatcher_pid":101,"execution_id":"00000000000000000000000000000003","execution_kind":"in_process","input_sha256":"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02","read_only_declared":true,"registration_sha256":"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3","review_target_sha256":null,"worker_pid":101},"input_hash":"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02","latency_s":0.0,"output_hash":"ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d","semantic_valid":true,"status":"COMPLETED","tool_id":"synthetic.bounded_sum","tool_version":"1"},"registration_sha256":"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3","schema_version":"opendot.temporal.dag-result.v1","scientific_validity":false,"seed_ref":{"artifact_id":"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02","integrity_verified":false,"mime_type":"application/json","producer":"opendot.temporal.dag-seed.v1","schema_version":"1.0.0","sha256":"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02","size_bytes":40,"source_refs":[],"task_id":"seed","uri":"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"},"workflow_id":"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63","workflow_run_id":"11111111-1111-4111-8111-111111111111"}',
+ 'origin': {'capture_phase': 'original_put_return_before_response',
+            'effect_id': 'sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30',
+            'execution_activity_id': 'dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30',
+            'mission_id': 'hosted-normal',
+            'namespace': 'default',
+            'node_id': 'A',
+            'origin_kind': 'trusted-single-operator-synthetic-put-observer',
+            'original_result_ref': {'artifact_id': 'sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f',
+                                    'integrity_verified': False,
+                                    'mime_type': 'application/json',
+                                    'producer': 'opendot.temporal.dag-result.v1',
+                                    'schema_version': '1.0.0',
+                                    'sha256': 'b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f',
+                                    'size_bytes': 2219,
+                                    'source_refs': ['sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02'],
+                                    'task_id': '10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30',
+                                    'uri': 'artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f'},
+            'plan_sha256': '19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63',
+            'schema_version': 'opendot.temporal.dag-origin.v1',
+            'workflow_id': 'opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63',
+            'workflow_run_id': '11111111-1111-4111-8111-111111111111'},
+ 'origin_sha256': 'd92e6d4d7b3bf6936dd0d1e6e0c9b3f20b9fb9fb643b5c44e5c3ddb0c3a23d8c',
+ 'receipt_sha256': '4872fee41110f2dba3493bb20e791f08ffdb400639fcefb04cbfe6a9093369ad',
+ 'reference': {'artifact_id': 'sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f',
+               'integrity_verified': False,
+               'mime_type': 'application/json',
+               'producer': 'opendot.temporal.dag-result.v1',
+               'schema_version': '1.0.0',
+               'sha256': 'b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f',
+               'size_bytes': 2219,
+               'source_refs': ['sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02'],
+               'task_id': '10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30',
+               'uri': 'artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f'}}
+
+DAG2_CANCEL_SOURCE = """async def cancel_no_ref(self):
+    handle = self.handles["hosted-no-ref-cancel"]
+    self.require_cancel_quiescent(handle)
+    await self.rpc("hosted-no-ref-cancel", "cancel", "no-ref-cancel", lambda: handle.cancel(rpc_timeout=timedelta(seconds=2)))
+"""
+
+
+def _assert_dag2_cancellation_boundary(tree, *, require_call=False, require_live_caller=False):
+    """A conservative reviewed-source syntax boundary, not Python alias analysis."""
+    wanted = ast.parse(DAG2_CANCEL_SOURCE).body[0]
+    cancel_attrs = [node for node in ast.walk(tree)
+                    if isinstance(node, ast.Attribute) and node.attr == "cancel"]
+    dynamic = [node for node in ast.walk(tree) if isinstance(node, ast.Call)
+               and isinstance(node.func, ast.Name) and node.func.id in {"getattr", "setattr"}
+               and any(isinstance(arg, ast.Constant) and arg.value in {"cancel", "cancel_no_ref"} for arg in node.args)]
+    assert not dynamic
+    assert not any(isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+                   and node.func.id in {"cancel", "cancel_no_ref"} for node in ast.walk(tree))
+    methods = [node for node in ast.walk(tree)
+               if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+               and node.name == "cancel_no_ref"]
+    # The scenario wrapper has one closed direct caller. An alias or dynamic
+    # reference anywhere else, including a finally/exception handler, is denied.
+    wrapper_refs = [node for node in ast.walk(tree)
+                    if isinstance(node, ast.Attribute) and node.attr == "cancel_no_ref"]
+    callers = [node for node in ast.walk(tree)
+               if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+               and node.name == "run_no_ref"]
+    if wrapper_refs or require_live_caller:
+        assert len(wrapper_refs) == len(callers) == 1
+        caller = callers[0]
+        direct = ast.parse("await self.cancel_no_ref()").body[0]
+        statements = [node for node in caller.body
+                      if ast.dump(node, include_attributes=False) == ast.dump(direct, include_attributes=False)]
+        assert len(statements) == 1 and wrapper_refs[0] in list(ast.walk(statements[0]))
+        assert not any(isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del))
+                       and node.id == "self" for node in ast.walk(caller))
+    if cancel_attrs or require_call:
+        assert len(cancel_attrs) == len(methods) == 1
+        assert ast.dump(methods[0], include_attributes=False) == ast.dump(wanted, include_attributes=False)
+        assert cancel_attrs[0] in list(ast.walk(methods[0]))
+        parents = {child: parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
+        owner = parents.get(methods[0])
+        assert isinstance(owner, (ast.Module, ast.ClassDef))
+        owners = [owner]
+        if isinstance(owner, ast.ClassDef):
+            # The inherited Runner lifecycle is part of the admitted owner.
+            # Unrelated classes (for example diagnostic data holders) are not.
+            classes = [node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
+            for current in owners:
+                for base in current.bases:
+                    assert isinstance(base, ast.Name)
+                    if base.id == "object":
+                        continue
+                    matches = [node for node in classes if node.name == base.id]
+                    assert len(matches) == 1
+                    if matches[0] not in owners:
+                        owners.append(matches[0])
+        owner_methods = [node for scope in owners for node in scope.body
+                         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))]
+        for method in owner_methods:
+            pending_nodes = [method]
+            while pending_nodes:
+                node = pending_nodes.pop()
+                # A nested function can close over self; a separate class has
+                # a different receiver and is not silently treated as this one.
+                if isinstance(node, ast.ClassDef):
+                    continue
+                pending_nodes.extend(ast.iter_child_nodes(node))
+                if isinstance(node, ast.Name) and node.id == "self":
+                    parent = parents.get(node)
+                    assert isinstance(node.ctx, ast.Load)
+                    assert isinstance(parent, ast.Attribute) and parent.value is node
+                if isinstance(node, ast.Attribute):
+                    assert not (node.attr.startswith("__") and node.attr.endswith("__"))
+                    assert node.attr not in {"getattr", "setattr", "delattr", "vars", "locals", "globals", "eval", "exec"}
+                if isinstance(node, ast.Name):
+                    assert node.id not in {"vars", "locals", "globals", "eval", "exec", "__import__"}
+                    if node.id in {"getattr", "setattr", "delattr"}:
+                        parent = parents.get(node)
+                        assert isinstance(parent, ast.Call) and parent.func is node
+        # Saving the scenario method or obtaining it through another receiver
+        # is outside the admitted syntax, even if a later call hides its name.
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Attribute) and node.attr in {"run_no_ref", "cancel_no_ref"}:
+                call = parents.get(node)
+                awaitable = parents.get(call)
+                assert isinstance(node.value, ast.Name) and node.value.id == "self"
+                assert isinstance(call, ast.Call) and call.func is node and not call.args and not call.keywords
+                assert isinstance(awaitable, ast.Await) and awaitable.value is call
+        # Finite, conservative self-method reachability also covers a helper
+        # or saved method reference invoked indirectly from failure cleanup.
+        graph = {}
+        function_names = {node.name for node in ast.walk(tree)
+                          if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        for method in ast.walk(tree):
+            if isinstance(method, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                graph.setdefault(method.name, set()).update(
+                    node.attr for node in ast.walk(method) if isinstance(node, ast.Attribute))
+                graph[method.name].update(node.id for node in ast.walk(method)
+                                          if isinstance(node, ast.Name) and node.id in function_names)
+        pending = [name for name in graph if "cleanup" in name]
+        # Any exception/finally edge is failure cleanup, including execute's
+        # finally and stop_workers' error branch. Normal execute->run_cases is
+        # deliberately not a cleanup root.
+        for attempt in ast.walk(tree):
+            if isinstance(attempt, (ast.Try, ast.TryStar)):
+                for statement in [*attempt.finalbody, *attempt.handlers]:
+                    pending.extend(node.attr for node in ast.walk(statement)
+                                   if isinstance(node, ast.Attribute))
+                    pending.extend(node.id for node in ast.walk(statement)
+                                   if isinstance(node, ast.Name) and node.id in function_names)
+        reached = set()
+        while pending:
+            name = pending.pop()
+            if name in reached:
+                continue
+            reached.add(name)
+            assert name != "cancel_no_ref"
+            pending.extend(graph.get(name, set()) - reached)
+    else:
+        assert not methods
+
+
+def _dag2_bare_runner(monkeypatch):
+    from types import SimpleNamespace
+    runner = m.Dag2Runner.__new__(m.Dag2Runner)
+    runner.started = 100.0
+    runner.deadline = 250.0
+    runner.service_deadline = 340.0
+    runner.cleanup_deadline = None
+    runner.final_stop_deadline = None
+    runner.cleanup_started = None
+    runner.final_stop_started = None
+    runner.diagnostic = m.DiagnosticState("a" * 40)
+    runner.observed = m.Dag2Observations(clock=lambda: 100000000000)
+    runner.rpc_pending = {}
+    runner.rpc_rows = []
+    runner.rpc_ids = set()
+    runner.handles = {name: SimpleNamespace(id="fixture-" + name,
+        run_id="11111111-1111-4111-8111-111111111111")
+        for name in ("hosted-normal", "hosted-reconcile", "hosted-no-ref-cancel")}
+    runner.pending = {}
+    runner.unfinished_updates = set()
+    runner.admission_closed = False
+    runner.stop_uncertain = False
+    runner.workers = []
+    runner.worker_rows = []
+    runner.worker_stops = []
+    monkeypatch.setattr(m.time, "monotonic", lambda: 100.0)
+    return runner
+
+
+def test_dag2_independent_fixed_profile_constants():
+    assert m.DAG2_CAPS == DAG2_LITERAL_CAPS
+    assert m.DAG2_MISSIONS == ("hosted-normal", "hosted-reconcile", "hosted-no-ref-cancel")
+    assert m.DAG2_STOP_ORDER == (2, 1, 4, 3, 6, 5, 8, 7)
+    assert m.DAG2_FAILURE_TYPE == "DAG2_TEST_RESPONSE_UNAVAILABLE"
+
+
+@pytest.mark.parametrize("event,profile,retain,nodes", [
+    ("pull_request", "dag2", False, DAG2_LITERAL_NODES),
+    ("push", "dag2", False, DAG2_LITERAL_NODES),
+    ("workflow_dispatch", "reference", False, DAG2_LITERAL_NODES),
+    ("workflow_dispatch", "batch200", False, DAG2_LITERAL_NODES),
+    ("workflow_dispatch", "unknown", False, DAG2_LITERAL_NODES),
+    ("workflow_dispatch", None, False, DAG2_LITERAL_NODES),
+    ("workflow_dispatch", "dag2", True, DAG2_LITERAL_NODES),
+    ("workflow_dispatch", "dag2", "false", DAG2_LITERAL_NODES),
+    ("workflow_dispatch", "dag2", False, DAG2_LITERAL_NODES[:-1]),
+    ("workflow_dispatch", "dag2", False, list(reversed(DAG2_LITERAL_NODES))),
+    ("workflow_dispatch", "dag2", False, DAG2_LITERAL_NODES + DAG2_LITERAL_NODES[:1]),
+], ids=["pr", "push", "reference", "batch", "unknown", "missing", "retention",
+        "string-retention", "missing-node", "reordered", "duplicate"])
+def test_dag2_selection_refuses_before_acquisition(event, profile, retain, nodes):
+    with pytest.raises(m.GateRunError):
+        m.dag2_selection(event, profile, retain, nodes)
+
+
+def test_dag2_exact_manual_profile_selection():
+    assert m.dag2_selection("workflow_dispatch", "dag2", False, DAG2_LITERAL_NODES) is None
+
+
+def test_dag2_cancellation_guard_accepts_only_literal_same_run_gate():
+    _assert_dag2_cancellation_boundary(ast.parse(DAG2_CANCEL_SOURCE), require_call=True)
+
+
+@pytest.mark.parametrize("source", [
+    "async def other():\n    cancel()\n",
+    "async def cleanup(self):\n    self.task.cancel()\n",
+    "async def cancel_no_ref(self):\n    self.handle.cancel()\n",
+    DAG2_CANCEL_SOURCE.replace('self.handles["hosted-no-ref-cancel"]', 'self.handles["hosted-normal"]'),
+    DAG2_CANCEL_SOURCE.replace("    self.require_cancel_quiescent(handle)\n", ""),
+    DAG2_CANCEL_SOURCE.replace("lambda: handle.cancel", "lambda: self.task.cancel"),
+    DAG2_CANCEL_SOURCE.replace("seconds=2", "seconds=3"),
+    DAG2_CANCEL_SOURCE.replace("handle.cancel", "getattr(handle, 'cancel')"),
+    DAG2_CANCEL_SOURCE.replace("    await self.rpc", "    alias = handle.cancel\n    await self.rpc"),
+    DAG2_CANCEL_SOURCE + "\nasync def cleanup(self):\n    await self.cancel_no_ref()\n",
+    DAG2_CANCEL_SOURCE + "\nasync def cleanup(self):\n    await self.helper()\n\nasync def helper(self):\n    await self.cancel_no_ref()\n",
+    DAG2_CANCEL_SOURCE + "\nasync def cleanup(self):\n    action = self.helper\n    await action()\n\nasync def helper(self):\n    await self.cancel_no_ref()\n",
+    DAG2_CANCEL_SOURCE + "\nasync def cleanup(self):\n    owner = self\n    await owner.cancel_no_ref()\n",
+    DAG2_CANCEL_SOURCE + "\nasync def cleanup(self):\n    await getattr(self, 'cancel_no_ref')()\n",
+    DAG2_CANCEL_SOURCE + "\nasync def run_no_ref(self):\n    try:\n        pass\n    finally:\n        await self.cancel_no_ref()\n",
+    DAG2_CANCEL_SOURCE + "\nasync def run_no_ref(self):\n    try:\n        pass\n    except Exception:\n        await self.cancel_no_ref()\n",
+    DAG2_CANCEL_SOURCE + "\nasync def other(self):\n    self.future.cancel()\n",
+    DAG2_CANCEL_SOURCE.replace("    await self.rpc", "    handle = self.other\n    await self.rpc"),
+    DAG2_CANCEL_SOURCE.replace("async def cancel_no_ref", "async def cleanup"),
+], ids=["bare-call", "task", "unbound", "other-mission", "no-gate", "wrong-receiver", "timeout",
+        "getattr", "alias", "cleanup-call", "indirect-cleanup", "aliased-cleanup", "owner-alias", "dynamic-wrapper", "finally", "error-handler", "extra-call", "rebind", "cleanup-scope"])
+def test_dag2_cancellation_guard_rejects_every_other_scope_or_receiver(source):
+    with pytest.raises(AssertionError):
+        _assert_dag2_cancellation_boundary(ast.parse(source), require_call=True)
+
+
+def test_dag2_live_cancellation_site_matches_frozen_exact_ast():
+    _assert_dag2_cancellation_boundary(ast.parse((ROOT / "ci/run_temporal_server_gate.py").read_text()),
+                                       require_call=True, require_live_caller=True)
+
+
+@pytest.mark.parametrize("first,result,identifier", [
+    ("", "", "fixed-workflow"),
+    (None, None, "fixed-workflow"),
+    ("11111111-1111-4111-8111-111111111111", "22222222-2222-4222-8222-222222222222", "fixed-workflow"),
+    ("11111111-1111-4111-8111-111111111111", "11111111-1111-4111-8111-111111111111", "foreign-workflow"),
+    (True, True, "fixed-workflow"),
+], ids=["empty", "unknown", "different-runs", "wrong-id", "boolean"])
+def test_dag2_run_binding_refuses_unknown_or_foreign_identity(first, result, identifier):
+    from types import SimpleNamespace
+    client = SimpleNamespace(get_workflow_handle=lambda *a, **k: pytest.fail("must not bind"))
+    handle = SimpleNamespace(id=identifier, first_execution_run_id=first, result_run_id=result)
+    with pytest.raises(m.GateRunError):
+        m.dag2_bind_handle(client, handle, "fixed-workflow")
+
+
+def test_dag2_run_binding_uses_both_actual_run_guards():
+    from types import SimpleNamespace
+    calls = []
+    sentinel = object()
+    def get_handle(*args, **kwargs):
+        calls.append((args, kwargs)); return sentinel
+    client = SimpleNamespace(get_workflow_handle=get_handle)
+    run = "11111111-1111-4111-8111-111111111111"
+    handle = SimpleNamespace(id="fixed-workflow", first_execution_run_id=run, result_run_id=run)
+    assert m.dag2_bind_handle(client, handle, "fixed-workflow") is sentinel
+    assert calls == [(("fixed-workflow",), {"run_id": run, "first_execution_run_id": run})]
+
+
+def test_dag2_rpc_retains_unresolved_original_and_late_settlement_is_sticky(monkeypatch):
+    import asyncio
+    async def exercise():
+        runner = _dag2_bare_runner(monkeypatch)
+        future = asyncio.get_running_loop().create_future()
+        calls = []
+        def issue(): calls.append(True); return future
+        async def observer(task, *args, **kwargs):
+            raise m.GateRunError("RPC_UNCONFIRMED")
+        runner.bounded = observer
+        with pytest.raises(m.GateRunError, match="RPC_UNCONFIRMED"):
+            await runner.rpc("hosted-normal", "query", "normal-query-1", issue)
+        assert calls == [True] and not future.cancelled()
+        assert runner.admission_closed and len(runner.rpc_pending) == 1
+        assert runner.rpc_pending["normal-query-1"] is future
+        assert runner.rpc_rows[0]["settled_seq"] is None
+        future.set_result({"actual": "late"})
+        await runner.observe_pending_rpc()
+        assert not runner.rpc_pending and runner.admission_closed
+        assert runner.rpc_rows[0]["outcome"] == "UNCONFIRMED"
+        assert runner.rpc_rows[0]["settled_seq"] is not None
+        assert calls == [True]
+    asyncio.run(exercise())
+
+
+def test_dag2_rpc_never_resubmits_duplicate_application_operation(monkeypatch):
+    import asyncio
+    async def exercise():
+        runner = _dag2_bare_runner(monkeypatch)
+        calls = []
+        async def result(): return "ack"
+        def issue(): calls.append(True); return result()
+        assert await runner.rpc("hosted-normal", "start", "normal-start", issue) == "ack"
+        with pytest.raises(m.GateRunError, match="RPC_RESUBMITTED"):
+            await runner.rpc("hosted-normal", "start", "normal-start", issue)
+        assert calls == [True]
+    asyncio.run(exercise())
+
+
+def test_dag2_rpc_cap_is_checked_before_callback(monkeypatch):
+    import asyncio
+    runner = _dag2_bare_runner(monkeypatch)
+    runner.rpc_rows = [{} for _ in range(64)]
+    with pytest.raises(m.GateRunError, match="SIZE_LIMIT"):
+        asyncio.run(runner.rpc("hosted-normal", "query", "too-many",
+            lambda: pytest.fail("65th operation must not be issued")))
+
+
+@pytest.mark.parametrize("kind", ["start", "query", "history", "result", "start_update", "update_result", "cancel"])
+def test_dag2_every_rpc_kind_retains_actual_task(kind, monkeypatch):
+    import asyncio
+    async def exercise():
+        runner = _dag2_bare_runner(monkeypatch)
+        future = asyncio.get_running_loop().create_future()
+        future.set_result("observed")
+        assert await runner.rpc("hosted-normal", kind, "test-" + kind.replace("_", "-"), lambda: future) == "observed"
+        row = runner.rpc_rows[0]
+        assert row["kind"] == kind and row["application_submissions"] == 1
+        assert row["follow_runs"] is False and row["rpc_timeout_seconds"] == 2
+        assert row["observation_timeout_seconds"] == 3
+        assert row["issued_seq"] < row["settled_seq"] and not runner.rpc_pending
+    asyncio.run(exercise())
+
+
+@pytest.mark.parametrize("fault", ["handler", "runtime", "adapter", "history", "rpc", "update", "uncertain"])
+def test_dag2_quiescence_requires_all_independent_dimensions(fault, monkeypatch):
+    runner = _dag2_bare_runner(monkeypatch)
+    assert runner.quiescent()
+    if fault == "handler": runner.observed.counts["handler_entries"] = 1
+    if fault == "runtime": runner.observed.counts["runtime_entries"] = 1
+    if fault == "adapter": runner.observed.counts["in_flight_calls"] = 1
+    if fault == "history": runner.pending["hosted-normal"] = object()
+    if fault == "rpc": runner.rpc_pending["unresolved"] = object()
+    if fault == "update": runner.unfinished_updates.add("original")
+    if fault == "uncertain": runner.observed.execution_uncertain = True
+    assert not runner.quiescent()
+
+
+def test_dag2_cleanup_has_single_cumulative_window(monkeypatch):
+    runner = _dag2_bare_runner(monkeypatch)
+    monkeypatch.setattr(m.time, "monotonic", lambda: 200.0)
+    runner.begin_cleanup()
+    assert runner.cleanup_started == 200.0 and runner.cleanup_deadline == 240.0
+    assert runner.final_stop_deadline == 260.0
+    monkeypatch.setattr(m.time, "monotonic", lambda: 230.0)
+    runner.begin_cleanup()
+    assert runner.cleanup_started == 200.0 and runner.cleanup_deadline == 240.0
+    assert runner.final_stop_deadline == 260.0
+
+
+def test_dag2_cleanup_deadlines_cannot_exceed_service_budget(monkeypatch):
+    runner = _dag2_bare_runner(monkeypatch)
+    monkeypatch.setattr(m.time, "monotonic", lambda: 325.0)
+    runner.begin_cleanup()
+    assert runner.cleanup_deadline <= 340.0 and runner.final_stop_deadline <= 340.0
+
+
+def test_dag2_worker_stop_reuses_single_lifecycle_owner():
+    assert m.Dag2Runner.stop_workers is m.Runner.stop_workers
+    assert m.Dag2Runner.stop_server is m.Runner.stop_server
+    assert m.Dag2Runner.start_server is m.Runner.start_server
+    assert m.Dag2Runner.execute is m.Runner.execute
+
+
+def test_dag2_public_stops_and_executor_completions_are_observed_once(monkeypatch):
+    import asyncio
+    from types import SimpleNamespace
+    async def exercise():
+        runner = _dag2_bare_runner(monkeypatch)
+        calls = []
+        async def shutdown(generation): calls.append(("shutdown", generation))
+        class Executor:
+            def shutdown(self, *, wait): calls.append(("executor", wait))
+        for generation in (1, 2):
+            task = asyncio.get_running_loop().create_future(); task.set_result(None)
+            async def stop(g=generation): await shutdown(g)
+            row = {"generation": generation, "type": "workflow" if generation == 1 else "activity",
+                   "public_shutdown_called": False, "public_shutdown_completed": False}
+            runner.workers.append({"worker": SimpleNamespace(shutdown=stop), "task": task,
+                "row": row, "executor": None if generation == 1 else Executor(),
+                "mission": "hosted-normal", "start_seq": generation})
+            runner.worker_rows.append(row)
+        await runner.stop_workers()
+        await runner.stop_workers()
+        assert calls == [("shutdown", 2), ("executor", True), ("shutdown", 1)]
+        assert [row["generation"] for row in runner.worker_stops] == [2, 1]
+        assert [row["executor_shutdown_calls"] for row in runner.worker_stops] == [1, 0]
+        assert all(row["public_shutdown_calls"] == 1 and row["worker_run_task_completed"]
+                   for row in runner.worker_stops)
+    asyncio.run(exercise())
+
+
+def test_dag2_unconfirmed_shutdown_is_not_invoked_twice(monkeypatch):
+    import asyncio
+    from types import SimpleNamespace
+    async def exercise():
+        runner = _dag2_bare_runner(monkeypatch)
+        calls = []
+        async def shutdown(): calls.append(True); raise RuntimeError("private failure")
+        task = asyncio.get_running_loop().create_future(); task.set_result(None)
+        runner.workers = [{"worker": SimpleNamespace(shutdown=shutdown), "task": task,
+            "row": {"generation": 1, "type": "workflow", "public_shutdown_called": False,
+                    "public_shutdown_completed": False}, "executor": None,
+            "mission": "hosted-normal", "start_seq": 1}]
+        with pytest.raises(RuntimeError): await runner.stop_workers()
+        with pytest.raises(m.GateRunError, match="WORKER_STOP_UNCONFIRMED"):
+            await runner.stop_workers()
+        assert calls == [True] and runner.stop_uncertain
+    asyncio.run(exercise())
+
+
+def test_dag2_original_capture_preserves_independent_literal_bytes_and_origin():
+    import copy
+    observed = m.Dag2Observations(clock=lambda: 10)
+    fixture = copy.deepcopy(DAG2_LITERAL_ORIGINAL)
+    observed.capture_original("hosted-normal", "A", fixture["body"], fixture["reference"])
+    original = observed.originals[("hosted-normal", "A")]
+    assert original["body_bytes"] == DAG2_LITERAL_ORIGINAL["canonical_body_utf8"].encode()
+    assert original["body_sha256"] == DAG2_LITERAL_ORIGINAL["body_sha256"]
+    assert original["origin"] == DAG2_LITERAL_ORIGINAL["origin"]
+    assert original["origin_sha256"] == DAG2_LITERAL_ORIGINAL["origin_sha256"]
+    assert observed.counts["result_puts"] == 1 and observed.counts["observer_cas_reads"] == 0
+    fixture["body"]["output"] = 99
+    fixture["reference"]["sha256"] = "f" * 64
+    assert original["body_bytes"] == DAG2_LITERAL_ORIGINAL["canonical_body_utf8"].encode()
+    assert original["origin"] == DAG2_LITERAL_ORIGINAL["origin"]
+
+
+def test_dag2_no_ref_put_does_not_encode_hash_retain_or_read(monkeypatch):
+    observed = m.Dag2Observations(clock=lambda: 10)
+    class MustNotInspect:
+        def __getattribute__(self, name): raise AssertionError("no-ref data inspection")
+    observed.capture_original("hosted-no-ref-cancel", "A", MustNotInspect(), MustNotInspect())
+    assert observed.counts["result_puts"] == 1
+    assert observed.counts["observer_cas_reads"] == 0
+    assert not observed.originals
+
+
+@pytest.mark.parametrize("mission,node,operation", [
+    ("hosted-normal", "A", "execute"), ("hosted-normal", "B", "execute"),
+    ("hosted-reconcile", "B", "execute"), ("hosted-reconcile", "A", "inspect"),
+    ("hosted-no-ref-cancel", "A", "inspect"),
+])
+def test_dag2_fault_injection_is_exactly_two_a_execution_returns(mission, node, operation):
+    assert not m.dag2_should_fail_response(mission, node, operation)
+
+
+@pytest.mark.parametrize("mission", ["hosted-reconcile", "hosted-no-ref-cancel"])
+def test_dag2_fault_is_nonretryable_and_requires_real_handler_and_adapter_return(mission):
+    observed = m.Dag2Observations(clock=lambda: 10)
+    assert m.dag2_should_fail_response(mission, "A", "execute")
+    with pytest.raises(m.GateRunError):
+        observed.require_fault_boundary(mission, "A")
+    observed.counts["handler_entries"] = observed.counts["handler_returns"] = 1
+    observed.counts["runtime_entries"] = observed.counts["runtime_returns"] = 1
+    observed.counts["activity_entries"] = observed.counts["activity_returns"] = 1
+    observed.returned.add((mission, "A", "execute"))
+    assert observed.require_fault_boundary(mission, "A") is None
+
+
+def test_dag2_observer_event_limit_is_checked_before_append():
+    observed = m.Dag2Observations(clock=lambda: 10)
+    observed.events = [{} for _ in range(512)]
+    before = list(observed.events)
+    with pytest.raises(m.GateRunError, match="SIZE_LIMIT"):
+        observed.record("query_observed", mission="hosted-normal")
+    assert observed.events == before and observed.execution_uncertain
+
+
+def test_dag2_unknown_event_is_never_recorded():
+    observed = m.Dag2Observations(clock=lambda: 10)
+    with pytest.raises(m.GateRunError): observed.record("arbitrary_callback")
+    assert observed.events == []
+
+
+@pytest.mark.parametrize("bad", [True, 1.0, -1, 1000000000000000001])
+def test_dag2_observer_requires_bounded_plain_monotonic_integer(bad):
+    observed = m.Dag2Observations(clock=lambda: bad)
+    with pytest.raises(m.GateRunError): observed.record("query_observed", mission="hosted-normal")
+    assert observed.events == []
+
+
+def test_dag2_observer_clocks_may_tie_but_never_regress():
+    values = iter((10, 10, 9))
+    observed = m.Dag2Observations(clock=lambda: next(values))
+    observed.record("query_observed", mission="hosted-normal")
+    observed.record("query_observed", mission="hosted-normal")
+    with pytest.raises(m.GateRunError): observed.record("query_observed", mission="hosted-normal")
+    assert [row["seq"] for row in observed.events] == [1, 2]
+
+
+def test_dag2_bootstrap_precedes_pollers_and_original_update_by_source_order():
+    tree = ast.parse((ROOT / "ci/run_temporal_server_gate.py").read_text())
+    cls = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == "Dag2Runner")
+    methods = {node.name: node for node in cls.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    start = ast.unparse(methods["start_mission"])
+    assert start.index("dag2_bind_handle(") < start.index("self.construct_bootstrap(") < start.index("self.start_worker(")
+    reconcile = ast.unparse(methods["run_reconcile"])
+    assert reconcile.index("self.stop_workers(") < reconcile.index("self.construct_bootstrap(") < reconcile.index("self.submit_update(")
+    assert "original_A=None" in ast.unparse(methods["start_mission"])
+    assert "original_B=None" in ast.unparse(methods["construct_bootstrap"])
+
+
+def test_dag2_replay_uses_default_sdk_and_never_fabricates_completion_result():
+    source = (ROOT / "ci/run_temporal_server_gate.py").read_text()
+    tree = ast.parse(source)
+    cls = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == "Dag2Runner")
+    replay = next(node for node in cls.body if isinstance(node, ast.AsyncFunctionDef) and node.name == "replay_snapshot")
+    text = ast.unparse(replay)
+    assert "Replayer(" in text and "replay_failure" in text and "replay_workflow(" in text
+    assert "workflow_runner=" not in text and "passthrough" not in text
+    assert "activity_worker_count" in text and "counts_before" in text and "counts_after" in text
+    assert not any(isinstance(node, ast.Attribute) and node.attr in {"result", "completion_result"}
+                   for node in ast.walk(replay))
+
+
+def test_dag2_owned_workflow_results_never_follow_another_run():
+    tree = ast.parse((ROOT / "ci/run_temporal_server_gate.py").read_text())
+    cls = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == "Dag2Runner")
+    method = next(node for node in cls.body if isinstance(node, ast.AsyncFunctionDef) and node.name == "workflow_result")
+    calls = [node for node in ast.walk(method) if isinstance(node, ast.Call)
+             and isinstance(node.func, ast.Attribute) and node.func.attr == "result"]
+    assert len(calls) == 1
+    assert any(keyword.arg == "follow_runs" and isinstance(keyword.value, ast.Constant)
+               and keyword.value.value is False for keyword in calls[0].keywords)
+
+
+def test_dag2_harness_has_no_cas_enumeration_or_failure_cleanup_cancel():
+    tree = ast.parse((ROOT / "ci/run_temporal_server_gate.py").read_text())
+    cls = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == "Dag2Runner")
+    forbidden = {"rglob", "glob", "iterdir", "walk", "kill", "terminate", "reset_workflow_execution"}
+    assert not any(isinstance(node, ast.Attribute) and node.attr in forbidden for node in ast.walk(cls))
+    cleanup = next(node for node in cls.body if isinstance(node, ast.AsyncFunctionDef) and node.name == "cleanup")
+    assert not any(isinstance(node, ast.Attribute) and node.attr in
+                   {"cancel", "cancel_no_ref", "start_mission", "submit_update", "start_workflow"}
+                   for node in ast.walk(cleanup))
+
+
+@pytest.mark.parametrize("kind", ["workflow", "activity"])
+def test_dag2_worker_options_have_one_external_slot_and_no_eager_execution(kind):
+    options = m.dag2_worker_options(kind)
+    assert options["disable_eager_activity_execution"] is True
+    assert options["graceful_shutdown_timeout"] == timedelta(seconds=5)
+    if kind == "workflow":
+        assert options["max_concurrent_workflow_tasks"] == 1
+        assert options["max_concurrent_workflow_task_polls"] == 1
+        assert options["max_cached_workflows"] == 0 and options["no_remote_activities"] is True
+    else:
+        assert options["max_concurrent_activities"] == 1
+        assert options["max_concurrent_activity_task_polls"] == 1
+    assert "workflow_runner" not in options and "sandboxed" not in options
+
+
+def test_dag2_unknown_worker_kind_is_refused():
+    with pytest.raises(m.GateRunError): m.dag2_worker_options("arbitrary")
+
+
+def test_dag2_rpc_caller_cancellation_keeps_original_task_owned(monkeypatch):
+    import asyncio
+    async def exercise():
+        runner = _dag2_bare_runner(monkeypatch)
+        future = asyncio.get_running_loop().create_future()
+        entered = asyncio.Event()
+        calls = []
+        def issue(): calls.append(True); return future
+        async def wait(task, *args, **kwargs):
+            entered.set()
+            done, _ = await asyncio.wait({task})
+            return next(iter(done)).result()
+        runner.bounded = wait
+        producer = asyncio.create_task(runner.rpc("hosted-normal", "start", "normal-start", issue))
+        await entered.wait()
+        producer.cancel()
+        with pytest.raises(asyncio.CancelledError): await producer
+        assert calls == [True] and not future.cancelled() and runner.admission_closed
+        assert runner.rpc_pending["normal-start"] is future
+        future.set_result("late-ack")
+        await runner.observe_pending_rpc()
+        assert runner.admission_closed and not runner.rpc_pending
+        assert runner.rpc_rows[0]["outcome"] == "UNCONFIRMED"
+    asyncio.run(exercise())
+
+
+def test_dag2_expired_rpc_never_calls_factory(monkeypatch):
+    import asyncio
+    runner = _dag2_bare_runner(monkeypatch)
+    runner.deadline = 99.0
+    with pytest.raises(m.GateRunError):
+        asyncio.run(runner.rpc("hosted-normal", "start", "normal-start",
+            lambda: pytest.fail("expired work must never be scheduled")))
+    assert not runner.rpc_pending
+
+
+def test_dag2_trace_byte_cap_is_checked_before_appending(monkeypatch):
+    observed = m.Dag2Observations(clock=lambda: 10)
+    observed.trace_bytes = 262144
+    with pytest.raises(m.GateRunError, match="SIZE_LIMIT"):
+        observed.record("query_observed", mission="hosted-normal")
+    assert observed.events == [] and observed.execution_uncertain
+
+
+def test_dag2_private_evidence_writer_checks_bytes_before_creating_file(tmp_path):
+    target = tmp_path / "oversize.json"
+    with pytest.raises(m.GateRunError, match="SIZE_LIMIT"):
+        m.write_dag2_json(target, {"fixed": "a" * 256}, 256)
+    assert not target.exists()
+
+
+def test_dag2_private_evidence_writer_rejects_overwrite(tmp_path):
+    target = tmp_path / "fixed.json"
+    target.write_bytes(b"previous-record")
+    with pytest.raises((m.GateRunError, FileExistsError)):
+        m.write_dag2_json(target, {"fixed": True}, 256)
+    assert target.read_bytes() == b"previous-record"
+
+
+def test_dag2_private_evidence_writer_has_restricted_mode(tmp_path):
+    target = tmp_path / "fixed.json"
+    m.write_dag2_json(target, {"fixed": True}, 256)
+    assert target.read_bytes() == b'{"fixed":true}\n'
+    assert target.stat().st_mode & 0o777 == 0o600
+
+
+def test_dag2_profile_failure_happens_before_root_or_acquisition(monkeypatch, tmp_path):
+    root = tmp_path / "fresh"
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "pull_request")
+    monkeypatch.setenv("OPENDOT_TEMPORAL_QUALIFICATION", "dag2")
+    monkeypatch.setattr(m, "preflight", lambda *a, **k: pytest.fail("must not preflight"))
+    with pytest.raises(m.GateRunError):
+        m.run_dag2_gate(root, tmp_path / "temporal", DAG2_LITERAL_NODES)
+    assert not root.exists()
+
+
+@pytest.mark.parametrize("phase", ["observation_cleanup", "worker_shutdown", "server_shutdown"])
+def test_dag2_cancellation_runtime_gate_refuses_cleanup_even_when_quiescent(phase, monkeypatch):
+    runner = _dag2_bare_runner(monkeypatch)
+    runner.cleanup_started = 100.0
+    runner.diagnostic.phase = phase
+    with pytest.raises(m.GateRunError, match="CANCEL_SCOPE"):
+        runner.require_cancel_quiescent(runner.handles["hosted-no-ref-cancel"])
+
+
+
+def test_dag2_cancellation_guard_allows_only_direct_scenario_caller():
+    source = DAG2_CANCEL_SOURCE + "\nasync def run_no_ref(self):\n    await self.cancel_no_ref()\n"
+    _assert_dag2_cancellation_boundary(ast.parse(source), require_call=True, require_live_caller=True)
+
+
+@pytest.mark.parametrize("phase", ["selection", "preflight", "bootstrap", "start", "execution",
+    "history", "query", "update", "replay", "observation_cleanup", "worker_shutdown",
+    "server_shutdown", "evidence_write", "verification"])
+def test_dag2_cancellation_runtime_phase_gate_is_independent_of_cleanup_started(phase, monkeypatch):
+    runner = _dag2_bare_runner(monkeypatch)
+    runner.cleanup_started = None
+    runner.diagnostic.phase = phase
+    with pytest.raises(m.GateRunError, match="CANCEL_SCOPE"):
+        runner.require_cancel_quiescent(runner.handles["hosted-no-ref-cancel"])
+
+
+@pytest.mark.parametrize("fault", ["closed-admission", "primary-failure", "stop-uncertain", "execution-uncertain"])
+def test_dag2_cancellation_runtime_failure_gate_is_independent_of_cleanup_started(fault, monkeypatch):
+    runner = _dag2_bare_runner(monkeypatch)
+    runner.cleanup_started = None
+    runner.diagnostic.phase = "cancel"
+    if fault == "closed-admission": runner.admission_closed = True
+    if fault == "primary-failure": runner.diagnostic.primary_failure = {"code": "INTERNAL_ERROR", "phase": "execution"}
+    if fault == "stop-uncertain": runner.stop_uncertain = True
+    if fault == "execution-uncertain": runner.observed.execution_uncertain = True
+    with pytest.raises(m.GateRunError, match="CANCEL_SCOPE"):
+        runner.require_cancel_quiescent(runner.handles["hosted-no-ref-cancel"])
+
+
+@pytest.mark.parametrize("scope,edge", [("execute", "finally"), ("stop_workers", "except Exception")])
+def test_dag2_cancellation_guard_rejects_indirect_owner_failure_edges(scope, edge):
+    source = DAG2_CANCEL_SOURCE + "\nasync def run_no_ref(self):\n    await self.cancel_no_ref()\n"
+    source += f"\nasync def {scope}(self):\n    try:\n        pass\n    {edge}:\n        await self.run_no_ref()\n"
+    with pytest.raises(AssertionError):
+        _assert_dag2_cancellation_boundary(ast.parse(source), require_call=True, require_live_caller=True)
+
+
+def test_dag2_cancellation_guard_preserves_legitimate_execute_scenario_path():
+    source = DAG2_CANCEL_SOURCE + "\nasync def run_no_ref(self):\n    await self.cancel_no_ref()\n"
+    source += "\nasync def run_cases(self):\n    await self.run_no_ref()\n"
+    source += "\nasync def execute(self):\n    try:\n        await self.run_cases()\n    finally:\n        await self.cleanup()\n"
+    source += "\nasync def cleanup(self):\n    await self.stop_workers()\n"
+    source += "\nasync def stop_workers(self):\n    pass\n"
+    _assert_dag2_cancellation_boundary(ast.parse(source), require_call=True, require_live_caller=True)
+
+
+def _dag2_cancellation_owner_fixture(extra_methods, layout):
+    scenario = DAG2_CANCEL_SOURCE + "\nasync def run_no_ref(self):\n    await self.cancel_no_ref()\n"
+    def indent(source):
+        return "".join("    " + line if line.strip() else line for line in source.splitlines(keepends=True))
+    if layout == "module":
+        return scenario + extra_methods
+    if layout == "owner":
+        return "class Dag2Runner:\n" + indent(scenario + extra_methods)
+    assert layout == "inherited"
+    return "class Runner:\n" + indent(extra_methods) + "\nclass Dag2Runner(Runner):\n" + indent(scenario)
+
+
+@pytest.mark.parametrize("layout", ["module", "owner", "inherited"])
+@pytest.mark.parametrize("extra_methods", [
+    "\nasync def cleanup(self):\n    alias = self\n    await alias.run_no_ref()\n",
+    "\nasync def cleanup(self):\n    resolve = getattr\n    target = resolve(self, 'cancel_no_ref')\n    await target()\n",
+    "\nasync def cleanup(self):\n    await getattr(self, 'cancel' + '_no_ref')()\n",
+    "\nasync def cleanup(self):\n    await type(self).run_no_ref(self)\n",
+    "\nasync def cleanup(self):\n    owner_type = type(self)\n    action = owner_type.run_no_ref\n    await action(self)\n",
+    "\nasync def cleanup(self):\n    import builtins as resolver\n    await resolver.getattr(self, 'run_no_ref')()\n",
+    "\nasync def cleanup(self):\n    action = self.run_no_ref\n    await invoke(action)\n",
+    "\nasync def cleanup(self):\n    async def nested():\n        alias = self\n        await alias.run_no_ref()\n    await nested()\n",
+    "\nasync def cleanup(self):\n    await self.helper()\n\nasync def helper(self):\n    alias = self\n    await alias.run_no_ref()\n",
+    "\nasync def cleanup(self):\n    owner = self.__class__\n    await owner.run_no_ref(self)\n",
+    "\nasync def cleanup(self):\n    await locals()['self'].run_no_ref()\n",
+    "\nasync def execute(self):\n    try:\n        pass\n    finally:\n        alias = self\n        await alias.run_no_ref()\n",
+    "\nasync def stop_workers(self):\n    try:\n        pass\n    except Exception:\n        resolve = getattr\n        await resolve(self, 'run_' + 'no_ref')()\n",
+], ids=["cleanup-receiver-alias", "getattr-builtin-alias", "computed-getattr", "object-unbound-method",
+        "rebound-class-alias", "builtins-getattr-alias", "escaped-bound-method", "nested-owner-alias",
+        "helper-owner-alias", "owner-class-lookup", "owner-locals-lookup", "finally-owner-alias",
+        "except-computed-resolver"])
+def test_dag2_cancellation_guard_refuses_dynamic_cleanup_paths(extra_methods, layout):
+    source = _dag2_cancellation_owner_fixture(extra_methods, layout)
+    with pytest.raises(AssertionError):
+        _assert_dag2_cancellation_boundary(ast.parse(source), require_call=True, require_live_caller=True)
+
+
+@pytest.mark.parametrize("layout", ["module", "owner", "inherited"])
+def test_dag2_cancellation_guard_keeps_direct_chain_and_unrelated_data_owner(layout):
+    lifecycle = "\nasync def run_cases(self):\n    await self.run_no_ref()\n"
+    lifecycle += "\nasync def execute(self):\n    try:\n        await self.run_cases()\n    finally:\n        await self.cleanup()\n"
+    lifecycle += "\nasync def cleanup(self):\n    await self.stop_workers()\n"
+    lifecycle += "\nasync def stop_workers(self):\n    pass\n"
+    source = _dag2_cancellation_owner_fixture(lifecycle, layout)
+    source += "\nclass DiagnosticData:\n    def read(self, field):\n        return getattr(self, field)\n"
+    _assert_dag2_cancellation_boundary(ast.parse(source), require_call=True, require_live_caller=True)
+
+
+def test_dag2_cancellation_guard_includes_existing_inherited_lifecycle():
+    # Parse the unchanged owner only; never instantiate it or execute a service.
+    source = (ROOT / "ci/run_temporal_server_gate.py").read_text()
+    if not any(isinstance(node, ast.ClassDef) and node.name == "Dag2Runner" for node in ast.walk(ast.parse(source))):
+        scenario = DAG2_CANCEL_SOURCE + "\nasync def run_no_ref(self):\n    await self.cancel_no_ref()\n"
+        scenario += "\nasync def run_cases(self):\n    await self.run_no_ref()\n"
+        source += "\nclass Dag2Runner(Runner):\n" + "".join("    " + line if line.strip() else line
+                                                           for line in scenario.splitlines(keepends=True))
+    _assert_dag2_cancellation_boundary(ast.parse(source), require_call=True, require_live_caller=True)
+
+
+# Root-authorized v2 controls for independently reproduced runner v1 defects.
+def test_dag2_final_stop_deadline_tightens_at_actual_phase_start(monkeypatch):
+    import asyncio
+    runner = _dag2_bare_runner(monkeypatch)
+    runner.server = None
+    runner.server_rows = []
+    runner.cancel_calls = 0
+    monkeypatch.setattr(m.time, "monotonic", lambda: 200.0)
+    cleanup = asyncio.run(runner.cleanup())
+    assert runner.cleanup_deadline == 240.0
+    assert runner.final_stop_started == 200.0
+    assert runner.final_stop_deadline == 220.0
+    assert cleanup["cleanup_status"] == "PASS"
+
+
+def test_dag2_evidence_rejection_persists_failure_after_completed_effect(monkeypatch, tmp_path):
+    import asyncio
+    import verify_temporal_server_gate as verifier
+    runner = _dag2_bare_runner(monkeypatch)
+    runner.root = tmp_path
+    (tmp_path / "audit").mkdir()
+    (tmp_path / "private").mkdir()
+    runner.cli = tmp_path / "temporal"
+    (tmp_path / "acquisition-receipt.json").write_bytes(b'{"FABRICATED_UNIT_DATA":true}')
+    pip = tmp_path / "pip-report.json"
+    pip.write_bytes(b'{"FABRICATED_UNIT_DATA":true}')
+    monkeypatch.setenv("OPENDOT_TEMPORAL_PIP_REPORT", str(pip))
+    runner.source_manifest = {"files": [{"path": name} for name in m.DAG2_SOURCE_CLOSURE]}
+    runner.source_manifest_bytes = b'{"FABRICATED_UNIT_DATA":true}'
+    runner.identity = {"fixture": "FABRICATED_UNIT_DATA"}
+    runner.environment = {"server_version": "1.32.0"}
+    runner.bootstraps, runner.histories, runner.updates, runner.replays = [], [], [], []
+    runner.outcomes, runner.replay = [], None
+    runner.raw_files = {}
+    runner.worker_stops = [{"generation": value} for value in m.DAG2_STOP_ORDER]
+    runner.diagnostic = m.Dag2DiagnosticState("a" * 40)
+    runner.evidence_started_ns = m.time.monotonic_ns()
+    completed_effect = tmp_path / "audit" / "normal-a.result.json"
+    actual = []
+    async def scenario():
+        completed_effect.write_bytes(b'{"FABRICATED_UNIT_DATA":"completed-effect"}')
+        runner.evidence_complete = True
+    async def cleanup():
+        actual.append("cleanup-observed")
+        runner.diagnostic.cleanup_observation = "PASS"
+        return {"cleanup_status": "PASS", "evidence_and_pytest_elapsed_ms": 0}
+    def reject(*args, **kwargs):
+        actual.append("record-validation-refused")
+        raise verifier.GateError("HISTORY_MISMATCH")
+    runner.run_cases, runner.cleanup = scenario, cleanup
+    monkeypatch.setattr(m, "dag2_check_source", lambda *args: None)
+    monkeypatch.setattr(verifier, "validate_dag2_records", reject)
+    with pytest.raises(m.GateRunError, match="SERVER_GATE_FAILED"):
+        asyncio.run(runner.execute())
+    record = json.loads((tmp_path / "audit" / "dag2-diagnostic.json").read_bytes())
+    assert actual == ["cleanup-observed", "record-validation-refused"]
+    assert completed_effect.read_bytes() == b'{"FABRICATED_UNIT_DATA":"completed-effect"}'
+    assert record["result"] == "FAIL" and record["evidence_status"] == "INCOMPLETE"
+    assert record["cleanup_status"] == "PASS" and record["primary_failure"] is None
+    assert record["cleanup_failure"] is None
+    assert record["audit_failure"] == {"phase": "evidence_write", "code": "HISTORY_MISMATCH"}
+    assert not (tmp_path / "audit" / "dag2-manifest.json").exists()
+
+
+def test_dag2_unreadable_node_manifest_uses_unchained_fixed_fixture_error(monkeypatch):
+    from types import SimpleNamespace
+    spec = importlib.util.spec_from_file_location("dag2_acceptance_prerequisite_control",
+        ROOT / "tests/acceptance/temporal_dag_recovery_gate.py")
+    acceptance = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(acceptance)
+    monkeypatch.setitem(sys.modules, "run_temporal_server_gate", m)
+    monkeypatch.setattr(m, "run_dag2_gate", lambda *args, **kwargs: pytest.fail("scenario must not execute"))
+    original_read = Path.read_text
+    def unreadable(path, *args, **kwargs):
+        if path.name == "temporal-dag-recovery-nodes.txt":
+            raise OSError("FABRICATED_PRIVATE_MARKER /private/fixture secret=unit-only")
+        return original_read(path, *args, **kwargs)
+    monkeypatch.setattr(Path, "read_text", unreadable)
+    request = SimpleNamespace(session=SimpleNamespace(items=[SimpleNamespace(nodeid=node)
+        for node in m.DAG2_REQUIRED_NODES]))
+    with pytest.raises(pytest.fail.Exception) as captured:
+        acceptance.dag2_gate.__wrapped__(request)
+    assert str(captured.value) == "DAG2_SETUP_OR_EVIDENCE_FAILED"
+    assert captured.value.pytrace is False
+    assert captured.value.__context__ is None and captured.value.__cause__ is None

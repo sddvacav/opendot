@@ -2179,3 +2179,12386 @@ def test_public_projection_successful_offline_cli_does_not_consult_host_identity
     result = json.loads(capsys.readouterr().out)
     assert result["projection_consistency"] == "PASS" and result["summary"]["evidence_kind"] == "FABRICATED_UNIT_DATA"
     assert result["independent_original_replay"] == "NOT_EVALUATED"
+
+
+# DAG2 frozen fabricated components: independently authored design literals.
+# Never a live service pack or origin authentication. No SDK import is needed.
+DAG2_TEST_SCHEMAS = json.loads(r'''
+{
+  "$defs": {
+    "bootstrap": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_executor_threads": {
+          "const": 1
+        },
+        "activity_slots": {
+          "const": 1
+        },
+        "constructed_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "eager_activity_execution": {
+          "const": false
+        },
+        "first_execution_run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "generation": {
+          "maximum": 8,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "handler_source_sha256": {
+          "const": "a97dadac88bed7b09d2398516617216cb865ae97db411c12b72de01d7a78d1cb"
+        },
+        "immutable_config": {
+          "const": true
+        },
+        "mission": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile",
+            "hosted-no-ref-cancel"
+          ]
+        },
+        "namespace": {
+          "const": "default"
+        },
+        "origin_capture_seq": {
+          "anyOf": [
+            {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer",
+              "x-python-exact-type": "int"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "original_A_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "original_B_sha256": {
+          "const": null
+        },
+        "registration_sha256": {
+          "const": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3"
+        },
+        "request_eager_start": {
+          "const": false
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "source_verified": {
+          "const": true
+        },
+        "started_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "task_queue": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "type": "string"
+        },
+        "workflow_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "workflow_task_slots": {
+          "const": 1
+        }
+      },
+      "required": [
+        "mission",
+        "workflow_id",
+        "run_id",
+        "first_execution_run_id",
+        "namespace",
+        "task_queue",
+        "generation",
+        "constructed_seq",
+        "started_seq",
+        "handler_source_sha256",
+        "registration_sha256",
+        "original_A_sha256",
+        "original_B_sha256",
+        "origin_capture_seq",
+        "source_verified",
+        "immutable_config",
+        "activity_slots",
+        "activity_executor_threads",
+        "workflow_task_slots",
+        "eager_activity_execution",
+        "request_eager_start"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "claims": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_crash_process_fencing": {
+          "const": "NOT_EVALUATED"
+        },
+        "device_control_authority": {
+          "const": false
+        },
+        "external_effect_authenticity": {
+          "const": "NOT_PROVED"
+        },
+        "independent_review": {
+          "const": "NOT_EVALUATED"
+        },
+        "issue_7_closed": {
+          "const": false
+        },
+        "lost_network_ack": {
+          "const": "NOT_EVALUATED"
+        },
+        "natural_300_second_deadline": {
+          "const": "NOT_EVALUATED"
+        },
+        "owner_integration": {
+          "const": "NOT_EVALUATED"
+        },
+        "scientific_validity": {
+          "const": false
+        },
+        "termination_status": {
+          "const": "NOT_ESTABLISHED"
+        }
+      },
+      "required": [
+        "external_effect_authenticity",
+        "termination_status",
+        "scientific_validity",
+        "device_control_authority",
+        "independent_review",
+        "owner_integration",
+        "actual_crash_process_fencing",
+        "lost_network_ack",
+        "natural_300_second_deadline",
+        "issue_7_closed"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "cleanup": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_updates_unfinished": {
+          "const": 0
+        },
+        "activity_executor_shutdown_calls": {
+          "const": 4
+        },
+        "all_scheduled_invocations_terminal": {
+          "const": true
+        },
+        "cleanup_status": {
+          "const": "PASS"
+        },
+        "evidence_and_pytest_elapsed_ms": {
+          "maximum": 30000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "final_stop_elapsed_ms": {
+          "maximum": 20000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "force_or_task_cancellation_calls": {
+          "const": 0
+        },
+        "handler_entries": {
+          "const": 5
+        },
+        "handler_returns": {
+          "const": 5
+        },
+        "in_flight_calls": {
+          "const": 0
+        },
+        "observation_cleanup_elapsed_ms": {
+          "maximum": 40000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "pending_rpc_tasks": {
+          "const": 0
+        },
+        "public_worker_shutdown_calls": {
+          "const": 8
+        },
+        "same_cas": {
+          "const": true
+        },
+        "same_sqlite": {
+          "const": true
+        },
+        "scenario_elapsed_ms": {
+          "maximum": 150000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.cleanup.v1"
+        },
+        "server_exit_code": {
+          "const": 0
+        },
+        "server_generations": {
+          "const": 1
+        },
+        "server_shutdown_calls": {
+          "const": 1
+        },
+        "server_shutdown_elapsed_ms": {
+          "maximum": 8000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "server_shutdown_signal": {
+          "const": "SIGINT"
+        },
+        "server_stop_observed": {
+          "const": true
+        },
+        "stop_uncertain": {
+          "const": false
+        },
+        "worker_stops": {
+          "items": {
+            "$ref": "#/$defs/worker_stop"
+          },
+          "maxItems": 8,
+          "minItems": 8,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "workflow_handle_cancel_calls": {
+          "const": 1
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "worker_stops",
+        "public_worker_shutdown_calls",
+        "activity_executor_shutdown_calls",
+        "server_generations",
+        "server_shutdown_signal",
+        "server_shutdown_calls",
+        "server_exit_code",
+        "server_stop_observed",
+        "server_shutdown_elapsed_ms",
+        "scenario_elapsed_ms",
+        "observation_cleanup_elapsed_ms",
+        "final_stop_elapsed_ms",
+        "evidence_and_pytest_elapsed_ms",
+        "all_scheduled_invocations_terminal",
+        "in_flight_calls",
+        "pending_rpc_tasks",
+        "accepted_updates_unfinished",
+        "handler_entries",
+        "handler_returns",
+        "stop_uncertain",
+        "cleanup_status",
+        "force_or_task_cancellation_calls",
+        "workflow_handle_cancel_calls",
+        "same_cas",
+        "same_sqlite"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "command": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "type": "string"
+        },
+        "activity_type": {
+          "enum": [
+            "opendot.synthetic.dependent-step.v1",
+            "opendot.synthetic.dependent-inspect.v1"
+          ]
+        },
+        "attempt": {
+          "const": 1
+        },
+        "entry_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "fault": {
+          "enum": [
+            "NONE",
+            "CONTROLLED_POST_RETURN_RESPONSE_FAILURE"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "execute",
+            "normal_inspect",
+            "reconcile_inspect"
+          ]
+        },
+        "maximum_attempts": {
+          "const": 1
+        },
+        "mission": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile",
+            "hosted-no-ref-cancel"
+          ]
+        },
+        "node": {
+          "enum": [
+            "A",
+            "B"
+          ]
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "response_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "return_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "schedule_observed_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "schedule_to_close_seconds": {
+          "const": 60
+        },
+        "scheduled_event_id": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "start_to_close_seconds": {
+          "const": 10
+        },
+        "started_event_id": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "terminal_event_id": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "terminal_observed_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "terminal_type": {
+          "enum": [
+            "ActivityTaskCompleted",
+            "ActivityTaskFailed"
+          ]
+        },
+        "worker_generation": {
+          "maximum": 8,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "workflow_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "mission",
+        "node",
+        "kind",
+        "workflow_id",
+        "run_id",
+        "activity_id",
+        "activity_type",
+        "scheduled_event_id",
+        "started_event_id",
+        "terminal_event_id",
+        "terminal_type",
+        "attempt",
+        "maximum_attempts",
+        "start_to_close_seconds",
+        "schedule_to_close_seconds",
+        "schedule_observed_seq",
+        "entry_seq",
+        "return_seq",
+        "terminal_observed_seq",
+        "worker_generation",
+        "request_sha256",
+        "response_sha256",
+        "fault"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "counts": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_entries": {
+          "maximum": 18,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "activity_returns": {
+          "maximum": 18,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "activity_schedules": {
+          "maximum": 18,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "endpoint_cas_reads": {
+          "maximum": 24,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "handler_entries": {
+          "maximum": 6,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "handler_returns": {
+          "maximum": 6,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "in_flight_calls": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "observer_cas_reads": {
+          "maximum": 4,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "pending_rpc_tasks": {
+          "maximum": 64,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "result_puts": {
+          "maximum": 6,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "runtime_entries": {
+          "maximum": 6,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "runtime_returns": {
+          "maximum": 6,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "seed_puts": {
+          "maximum": 3,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "verification_cas_reads": {
+          "maximum": 4,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "workflow_starts": {
+          "maximum": 3,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        }
+      },
+      "required": [
+        "workflow_starts",
+        "activity_schedules",
+        "activity_entries",
+        "activity_returns",
+        "runtime_entries",
+        "runtime_returns",
+        "handler_entries",
+        "handler_returns",
+        "seed_puts",
+        "result_puts",
+        "endpoint_cas_reads",
+        "observer_cas_reads",
+        "verification_cas_reads",
+        "in_flight_calls",
+        "pending_rpc_tasks"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "diagnostic": {
+      "additionalProperties": false,
+      "properties": {
+        "audit_failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/failure"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cleanup_failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/failure"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cleanup_status": {
+          "enum": [
+            "PASS",
+            "UNCONFIRMED",
+            "NOT_STARTED"
+          ]
+        },
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "evidence_status": {
+          "enum": [
+            "COMPLETE",
+            "INCOMPLETE"
+          ]
+        },
+        "primary_failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/failure"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result": {
+          "enum": [
+            "PASS",
+            "FAIL"
+          ]
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.diagnostic.v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "primary_failure",
+        "cleanup_failure",
+        "audit_failure",
+        "cleanup_status",
+        "evidence_status",
+        "result"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "digest": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environment": {
+      "additionalProperties": false,
+      "properties": {
+        "acquisition_receipt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "adr008_sha256": {
+          "const": "c7d18394d4a88b74e9b0b30ba5ba960bbc5177e19b2f6c115db91b23819b6737"
+        },
+        "base_tree": {
+          "const": "3dc536c4487422d6706831ac954c91264d771d4b"
+        },
+        "bootstrap": {
+          "items": {
+            "$ref": "#/$defs/bootstrap"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "claims": {
+          "$ref": "#/$defs/claims"
+        },
+        "cli_version": {
+          "const": "1.9.1"
+        },
+        "complete_tracked_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "effective_proxy_refused": {
+          "const": true
+        },
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "fresh_private_root": {
+          "const": true
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "pip_report_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "plan_sha256": {
+          "const": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+        },
+        "python_version": {
+          "const": "3.12"
+        },
+        "runner_os": {
+          "const": "ubuntu-24.04"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.environment.v1"
+        },
+        "sdk_transport_retry_policy": {
+          "const": "SDK_DEFAULT_NO_PHYSICAL_RPC_COUNT_CLAIM"
+        },
+        "sdk_version": {
+          "const": "1.34.0"
+        },
+        "server_version": {
+          "const": "1.32.0"
+        },
+        "source_after_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "source_before_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "source_closure": {
+          "items": {
+            "$ref": "#/$defs/path_digest"
+          },
+          "maxItems": 36,
+          "minItems": 36,
+          "type": "array",
+          "x-python-exact-type": "list"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "identity",
+        "base_tree",
+        "adr008_sha256",
+        "plan_sha256",
+        "source_closure",
+        "complete_tracked_manifest_sha256",
+        "source_before_sha256",
+        "source_after_sha256",
+        "acquisition_receipt_sha256",
+        "pip_report_sha256",
+        "sdk_version",
+        "cli_version",
+        "server_version",
+        "python_version",
+        "runner_os",
+        "fresh_private_root",
+        "effective_proxy_refused",
+        "bootstrap",
+        "sdk_transport_retry_policy",
+        "claims"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "event": {
+      "additionalProperties": false,
+      "properties": {
+        "counts": {
+          "$ref": "#/$defs/counts"
+        },
+        "history_event_id": {
+          "anyOf": [
+            {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer",
+              "x-python-exact-type": "int"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "enum": [
+            "seed_put_return",
+            "workflow_start_issued",
+            "workflow_start_acknowledged",
+            "bootstrap_constructed",
+            "worker_start",
+            "activity_enter",
+            "runtime_enter",
+            "handler_enter",
+            "handler_return",
+            "runtime_return",
+            "result_put_return",
+            "original_capture",
+            "adapter_return",
+            "controlled_response_failure",
+            "activity_terminal_observed",
+            "snapshot_retained",
+            "query_observed",
+            "update_submit",
+            "update_handle_returned",
+            "update_refusal_observed",
+            "update_accepted_observed",
+            "update_result_observed",
+            "cancel_submit",
+            "cancel_acknowledged",
+            "cancel_recorded_observed",
+            "workflow_terminal_observed",
+            "verification_read",
+            "replay_begin",
+            "replay_end",
+            "worker_stop_requested",
+            "worker_stop_completed",
+            "activity_executor_completed",
+            "server_start",
+            "server_stop_requested",
+            "server_stop_completed",
+            "rpc_issued",
+            "rpc_settled",
+            "observer_failure"
+          ]
+        },
+        "mission": {
+          "anyOf": [
+            {
+              "enum": [
+                "hosted-normal",
+                "hosted-reconcile",
+                "hosted-no-ref-cancel"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "monotonic_ns": {
+          "maximum": 1000000000000000000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "node": {
+          "anyOf": [
+            {
+              "enum": [
+                "A",
+                "B"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[a-z0-9-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "worker_generation": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer",
+              "x-python-exact-type": "int"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "seq",
+        "monotonic_ns",
+        "mission",
+        "kind",
+        "node",
+        "worker_generation",
+        "operation_id",
+        "history_event_id",
+        "counts"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "external_readback": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance": {
+          "enum": [
+            "HOSTED_REAL_SERVICE_ACCEPTED",
+            "REJECTED"
+          ]
+        },
+        "checked_out_commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "claims": {
+          "$ref": "#/$defs/claims"
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "job_conclusion": {
+          "const": "success"
+        },
+        "job_id": {
+          "maximum": 1000000000000000,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "job_name": {
+          "const": "temporal-server"
+        },
+        "local_record_summary_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "pr_base_commit": {
+          "const": null
+        },
+        "pr_head_commit": {
+          "const": null
+        },
+        "readback_capture_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "remote_commit_tree": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "remote_complete_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "remote_workflow_blob_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "required_step_conclusions": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "conclusion": {
+                "enum": [
+                  "success",
+                  "skipped"
+                ]
+              },
+              "step_name": {
+                "maxLength": 128,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "step_name",
+              "conclusion"
+            ],
+            "type": "object",
+            "x-python-exact-type": "dict"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "retrieved_via": {
+          "enum": [
+            "AUTHORIZED_GITHUB_CONNECTOR",
+            "AUTHORIZED_GITHUB_BROWSER"
+          ]
+        },
+        "reviewer_decision": {
+          "enum": [
+            "ACCEPT",
+            "REJECT"
+          ]
+        },
+        "run_conclusion": {
+          "const": "success"
+        },
+        "run_status": {
+          "const": "completed"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.external-readback.v1"
+        },
+        "selected_attempt": {
+          "maximum": 999,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "selected_profile": {
+          "const": "dag2"
+        },
+        "source_review_receipt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "workflow_active": {
+          "const": true
+        }
+      },
+      "required": [
+        "schema_version",
+        "identity",
+        "retrieved_via",
+        "run_status",
+        "run_conclusion",
+        "job_id",
+        "job_name",
+        "job_conclusion",
+        "workflow_active",
+        "remote_commit_tree",
+        "remote_workflow_blob_sha256",
+        "remote_complete_manifest_sha256",
+        "checked_out_commit",
+        "pr_head_commit",
+        "pr_base_commit",
+        "selected_profile",
+        "selected_attempt",
+        "required_step_conclusions",
+        "source_review_receipt_sha256",
+        "local_record_summary_sha256",
+        "readback_capture_sha256",
+        "reviewer_decision",
+        "acceptance",
+        "claims"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "failure": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "BOOTSTRAP_MISMATCH",
+            "CANCEL_MISMATCH",
+            "CANCEL_SCOPE",
+            "CAUSAL_ORDER",
+            "CI_IDENTITY",
+            "CLAIM_MISMATCH",
+            "CLEANUP_UNCONFIRMED",
+            "COLLECTION_MISMATCH",
+            "COUNTER_MISMATCH",
+            "DEADLINE_EXHAUSTED",
+            "DEPENDENCY_VIOLATION",
+            "HISTORY_LINKAGE",
+            "HISTORY_MISMATCH",
+            "HISTORY_PAYLOAD",
+            "HISTORY_PROJECTION_MISMATCH",
+            "HOSTED_ORIGIN_UNAUTHENTICATED",
+            "INTERNAL_ERROR",
+            "INVALID_JSON",
+            "INVALID_SCHEMA",
+            "INVALID_TYPE",
+            "INVALID_VALUE",
+            "JUNIT_IDENTITY",
+            "MISSING_EVIDENCE",
+            "NOT_RUN",
+            "NO_REF_REDISCOVERY",
+            "OK",
+            "ORIGINAL_MUTATED",
+            "ORIGIN_MISMATCH",
+            "ORIGIN_ORDER",
+            "OWNER_MISMATCH",
+            "PIN_MISMATCH",
+            "PREFLIGHT_FAILED",
+            "PRIVACY_REJECTED",
+            "PROFILE_MISMATCH",
+            "READ_FAILED",
+            "REPLAY_MISMATCH",
+            "REQUIRED_NODES",
+            "RESOURCE_MISMATCH",
+            "RESULT_INVALID",
+            "RPC_RESUBMITTED",
+            "RPC_UNCONFIRMED",
+            "RUN_BINDING",
+            "SIZE_LIMIT",
+            "SOURCE_MISMATCH",
+            "TEST_FAILED",
+            "TEST_SKIPPED",
+            "UPDATE_MISMATCH",
+            "VERSION_MISMATCH",
+            "WORKFLOW_MISMATCH",
+            "WRITE_FAILED"
+          ]
+        },
+        "phase": {
+          "enum": [
+            "selection",
+            "preflight",
+            "bootstrap",
+            "start",
+            "execution",
+            "history",
+            "query",
+            "update",
+            "cancel",
+            "replay",
+            "observation_cleanup",
+            "worker_shutdown",
+            "server_shutdown",
+            "evidence_write",
+            "verification"
+          ]
+        }
+      },
+      "required": [
+        "phase",
+        "code"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "failure_summary": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_schedules_observed": {
+          "maximum": 18,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "audit_failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/failure"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "claims": {
+          "$ref": "#/$defs/claims"
+        },
+        "cleanup_failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/failure"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cleanup_status": {
+          "enum": [
+            "PASS",
+            "UNCONFIRMED",
+            "NOT_STARTED"
+          ]
+        },
+        "collected_nodes": {
+          "maximum": 7,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "count_evidence": {
+          "enum": [
+            "VALIDATED_PARTIAL",
+            "UNAVAILABLE"
+          ]
+        },
+        "error_nodes": {
+          "maximum": 7,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "expected_nodes": {
+          "const": 7
+        },
+        "failed_nodes": {
+          "maximum": 7,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "hosted_acceptance": {
+          "const": "REJECTED"
+        },
+        "missions_admitted": {
+          "maximum": 3,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "passed_nodes": {
+          "maximum": 7,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "primary_failure": {
+          "$ref": "#/$defs/failure"
+        },
+        "record_validation": {
+          "const": "FAIL"
+        },
+        "runtime_entries_observed": {
+          "maximum": 6,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.failure-summary.v1"
+        },
+        "skipped_nodes": {
+          "maximum": 7,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "expected_nodes",
+        "collected_nodes",
+        "passed_nodes",
+        "failed_nodes",
+        "error_nodes",
+        "skipped_nodes",
+        "missions_admitted",
+        "activity_schedules_observed",
+        "runtime_entries_observed",
+        "count_evidence",
+        "record_validation",
+        "hosted_acceptance",
+        "cleanup_status",
+        "primary_failure",
+        "cleanup_failure",
+        "audit_failure",
+        "claims"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "history_event_projection": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "ActivityTaskCompleted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "payload_sha256": {
+                  "$ref": "#/$defs/digest"
+                },
+                "scheduled_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "started_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "payload_sha256",
+                "scheduled_event_id",
+                "started_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "ActivityTaskFailed"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "failure_type": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "non_retryable": {
+                  "type": "boolean"
+                },
+                "scheduled_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "started_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "failure_type",
+                "non_retryable",
+                "scheduled_event_id",
+                "started_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "ActivityTaskScheduled"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "activity_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "activity_type": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "maximum_attempts": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "payload_sha256": {
+                  "$ref": "#/$defs/digest"
+                },
+                "schedule_to_close_timeout": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "start_to_close_timeout": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "task_queue": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "workflow_task_completed_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "activity_id",
+                "activity_type",
+                "maximum_attempts",
+                "payload_sha256",
+                "schedule_to_close_timeout",
+                "start_to_close_timeout",
+                "task_queue",
+                "workflow_task_completed_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "ActivityTaskStarted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "attempt": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "scheduled_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "attempt",
+                "scheduled_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "TimerCanceled"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "started_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "timer_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "workflow_task_completed_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "started_event_id",
+                "timer_id",
+                "workflow_task_completed_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "TimerFired"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "started_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "timer_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "started_event_id",
+                "timer_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "TimerStarted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "timeout": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "timer_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "workflow_task_completed_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "timeout",
+                "timer_id",
+                "workflow_task_completed_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowExecutionCancelRequested"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {},
+              "required": [],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowExecutionCompleted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "payload_sha256": {
+                  "$ref": "#/$defs/digest"
+                },
+                "workflow_task_completed_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "payload_sha256",
+                "workflow_task_completed_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowExecutionStarted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "attempt": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "execution_timeout": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "first_run_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "maximum_attempts": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "payload_sha256": {
+                  "$ref": "#/$defs/digest"
+                },
+                "run_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "run_timeout": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "task_queue": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "task_timeout": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "workflow_type": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "attempt",
+                "execution_timeout",
+                "first_run_id",
+                "maximum_attempts",
+                "payload_sha256",
+                "run_id",
+                "run_timeout",
+                "task_queue",
+                "task_timeout",
+                "workflow_type"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowExecutionUpdateAccepted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "accepted_request_sequencing_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "payload_sha256": {
+                  "$ref": "#/$defs/digest"
+                },
+                "protocol_instance_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "update_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "update_name": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "accepted_request_sequencing_event_id",
+                "payload_sha256",
+                "protocol_instance_id",
+                "update_id",
+                "update_name"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowExecutionUpdateCompleted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "accepted_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "payload_sha256": {
+                  "$ref": "#/$defs/digest"
+                },
+                "update_id": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "accepted_event_id",
+                "payload_sha256",
+                "update_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowTaskCompleted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "scheduled_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "started_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "scheduled_event_id",
+                "started_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowTaskScheduled"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "attempt": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                },
+                "task_queue": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "task_timeout": {
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "attempt",
+                "task_queue",
+                "task_timeout"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "event_id": {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "event_type": {
+              "const": "WorkflowTaskStarted"
+            },
+            "extracted": {
+              "additionalProperties": false,
+              "properties": {
+                "scheduled_event_id": {
+                  "maximum": 1000000000000000,
+                  "minimum": 1,
+                  "type": "integer",
+                  "x-python-exact-type": "int"
+                }
+              },
+              "required": [
+                "scheduled_event_id"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event_id",
+            "event_type",
+            "extracted"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "identity": {
+      "additionalProperties": false,
+      "properties": {
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "event": {
+          "const": "workflow_dispatch"
+        },
+        "qualification": {
+          "const": "dag2"
+        },
+        "ref": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^refs/(heads|tags)/[A-Za-z0-9._/-]+$",
+          "type": "string"
+        },
+        "repository": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+          "type": "string"
+        },
+        "retain_public_evidence": {
+          "const": false
+        },
+        "run_attempt": {
+          "maximum": 999,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "run_id": {
+          "maximum": 1000000000000000,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "run_url": {
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^https://github.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/actions/runs/[0-9]+/attempts/[0-9]+$",
+          "type": "string"
+        },
+        "tree": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "workflow_id": {
+          "maximum": 1000000000000000,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "workflow_path": {
+          "const": ".github/workflows/temporal-server.yml"
+        },
+        "workflow_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "event",
+        "ref",
+        "commit",
+        "tree",
+        "workflow_path",
+        "workflow_sha256",
+        "workflow_id",
+        "run_id",
+        "run_attempt",
+        "run_url",
+        "qualification",
+        "retain_public_evidence"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "manifest": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregate_bytes": {
+          "maximum": 27262976,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "files": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "file_id": {
+                "enum": [
+                  "acquisition-receipt.json",
+                  "collected-nodes.txt",
+                  "dag-sdk-summary.json",
+                  "dag2-cleanup.json",
+                  "dag2-diagnostic.json",
+                  "dag2-environment.json",
+                  "dag2-originals.json",
+                  "dag2-replays.json",
+                  "dag2-trace.json",
+                  "no-ref-cancel-final.history.json",
+                  "no-ref-cancel-final.state.json",
+                  "no-ref-unknown.history.json",
+                  "no-ref-unknown.state.json",
+                  "normal-a.result.json",
+                  "normal-b.result.json",
+                  "normal-final.history.json",
+                  "normal-final.state.json",
+                  "pip-report.json",
+                  "reconcile-a.result.json",
+                  "reconcile-b.result.json",
+                  "reconcile-final.history.json",
+                  "reconcile-final.state.json",
+                  "reconcile-unknown-after-replacement.history.json",
+                  "reconcile-unknown-after-replacement.state.json",
+                  "reconcile-unknown-before-stop.history.json",
+                  "reconcile-unknown-before-stop.state.json",
+                  "reconcile-update-queued.history.json",
+                  "reconcile-update-queued.state.json",
+                  "required-nodes.txt",
+                  "results.xml",
+                  "shared-unit-summary.json",
+                  "source-manifest.json"
+                ]
+              },
+              "sha256": {
+                "$ref": "#/$defs/digest"
+              },
+              "size_bytes": {
+                "maximum": 2097152,
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "file_id",
+              "sha256",
+              "size_bytes"
+            ],
+            "type": "object"
+          },
+          "maxItems": 32,
+          "minItems": 32,
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.manifest.v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "files",
+        "aggregate_bytes"
+      ],
+      "type": "object"
+    },
+    "origin": {
+      "additionalProperties": false,
+      "properties": {
+        "capture_phase": {
+          "const": "original_put_return_before_response"
+        },
+        "effect_id": {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "execution_activity_id": {
+          "maxLength": 96,
+          "minLength": 1,
+          "type": "string"
+        },
+        "mission_id": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile",
+            "hosted-no-ref-cancel"
+          ]
+        },
+        "namespace": {
+          "const": "default"
+        },
+        "node_id": {
+          "enum": [
+            "A",
+            "B"
+          ]
+        },
+        "origin_kind": {
+          "const": "trusted-single-operator-synthetic-put-observer"
+        },
+        "original_result_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "plan_sha256": {
+          "const": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag-origin.v1"
+        },
+        "workflow_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "workflow_run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "origin_kind",
+        "capture_phase",
+        "mission_id",
+        "plan_sha256",
+        "node_id",
+        "effect_id",
+        "namespace",
+        "workflow_id",
+        "workflow_run_id",
+        "execution_activity_id",
+        "original_result_ref"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "original": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter_return_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "body": {
+          "$ref": "#/$defs/private_file"
+        },
+        "capture_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "input_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "mission": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile"
+          ]
+        },
+        "node": {
+          "enum": [
+            "A",
+            "B"
+          ]
+        },
+        "observation_execution_id": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{32}$",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/origin"
+        },
+        "origin_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "output": {
+          "enum": [
+            5,
+            6
+          ]
+        },
+        "output_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "put_operation_id": {
+          "maximum": 8,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "put_return_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "receipt_call_id": {
+          "maxLength": 24,
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{24}$",
+          "type": "string"
+        },
+        "receipt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "reference": {
+          "$ref": "#/$defs/ref"
+        }
+      },
+      "required": [
+        "mission",
+        "node",
+        "put_operation_id",
+        "capture_seq",
+        "put_return_seq",
+        "adapter_return_seq",
+        "reference",
+        "body",
+        "origin",
+        "origin_sha256",
+        "receipt_sha256",
+        "receipt_call_id",
+        "observation_execution_id",
+        "input_sha256",
+        "output_sha256",
+        "output"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "originals": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "no_ref": {
+          "additionalProperties": false,
+          "properties": {
+            "adapter_returns": {
+              "const": 1
+            },
+            "cas_discovery_attempts": {
+              "const": 0
+            },
+            "handler_returns": {
+              "const": 1
+            },
+            "mission": {
+              "const": "hosted-no-ref-cancel"
+            },
+            "origin_record": {
+              "const": "NOT_RETAINED"
+            },
+            "original_body": {
+              "const": "NOT_RETAINED"
+            },
+            "original_digest": {
+              "const": "NOT_RETAINED"
+            },
+            "original_reference": {
+              "const": "NOT_RETAINED"
+            },
+            "recovery_reference_reads": {
+              "const": 0
+            },
+            "result_puts": {
+              "const": 1
+            }
+          },
+          "required": [
+            "mission",
+            "result_puts",
+            "handler_returns",
+            "adapter_returns",
+            "original_reference",
+            "original_body",
+            "original_digest",
+            "origin_record",
+            "cas_discovery_attempts",
+            "recovery_reference_reads"
+          ],
+          "type": "object",
+          "x-python-exact-type": "dict"
+        },
+        "originals": {
+          "items": {
+            "$ref": "#/$defs/original"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.originals.v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "originals",
+        "no_ref"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "path_digest": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "100644",
+            "100755"
+          ]
+        },
+        "path": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9._/-]+$",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "size_bytes": {
+          "maximum": 4194304,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size_bytes",
+        "mode"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "private_file": {
+      "additionalProperties": false,
+      "properties": {
+        "file_id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[a-z0-9.-]+$",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "size_bytes": {
+          "maximum": 2097152,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        }
+      },
+      "required": [
+        "file_id",
+        "sha256",
+        "size_bytes"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "ref": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "maxLength": 71,
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "integrity_verified": {
+          "const": false
+        },
+        "mime_type": {
+          "const": "application/json"
+        },
+        "producer": {
+          "enum": [
+            "opendot.temporal.dag-seed.v1",
+            "opendot.temporal.dag-result.v1"
+          ]
+        },
+        "schema_version": {
+          "const": "1.0.0"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "size_bytes": {
+          "maximum": 16384,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "source_refs": {
+          "items": {
+            "maxLength": 71,
+            "minLength": 1,
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 0,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "task_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "type": "string"
+        },
+        "uri": {
+          "maxLength": 82,
+          "minLength": 1,
+          "pattern": "^artifact://sha256/[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "uri",
+        "mime_type",
+        "size_bytes",
+        "sha256",
+        "schema_version",
+        "producer",
+        "task_id",
+        "source_refs",
+        "integrity_verified"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "replay": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_worker_count": {
+          "const": 0
+        },
+        "begin_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "completion_payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "counts_after": {
+          "$ref": "#/$defs/counts"
+        },
+        "counts_before": {
+          "$ref": "#/$defs/counts"
+        },
+        "default_pinned_sdk_runner": {
+          "const": true
+        },
+        "end_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "history_file_id": {
+          "enum": [
+            "normal-final.history.json",
+            "reconcile-final.history.json"
+          ]
+        },
+        "mission": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile"
+          ]
+        },
+        "replay_failure": {
+          "const": null
+        },
+        "replayer_input_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "result_api": {
+          "const": "WorkflowReplayResult.history_and_replay_failure"
+        },
+        "retained_history_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mission",
+        "history_file_id",
+        "retained_history_sha256",
+        "replayer_input_sha256",
+        "completion_payload_sha256",
+        "result_api",
+        "replay_failure",
+        "default_pinned_sdk_runner",
+        "activity_worker_count",
+        "counts_before",
+        "counts_after",
+        "begin_seq",
+        "end_seq"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "replays": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "replays": {
+          "items": {
+            "$ref": "#/$defs/replay"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.replays.v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "replays"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "rpc": {
+      "additionalProperties": false,
+      "properties": {
+        "application_submissions": {
+          "const": 1
+        },
+        "follow_runs": {
+          "const": false
+        },
+        "issued_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "kind": {
+          "enum": [
+            "start",
+            "query",
+            "history",
+            "result",
+            "start_update",
+            "update_result",
+            "cancel"
+          ]
+        },
+        "mission": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile",
+            "hosted-no-ref-cancel"
+          ]
+        },
+        "observation_timeout_seconds": {
+          "maximum": 3,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "operation_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-z0-9-]+$",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "SUCCESS",
+            "EXPECTED_VALIDATOR_REFUSAL",
+            "UNCONFIRMED"
+          ]
+        },
+        "rpc_timeout_seconds": {
+          "const": 2
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "settled_seq": {
+          "anyOf": [
+            {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer",
+              "x-python-exact-type": "int"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "update_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "workflow_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation_id",
+        "mission",
+        "kind",
+        "issued_seq",
+        "settled_seq",
+        "workflow_id",
+        "run_id",
+        "update_id",
+        "outcome",
+        "rpc_timeout_seconds",
+        "observation_timeout_seconds",
+        "application_submissions",
+        "follow_runs"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "snapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "completion_payload_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/history_event_projection"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "type": "array"
+        },
+        "history": {
+          "$ref": "#/$defs/private_file"
+        },
+        "history_event_count": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "last_event_id": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "mission": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile",
+            "hosted-no-ref-cancel"
+          ]
+        },
+        "observation_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "snapshot_id": {
+          "enum": [
+            "normal-final",
+            "reconcile-unknown-before-stop",
+            "reconcile-unknown-after-replacement",
+            "reconcile-update-queued",
+            "reconcile-final",
+            "no-ref-unknown",
+            "no-ref-cancel-final"
+          ]
+        },
+        "state": {
+          "$ref": "#/$defs/private_file"
+        },
+        "state_revision": {
+          "maximum": 64,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "state_status": {
+          "enum": [
+            "RUNNING",
+            "PAUSED_UNKNOWN",
+            "COMPLETED",
+            "STOPPED_WITH_UNKNOWN"
+          ]
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "mission",
+        "observation_seq",
+        "history",
+        "history_event_count",
+        "last_event_id",
+        "state",
+        "state_revision",
+        "state_status",
+        "completion_payload_sha256",
+        "events"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "summary": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_executor_completions": {
+          "const": 4
+        },
+        "activity_schedules": {
+          "const": 9
+        },
+        "claims": {
+          "$ref": "#/$defs/claims"
+        },
+        "cleanup_status": {
+          "const": "PASS"
+        },
+        "collected_nodes": {
+          "const": 7
+        },
+        "collection_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "endpoint_cas_reads": {
+          "const": 11
+        },
+        "error_nodes": {
+          "const": 0
+        },
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "evidence_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "expected_nodes": {
+          "const": 7
+        },
+        "failed_nodes": {
+          "const": 0
+        },
+        "handler_returns": {
+          "const": 5
+        },
+        "hosted_acceptance": {
+          "const": "REQUIRES_EXTERNAL_GITHUB_READBACK"
+        },
+        "identity": {
+          "$ref": "#/$defs/identity"
+        },
+        "junit_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "mission_count": {
+          "const": 3
+        },
+        "node_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "original_result_puts": {
+          "const": 5
+        },
+        "passed_nodes": {
+          "const": 7
+        },
+        "reason_code": {
+          "enum": [
+            "BOOTSTRAP_MISMATCH",
+            "CANCEL_MISMATCH",
+            "CANCEL_SCOPE",
+            "CAUSAL_ORDER",
+            "CI_IDENTITY",
+            "CLAIM_MISMATCH",
+            "CLEANUP_UNCONFIRMED",
+            "COLLECTION_MISMATCH",
+            "COUNTER_MISMATCH",
+            "DEADLINE_EXHAUSTED",
+            "DEPENDENCY_VIOLATION",
+            "HISTORY_LINKAGE",
+            "HISTORY_MISMATCH",
+            "HISTORY_PAYLOAD",
+            "HISTORY_PROJECTION_MISMATCH",
+            "HOSTED_ORIGIN_UNAUTHENTICATED",
+            "INTERNAL_ERROR",
+            "INVALID_JSON",
+            "INVALID_SCHEMA",
+            "INVALID_TYPE",
+            "INVALID_VALUE",
+            "JUNIT_IDENTITY",
+            "MISSING_EVIDENCE",
+            "NOT_RUN",
+            "NO_REF_REDISCOVERY",
+            "OK",
+            "ORIGINAL_MUTATED",
+            "ORIGIN_MISMATCH",
+            "ORIGIN_ORDER",
+            "OWNER_MISMATCH",
+            "PIN_MISMATCH",
+            "PREFLIGHT_FAILED",
+            "PRIVACY_REJECTED",
+            "PROFILE_MISMATCH",
+            "READ_FAILED",
+            "REPLAY_MISMATCH",
+            "REQUIRED_NODES",
+            "RESOURCE_MISMATCH",
+            "RESULT_INVALID",
+            "RPC_RESUBMITTED",
+            "RPC_UNCONFIRMED",
+            "RUN_BINDING",
+            "SIZE_LIMIT",
+            "SOURCE_MISMATCH",
+            "TEST_FAILED",
+            "TEST_SKIPPED",
+            "UPDATE_MISMATCH",
+            "VERSION_MISMATCH",
+            "WORKFLOW_MISMATCH",
+            "WRITE_FAILED"
+          ]
+        },
+        "record_validation": {
+          "const": "PASS"
+        },
+        "replays": {
+          "const": 2
+        },
+        "retained_originals": {
+          "const": 4
+        },
+        "runtime_entries": {
+          "const": 5
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.summary.v1"
+        },
+        "skipped_nodes": {
+          "const": 0
+        },
+        "source_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "worker_shutdowns": {
+          "const": 8
+        },
+        "xfail_nodes": {
+          "const": 0
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "identity",
+        "source_manifest_sha256",
+        "evidence_manifest_sha256",
+        "node_manifest_sha256",
+        "collection_sha256",
+        "junit_sha256",
+        "expected_nodes",
+        "collected_nodes",
+        "passed_nodes",
+        "failed_nodes",
+        "error_nodes",
+        "skipped_nodes",
+        "xfail_nodes",
+        "mission_count",
+        "activity_schedules",
+        "runtime_entries",
+        "handler_returns",
+        "original_result_puts",
+        "retained_originals",
+        "endpoint_cas_reads",
+        "replays",
+        "worker_shutdowns",
+        "activity_executor_completions",
+        "cleanup_status",
+        "record_validation",
+        "hosted_acceptance",
+        "reason_code",
+        "claims"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "trace": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregate_counts": {
+          "$ref": "#/$defs/counts"
+        },
+        "commands": {
+          "items": {
+            "$ref": "#/$defs/command"
+          },
+          "maxItems": 9,
+          "minItems": 9,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/event"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "evidence_class": {
+          "enum": [
+            "FABRICATED_UNIT_DATA",
+            "OBSERVED_HOSTED_CANDIDATE"
+          ]
+        },
+        "rpc_operations": {
+          "items": {
+            "$ref": "#/$defs/rpc"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "schema_version": {
+          "const": "opendot.temporal.dag2-gate.trace.v1"
+        },
+        "snapshots": {
+          "items": {
+            "$ref": "#/$defs/snapshot"
+          },
+          "maxItems": 7,
+          "minItems": 7,
+          "type": "array",
+          "x-python-exact-type": "list"
+        },
+        "updates": {
+          "items": {
+            "$ref": "#/$defs/update"
+          },
+          "maxItems": 5,
+          "minItems": 5,
+          "type": "array",
+          "x-python-exact-type": "list"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evidence_class",
+        "events",
+        "commands",
+        "rpc_operations",
+        "snapshots",
+        "updates",
+        "aggregate_counts"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "update": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_event_id": {
+          "anyOf": [
+            {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer",
+              "x-python-exact-type": "int"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actual_error_details": {
+          "anyOf": [
+            {
+              "const": "UPDATE_REFUSED"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actual_error_type": {
+          "anyOf": [
+            {
+              "const": "TemporalDagUpdateRejected"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bootstrap_constructed_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "completed_event_id": {
+          "anyOf": [
+            {
+              "maximum": 512,
+              "minimum": 1,
+              "type": "integer",
+              "x-python-exact-type": "int"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint_read_delta": {
+          "const": 0
+        },
+        "execute_delta": {
+          "const": 0
+        },
+        "expected_revision": {
+          "enum": [
+            3,
+            4
+          ]
+        },
+        "mission": {
+          "const": "hosted-reconcile"
+        },
+        "operation_id": {
+          "enum": [
+            "update-stale",
+            "update-original",
+            "update-repeat-same-id",
+            "update-distinct-busy",
+            "update-get-completed"
+          ]
+        },
+        "origin_capture_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "outcome": {
+          "enum": [
+            "VALIDATOR_REFUSED",
+            "ACCEPTED_QUEUED",
+            "SAME_UPDATE_QUEUED",
+            "SAME_COMPLETED_RESULT"
+          ]
+        },
+        "post_revision": {
+          "enum": [
+            4,
+            5,
+            10
+          ]
+        },
+        "pre_revision": {
+          "enum": [
+            4,
+            5,
+            10
+          ]
+        },
+        "precondition_oracle": {
+          "enum": [
+            "STALE_REVISION",
+            "INSPECTION_BUSY",
+            "VALID_RECONCILIATION",
+            "RECORDED_SAME_ID"
+          ]
+        },
+        "request_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "reservation_delta": {
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "result_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submit_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "update_id": {
+          "enum": [
+            "dag2-reconcile-stale",
+            "dag2-reconcile-original",
+            "dag2-reconcile-busy"
+          ]
+        }
+      },
+      "required": [
+        "operation_id",
+        "update_id",
+        "mission",
+        "expected_revision",
+        "pre_revision",
+        "post_revision",
+        "request_sha256",
+        "origin_capture_seq",
+        "bootstrap_constructed_seq",
+        "submit_seq",
+        "accepted_event_id",
+        "completed_event_id",
+        "result_sha256",
+        "outcome",
+        "precondition_oracle",
+        "actual_error_type",
+        "actual_error_details",
+        "reservation_delta",
+        "endpoint_read_delta",
+        "execute_delta"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    },
+    "worker_stop": {
+      "additionalProperties": false,
+      "properties": {
+        "activity_executor_completion_observed": {
+          "type": "boolean"
+        },
+        "cumulative_stop_deadline_remaining_ms": {
+          "maximum": 150000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "executor_shutdown_calls": {
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "generation": {
+          "maximum": 8,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "kind": {
+          "enum": [
+            "workflow",
+            "activity"
+          ]
+        },
+        "mission": {
+          "enum": [
+            "hosted-normal",
+            "hosted-reconcile",
+            "hosted-no-ref-cancel"
+          ]
+        },
+        "public_shutdown_calls": {
+          "const": 1
+        },
+        "public_shutdown_completed": {
+          "const": true
+        },
+        "quiescent_snapshot_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "run_task_wait_elapsed_ms": {
+          "maximum": 1000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "shutdown_elapsed_ms": {
+          "maximum": 5000,
+          "minimum": 0,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "start_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "stop_completed_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "stop_requested_seq": {
+          "maximum": 512,
+          "minimum": 1,
+          "type": "integer",
+          "x-python-exact-type": "int"
+        },
+        "worker_run_task_completed": {
+          "const": true
+        }
+      },
+      "required": [
+        "generation",
+        "mission",
+        "kind",
+        "start_seq",
+        "stop_requested_seq",
+        "stop_completed_seq",
+        "quiescent_snapshot_seq",
+        "public_shutdown_calls",
+        "public_shutdown_completed",
+        "worker_run_task_completed",
+        "executor_shutdown_calls",
+        "activity_executor_completion_observed",
+        "shutdown_elapsed_ms",
+        "run_task_wait_elapsed_ms",
+        "cumulative_stop_deadline_remaining_ms"
+      ],
+      "type": "object",
+      "x-python-exact-type": "dict"
+    }
+  },
+  "$id": "opendot.temporal.dag2-hosted-design.schemas.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "x-files": {
+    "dag2-cleanup.json": "cleanup",
+    "dag2-diagnostic.json": "diagnostic",
+    "dag2-environment.json": "environment",
+    "dag2-failure-summary.json": "failure_summary",
+    "dag2-manifest.json": "manifest",
+    "dag2-originals.json": "originals",
+    "dag2-replays.json": "replays",
+    "dag2-summary.json": "summary",
+    "dag2-trace.json": "trace",
+    "external-github-readback.json": "external_readback"
+  },
+  "x-normative-rules": [
+    "Every object has exactly required keys; reject unknown keys, duplicate JSON keys, nonfinite numbers, bool-as-int, float-as-int, subclasses and non-plain values.",
+    "Schema files are design references, not an added runtime dependency. Existing stdlib verifier owns validation.",
+    "Raw SDK history/state/result documents have frozen external schemas; validate bounded original bytes and exact ADR008 v4 semantics. Do not rewrite them to satisfy evidence schemas.",
+    "Cross-field equality, exact path closure, chronological order, cardinalities and trust gates in CONTRACT.md are additional required checks.",
+    "External readback records cannot authenticate themselves; only the root reviewing actual authorized GitHub tool/browser output can authorize HOSTED_REAL_SERVICE_ACCEPTED."
+  ]
+}
+''')
+
+DAG2_TEST_ORACLES = json.loads(r'''
+{
+  "aggregate": {
+    "accepted_updates": 1,
+    "active_workflows_max": 1,
+    "activity_entries": 9,
+    "activity_executor_shutdowns": 4,
+    "activity_executor_threads_max": 1,
+    "activity_returns": 9,
+    "activity_schedules": 9,
+    "activity_slots_max": 1,
+    "completed_update_fetches": 1,
+    "distinct_refused_updates": 2,
+    "endpoint_cas_reads": 11,
+    "handler_entries": 5,
+    "handler_returns": 5,
+    "observer_cas_reads": 0,
+    "result_bytes_reserved": 98304,
+    "result_puts": 5,
+    "retained_originals": 4,
+    "runtime_entries": 5,
+    "runtime_returns": 5,
+    "same_id_repeats": 1,
+    "seed_puts": 3,
+    "server_starts": 1,
+    "server_stops": 1,
+    "verification_cas_reads": 4,
+    "worker_shutdowns": 8,
+    "workflow_handle_cancel_calls": 1,
+    "workflow_starts": 3
+  },
+  "allowed_distinct_paths": [
+    "AGENTS.md",
+    "docs/decisions/008-fixed-dependent-temporal-recovery.md",
+    "src/opendot_engineering/adapters/temporal_activity.py",
+    "src/opendot_engineering/adapters/temporal_workflow.py",
+    "tests/test_temporal_dag_recovery.py",
+    "tests/test_temporal_workflow_contract.py",
+    "tests/test_temporal_transport_owner_boundaries.py",
+    "ci/run_temporal_server_gate.py",
+    "ci/verify_temporal_server_gate.py",
+    "tests/test_temporal_server_gate_verifier.py",
+    "tests/acceptance/temporal_dag_recovery_gate.py",
+    "ci/temporal-dag-recovery-nodes.txt",
+    ".github/workflows/temporal-server.yml",
+    "tests/test_temporal_server_harness_unit.py",
+    "tests/test_a2a_worker_turn.py"
+  ],
+  "base_tree": "3dc536c4487422d6706831ac954c91264d771d4b",
+  "caps": {
+    "diagnostic_bytes": 4096,
+    "evidence_pytest_overhead_seconds": 30,
+    "final_stop_seconds": 20,
+    "history_bytes_each": 2097152,
+    "history_poll_interval_ms": 100,
+    "job_seconds": 600,
+    "mission_records": 3,
+    "nodes": 7,
+    "observation_cleanup_seconds": 40,
+    "observer_events": 512,
+    "pack_admitted_commands": 18,
+    "private_evidence_total_bytes": 27262976,
+    "production_commands_per_mission": 6,
+    "projection_total_bytes": 262144,
+    "query_poll_interval_ms": 100,
+    "raw_history_total_bytes": 14680064,
+    "result_bytes": 16384,
+    "retained_history_snapshots": 7,
+    "rpc_observer_wait_seconds": 3,
+    "rpc_operation_records": 64,
+    "rpc_timeout_seconds": 2,
+    "seed_bytes": 256,
+    "service_step_seconds": 240,
+    "state_bytes": 16384,
+    "summary_bytes": 8192,
+    "trace_bytes": 262144,
+    "whole_scenario_seconds": 150,
+    "wire_envelope_bytes": 4096
+  },
+  "evidence_class": "FABRICATED_UNIT_DATA",
+  "mission_order": [
+    "hosted-normal",
+    "hosted-reconcile",
+    "hosted-no-ref-cancel"
+  ],
+  "required_nodes": [
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_real_a_to_b_and_original_receipts",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_quiescent_worker_replacement_preserves_state",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_recorded_history_replay_has_no_activity_execution",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_original_put_reconciliation_never_reexecutes_a",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_unknown_without_reference_blocks_b",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_cancellation_keeps_unadmitted_b_closed",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_duplicate_and_stale_updates_consume_no_allowance"
+  ],
+  "schema_version": "opendot.temporal.dag2-hosted-oracles.v1",
+  "source_closure": [
+    ".github/workflows/temporal-server.yml",
+    "AGENTS.md",
+    "ci/acquire_temporal_cli.py",
+    "ci/requirements.txt",
+    "ci/run_temporal_server_gate.py",
+    "ci/temporal-batch-nodes.txt",
+    "ci/temporal-dag-recovery-nodes.txt",
+    "ci/temporal-real-batch-nodes.txt",
+    "ci/temporal-sdk-requirements.txt",
+    "ci/temporal-server-nodes.txt",
+    "ci/verify_temporal_server_gate.py",
+    "docs/decisions/004-temporal-reference-transport.md",
+    "docs/decisions/008-fixed-dependent-temporal-recovery.md",
+    "docs/temporal-batch-qualification.md",
+    "docs/temporal-reference-transport.md",
+    "pyproject.toml",
+    "src/opendot_engineering/__init__.py",
+    "src/opendot_engineering/adapters/__init__.py",
+    "src/opendot_engineering/adapters/source_audit.py",
+    "src/opendot_engineering/adapters/temporal_activity.py",
+    "src/opendot_engineering/adapters/temporal_workflow.py",
+    "src/opendot_engineering/core/__init__.py",
+    "src/opendot_engineering/core/artifacts.py",
+    "src/opendot_engineering/core/contracts.py",
+    "src/opendot_engineering/tool_runtime.py",
+    "tests/acceptance/temporal_dag_recovery_gate.py",
+    "tests/acceptance/temporal_real_batch_gate.py",
+    "tests/acceptance/temporal_server_gate.py",
+    "tests/test_a2a_worker_turn.py",
+    "tests/test_temporal_activity_contract.py",
+    "tests/test_temporal_cli_acquisition.py",
+    "tests/test_temporal_dag_recovery.py",
+    "tests/test_temporal_server_gate_verifier.py",
+    "tests/test_temporal_server_harness_unit.py",
+    "tests/test_temporal_transport_owner_boundaries.py",
+    "tests/test_temporal_workflow_contract.py"
+  ],
+  "status": "DESIGN_ONLY_NOT_EXECUTED",
+  "traces": [
+    {
+      "commands": [
+        "A.execute",
+        "A.normal_inspect",
+        "B.execute",
+        "B.normal_inspect"
+      ],
+      "endpoint_reads": 5,
+      "final_revision": 9,
+      "final_status": "COMPLETED",
+      "handler_calls": 2,
+      "mission": "hosted-normal",
+      "replay": true,
+      "result_puts": 2,
+      "retained_originals": 2,
+      "revisions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "runtime_calls": 2,
+      "usage": {
+        "activity_commands_used": 4,
+        "execute_used": 2,
+        "normal_inspect_used": 2,
+        "reconcile_inspect_used": 0,
+        "result_bytes_reserved": 32768
+      },
+      "worker_generations": [
+        1,
+        2
+      ]
+    },
+    {
+      "accepted_A_revision": 6,
+      "commands": [
+        "A.execute",
+        "A.reconcile_inspect",
+        "B.execute",
+        "B.normal_inspect"
+      ],
+      "endpoint_reads": 5,
+      "final_revision": 10,
+      "final_status": "COMPLETED",
+      "handler_calls": 2,
+      "mission": "hosted-reconcile",
+      "queued_revision": 5,
+      "replay": true,
+      "result_puts": 2,
+      "retained_originals": 2,
+      "revisions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "runtime_calls": 2,
+      "unknown_revision": 4,
+      "usage": {
+        "activity_commands_used": 4,
+        "execute_used": 2,
+        "normal_inspect_used": 1,
+        "reconcile_inspect_used": 1,
+        "result_bytes_reserved": 32768
+      },
+      "worker_generations": [
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "commands": [
+        "A.execute"
+      ],
+      "endpoint_reads": 1,
+      "final_revision": 5,
+      "final_status": "STOPPED_WITH_UNKNOWN",
+      "handler_calls": 1,
+      "mission": "hosted-no-ref-cancel",
+      "replay": false,
+      "result_puts": 1,
+      "retained_originals": 0,
+      "revisions": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "runtime_calls": 1,
+      "unknown_revision": 4,
+      "usage": {
+        "activity_commands_used": 1,
+        "execute_used": 1,
+        "normal_inspect_used": 0,
+        "reconcile_inspect_used": 0,
+        "result_bytes_reserved": 32768
+      },
+      "worker_generations": [
+        7,
+        8
+      ]
+    }
+  ],
+  "unmaterialized_gates": [
+    "Final integration tree/commit complete manifest and exact source closure digests must be independently reviewed after materialization; no current value is an acceptance substitute.",
+    "Final unit collection counts and nodes must be measured before YAML count freeze. Existing DAG SDK count is 314 and remains unchanged.",
+    "Final workflow bytes/digest must be fixed before verifier literal is independently set.",
+    "Actual GitHub run/ref/attempt/commit/tree/workflow readback is mandatory after later authorized dispatch."
+  ]
+}
+''')
+
+DAG2_TEST_POSITIVE = json.loads(r'''
+{
+  "actual_service_derived_fields_policy": "Actual run IDs, receipt IDs, timings, histories and hashes are observed at execution and cross-bound. These independent unit literals never serve as live expectations.",
+  "evidence_class": "FABRICATED_UNIT_DATA",
+  "fixtures": {
+    "hosted-no-ref-cancel": {
+      "completion_payload": {
+        "admission_closed": true,
+        "cancel_requested": true,
+        "deadline_unix_ms": 1790975103000,
+        "device_control_authority": false,
+        "external_effect_authenticity": "NOT_PROVED",
+        "independent_review": "NOT_EVALUATED",
+        "mission_id": "hosted-no-ref-cancel",
+        "mission_status": "STOPPED_WITH_UNKNOWN",
+        "namespace": "default",
+        "nodes": {
+          "A": {
+            "accepted_result_ref": null,
+            "candidate_result_ref": null,
+            "effect_id": "sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+            "execute_reserved": true,
+            "inspect_reserved": 0,
+            "normal_inspect_reserved": false,
+            "parent_result_ref": null,
+            "reason_code": "CANCELLED",
+            "reconcile_inspect_reserved": false,
+            "status": "UNKNOWN"
+          },
+          "B": {
+            "accepted_result_ref": null,
+            "candidate_result_ref": null,
+            "effect_id": null,
+            "execute_reserved": false,
+            "inspect_reserved": 0,
+            "normal_inspect_reserved": false,
+            "parent_result_ref": null,
+            "reason_code": "CANCELLED",
+            "reconcile_inspect_reserved": false,
+            "status": "CANCELLED_BEFORE_ADMISSION"
+          }
+        },
+        "owner_integration": "NOT_EVALUATED",
+        "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+        "profile": "synthetic.dependent_sum.v1",
+        "resources": {
+          "activity_command_limit": 6,
+          "activity_commands_used": 1,
+          "execute_limit": 2,
+          "execute_used": 1,
+          "normal_inspect_limit": 2,
+          "normal_inspect_used": 0,
+          "reconcile_inspect_limit": 2,
+          "reconcile_inspect_used": 0,
+          "result_bytes_reserved": 32768
+        },
+        "revision": 5,
+        "run_id": "33333333-3333-4333-8333-333333333333",
+        "schema_version": "opendot.temporal.dag-state.v1",
+        "scientific_validity": false,
+        "seed_ref": {
+          "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "integrity_verified": false,
+          "mime_type": "application/json",
+          "producer": "opendot.temporal.dag-seed.v1",
+          "schema_version": "1.0.0",
+          "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "size_bytes": 40,
+          "source_refs": [],
+          "task_id": "seed",
+          "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+        },
+        "termination_status": "NOT_ESTABLISHED",
+        "workflow_id": "opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+      },
+      "completion_payload_sha256": "0ba0a4f02034e0960eb944d571507c73cfafb646ecb0d989a440969f29aa4302",
+      "mission_id": "hosted-no-ref-cancel",
+      "namespace": "default",
+      "no_ref": {
+        "adapter_returns": 1,
+        "cas_discovery_attempts": 0,
+        "handler_returns": 1,
+        "origin_record": "NOT_RETAINED",
+        "original_body": "NOT_RETAINED",
+        "original_digest": "NOT_RETAINED",
+        "original_reference": "NOT_RETAINED",
+        "recovery_reference_reads": 0,
+        "result_puts": 1
+      },
+      "originals": {},
+      "run_id": "33333333-3333-4333-8333-333333333333",
+      "server_command_projection": [
+        {
+          "activity_id": "dag2-execute-bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+          "attempt": 1,
+          "effect_id": "sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+          "kind": "execute",
+          "node": "A",
+          "scheduled_event_id": 10,
+          "started_event_id": 11,
+          "terminal_event_id": 12,
+          "terminal_type": "ActivityTaskFailed"
+        }
+      ],
+      "start": {
+        "mission_id": "hosted-no-ref-cancel",
+        "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+        "schema_version": "opendot.temporal.dag-start.v1",
+        "seed_ref": {
+          "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "integrity_verified": false,
+          "mime_type": "application/json",
+          "producer": "opendot.temporal.dag-seed.v1",
+          "schema_version": "1.0.0",
+          "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "size_bytes": 40,
+          "source_refs": [],
+          "task_id": "seed",
+          "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+        }
+      },
+      "states": [
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975103000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-no-ref-cancel\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":0,\"execute_limit\":2,\"execute_used\":0,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":1,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975103000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-no-ref-cancel",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 0,
+              "execute_limit": 2,
+              "execute_used": 0,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 1,
+            "run_id": "33333333-3333-4333-8333-333333333333",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "2fbd98ddfef79ebd9341b3d60529a5b77b158bb3e56a25e3e8c16505ab69ef3f"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975103000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-no-ref-cancel\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTE_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"RESERVED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975103000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-no-ref-cancel",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTE_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "RESERVED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 2,
+            "run_id": "33333333-3333-4333-8333-333333333333",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "c2f20d48e46e5c363ddf38b052994bde3dc601dbc315dd2871e99304ee2a87cb"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975103000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-no-ref-cancel\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTING\",\"reconcile_inspect_reserved\":false,\"status\":\"EXECUTING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":3,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975103000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-no-ref-cancel",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTING",
+                "reconcile_inspect_reserved": false,
+                "status": "EXECUTING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 3,
+            "run_id": "33333333-3333-4333-8333-333333333333",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "2445d4339c9a024d1c60c5754b885aa0849e8a023f44d47c043ecaa8a4cc3d70"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975103000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-no-ref-cancel\",\"mission_status\":\"PAUSED_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTION_UNKNOWN\",\"reconcile_inspect_reserved\":false,\"status\":\"UNKNOWN\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":4,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": true,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975103000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-no-ref-cancel",
+            "mission_status": "PAUSED_UNKNOWN",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTION_UNKNOWN",
+                "reconcile_inspect_reserved": false,
+                "status": "UNKNOWN"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 4,
+            "run_id": "33333333-3333-4333-8333-333333333333",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "64456310f7ba602a30dd1f85fa181f8de30902373ab330a5d4ea4458966d5292"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":true,\"cancel_requested\":true,\"deadline_unix_ms\":1790975103000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-no-ref-cancel\",\"mission_status\":\"STOPPED_WITH_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"CANCELLED\",\"reconcile_inspect_reserved\":false,\"status\":\"UNKNOWN\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"CANCELLED\",\"reconcile_inspect_reserved\":false,\"status\":\"CANCELLED_BEFORE_ADMISSION\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":5,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": true,
+            "cancel_requested": true,
+            "deadline_unix_ms": 1790975103000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-no-ref-cancel",
+            "mission_status": "STOPPED_WITH_UNKNOWN",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "CANCELLED",
+                "reconcile_inspect_reserved": false,
+                "status": "UNKNOWN"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "CANCELLED",
+                "reconcile_inspect_reserved": false,
+                "status": "CANCELLED_BEFORE_ADMISSION"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 5,
+            "run_id": "33333333-3333-4333-8333-333333333333",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "0ba0a4f02034e0960eb944d571507c73cfafb646ecb0d989a440969f29aa4302"
+        }
+      ],
+      "task_queue": "opendot-dag2-1001-1-hosted-no-ref-cancel",
+      "workflow_id": "opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+    },
+    "hosted-normal": {
+      "completion_payload": {
+        "admission_closed": true,
+        "cancel_requested": false,
+        "deadline_unix_ms": 1790975101000,
+        "device_control_authority": false,
+        "external_effect_authenticity": "NOT_PROVED",
+        "independent_review": "NOT_EVALUATED",
+        "mission_id": "hosted-normal",
+        "mission_status": "COMPLETED",
+        "namespace": "default",
+        "nodes": {
+          "A": {
+            "accepted_result_ref": {
+              "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "size_bytes": 2219,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+              "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+            },
+            "candidate_result_ref": {
+              "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "size_bytes": 2219,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+              "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+            },
+            "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+            "execute_reserved": true,
+            "inspect_reserved": 1,
+            "normal_inspect_reserved": true,
+            "parent_result_ref": null,
+            "reason_code": "RESULT_VERIFIED",
+            "reconcile_inspect_reserved": false,
+            "status": "ACCEPTED"
+          },
+          "B": {
+            "accepted_result_ref": {
+              "artifact_id": "sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+              "size_bytes": 2783,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+              ],
+              "task_id": "f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+              "uri": "artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99"
+            },
+            "candidate_result_ref": {
+              "artifact_id": "sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+              "size_bytes": 2783,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+              ],
+              "task_id": "f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+              "uri": "artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99"
+            },
+            "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+            "execute_reserved": true,
+            "inspect_reserved": 1,
+            "normal_inspect_reserved": true,
+            "parent_result_ref": {
+              "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "size_bytes": 2219,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+              "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+            },
+            "reason_code": "RESULT_VERIFIED",
+            "reconcile_inspect_reserved": false,
+            "status": "ACCEPTED"
+          }
+        },
+        "owner_integration": "NOT_EVALUATED",
+        "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+        "profile": "synthetic.dependent_sum.v1",
+        "resources": {
+          "activity_command_limit": 6,
+          "activity_commands_used": 4,
+          "execute_limit": 2,
+          "execute_used": 2,
+          "normal_inspect_limit": 2,
+          "normal_inspect_used": 2,
+          "reconcile_inspect_limit": 2,
+          "reconcile_inspect_used": 0,
+          "result_bytes_reserved": 32768
+        },
+        "revision": 9,
+        "run_id": "11111111-1111-4111-8111-111111111111",
+        "schema_version": "opendot.temporal.dag-state.v1",
+        "scientific_validity": false,
+        "seed_ref": {
+          "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "integrity_verified": false,
+          "mime_type": "application/json",
+          "producer": "opendot.temporal.dag-seed.v1",
+          "schema_version": "1.0.0",
+          "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "size_bytes": 40,
+          "source_refs": [],
+          "task_id": "seed",
+          "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+        },
+        "termination_status": "NOT_ESTABLISHED",
+        "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+      },
+      "completion_payload_sha256": "364a62b9e72aaf29577e1655f55d1b05a451db7dfd41935d88c8bc1b2677fb05",
+      "mission_id": "hosted-normal",
+      "namespace": "default",
+      "originals": {
+        "A": {
+          "body": {
+            "activity_id": "dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+            "device_control_authority": false,
+            "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+            "independent_review": "NOT_EVALUATED",
+            "input_payload_sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+            "mission_id": "hosted-normal",
+            "namespace": "default",
+            "node_id": "A",
+            "observation_provenance": "serialized_runtime_report_not_live_proof",
+            "output": 5,
+            "owner_integration": "NOT_EVALUATED",
+            "parent_result_ref": null,
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "receipt_report": {
+              "attempts": 1,
+              "breaker_state": "closed",
+              "call_id": "000000000000000000000003",
+              "error_type": null,
+              "execution_liveness": {},
+              "execution_observation": {
+                "dispatcher_pid": 101,
+                "execution_id": "00000000000000000000000000000003",
+                "execution_kind": "in_process",
+                "input_sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "read_only_declared": true,
+                "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+                "review_target_sha256": null,
+                "worker_pid": 101
+              },
+              "input_hash": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "latency_s": 0.0,
+              "output_hash": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+              "semantic_valid": true,
+              "status": "COMPLETED",
+              "tool_id": "synthetic.bounded_sum",
+              "tool_version": "1"
+            },
+            "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+            "schema_version": "opendot.temporal.dag-result.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "11111111-1111-4111-8111-111111111111"
+          },
+          "body_sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+          "canonical_body_utf8": "{\"activity_id\":\"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"device_control_authority\":false,\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"mission_id\":\"hosted-normal\",\"namespace\":\"default\",\"node_id\":\"A\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":5,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":null,\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000003\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":101,\"execution_id\":\"00000000000000000000000000000003\",\"execution_kind\":\"in_process\",\"input_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":101},\"input_hash\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"latency_s\":0.0,\"output_hash\":\"ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"11111111-1111-4111-8111-111111111111\"}",
+          "origin": {
+            "capture_phase": "original_put_return_before_response",
+            "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+            "execution_activity_id": "dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+            "mission_id": "hosted-normal",
+            "namespace": "default",
+            "node_id": "A",
+            "origin_kind": "trusted-single-operator-synthetic-put-observer",
+            "original_result_ref": {
+              "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "size_bytes": 2219,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+              "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+            },
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "schema_version": "opendot.temporal.dag-origin.v1",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "11111111-1111-4111-8111-111111111111"
+          },
+          "origin_sha256": "d92e6d4d7b3bf6936dd0d1e6e0c9b3f20b9fb9fb643b5c44e5c3ddb0c3a23d8c",
+          "receipt_sha256": "4872fee41110f2dba3493bb20e791f08ffdb400639fcefb04cbfe6a9093369ad",
+          "reference": {
+            "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+            "size_bytes": 2219,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            ],
+            "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+            "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+          }
+        },
+        "B": {
+          "body": {
+            "activity_id": "dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+            "device_control_authority": false,
+            "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+            "independent_review": "NOT_EVALUATED",
+            "input_payload_sha256": "6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a",
+            "mission_id": "hosted-normal",
+            "namespace": "default",
+            "node_id": "B",
+            "observation_provenance": "serialized_runtime_report_not_live_proof",
+            "output": 6,
+            "owner_integration": "NOT_EVALUATED",
+            "parent_result_ref": {
+              "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+              "size_bytes": 2219,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+              "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+            },
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "receipt_report": {
+              "attempts": 1,
+              "breaker_state": "closed",
+              "call_id": "000000000000000000000004",
+              "error_type": null,
+              "execution_liveness": {},
+              "execution_observation": {
+                "dispatcher_pid": 102,
+                "execution_id": "00000000000000000000000000000004",
+                "execution_kind": "in_process",
+                "input_sha256": "6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a",
+                "read_only_declared": true,
+                "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+                "review_target_sha256": null,
+                "worker_pid": 102
+              },
+              "input_hash": "6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a",
+              "latency_s": 0.0,
+              "output_hash": "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683",
+              "semantic_valid": true,
+              "status": "COMPLETED",
+              "tool_id": "synthetic.bounded_sum",
+              "tool_version": "1"
+            },
+            "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+            "schema_version": "opendot.temporal.dag-result.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "11111111-1111-4111-8111-111111111111"
+          },
+          "body_sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+          "canonical_body_utf8": "{\"activity_id\":\"dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"device_control_authority\":false,\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"mission_id\":\"hosted-normal\",\"namespace\":\"default\",\"node_id\":\"B\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":6,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000004\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":102,\"execution_id\":\"00000000000000000000000000000004\",\"execution_kind\":\"in_process\",\"input_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":102},\"input_hash\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"latency_s\":0.0,\"output_hash\":\"e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"11111111-1111-4111-8111-111111111111\"}",
+          "origin": {
+            "capture_phase": "original_put_return_before_response",
+            "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+            "execution_activity_id": "dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+            "mission_id": "hosted-normal",
+            "namespace": "default",
+            "node_id": "B",
+            "origin_kind": "trusted-single-operator-synthetic-put-observer",
+            "original_result_ref": {
+              "artifact_id": "sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+              "size_bytes": 2783,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+              ],
+              "task_id": "f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+              "uri": "artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99"
+            },
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "schema_version": "opendot.temporal.dag-origin.v1",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "11111111-1111-4111-8111-111111111111"
+          },
+          "origin_sha256": "e0aa131d8d2f1b60136c9a8fc2187c9ac59ac5a41f833a445a9744a9c075a907",
+          "receipt_sha256": "8d3630ff2b71878d832c1034cfcd890071b2836e21a01e3bb87513df977fbf73",
+          "reference": {
+            "artifact_id": "sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+            "size_bytes": 2783,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+            ],
+            "task_id": "f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+            "uri": "artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99"
+          }
+        }
+      },
+      "run_id": "11111111-1111-4111-8111-111111111111",
+      "server_command_projection": [
+        {
+          "activity_id": "dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+          "attempt": 1,
+          "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+          "kind": "execute",
+          "node": "A",
+          "scheduled_event_id": 10,
+          "started_event_id": 11,
+          "terminal_event_id": 12,
+          "terminal_type": "ActivityTaskCompleted"
+        },
+        {
+          "activity_id": "dag2-inspect-normal-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+          "attempt": 1,
+          "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+          "kind": "normal_inspect",
+          "node": "A",
+          "scheduled_event_id": 20,
+          "started_event_id": 21,
+          "terminal_event_id": 22,
+          "terminal_type": "ActivityTaskCompleted"
+        },
+        {
+          "activity_id": "dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+          "attempt": 1,
+          "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+          "kind": "execute",
+          "node": "B",
+          "scheduled_event_id": 30,
+          "started_event_id": 31,
+          "terminal_event_id": 32,
+          "terminal_type": "ActivityTaskCompleted"
+        },
+        {
+          "activity_id": "dag2-inspect-normal-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+          "attempt": 1,
+          "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+          "kind": "normal_inspect",
+          "node": "B",
+          "scheduled_event_id": 40,
+          "started_event_id": 41,
+          "terminal_event_id": 42,
+          "terminal_type": "ActivityTaskCompleted"
+        }
+      ],
+      "start": {
+        "mission_id": "hosted-normal",
+        "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+        "schema_version": "opendot.temporal.dag-start.v1",
+        "seed_ref": {
+          "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "integrity_verified": false,
+          "mime_type": "application/json",
+          "producer": "opendot.temporal.dag-seed.v1",
+          "schema_version": "1.0.0",
+          "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "size_bytes": 40,
+          "source_refs": [],
+          "task_id": "seed",
+          "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+        }
+      },
+      "states": [
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":0,\"execute_limit\":2,\"execute_used\":0,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":1,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 0,
+              "execute_limit": 2,
+              "execute_used": 0,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 1,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "21e66bc8db3854ae30cad482cfff9ce7c85dda35be610b31216635a0635d00ca"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTE_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"RESERVED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTE_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "RESERVED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 2,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "e64a7ae44216809ddcac7f106f3677f653bf169a2d0f2bd3147f82a8b6a7b6d2"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTING\",\"reconcile_inspect_reserved\":false,\"status\":\"EXECUTING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":3,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTING",
+                "reconcile_inspect_reserved": false,
+                "status": "EXECUTING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 3,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "b966d79f36352e168abeef02467de7871fcab9869c9cbe511cfbb4569d0c83ad"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":null,\"reason_code\":\"INSPECT_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"VERIFYING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":2,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":1,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":4,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": null,
+                "reason_code": "INSPECT_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "VERIFYING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 2,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 1,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 4,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "7b18e4392410a3c201190db243ea7202844a2d27edc27a2a42626d2406a96931"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":2,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":1,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":5,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": false,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 2,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 1,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 5,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "d08dbc46315080301c76f599d1377e4d705bfbc160171ccbb323282bca598a48"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"reason_code\":\"EXECUTE_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"RESERVED\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":3,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":1,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":6,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": false,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "reason_code": "EXECUTE_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "RESERVED"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 3,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 1,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 6,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "8c53f49295df72bfd2cd60b7a8ea0b512decc46a70239c05094886478c842636"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"reason_code\":\"EXECUTING\",\"reconcile_inspect_reserved\":false,\"status\":\"EXECUTING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":3,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":1,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":7,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": false,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "reason_code": "EXECUTING",
+                "reconcile_inspect_reserved": false,
+                "status": "EXECUTING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 3,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 1,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 7,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "8983412e052039f59f43714644d22ff21296a69dcb75a920c198bf8b9a7ab86a"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":{\"artifact_id\":\"sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"],\"task_id\":\"f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"uri\":\"artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\"},\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"reason_code\":\"INSPECT_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"VERIFYING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":4,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":2,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":8,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": false,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+                  "size_bytes": 2783,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                    "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                  ],
+                  "task_id": "f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                  "uri": "artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99"
+                },
+                "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "reason_code": "INSPECT_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "VERIFYING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 4,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 2,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 8,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "95c26a3db5d8398e27193d807f89cc44ca5e505a8f741e959e6ed02f6921725d"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"COMPLETED\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"],\"task_id\":\"f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"uri\":\"artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"],\"task_id\":\"f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"uri\":\"artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\"},\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":4,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":2,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":9,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": true,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975101000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-normal",
+            "mission_status": "COMPLETED",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": false,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+                  "size_bytes": 2783,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                    "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                  ],
+                  "task_id": "f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                  "uri": "artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+                  "size_bytes": 2783,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                    "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                  ],
+                  "task_id": "f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                  "uri": "artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99"
+                },
+                "effect_id": "sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+                  "size_bytes": 2219,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+                  "uri": "artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f"
+                },
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": false,
+                "status": "ACCEPTED"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 4,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 2,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 9,
+            "run_id": "11111111-1111-4111-8111-111111111111",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "364a62b9e72aaf29577e1655f55d1b05a451db7dfd41935d88c8bc1b2677fb05"
+        }
+      ],
+      "task_queue": "opendot-dag2-1001-1-hosted-normal",
+      "workflow_id": "opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+    },
+    "hosted-reconcile": {
+      "accepted_update_result": {
+        "accepted_result_ref": {
+          "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+          "integrity_verified": false,
+          "mime_type": "application/json",
+          "producer": "opendot.temporal.dag-result.v1",
+          "schema_version": "1.0.0",
+          "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+          "size_bytes": 2225,
+          "source_refs": [
+            "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+          ],
+          "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+        },
+        "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+        "mission_status": "RUNNING",
+        "node_id": "A",
+        "reason_code": "RESULT_VERIFIED",
+        "revision": 6,
+        "schema_version": "opendot.temporal.dag-reconciliation.v1",
+        "status": "ACCEPTED"
+      },
+      "completion_payload": {
+        "admission_closed": true,
+        "cancel_requested": false,
+        "deadline_unix_ms": 1790975102000,
+        "device_control_authority": false,
+        "external_effect_authenticity": "NOT_PROVED",
+        "independent_review": "NOT_EVALUATED",
+        "mission_id": "hosted-reconcile",
+        "mission_status": "COMPLETED",
+        "namespace": "default",
+        "nodes": {
+          "A": {
+            "accepted_result_ref": {
+              "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "size_bytes": 2225,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+              "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+            },
+            "candidate_result_ref": {
+              "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "size_bytes": 2225,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+              "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+            },
+            "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "execute_reserved": true,
+            "inspect_reserved": 1,
+            "normal_inspect_reserved": false,
+            "parent_result_ref": null,
+            "reason_code": "RESULT_VERIFIED",
+            "reconcile_inspect_reserved": true,
+            "status": "ACCEPTED"
+          },
+          "B": {
+            "accepted_result_ref": {
+              "artifact_id": "sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+              "size_bytes": 2789,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+              ],
+              "task_id": "aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+              "uri": "artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b"
+            },
+            "candidate_result_ref": {
+              "artifact_id": "sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+              "size_bytes": 2789,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+              ],
+              "task_id": "aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+              "uri": "artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b"
+            },
+            "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+            "execute_reserved": true,
+            "inspect_reserved": 1,
+            "normal_inspect_reserved": true,
+            "parent_result_ref": {
+              "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "size_bytes": 2225,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+              "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+            },
+            "reason_code": "RESULT_VERIFIED",
+            "reconcile_inspect_reserved": false,
+            "status": "ACCEPTED"
+          }
+        },
+        "owner_integration": "NOT_EVALUATED",
+        "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+        "profile": "synthetic.dependent_sum.v1",
+        "resources": {
+          "activity_command_limit": 6,
+          "activity_commands_used": 4,
+          "execute_limit": 2,
+          "execute_used": 2,
+          "normal_inspect_limit": 2,
+          "normal_inspect_used": 1,
+          "reconcile_inspect_limit": 2,
+          "reconcile_inspect_used": 1,
+          "result_bytes_reserved": 32768
+        },
+        "revision": 10,
+        "run_id": "22222222-2222-4222-8222-222222222222",
+        "schema_version": "opendot.temporal.dag-state.v1",
+        "scientific_validity": false,
+        "seed_ref": {
+          "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "integrity_verified": false,
+          "mime_type": "application/json",
+          "producer": "opendot.temporal.dag-seed.v1",
+          "schema_version": "1.0.0",
+          "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "size_bytes": 40,
+          "source_refs": [],
+          "task_id": "seed",
+          "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+        },
+        "termination_status": "NOT_ESTABLISHED",
+        "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+      },
+      "completion_payload_sha256": "77759d7808f514ec59e3cef688bbe521e1b1b5ea379fce0ba495b21778998740",
+      "mission_id": "hosted-reconcile",
+      "namespace": "default",
+      "originals": {
+        "A": {
+          "body": {
+            "activity_id": "dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "device_control_authority": false,
+            "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "independent_review": "NOT_EVALUATED",
+            "input_payload_sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+            "mission_id": "hosted-reconcile",
+            "namespace": "default",
+            "node_id": "A",
+            "observation_provenance": "serialized_runtime_report_not_live_proof",
+            "output": 5,
+            "owner_integration": "NOT_EVALUATED",
+            "parent_result_ref": null,
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "receipt_report": {
+              "attempts": 1,
+              "breaker_state": "closed",
+              "call_id": "000000000000000000000005",
+              "error_type": null,
+              "execution_liveness": {},
+              "execution_observation": {
+                "dispatcher_pid": 101,
+                "execution_id": "00000000000000000000000000000005",
+                "execution_kind": "in_process",
+                "input_sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "read_only_declared": true,
+                "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+                "review_target_sha256": null,
+                "worker_pid": 101
+              },
+              "input_hash": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "latency_s": 0.0,
+              "output_hash": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+              "semantic_valid": true,
+              "status": "COMPLETED",
+              "tool_id": "synthetic.bounded_sum",
+              "tool_version": "1"
+            },
+            "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+            "schema_version": "opendot.temporal.dag-result.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "22222222-2222-4222-8222-222222222222"
+          },
+          "body_sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+          "canonical_body_utf8": "{\"activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"device_control_authority\":false,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"mission_id\":\"hosted-reconcile\",\"namespace\":\"default\",\"node_id\":\"A\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":5,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":null,\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000005\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":101,\"execution_id\":\"00000000000000000000000000000005\",\"execution_kind\":\"in_process\",\"input_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":101},\"input_hash\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"latency_s\":0.0,\"output_hash\":\"ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"22222222-2222-4222-8222-222222222222\"}",
+          "origin": {
+            "capture_phase": "original_put_return_before_response",
+            "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "execution_activity_id": "dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "mission_id": "hosted-reconcile",
+            "namespace": "default",
+            "node_id": "A",
+            "origin_kind": "trusted-single-operator-synthetic-put-observer",
+            "original_result_ref": {
+              "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "size_bytes": 2225,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+              "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+            },
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "schema_version": "opendot.temporal.dag-origin.v1",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "22222222-2222-4222-8222-222222222222"
+          },
+          "origin_sha256": "3538846a70d663771b55eb51c152562ac02c7f01ec182d5742cdade1bd9129c8",
+          "receipt_sha256": "ddb85b678842e45c8ba8d35ea6c3cbde2f90ac0e5c0c0225373e5336e7ca4ad9",
+          "reference": {
+            "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "size_bytes": 2225,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            ],
+            "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+          }
+        },
+        "B": {
+          "body": {
+            "activity_id": "dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+            "device_control_authority": false,
+            "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+            "independent_review": "NOT_EVALUATED",
+            "input_payload_sha256": "6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a",
+            "mission_id": "hosted-reconcile",
+            "namespace": "default",
+            "node_id": "B",
+            "observation_provenance": "serialized_runtime_report_not_live_proof",
+            "output": 6,
+            "owner_integration": "NOT_EVALUATED",
+            "parent_result_ref": {
+              "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+              "size_bytes": 2225,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+              ],
+              "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+              "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+            },
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "receipt_report": {
+              "attempts": 1,
+              "breaker_state": "closed",
+              "call_id": "000000000000000000000006",
+              "error_type": null,
+              "execution_liveness": {},
+              "execution_observation": {
+                "dispatcher_pid": 102,
+                "execution_id": "00000000000000000000000000000006",
+                "execution_kind": "in_process",
+                "input_sha256": "6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a",
+                "read_only_declared": true,
+                "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+                "review_target_sha256": null,
+                "worker_pid": 102
+              },
+              "input_hash": "6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a",
+              "latency_s": 0.0,
+              "output_hash": "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683",
+              "semantic_valid": true,
+              "status": "COMPLETED",
+              "tool_id": "synthetic.bounded_sum",
+              "tool_version": "1"
+            },
+            "registration_sha256": "5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3",
+            "schema_version": "opendot.temporal.dag-result.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "22222222-2222-4222-8222-222222222222"
+          },
+          "body_sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+          "canonical_body_utf8": "{\"activity_id\":\"dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"device_control_authority\":false,\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"mission_id\":\"hosted-reconcile\",\"namespace\":\"default\",\"node_id\":\"B\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":6,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000006\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":102,\"execution_id\":\"00000000000000000000000000000006\",\"execution_kind\":\"in_process\",\"input_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":102},\"input_hash\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"latency_s\":0.0,\"output_hash\":\"e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"22222222-2222-4222-8222-222222222222\"}",
+          "origin": {
+            "capture_phase": "original_put_return_before_response",
+            "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+            "execution_activity_id": "dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+            "mission_id": "hosted-reconcile",
+            "namespace": "default",
+            "node_id": "B",
+            "origin_kind": "trusted-single-operator-synthetic-put-observer",
+            "original_result_ref": {
+              "artifact_id": "sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-result.v1",
+              "schema_version": "1.0.0",
+              "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+              "size_bytes": 2789,
+              "source_refs": [
+                "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+              ],
+              "task_id": "aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+              "uri": "artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b"
+            },
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "schema_version": "opendot.temporal.dag-origin.v1",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "workflow_run_id": "22222222-2222-4222-8222-222222222222"
+          },
+          "origin_sha256": "08417850c8b0814a08277a3d784d06c5ed04f3b0aed4088f98c801e463dcda4d",
+          "receipt_sha256": "0762f8295be9329d2529db5adfb96c4c79a0d23858f0f2dcaee60546502426fb",
+          "reference": {
+            "artifact_id": "sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+            "size_bytes": 2789,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+            ],
+            "task_id": "aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+            "uri": "artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b"
+          }
+        }
+      },
+      "run_id": "22222222-2222-4222-8222-222222222222",
+      "server_command_projection": [
+        {
+          "activity_id": "dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "attempt": 1,
+          "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "kind": "execute",
+          "node": "A",
+          "scheduled_event_id": 10,
+          "started_event_id": 11,
+          "terminal_event_id": 12,
+          "terminal_type": "ActivityTaskFailed"
+        },
+        {
+          "activity_id": "dag2-inspect-reconcile-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "attempt": 1,
+          "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "kind": "reconcile_inspect",
+          "node": "A",
+          "scheduled_event_id": 20,
+          "started_event_id": 21,
+          "terminal_event_id": 22,
+          "terminal_type": "ActivityTaskCompleted"
+        },
+        {
+          "activity_id": "dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+          "attempt": 1,
+          "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+          "kind": "execute",
+          "node": "B",
+          "scheduled_event_id": 30,
+          "started_event_id": 31,
+          "terminal_event_id": 32,
+          "terminal_type": "ActivityTaskCompleted"
+        },
+        {
+          "activity_id": "dag2-inspect-normal-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+          "attempt": 1,
+          "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+          "kind": "normal_inspect",
+          "node": "B",
+          "scheduled_event_id": 40,
+          "started_event_id": 41,
+          "terminal_event_id": 42,
+          "terminal_type": "ActivityTaskCompleted"
+        }
+      ],
+      "start": {
+        "mission_id": "hosted-reconcile",
+        "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+        "schema_version": "opendot.temporal.dag-start.v1",
+        "seed_ref": {
+          "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "integrity_verified": false,
+          "mime_type": "application/json",
+          "producer": "opendot.temporal.dag-seed.v1",
+          "schema_version": "1.0.0",
+          "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+          "size_bytes": 40,
+          "source_refs": [],
+          "task_id": "seed",
+          "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+        }
+      },
+      "states": [
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":0,\"execute_limit\":2,\"execute_used\":0,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":1,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 0,
+              "execute_limit": 2,
+              "execute_used": 0,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 1,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "e009ac55d3b8bcba51c9fd41f9df4a2daddcd1b387b5d4628a36dd7fb3fd0f34"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTE_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"RESERVED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTE_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "RESERVED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 2,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "e6aa1f1075770b0e833288f42b58358fc435506b04b43ad83d7a517eeb085f89"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTING\",\"reconcile_inspect_reserved\":false,\"status\":\"EXECUTING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":3,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTING",
+                "reconcile_inspect_reserved": false,
+                "status": "EXECUTING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 3,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "bf172effc3251b2a4c4264b57276edf1e5e9f667edb1fc2bdd8dee7050e3c5c1"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"PAUSED_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTION_UNKNOWN\",\"reconcile_inspect_reserved\":false,\"status\":\"UNKNOWN\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":4,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": true,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "PAUSED_UNKNOWN",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "EXECUTION_UNKNOWN",
+                "reconcile_inspect_reserved": false,
+                "status": "UNKNOWN"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 1,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 0,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 4,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "e9eacaaee7bede5bd69b3c49f561d308480bc61b9b6f1b41c0b9c5f7a0c54f28"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"PAUSED_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RECONCILE_RESERVED\",\"reconcile_inspect_reserved\":true,\"status\":\"VERIFYING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":2,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":5,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": true,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "PAUSED_UNKNOWN",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "RECONCILE_RESERVED",
+                "reconcile_inspect_reserved": true,
+                "status": "VERIFYING"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": null,
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 2,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 1,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 5,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "e2a0b4ef26c4ef57bdc1561186ea0671fd563e2c67e67f4dba4bfd5367bdfc03"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":true,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":2,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":6,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": true,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                "execute_reserved": false,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "reason_code": "NOT_ADMITTED",
+                "reconcile_inspect_reserved": false,
+                "status": "WAITING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 2,
+              "execute_limit": 2,
+              "execute_used": 1,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 1,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 6,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "7e9da6c2591fa7c59080bd5e74805488265fcf5f2d3c29602f7540715f25d5b7"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":true,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"reason_code\":\"EXECUTE_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"RESERVED\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":3,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":7,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": true,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "reason_code": "EXECUTE_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "RESERVED"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 3,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 1,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 7,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "f8524196121ab7cb32dab570d357ea14473da4cd5c79bcf0d9408cebb0db87aa"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":true,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"reason_code\":\"EXECUTING\",\"reconcile_inspect_reserved\":false,\"status\":\"EXECUTING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":3,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":8,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": true,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": null,
+                "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                "execute_reserved": true,
+                "inspect_reserved": 0,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "reason_code": "EXECUTING",
+                "reconcile_inspect_reserved": false,
+                "status": "EXECUTING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 3,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 0,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 1,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 8,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "43d821ef8e3c975b78eaa3b9af4c14cf21978e03332c9634d8a2afe2531a4872"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":false,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"RUNNING\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":true,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":{\"artifact_id\":\"sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"],\"task_id\":\"aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"uri\":\"artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\"},\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"reason_code\":\"INSPECT_RESERVED\",\"reconcile_inspect_reserved\":false,\"status\":\"VERIFYING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":4,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":1,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":9,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": false,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "RUNNING",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": true,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": null,
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+                  "size_bytes": 2789,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                    "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                  ],
+                  "task_id": "aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                  "uri": "artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b"
+                },
+                "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "reason_code": "INSPECT_RESERVED",
+                "reconcile_inspect_reserved": false,
+                "status": "VERIFYING"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 4,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 1,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 1,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 9,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "689143047e22ee82e7b49cb621ab9ba1292fa0fac721d37e1109db4555db62a0"
+        },
+        {
+          "canonical_state_utf8": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"COMPLETED\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":true,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"],\"task_id\":\"aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"uri\":\"artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"],\"task_id\":\"aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"uri\":\"artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\"},\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":4,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":1,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":10,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+          "state": {
+            "admission_closed": true,
+            "cancel_requested": false,
+            "deadline_unix_ms": 1790975102000,
+            "device_control_authority": false,
+            "external_effect_authenticity": "NOT_PROVED",
+            "independent_review": "NOT_EVALUATED",
+            "mission_id": "hosted-reconcile",
+            "mission_status": "COMPLETED",
+            "namespace": "default",
+            "nodes": {
+              "A": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": false,
+                "parent_result_ref": null,
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": true,
+                "status": "ACCEPTED"
+              },
+              "B": {
+                "accepted_result_ref": {
+                  "artifact_id": "sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+                  "size_bytes": 2789,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                    "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                  ],
+                  "task_id": "aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                  "uri": "artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b"
+                },
+                "candidate_result_ref": {
+                  "artifact_id": "sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+                  "size_bytes": 2789,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+                    "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                  ],
+                  "task_id": "aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                  "uri": "artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b"
+                },
+                "effect_id": "sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2",
+                "execute_reserved": true,
+                "inspect_reserved": 1,
+                "normal_inspect_reserved": true,
+                "parent_result_ref": {
+                  "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "integrity_verified": false,
+                  "mime_type": "application/json",
+                  "producer": "opendot.temporal.dag-result.v1",
+                  "schema_version": "1.0.0",
+                  "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+                  "size_bytes": 2225,
+                  "source_refs": [
+                    "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+                  ],
+                  "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+                  "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+                },
+                "reason_code": "RESULT_VERIFIED",
+                "reconcile_inspect_reserved": false,
+                "status": "ACCEPTED"
+              }
+            },
+            "owner_integration": "NOT_EVALUATED",
+            "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+            "profile": "synthetic.dependent_sum.v1",
+            "resources": {
+              "activity_command_limit": 6,
+              "activity_commands_used": 4,
+              "execute_limit": 2,
+              "execute_used": 2,
+              "normal_inspect_limit": 2,
+              "normal_inspect_used": 1,
+              "reconcile_inspect_limit": 2,
+              "reconcile_inspect_used": 1,
+              "result_bytes_reserved": 32768
+            },
+            "revision": 10,
+            "run_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": "opendot.temporal.dag-state.v1",
+            "scientific_validity": false,
+            "seed_ref": {
+              "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "integrity_verified": false,
+              "mime_type": "application/json",
+              "producer": "opendot.temporal.dag-seed.v1",
+              "schema_version": "1.0.0",
+              "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+              "size_bytes": 40,
+              "source_refs": [],
+              "task_id": "seed",
+              "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            },
+            "termination_status": "NOT_ESTABLISHED",
+            "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+          },
+          "state_sha256": "77759d7808f514ec59e3cef688bbe521e1b1b5ea379fce0ba495b21778998740"
+        }
+      ],
+      "task_queue": "opendot-dag2-1001-1-hosted-reconcile",
+      "updates": {
+        "distinct_busy": {
+          "candidate_result_ref": {
+            "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "size_bytes": 2225,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            ],
+            "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+          },
+          "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "expected_revision": 4,
+          "node_id": "A",
+          "original_evidence_sha256": "3538846a70d663771b55eb51c152562ac02c7f01ec182d5742cdade1bd9129c8",
+          "original_result_sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+          "schema_version": "opendot.temporal.dag-reconcile.v1"
+        },
+        "original": {
+          "candidate_result_ref": {
+            "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "size_bytes": 2225,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            ],
+            "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+          },
+          "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "expected_revision": 4,
+          "node_id": "A",
+          "original_evidence_sha256": "3538846a70d663771b55eb51c152562ac02c7f01ec182d5742cdade1bd9129c8",
+          "original_result_sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+          "schema_version": "opendot.temporal.dag-reconcile.v1"
+        },
+        "same_id_repeat": {
+          "candidate_result_ref": {
+            "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "size_bytes": 2225,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            ],
+            "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+          },
+          "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "expected_revision": 4,
+          "node_id": "A",
+          "original_evidence_sha256": "3538846a70d663771b55eb51c152562ac02c7f01ec182d5742cdade1bd9129c8",
+          "original_result_sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+          "schema_version": "opendot.temporal.dag-reconcile.v1"
+        },
+        "stale": {
+          "candidate_result_ref": {
+            "artifact_id": "sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "integrity_verified": false,
+            "mime_type": "application/json",
+            "producer": "opendot.temporal.dag-result.v1",
+            "schema_version": "1.0.0",
+            "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+            "size_bytes": 2225,
+            "source_refs": [
+              "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+            ],
+            "task_id": "b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+            "uri": "artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608"
+          },
+          "effect_id": "sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd",
+          "expected_revision": 3,
+          "node_id": "A",
+          "original_evidence_sha256": "3538846a70d663771b55eb51c152562ac02c7f01ec182d5742cdade1bd9129c8",
+          "original_result_sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+          "schema_version": "opendot.temporal.dag-reconcile.v1"
+        }
+      },
+      "workflow_id": "opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63"
+    }
+  },
+  "not_a_hosted_evidence_pack": true,
+  "raw_extraction_component_fixture": {
+    "component_only_not_complete_history": true,
+    "decoded_payload": {
+      "effect_id": "sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+      "mission_id": "hosted-normal",
+      "node_id": "A",
+      "parent_result_ref": null,
+      "plan_sha256": "19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63",
+      "schema_version": "opendot.temporal.dag-step.v1",
+      "seed_ref": {
+        "artifact_id": "sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+        "integrity_verified": false,
+        "mime_type": "application/json",
+        "producer": "opendot.temporal.dag-seed.v1",
+        "schema_version": "1.0.0",
+        "sha256": "897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02",
+        "size_bytes": 40,
+        "source_refs": [],
+        "task_id": "seed",
+        "uri": "artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02"
+      }
+    },
+    "extracted_projection": [
+      {
+        "event_id": 10,
+        "event_type": "ActivityTaskScheduled",
+        "extracted": {
+          "activity_id": "dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30",
+          "activity_type": "opendot.synthetic.dependent-step.v1",
+          "maximum_attempts": 1,
+          "payload_sha256": "033748dd346dc2f91786f8aa70240e45bf69293d0b484e8cf40e725ea84c20f7",
+          "schedule_to_close_timeout": "60s",
+          "start_to_close_timeout": "10s",
+          "task_queue": "opendot-dag2-1001-1-hosted-normal",
+          "workflow_task_completed_event_id": 9
+        }
+      }
+    ],
+    "raw_history_sha256": "1ea780eb3f86501886d1dd8433a87232e0f62be45b07e0913ea148cffd592ae3",
+    "raw_history_utf8": "{\"events\":[{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6MTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsIm1pc3Npb25faWQiOiJob3N0ZWQtbm9ybWFsIiwibm9kZV9pZCI6IkEiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"},\"workflowTaskCompletedEventId\":\"9\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"}]}"
+  },
+  "raw_sdk_history_replay": "NOT_EXECUTED",
+  "schema_version": "opendot.temporal.dag2-hosted-positive-literals.v1",
+  "status": "NOT_EXECUTED"
+}
+''')
+
+DAG2_TEST_CATALOG = json.loads(r'''
+{
+  "error_codes": [
+    "BOOTSTRAP_MISMATCH",
+    "CANCEL_MISMATCH",
+    "CANCEL_SCOPE",
+    "CAUSAL_ORDER",
+    "CI_IDENTITY",
+    "CLAIM_MISMATCH",
+    "CLEANUP_UNCONFIRMED",
+    "COLLECTION_MISMATCH",
+    "COUNTER_MISMATCH",
+    "DEADLINE_EXHAUSTED",
+    "DEPENDENCY_VIOLATION",
+    "HISTORY_LINKAGE",
+    "HISTORY_MISMATCH",
+    "HISTORY_PAYLOAD",
+    "HISTORY_PROJECTION_MISMATCH",
+    "HOSTED_ORIGIN_UNAUTHENTICATED",
+    "INTERNAL_ERROR",
+    "INVALID_JSON",
+    "INVALID_SCHEMA",
+    "INVALID_TYPE",
+    "INVALID_VALUE",
+    "JUNIT_IDENTITY",
+    "MISSING_EVIDENCE",
+    "NOT_RUN",
+    "NO_REF_REDISCOVERY",
+    "OK",
+    "ORIGINAL_MUTATED",
+    "ORIGIN_MISMATCH",
+    "ORIGIN_ORDER",
+    "OWNER_MISMATCH",
+    "PIN_MISMATCH",
+    "PREFLIGHT_FAILED",
+    "PRIVACY_REJECTED",
+    "PROFILE_MISMATCH",
+    "READ_FAILED",
+    "REPLAY_MISMATCH",
+    "REQUIRED_NODES",
+    "RESOURCE_MISMATCH",
+    "RESULT_INVALID",
+    "RPC_RESUBMITTED",
+    "RPC_UNCONFIRMED",
+    "RUN_BINDING",
+    "SIZE_LIMIT",
+    "SOURCE_MISMATCH",
+    "TEST_FAILED",
+    "TEST_SKIPPED",
+    "UPDATE_MISMATCH",
+    "VERSION_MISMATCH",
+    "WORKFLOW_MISMATCH",
+    "WRITE_FAILED"
+  ],
+  "evidence_class": "FABRICATED_UNIT_DATA",
+  "fabricated_identity": {
+    "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "repository": "opendot-fixture/example",
+    "run_attempt": 1,
+    "run_id": 1001,
+    "run_ids": [
+      "11111111-1111-4111-8111-111111111111",
+      "22222222-2222-4222-8222-222222222222",
+      "33333333-3333-4333-8333-333333333333"
+    ],
+    "run_url": "https://github.com/opendot-fixture/example/actions/runs/1001/attempts/1",
+    "tree": "cccccccccccccccccccccccccccccccccccccccc",
+    "workflow_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "fixture_owner": "tests/test_temporal_server_gate_verifier.py",
+  "fixture_semantics": [
+    "Each one-edit mutation is applied independently to its named valid fabricated baseline, with literal replacement values exactly as listed.",
+    "Each vector freezes its exact expected first rejection code. The existing verifier test owner must assert that code and rejection boundary; do not weaken fixtures to any-failure acceptance. Field-specific validation may map a schema/type refusal to the frozen code without accepting the field.",
+    "Ordering swaps are literal pairs of named causal facts in fabricated traces; they never reorder actual service events or manufacture observations.",
+    "No fabricated record has access to the external acceptance authorization decision.",
+    "validation_intent is an exact test invocation selector outside evidence. UNIT_RECORD_CONSISTENCY permits FABRICATED_UNIT_DATA as consistent unit data only; HOSTED_CANDIDATE_ADMISSION rejects that class. EXTERNAL_ORIGIN_GATE_UNTRUSTED_INPUT proves that caller-supplied JSON/env/readback labels never grant origin. No local verifier entry point can return HOSTED_REAL_SERVICE_ACCEPTED. Root must independently inspect actual GitHub output; no fabricated positive origin acceptance exists."
+  ],
+  "harness_fixture_owner": "tests/test_temporal_server_harness_unit.py",
+  "negative_cases": [
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HOSTED_ORIGIN_UNAUTHENTICATED",
+      "fixture_id": "unit-cannot-be-hosted",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/evidence_class",
+        "value": "FABRICATED_UNIT_DATA"
+      },
+      "rejection_boundary": "hosted_candidate_admission",
+      "validation_intent": "HOSTED_CANDIDATE_ADMISSION"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "INVALID_VALUE",
+      "fixture_id": "invented-class",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/evidence_class",
+        "value": "HOSTED_REAL_SERVICE"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HOSTED_ORIGIN_UNAUTHENTICATED",
+      "fixture_id": "forged-github-env",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "external_readback/retrieved_via",
+        "value": "GITHUB_ENVIRONMENT"
+      },
+      "rejection_boundary": "external_origin_gate",
+      "validation_intent": "EXTERNAL_ORIGIN_GATE_UNTRUSTED_INPUT"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HOSTED_ORIGIN_UNAUTHENTICATED",
+      "fixture_id": "json-self-attestation",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "external_readback/retrieved_via",
+        "value": "SELF_REPORTED_JSON"
+      },
+      "rejection_boundary": "external_origin_gate",
+      "validation_intent": "EXTERNAL_ORIGIN_GATE_UNTRUSTED_INPUT"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SOURCE_MISMATCH",
+      "fixture_id": "wrong-commit",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/identity/commit",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SOURCE_MISMATCH",
+      "fixture_id": "wrong-tree",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/identity/tree",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "WORKFLOW_MISMATCH",
+      "fixture_id": "wrong-workflow-hash",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/identity/workflow_sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CI_IDENTITY",
+      "fixture_id": "wrong-attempt",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/identity/run_attempt",
+        "value": 2
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PROFILE_MISMATCH",
+      "fixture_id": "wrong-profile",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/identity/qualification",
+        "value": "reference"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PROFILE_MISMATCH",
+      "fixture_id": "dag2-pr-event",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/identity/event",
+        "value": "pull_request"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PROFILE_MISMATCH",
+      "fixture_id": "retention-for-dag2",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/identity/retain_public_evidence",
+        "value": true
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HOSTED_ORIGIN_UNAUTHENTICATED",
+      "fixture_id": "missing-actual-readback",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "external_readback",
+        "value": null
+      },
+      "rejection_boundary": "external_origin_gate",
+      "validation_intent": "EXTERNAL_ORIGIN_GATE_UNTRUSTED_INPUT"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CI_IDENTITY",
+      "fixture_id": "remote-not-completed",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "external_readback/run_status",
+        "value": "in_progress"
+      },
+      "rejection_boundary": "external_origin_gate",
+      "validation_intent": "EXTERNAL_ORIGIN_GATE_UNTRUSTED_INPUT"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CI_IDENTITY",
+      "fixture_id": "remote-job-failed",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "external_readback/job_conclusion",
+        "value": "failure"
+      },
+      "rejection_boundary": "external_origin_gate",
+      "validation_intent": "EXTERNAL_ORIGIN_GATE_UNTRUSTED_INPUT"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PIN_MISMATCH",
+      "fixture_id": "wrong-plan",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/plan_sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PIN_MISMATCH",
+      "fixture_id": "wrong-adr",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/adr008_sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "VERSION_MISMATCH",
+      "fixture_id": "mutable-default-dependency",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/sdk_version",
+        "value": "1.34.1"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "VERSION_MISMATCH",
+      "fixture_id": "wrong-cli",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/cli_version",
+        "value": "1.9.2"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "VERSION_MISMATCH",
+      "fixture_id": "wrong-server",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/server_version",
+        "value": "1.32.1"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PREFLIGHT_FAILED",
+      "fixture_id": "proxy-enabled",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/effective_proxy_refused",
+        "value": false
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SOURCE_MISMATCH",
+      "fixture_id": "dirty-source",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/source_after_sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "OWNER_MISMATCH",
+      "fixture_id": "old-adapter-pin",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "source_closure/activity_sha256",
+        "value": "cd2c277266239e57c10cb5aab743052f3322acf75be1d48156d715cef6fae5ae"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "BOOTSTRAP_MISMATCH",
+      "fixture_id": "constructor-unbound-run",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/bootstrap/0/run_id",
+        "value": ""
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "BOOTSTRAP_MISMATCH",
+      "fixture_id": "bootstrap-foreign-run",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/bootstrap/0/run_id",
+        "value": "22222222-2222-4222-8222-222222222222"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "BOOTSTRAP_MISMATCH",
+      "fixture_id": "bootstrap-mutable",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/bootstrap/0/immutable_config",
+        "value": false
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "BOOTSTRAP_MISMATCH",
+      "fixture_id": "bootstrap-eager-start",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/bootstrap/0/request_eager_start",
+        "value": true
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESOURCE_MISMATCH",
+      "fixture_id": "two-activity-slots",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/bootstrap/0/activity_slots",
+        "value": 2
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESOURCE_MISMATCH",
+      "fixture_id": "two-executor-threads",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/bootstrap/0/activity_executor_threads",
+        "value": 2
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "OWNER_MISMATCH",
+      "fixture_id": "wrong-runtime-registration",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "environment/bootstrap/0/registration_sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "preflight",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "ORIGIN_MISMATCH",
+      "fixture_id": "candidate-populates-origin",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/0/origin/origin_kind",
+        "value": "update-candidate-copy"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "ORIGIN_ORDER",
+      "fixture_id": "origin-capture-phase-late",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/0/origin/capture_phase",
+        "value": "after_update"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "ORIGIN_MISMATCH",
+      "fixture_id": "foreign-original-run",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/0/origin/workflow_run_id",
+        "value": "22222222-2222-4222-8222-222222222222"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "ORIGINAL_MUTATED",
+      "fixture_id": "origin-body-replaced",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/0/body/sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "wrong-original-size",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/0/reference/size_bytes",
+        "value": 16385
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESULT_INVALID",
+      "fixture_id": "receipt-uppercase-breaker",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "retained_body/receipt_report/breaker_state",
+        "value": "CLOSED"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESULT_INVALID",
+      "fixture_id": "receipt-wrong-input",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "retained_body/receipt_report/input_hash",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESULT_INVALID",
+      "fixture_id": "receipt-wrong-output",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "retained_body/receipt_report/output_hash",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESULT_INVALID",
+      "fixture_id": "receipt-transport-only",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "retained_body/receipt_report/status",
+        "value": "FAILED"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESULT_INVALID",
+      "fixture_id": "result-self-consistent-wrong-output",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "retained_body/output",
+        "value": 7
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESULT_INVALID",
+      "fixture_id": "result-null",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "retained_body/output",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "NO_REF_REDISCOVERY",
+      "fixture_id": "no-ref-recovered-origin",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/no_ref/origin_record",
+        "value": "RECOVERED"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "NO_REF_REDISCOVERY",
+      "fixture_id": "no-ref-cas-scan",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/no_ref/cas_discovery_attempts",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "NO_REF_REDISCOVERY",
+      "fixture_id": "no-ref-body-read",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "originals/no_ref/recovery_reference_reads",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RESOURCE_MISMATCH",
+      "fixture_id": "no-ref-b-execute",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "no_ref_final/resources/execute_used",
+        "value": 2
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "DEPENDENCY_VIOLATION",
+      "fixture_id": "no-ref-b-accepted",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "no_ref_final/nodes/B/status",
+        "value": "ACCEPTED"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_MISMATCH",
+      "fixture_id": "activity-attempt-two",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/commands/0/attempt",
+        "value": 2
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_MISMATCH",
+      "fixture_id": "activity-wrong-timeout",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/commands/0/start_to_close_seconds",
+        "value": 11
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RPC_UNCONFIRMED",
+      "fixture_id": "unresolved-rpc-forgotten",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/rpc_operations/0/settled_seq",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RUN_BINDING",
+      "fixture_id": "follow-new-run",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/rpc_operations/0/follow_runs",
+        "value": true
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RPC_RESUBMITTED",
+      "fixture_id": "application-start-retry",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/rpc_operations/0/application_submissions",
+        "value": 2
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REPLAY_MISMATCH",
+      "fixture_id": "replay-failure",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "replays/0/replay_failure",
+        "value": "nondeterminism"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REPLAY_MISMATCH",
+      "fixture_id": "replay-new-projection",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "replays/0/replayer_input_sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REPLAY_MISMATCH",
+      "fixture_id": "replay-has-activity-worker",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "replays/0/activity_worker_count",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REPLAY_MISMATCH",
+      "fixture_id": "replay-runtime-entry",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "replays/0/counts_after/runtime_entries",
+        "value": 3
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REPLAY_MISMATCH",
+      "fixture_id": "replay-cas-read",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "replays/0/counts_after/endpoint_cas_reads",
+        "value": 6
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "UPDATE_MISMATCH",
+      "fixture_id": "stale-update-reads-cas",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/updates/0/endpoint_read_delta",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "UPDATE_MISMATCH",
+      "fixture_id": "stale-update-changes-revision",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/updates/0/post_revision",
+        "value": 5
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "UPDATE_MISMATCH",
+      "fixture_id": "same-id-extra-reservation",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/updates/2/reservation_delta",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "UPDATE_MISMATCH",
+      "fixture_id": "same-id-changed-payload",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/updates/2/request_sha256",
+        "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "UPDATE_MISMATCH",
+      "fixture_id": "busy-wire-reason-invented",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/updates/3/actual_error_details",
+        "value": "INSPECTION_BUSY"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "UPDATE_MISMATCH",
+      "fixture_id": "sdk-stage-with-no-history-acceptance",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/updates/1/accepted_event_id",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CANCEL_MISMATCH",
+      "fixture_id": "cancel-not-recorded",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "no_ref_final/cancel_requested",
+        "value": false
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CANCEL_MISMATCH",
+      "fixture_id": "cancel-extra-request",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/workflow_handle_cancel_calls",
+        "value": 2
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CANCEL_SCOPE",
+      "fixture_id": "generic-cleanup-cancel",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/force_or_task_cancellation_calls",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "missing-worker-stop",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/public_worker_shutdown_calls",
+        "value": 7
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "extra-worker-stop",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/public_worker_shutdown_calls",
+        "value": 9
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "missing-executor-completion",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/activity_executor_shutdown_calls",
+        "value": 3
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "worker-stop-in-flight",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/in_flight_calls",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "worker-stop-rpc-pending",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/pending_rpc_tasks",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "worker-stop-update-pending",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/accepted_updates_unfinished",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "handler-return-missing",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/handler_returns",
+        "value": 4
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLEANUP_UNCONFIRMED",
+      "fixture_id": "server-exit-nonzero",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/server_exit_code",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "DEADLINE_EXHAUSTED",
+      "fixture_id": "scenario-deadline-overflow",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/scenario_elapsed_ms",
+        "value": 150001
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "DEADLINE_EXHAUSTED",
+      "fixture_id": "cleanup-deadline-reset",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/observation_cleanup_elapsed_ms",
+        "value": 40001
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "DEADLINE_EXHAUSTED",
+      "fixture_id": "final-stops-overflow",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/final_stop_elapsed_ms",
+        "value": 20001
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "extra-seed-put",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/aggregate_counts/seed_puts",
+        "value": 4
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "a-reexecuted",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/aggregate_counts/runtime_entries",
+        "value": 6
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "extra-result-put",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/aggregate_counts/result_puts",
+        "value": 6
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "inspector-runtime-call",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/aggregate_counts/runtime_entries",
+        "value": 6
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "endpoint-read-count-wrong",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/aggregate_counts/endpoint_cas_reads",
+        "value": 12
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "observer-added-read",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/aggregate_counts/observer_cas_reads",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "NO_REF_REDISCOVERY",
+      "fixture_id": "verification-read-no-ref",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/aggregate_counts/verification_cas_reads",
+        "value": 5
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "INVALID_TYPE",
+      "fixture_id": "integer-bool",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/public_worker_shutdown_calls",
+        "value": true
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "INVALID_TYPE",
+      "fixture_id": "integer-float",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "cleanup/public_worker_shutdown_calls",
+        "value": 8.0
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "TEST_SKIPPED",
+      "fixture_id": "skip-is-not-pass",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "summary/skipped_nodes",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "TEST_FAILED",
+      "fixture_id": "xfail-is-not-pass",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "summary/xfail_nodes",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COLLECTION_MISMATCH",
+      "fixture_id": "missing-collected-node",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "summary/collected_nodes",
+        "value": 6
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "INVALID_VALUE",
+      "fixture_id": "failure-summary-fabricates-counts",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "failure_summary/count_evidence",
+        "value": "EXPECTED_COUNTS_ASSUMED"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "unavailable-counts-nonzero",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "failure_summary/passed_nodes",
+        "value": 7
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PRIVACY_REJECTED",
+      "fixture_id": "private-path-file-id",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/snapshots/0/history/file_id",
+        "value": "../../private.json"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLAIM_MISMATCH",
+      "fixture_id": "unexpected-science-claim",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "summary/claims/scientific_validity",
+        "value": true
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CLAIM_MISMATCH",
+      "fixture_id": "physical-termination-claim",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "summary/claims/termination_status",
+        "value": "ESTABLISHED"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "INVALID_SCHEMA",
+      "fixture_id": "extra-field",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "add",
+        "target": "environment",
+        "value": {
+          "authorization": "approved"
+        }
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PRIVACY_REJECTED",
+      "fixture_id": "nested-private-field",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "add",
+        "target": "summary/claims",
+        "value": {
+          "path": "/private/cas"
+        }
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "PRIVACY_REJECTED",
+      "fixture_id": "raw-exception-leak",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "add",
+        "target": "diagnostic/primary_failure",
+        "value": {
+          "exception": "private exception text"
+        }
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SOURCE_MISMATCH",
+      "fixture_id": "missing-source-path",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "remove",
+        "target": "environment/source_closure/0",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SOURCE_MISMATCH",
+      "fixture_id": "duplicate-source-path",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "duplicate",
+        "target": "environment/source_closure/0",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REQUIRED_NODES",
+      "fixture_id": "duplicate-node",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "duplicate",
+        "target": "required_nodes/0",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REQUIRED_NODES",
+      "fixture_id": "reordered-nodes",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "swap",
+        "target": "required_nodes",
+        "value": [
+          0,
+          1
+        ]
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "REQUIRED_NODES",
+      "fixture_id": "unexpected-node",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "required_nodes/0",
+        "value": "tests/acceptance/temporal_server_gate.py::test_real_received_metadata_and_valid_output"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "JUNIT_IDENTITY",
+      "fixture_id": "junit-wrong-identity",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "junit/node_ids/0",
+        "value": "tests/acceptance/other.py::test_fake"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_LINKAGE",
+      "fixture_id": "duplicate-history-event",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "duplicate",
+        "target": "raw_history/events/0",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_MISMATCH",
+      "fixture_id": "unknown-history-event",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "raw_history/events/0/eventType",
+        "value": "EVENT_TYPE_UNRECOGNIZED"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "RUN_BINDING",
+      "fixture_id": "history-foreign-run",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "raw_history/events/0/workflowExecutionStartedEventAttributes/originalExecutionRunId",
+        "value": "22222222-2222-4222-8222-222222222222"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "COUNTER_MISMATCH",
+      "fixture_id": "extra-command",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "duplicate",
+        "target": "trace/commands/0",
+        "value": null
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "INVALID_VALUE",
+      "fixture_id": "unknown-observer-kind",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/events/0/kind",
+        "value": "arbitrary_callback"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "ORIGIN_ORDER",
+      "fixture_id": "put-captured-after-update",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "swap",
+        "target": "causal_order",
+        "value": [
+          "origin_capture",
+          "update_submit"
+        ]
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "ORIGIN_ORDER",
+      "fixture_id": "bootstrap-after-update",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "swap",
+        "target": "causal_order",
+        "value": [
+          "bootstrap_constructed",
+          "update_submit"
+        ]
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "BOOTSTRAP_MISMATCH",
+      "fixture_id": "bootstrap-after-first-schedule",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "swap",
+        "target": "causal_order",
+        "value": [
+          "bootstrap_constructed",
+          "worker_start"
+        ]
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "DEPENDENCY_VIOLATION",
+      "fixture_id": "b-before-a-acceptance",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "swap",
+        "target": "history_order",
+        "value": [
+          "A.accepted",
+          "B.scheduled"
+        ]
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_LINKAGE",
+      "fixture_id": "queued-inspection-started-before-worker",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "swap",
+        "target": "causal_order",
+        "value": [
+          "replacement_activity_worker_start",
+          "reconcile_activity_entry"
+        ]
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CAUSAL_ORDER",
+      "fixture_id": "observer-sequence-duplicate",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/events/1/seq",
+        "value": 1
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "CAUSAL_ORDER",
+      "fixture_id": "observer-clock-regresses",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "trace/events/1/monotonic_ns",
+        "value": 0
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "history-size-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-byte-count",
+        "target": "raw_history_serialized_bytes",
+        "value": 2097153
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "event-count-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-count",
+        "target": "trace/events",
+        "value": 513
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "trace-size-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-byte-count",
+        "target": "trace_serialized_bytes",
+        "value": 262145
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "aggregate-evidence-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "known_evidence_total_bytes",
+        "value": 27262977
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "projection-size-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "projection_total_bytes",
+        "value": 262145
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "rpc-operation-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-count",
+        "target": "trace/rpc_operations",
+        "value": 65
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "raw-result-size-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-byte-count",
+        "target": "retained_body_serialized_bytes",
+        "value": 16385
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "wire-size-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-byte-count",
+        "target": "wire_envelope_serialized_bytes",
+        "value": 4097
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "state-size-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-byte-count",
+        "target": "state_serialized_bytes",
+        "value": 16385
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "SIZE_LIMIT",
+      "fixture_id": "seed-size-cap",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "repeat-byte-count",
+        "target": "seed_serialized_bytes",
+        "value": 257
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "WRITE_FAILED",
+      "fixture_id": "write-unconfirmed",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "diagnostic/audit_failure",
+        "value": {
+          "code": "WRITE_FAILED",
+          "phase": "evidence_write"
+        }
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_PROJECTION_MISMATCH",
+      "fixture_id": "raw-history-projection-disagreement",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "raw_history/events/0/activityTaskScheduledEventAttributes/activityId",
+        "value": "dag2-execute-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_PAYLOAD",
+      "fixture_id": "base64-noncanonical",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "raw_history/events/0/activityTaskScheduledEventAttributes/input/payloads/0/data",
+        "value": "not-base64!"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_PAYLOAD",
+      "fixture_id": "payload-wrong-encoding",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "raw_history/events/0/activityTaskScheduledEventAttributes/input/payloads/0/metadata/encoding",
+        "value": "YmluYXJ5L3BsYWlu"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_MISMATCH",
+      "fixture_id": "unknown-raw-event-field",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "raw_history/events/0/unexpected",
+        "value": "private"
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "evidence_class": "FABRICATED_UNIT_DATA",
+      "expected_code": "HISTORY_PAYLOAD",
+      "fixture_id": "raw-payload-mismatch",
+      "may_produce_hosted_acceptance": false,
+      "may_start_service": false,
+      "mutation": {
+        "operation": "replace",
+        "target": "raw_history/events/0/activityTaskScheduledEventAttributes/input/payloads/0/data",
+        "value": "e30="
+      },
+      "rejection_boundary": "record_validation",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    }
+  ],
+  "positive_cases": [
+    {
+      "expected": "UNIT_RECORD_VALID",
+      "fixture_id": "normal-success",
+      "oracle": "hosted-normal",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "expected": "UNIT_RECORD_VALID",
+      "fixture_id": "reconcile-success",
+      "oracle": "hosted-reconcile",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "expected": "UNIT_RECORD_VALID",
+      "fixture_id": "no-ref-cancel-success",
+      "oracle": "hosted-no-ref-cancel",
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "expected": "UNIT_RECORD_VALID",
+      "fixture_id": "normal-schedule-observed-after-entry",
+      "observer_order": [
+        "activity_enter",
+        "adapter_return",
+        "activity_terminal_observed"
+      ],
+      "server_event_id_order": [
+        "scheduled",
+        "started",
+        "terminal"
+      ],
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "expected": "UNIT_RECORD_VALID",
+      "fixture_id": "sdk-validator-returned-handle",
+      "steps": [
+        "start_update_returns_handle",
+        "bounded_handle_result_raises_WorkflowUpdateFailedError",
+        "cause_ApplicationError_type_TemporalDagUpdateRejected_details_UPDATE_REFUSED"
+      ],
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "expected": "VALID_FAILURE_DIAGNOSTIC_ONLY",
+      "fixture_id": "missing-pytest-failure",
+      "summary": {
+        "activity_schedules_observed": 0,
+        "cleanup_status": "NOT_STARTED",
+        "collected_nodes": 0,
+        "count_evidence": "UNAVAILABLE",
+        "error_nodes": 0,
+        "expected_nodes": 7,
+        "failed_nodes": 0,
+        "hosted_acceptance": "REJECTED",
+        "missions_admitted": 0,
+        "passed_nodes": 0,
+        "record_validation": "FAIL",
+        "runtime_entries_observed": 0,
+        "skipped_nodes": 0
+      },
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "expected": "FAIL_PRESERVED_NO_RESUBMISSION",
+      "fixture_id": "late-rpc-settle-after-observer-timeout",
+      "steps": [
+        "issue_once",
+        "observer_timeout",
+        "admission_closed",
+        "retain_original_task",
+        "bounded_cleanup_observes_original_task"
+      ],
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    },
+    {
+      "counted_result_puts": 5,
+      "expected": "UNIT_RECORD_VALID",
+      "fixture_id": "four-retained-plus-one-counted",
+      "no_ref_cas_discovery": 0,
+      "retained_originals": 4,
+      "validation_intent": "UNIT_RECORD_CONSISTENCY"
+    }
+  ],
+  "schema_version": "opendot.temporal.dag2-hosted-negative-fixtures.v1",
+  "status": "DESIGN_ONLY_NOT_EXECUTED"
+}
+''')
+
+DAG2_TEST_RAW_RULES = json.loads(r'''
+{
+  "event_common_allowed_keys": [
+    "eventId",
+    "eventTime",
+    "eventType",
+    "version",
+    "taskId",
+    "workerMayIgnore",
+    "userMetadata",
+    "links",
+    "principal",
+    "eventGroupMarkers"
+  ],
+  "event_required_keys": [
+    "eventId",
+    "eventTime",
+    "eventType"
+  ],
+  "events": {
+    "ActivityTaskCompleted": {
+      "attribute_allowed_keys": [
+        "result",
+        "scheduledEventId",
+        "startedEventId",
+        "identity",
+        "workerVersion"
+      ],
+      "attribute_key": "activityTaskCompletedEventAttributes",
+      "enum": "EVENT_TYPE_ACTIVITY_TASK_COMPLETED",
+      "required_extracted_paths": {
+        "payload": "result",
+        "scheduled_event_id": "scheduledEventId",
+        "started_event_id": "startedEventId"
+      }
+    },
+    "ActivityTaskFailed": {
+      "attribute_allowed_keys": [
+        "failure",
+        "scheduledEventId",
+        "startedEventId",
+        "identity",
+        "retryState",
+        "workerVersion",
+        "cause"
+      ],
+      "attribute_key": "activityTaskFailedEventAttributes",
+      "enum": "EVENT_TYPE_ACTIVITY_TASK_FAILED",
+      "required_extracted_paths": {
+        "failure_type": "failure/applicationFailureInfo/type",
+        "non_retryable": "failure/applicationFailureInfo/nonRetryable",
+        "scheduled_event_id": "scheduledEventId",
+        "started_event_id": "startedEventId"
+      }
+    },
+    "ActivityTaskScheduled": {
+      "attribute_allowed_keys": [
+        "activityId",
+        "activityType",
+        "taskQueue",
+        "header",
+        "input",
+        "scheduleToCloseTimeout",
+        "scheduleToStartTimeout",
+        "startToCloseTimeout",
+        "heartbeatTimeout",
+        "workflowTaskCompletedEventId",
+        "retryPolicy",
+        "useWorkflowBuildId",
+        "priority"
+      ],
+      "attribute_key": "activityTaskScheduledEventAttributes",
+      "enum": "EVENT_TYPE_ACTIVITY_TASK_SCHEDULED",
+      "required_extracted_paths": {
+        "activity_id": "activityId",
+        "activity_type": "activityType/name",
+        "maximum_attempts": "retryPolicy/maximumAttempts",
+        "payload": "input",
+        "schedule_to_close_timeout": "scheduleToCloseTimeout",
+        "start_to_close_timeout": "startToCloseTimeout",
+        "task_queue": "taskQueue/name",
+        "workflow_task_completed_event_id": "workflowTaskCompletedEventId"
+      }
+    },
+    "ActivityTaskStarted": {
+      "attribute_allowed_keys": [
+        "scheduledEventId",
+        "identity",
+        "requestId",
+        "attempt",
+        "lastFailure",
+        "workerVersion",
+        "buildIdRedirectCounter"
+      ],
+      "attribute_key": "activityTaskStartedEventAttributes",
+      "enum": "EVENT_TYPE_ACTIVITY_TASK_STARTED",
+      "required_extracted_paths": {
+        "attempt": "attempt",
+        "scheduled_event_id": "scheduledEventId"
+      }
+    },
+    "TimerCanceled": {
+      "attribute_allowed_keys": [
+        "timerId",
+        "startedEventId",
+        "workflowTaskCompletedEventId",
+        "identity"
+      ],
+      "attribute_key": "timerCanceledEventAttributes",
+      "enum": "EVENT_TYPE_TIMER_CANCELED",
+      "required_extracted_paths": {
+        "started_event_id": "startedEventId",
+        "timer_id": "timerId",
+        "workflow_task_completed_event_id": "workflowTaskCompletedEventId"
+      }
+    },
+    "TimerFired": {
+      "attribute_allowed_keys": [
+        "timerId",
+        "startedEventId"
+      ],
+      "attribute_key": "timerFiredEventAttributes",
+      "enum": "EVENT_TYPE_TIMER_FIRED",
+      "required_extracted_paths": {
+        "started_event_id": "startedEventId",
+        "timer_id": "timerId"
+      }
+    },
+    "TimerStarted": {
+      "attribute_allowed_keys": [
+        "timerId",
+        "startToFireTimeout",
+        "workflowTaskCompletedEventId"
+      ],
+      "attribute_key": "timerStartedEventAttributes",
+      "enum": "EVENT_TYPE_TIMER_STARTED",
+      "required_extracted_paths": {
+        "timeout": "startToFireTimeout",
+        "timer_id": "timerId",
+        "workflow_task_completed_event_id": "workflowTaskCompletedEventId"
+      }
+    },
+    "WorkflowExecutionCancelRequested": {
+      "attribute_allowed_keys": [
+        "cause",
+        "externalInitiatedEventId",
+        "externalWorkflowExecution",
+        "identity"
+      ],
+      "attribute_key": "workflowExecutionCancelRequestedEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_EXECUTION_CANCEL_REQUESTED",
+      "required_extracted_paths": {}
+    },
+    "WorkflowExecutionCompleted": {
+      "attribute_allowed_keys": [
+        "result",
+        "workflowTaskCompletedEventId",
+        "newExecutionRunId"
+      ],
+      "attribute_key": "workflowExecutionCompletedEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_EXECUTION_COMPLETED",
+      "required_extracted_paths": {
+        "payload": "result",
+        "workflow_task_completed_event_id": "workflowTaskCompletedEventId"
+      }
+    },
+    "WorkflowExecutionStarted": {
+      "attribute_allowed_keys": [
+        "workflowType",
+        "parentWorkflowNamespace",
+        "parentWorkflowNamespaceId",
+        "parentWorkflowExecution",
+        "parentInitiatedEventId",
+        "taskQueue",
+        "input",
+        "workflowExecutionTimeout",
+        "workflowRunTimeout",
+        "workflowTaskTimeout",
+        "continuedExecutionRunId",
+        "initiator",
+        "continuedFailure",
+        "lastCompletionResult",
+        "originalExecutionRunId",
+        "identity",
+        "firstExecutionRunId",
+        "retryPolicy",
+        "attempt",
+        "workflowExecutionExpirationTime",
+        "cronSchedule",
+        "firstWorkflowTaskBackoff",
+        "memo",
+        "searchAttributes",
+        "prevAutoResetPoints",
+        "header",
+        "parentInitiatedEventVersion",
+        "workflowId",
+        "sourceVersionStamp",
+        "completionCallbacks",
+        "rootWorkflowExecution",
+        "inheritedBuildId",
+        "versioningOverride",
+        "parentPinnedWorkerDeploymentVersion",
+        "priority",
+        "inheritedPinnedVersion",
+        "inheritedAutoUpgradeInfo",
+        "eagerExecutionAccepted",
+        "declinedTargetVersionUpgrade",
+        "timeSkippingConfig",
+        "timeSkippingStatePropagation"
+      ],
+      "attribute_key": "workflowExecutionStartedEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_EXECUTION_STARTED",
+      "required_extracted_paths": {
+        "attempt": "attempt",
+        "execution_timeout": "workflowExecutionTimeout",
+        "first_run_id": "firstExecutionRunId",
+        "maximum_attempts": "retryPolicy/maximumAttempts",
+        "payload": "input",
+        "run_id": "originalExecutionRunId",
+        "run_timeout": "workflowRunTimeout",
+        "task_queue": "taskQueue/name",
+        "task_timeout": "workflowTaskTimeout",
+        "workflow_type": "workflowType/name"
+      }
+    },
+    "WorkflowExecutionUpdateAccepted": {
+      "attribute_allowed_keys": [
+        "protocolInstanceId",
+        "acceptedRequestMessageId",
+        "acceptedRequestSequencingEventId",
+        "acceptedRequest"
+      ],
+      "attribute_key": "workflowExecutionUpdateAcceptedEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ACCEPTED",
+      "required_extracted_paths": {
+        "accepted_request_sequencing_event_id": "acceptedRequestSequencingEventId",
+        "payload": "acceptedRequest/input/args",
+        "protocol_instance_id": "protocolInstanceId",
+        "update_id": "acceptedRequest/meta/updateId",
+        "update_name": "acceptedRequest/input/name"
+      }
+    },
+    "WorkflowExecutionUpdateCompleted": {
+      "attribute_allowed_keys": [
+        "meta",
+        "acceptedEventId",
+        "outcome"
+      ],
+      "attribute_key": "workflowExecutionUpdateCompletedEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_COMPLETED",
+      "required_extracted_paths": {
+        "accepted_event_id": "acceptedEventId",
+        "payload": "outcome/success",
+        "update_id": "meta/updateId"
+      }
+    },
+    "WorkflowTaskCompleted": {
+      "attribute_allowed_keys": [
+        "scheduledEventId",
+        "startedEventId",
+        "identity",
+        "binaryChecksum",
+        "workerVersion",
+        "sdkMetadata",
+        "meteringMetadata",
+        "deployment",
+        "versioningBehavior",
+        "workerDeploymentVersion",
+        "workerDeploymentName",
+        "deploymentVersion"
+      ],
+      "attribute_key": "workflowTaskCompletedEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
+      "required_extracted_paths": {
+        "scheduled_event_id": "scheduledEventId",
+        "started_event_id": "startedEventId"
+      }
+    },
+    "WorkflowTaskScheduled": {
+      "attribute_allowed_keys": [
+        "taskQueue",
+        "startToCloseTimeout",
+        "attempt"
+      ],
+      "attribute_key": "workflowTaskScheduledEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
+      "required_extracted_paths": {
+        "attempt": "attempt",
+        "task_queue": "taskQueue/name",
+        "task_timeout": "startToCloseTimeout"
+      }
+    },
+    "WorkflowTaskStarted": {
+      "attribute_allowed_keys": [
+        "scheduledEventId",
+        "identity",
+        "requestId",
+        "suggestContinueAsNew",
+        "suggestContinueAsNewReasons",
+        "targetWorkerDeploymentVersionChanged",
+        "historySizeBytes",
+        "workerVersion",
+        "buildIdRedirectCounter"
+      ],
+      "attribute_key": "workflowTaskStartedEventAttributes",
+      "enum": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
+      "required_extracted_paths": {
+        "scheduled_event_id": "scheduledEventId"
+      }
+    }
+  },
+  "events_max": 512,
+  "events_min": 1,
+  "extracted_exact_keys": "Exactly the keys of required_extracted_paths for that event; payload becomes payload_sha256 after strict decoding. No caller-supplied override.",
+  "integer_encoding": "Raw protobuf int64 IDs are decimal strings with pattern ^[1-9][0-9]{0,14}$; known int32 attempt/maximumAttempts are exact plain ints; reject bool/float. Convert IDs only into bounded plain ints for projection.",
+  "payload_contract": {
+    "data": "Strict canonical base64; decode to UTF-8 bytes, use existing duplicate-key-rejecting JSON decoder, validate exact ADR008 shape and canonical encoded byte cap; payload_sha256 is SHA-256 of canonical decoded plain value. Never use decoded data as authority or remote instructions.",
+    "encoding_literal": "anNvbi9wbGFpbg==",
+    "metadata_exact_keys": [
+      "encoding"
+    ],
+    "payload_count": 1,
+    "payload_exact_keys": [
+      "metadata",
+      "data"
+    ],
+    "wrapper_exact_keys": [
+      "payloads"
+    ]
+  },
+  "projected_event_exact_keys": [
+    "event_id",
+    "event_type",
+    "extracted"
+  ],
+  "root_allowed_keys": [
+    "events"
+  ],
+  "root_required_keys": [
+    "events"
+  ],
+  "schema_version": "opendot.temporal.dag2-raw-history-extraction.v1",
+  "sdk": "1.34.0",
+  "sdk_source_file_sha256": "a56f77261d45e0d04f5ac994fd6d6668e565159a70239438bc2b5443597b3753",
+  "trust_limit": "The stdlib verifier independently reconstructs and matches every closed extracted fact from retained raw bytes. General protobuf nested metadata not listed in extraction is interpreted only by the pinned SDK/harness and is not claimed independently checked by the stdlib verifier. Unknown root/event/per-event attribute keys are rejected using these frozen tables. No generic SDK parser is added."
+}
+''')
+
+DAG2_TEST_FILES = json.loads(r'''
+{
+  "aggregate_includes_manifests_and_constructed_summaries": true,
+  "failure_summary_file": "dag2-failure-summary.json",
+  "manifest_file": "dag2-manifest.json",
+  "never_enumerate_cas": true,
+  "nonrecursive_allowlist": true,
+  "required_files": [
+    "acquisition-receipt.json",
+    "collected-nodes.txt",
+    "dag-sdk-summary.json",
+    "dag2-cleanup.json",
+    "dag2-diagnostic.json",
+    "dag2-environment.json",
+    "dag2-originals.json",
+    "dag2-replays.json",
+    "dag2-trace.json",
+    "no-ref-cancel-final.history.json",
+    "no-ref-cancel-final.state.json",
+    "no-ref-unknown.history.json",
+    "no-ref-unknown.state.json",
+    "normal-a.result.json",
+    "normal-b.result.json",
+    "normal-final.history.json",
+    "normal-final.state.json",
+    "pip-report.json",
+    "reconcile-a.result.json",
+    "reconcile-b.result.json",
+    "reconcile-final.history.json",
+    "reconcile-final.state.json",
+    "reconcile-unknown-after-replacement.history.json",
+    "reconcile-unknown-after-replacement.state.json",
+    "reconcile-unknown-before-stop.history.json",
+    "reconcile-unknown-before-stop.state.json",
+    "reconcile-update-queued.history.json",
+    "reconcile-update-queued.state.json",
+    "required-nodes.txt",
+    "results.xml",
+    "shared-unit-summary.json",
+    "source-manifest.json"
+  ],
+  "schema_version": "opendot.temporal.dag2-evidence-files.v1",
+  "source_document_fields": "No-ref result path/ref/body/hash is absent by design.",
+  "success_summary_file": "dag2-summary.json"
+}
+''')
+
+DAG2_TEST_FULL_PACK = json.loads(r'''
+{
+  "evidence_class": "FABRICATED_UNIT_DATA",
+  "expected_identity": {
+    "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "event": "workflow_dispatch",
+    "qualification": "dag2",
+    "ref": "refs/heads/fabricated-unit-dag2",
+    "repository": "opendot-fixture/example",
+    "retain_public_evidence": false,
+    "run_attempt": 1,
+    "run_id": 1001,
+    "run_url": "https://github.com/opendot-fixture/example/actions/runs/1001/attempts/1",
+    "tree": "cccccccccccccccccccccccccccccccccccccccc",
+    "workflow_id": 91,
+    "workflow_path": ".github/workflows/temporal-server.yml",
+    "workflow_sha256": "1495215a3009ce1a0ae3d78f3d7a2a84001d1ca864f95b77094e46cee1628657"
+  },
+  "expected_result": {
+    "hosted_acceptance": "REQUIRES_EXTERNAL_GITHUB_READBACK",
+    "record_validation": "UNIT_RECORD_VALID"
+  },
+  "files": {
+    "acquisition-receipt.json": "{\"archive\":{\"name\":\"temporal_cli_1.9.1_linux_amd64.tar.gz\",\"sha256\":\"09a0326a51db84d02735e53542b9ebd8c4758daf47482a9ab0abce15844e60d5\",\"size_bytes\":45298806,\"url\":\"https://github.com/temporalio/cli/releases/download/v1.9.1/temporal_cli_1.9.1_linux_amd64.tar.gz\"},\"checksums\":{\"name\":\"checksums.txt\",\"sha256\":\"cc22cb0df0a9bab358500dce212616e8622b0649df68317d9858867d7dc69bd2\",\"size_bytes\":836,\"url\":\"https://github.com/temporalio/cli/releases/download/v1.9.1/checksums.txt\"},\"cli_version\":\"1.9.1\",\"files\":{\"LICENSE\":{\"sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"size_bytes\":1},\"temporal\":{\"sha256\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"size_bytes\":1}},\"platform\":\"linux-x86_64\",\"schema_version\":\"opendot.temporal.cli-acquisition.v1\"}",
+    "collected-nodes.txt": "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_real_a_to_b_and_original_receipts\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_quiescent_worker_replacement_preserves_state\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_recorded_history_replay_has_no_activity_execution\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_original_put_reconciliation_never_reexecutes_a\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_unknown_without_reference_blocks_b\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_cancellation_keeps_unadmitted_b_closed\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_duplicate_and_stale_updates_consume_no_allowance\n",
+    "dag-sdk-summary.json": "{\"acceptance\":\"PASS\",\"collected_node_count\":314,\"collection_exit_code\":0,\"collection_sha256\":\"a605f5855ee77b508f236c0ba1356c90442c0bfb1fd082ae64e315c5975d2c6e\",\"error_count\":0,\"executed_node_count\":314,\"expected_node_count\":314,\"failed_count\":0,\"passed_count\":314,\"reason_code\":\"OK\",\"schema_version\":\"opendot.temporal.unit-gate.v1\",\"skipped_count\":0,\"test_exit_code\":0}",
+    "dag2-cleanup.json": "{\"accepted_updates_unfinished\":0,\"activity_executor_shutdown_calls\":4,\"all_scheduled_invocations_terminal\":true,\"cleanup_status\":\"PASS\",\"evidence_and_pytest_elapsed_ms\":0,\"evidence_class\":\"FABRICATED_UNIT_DATA\",\"final_stop_elapsed_ms\":11,\"force_or_task_cancellation_calls\":0,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observation_cleanup_elapsed_ms\":0,\"pending_rpc_tasks\":0,\"public_worker_shutdown_calls\":8,\"same_cas\":true,\"same_sqlite\":true,\"scenario_elapsed_ms\":190,\"schema_version\":\"opendot.temporal.dag2-gate.cleanup.v1\",\"server_exit_code\":0,\"server_generations\":1,\"server_shutdown_calls\":1,\"server_shutdown_elapsed_ms\":1,\"server_shutdown_signal\":\"SIGINT\",\"server_stop_observed\":true,\"stop_uncertain\":false,\"worker_stops\":[{\"activity_executor_completion_observed\":true,\"cumulative_stop_deadline_remaining_ms\":149954,\"executor_shutdown_calls\":1,\"generation\":2,\"kind\":\"activity\",\"mission\":\"hosted-normal\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":54,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":9,\"stop_completed_seq\":58,\"stop_requested_seq\":57,\"worker_run_task_completed\":true},{\"activity_executor_completion_observed\":false,\"cumulative_stop_deadline_remaining_ms\":149951,\"executor_shutdown_calls\":0,\"generation\":1,\"kind\":\"workflow\",\"mission\":\"hosted-normal\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":54,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":8,\"stop_completed_seq\":61,\"stop_requested_seq\":60,\"worker_run_task_completed\":true},{\"activity_executor_completion_observed\":true,\"cumulative_stop_deadline_remaining_ms\":149923,\"executor_shutdown_calls\":1,\"generation\":4,\"kind\":\"activity\",\"mission\":\"hosted-reconcile\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":90,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":71,\"stop_completed_seq\":92,\"stop_requested_seq\":91,\"worker_run_task_completed\":true},{\"activity_executor_completion_observed\":false,\"cumulative_stop_deadline_remaining_ms\":149920,\"executor_shutdown_calls\":0,\"generation\":3,\"kind\":\"workflow\",\"mission\":\"hosted-reconcile\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":90,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":70,\"stop_completed_seq\":95,\"stop_requested_seq\":94,\"worker_run_task_completed\":true},{\"activity_executor_completion_observed\":true,\"cumulative_stop_deadline_remaining_ms\":149851,\"executor_shutdown_calls\":1,\"generation\":6,\"kind\":\"activity\",\"mission\":\"hosted-reconcile\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":172,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":136,\"stop_completed_seq\":176,\"stop_requested_seq\":175,\"worker_run_task_completed\":true},{\"activity_executor_completion_observed\":false,\"cumulative_stop_deadline_remaining_ms\":149848,\"executor_shutdown_calls\":0,\"generation\":5,\"kind\":\"workflow\",\"mission\":\"hosted-reconcile\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":172,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":97,\"stop_completed_seq\":179,\"stop_requested_seq\":178,\"worker_run_task_completed\":true},{\"activity_executor_completion_observed\":true,\"cumulative_stop_deadline_remaining_ms\":59999,\"executor_shutdown_calls\":1,\"generation\":8,\"kind\":\"activity\",\"mission\":\"hosted-no-ref-cancel\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":217,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":189,\"stop_completed_seq\":221,\"stop_requested_seq\":220,\"worker_run_task_completed\":true},{\"activity_executor_completion_observed\":false,\"cumulative_stop_deadline_remaining_ms\":59996,\"executor_shutdown_calls\":0,\"generation\":7,\"kind\":\"workflow\",\"mission\":\"hosted-no-ref-cancel\",\"public_shutdown_calls\":1,\"public_shutdown_completed\":true,\"quiescent_snapshot_seq\":217,\"run_task_wait_elapsed_ms\":0,\"shutdown_elapsed_ms\":1,\"start_seq\":188,\"stop_completed_seq\":224,\"stop_requested_seq\":223,\"worker_run_task_completed\":true}],\"workflow_handle_cancel_calls\":1}",
+    "dag2-diagnostic.json": "{\"audit_failure\":null,\"cleanup_failure\":null,\"cleanup_status\":\"PASS\",\"evidence_class\":\"FABRICATED_UNIT_DATA\",\"evidence_status\":\"COMPLETE\",\"primary_failure\":null,\"result\":\"PASS\",\"schema_version\":\"opendot.temporal.dag2-gate.diagnostic.v1\"}",
+    "dag2-environment.json": "{\"acquisition_receipt_sha256\":\"14f05dbed7c9fa755367b517e3ff3b38bf7681e0249c5affddada9d4898590b3\",\"adr008_sha256\":\"c7d18394d4a88b74e9b0b30ba5ba960bbc5177e19b2f6c115db91b23819b6737\",\"base_tree\":\"3dc536c4487422d6706831ac954c91264d771d4b\",\"bootstrap\":[{\"activity_executor_threads\":1,\"activity_slots\":1,\"constructed_seq\":7,\"eager_activity_execution\":false,\"first_execution_run_id\":\"11111111-1111-4111-8111-111111111111\",\"generation\":2,\"handler_source_sha256\":\"a97dadac88bed7b09d2398516617216cb865ae97db411c12b72de01d7a78d1cb\",\"immutable_config\":true,\"mission\":\"hosted-normal\",\"namespace\":\"default\",\"origin_capture_seq\":null,\"original_A_sha256\":null,\"original_B_sha256\":null,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"request_eager_start\":false,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"source_verified\":true,\"started_seq\":9,\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_task_slots\":1},{\"activity_executor_threads\":1,\"activity_slots\":1,\"constructed_seq\":69,\"eager_activity_execution\":false,\"first_execution_run_id\":\"22222222-2222-4222-8222-222222222222\",\"generation\":4,\"handler_source_sha256\":\"a97dadac88bed7b09d2398516617216cb865ae97db411c12b72de01d7a78d1cb\",\"immutable_config\":true,\"mission\":\"hosted-reconcile\",\"namespace\":\"default\",\"origin_capture_seq\":null,\"original_A_sha256\":null,\"original_B_sha256\":null,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"request_eager_start\":false,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"source_verified\":true,\"started_seq\":71,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_task_slots\":1},{\"activity_executor_threads\":1,\"activity_slots\":1,\"constructed_seq\":96,\"eager_activity_execution\":false,\"first_execution_run_id\":\"22222222-2222-4222-8222-222222222222\",\"generation\":6,\"handler_source_sha256\":\"a97dadac88bed7b09d2398516617216cb865ae97db411c12b72de01d7a78d1cb\",\"immutable_config\":true,\"mission\":\"hosted-reconcile\",\"namespace\":\"default\",\"origin_capture_seq\":78,\"original_A_sha256\":\"3538846a70d663771b55eb51c152562ac02c7f01ec182d5742cdade1bd9129c8\",\"original_B_sha256\":null,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"request_eager_start\":false,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"source_verified\":true,\"started_seq\":136,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_task_slots\":1},{\"activity_executor_threads\":1,\"activity_slots\":1,\"constructed_seq\":187,\"eager_activity_execution\":false,\"first_execution_run_id\":\"33333333-3333-4333-8333-333333333333\",\"generation\":8,\"handler_source_sha256\":\"a97dadac88bed7b09d2398516617216cb865ae97db411c12b72de01d7a78d1cb\",\"immutable_config\":true,\"mission\":\"hosted-no-ref-cancel\",\"namespace\":\"default\",\"origin_capture_seq\":null,\"original_A_sha256\":null,\"original_B_sha256\":null,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"request_eager_start\":false,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"source_verified\":true,\"started_seq\":189,\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_task_slots\":1}],\"claims\":{\"actual_crash_process_fencing\":\"NOT_EVALUATED\",\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"issue_7_closed\":false,\"lost_network_ack\":\"NOT_EVALUATED\",\"natural_300_second_deadline\":\"NOT_EVALUATED\",\"owner_integration\":\"NOT_EVALUATED\",\"scientific_validity\":false,\"termination_status\":\"NOT_ESTABLISHED\"},\"cli_version\":\"1.9.1\",\"complete_tracked_manifest_sha256\":\"1f283fb04665509115e17c6dc4a36d7868bd4698c303f3926b51d58465476f86\",\"effective_proxy_refused\":true,\"evidence_class\":\"FABRICATED_UNIT_DATA\",\"fresh_private_root\":true,\"identity\":{\"commit\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"event\":\"workflow_dispatch\",\"qualification\":\"dag2\",\"ref\":\"refs/heads/fabricated-unit-dag2\",\"repository\":\"opendot-fixture/example\",\"retain_public_evidence\":false,\"run_attempt\":1,\"run_id\":1001,\"run_url\":\"https://github.com/opendot-fixture/example/actions/runs/1001/attempts/1\",\"tree\":\"cccccccccccccccccccccccccccccccccccccccc\",\"workflow_id\":91,\"workflow_path\":\".github/workflows/temporal-server.yml\",\"workflow_sha256\":\"1495215a3009ce1a0ae3d78f3d7a2a84001d1ca864f95b77094e46cee1628657\"},\"pip_report_sha256\":\"ecbe91957cc145284c8b37a435207b2c331c00f52f4b1f49f884044672a8b1f1\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"python_version\":\"3.12\",\"runner_os\":\"ubuntu-24.04\",\"schema_version\":\"opendot.temporal.dag2-gate.environment.v1\",\"sdk_transport_retry_policy\":\"SDK_DEFAULT_NO_PHYSICAL_RPC_COUNT_CLAIM\",\"sdk_version\":\"1.34.0\",\"server_version\":\"1.32.0\",\"source_after_sha256\":\"1f283fb04665509115e17c6dc4a36d7868bd4698c303f3926b51d58465476f86\",\"source_before_sha256\":\"1f283fb04665509115e17c6dc4a36d7868bd4698c303f3926b51d58465476f86\",\"source_closure\":[{\"mode\":\"100644\",\"path\":\".github/workflows/temporal-server.yml\",\"sha256\":\"1495215a3009ce1a0ae3d78f3d7a2a84001d1ca864f95b77094e46cee1628657\",\"size_bytes\":82},{\"mode\":\"100644\",\"path\":\"AGENTS.md\",\"sha256\":\"ca1a5c5c2c6ca4d0fb60eba4ef2b249734a7d1725ac93600acc29182ea0ac2f7\",\"size_bytes\":54},{\"mode\":\"100644\",\"path\":\"ci/acquire_temporal_cli.py\",\"sha256\":\"4283fe5927703ef8b9bbbfedd4a911e824cf4eb3888a80b78dfbe0c6c60779fb\",\"size_bytes\":15673},{\"mode\":\"100644\",\"path\":\"ci/requirements.txt\",\"sha256\":\"d4a40a3a0837215c3ab557d110437034fc36e3de888a3720301ab7d40e433600\",\"size_bytes\":700},{\"mode\":\"100644\",\"path\":\"ci/run_temporal_server_gate.py\",\"sha256\":\"67c564a27112512dd779dc05e1d3d60cb484ebdfe2661590c2298d6fbe03c32d\",\"size_bytes\":75},{\"mode\":\"100644\",\"path\":\"ci/temporal-batch-nodes.txt\",\"sha256\":\"95e46d92e349792635e6d18acc1815f981ddb80f325f244ddc3d84063c3b08e1\",\"size_bytes\":43719},{\"mode\":\"100644\",\"path\":\"ci/temporal-dag-recovery-nodes.txt\",\"sha256\":\"569a56e0c7a0d8a1964aefa8ad28be060680bd71171262831929ab891352247c\",\"size_bytes\":79},{\"mode\":\"100644\",\"path\":\"ci/temporal-real-batch-nodes.txt\",\"sha256\":\"7ad383036ff782bf7b1c684c4857c5cb5f3952ea3e9fa1f72f5a975822c62b1d\",\"size_bytes\":377},{\"mode\":\"100644\",\"path\":\"ci/temporal-sdk-requirements.txt\",\"sha256\":\"f8ea76390c3f260bf48aa68ed64c4e80cf52e00bfb675d09be4eedd123748d89\",\"size_bytes\":788},{\"mode\":\"100644\",\"path\":\"ci/temporal-server-nodes.txt\",\"sha256\":\"315d557eda272ea471ca85b4e32b432d2c059b72ae6082bee529a54003acd37f\",\"size_bytes\":632},{\"mode\":\"100644\",\"path\":\"ci/verify_temporal_server_gate.py\",\"sha256\":\"b165b613c931690d1abc6ac686363ff2e8a66dacb58a200be38eb5626d897faf\",\"size_bytes\":78},{\"mode\":\"100644\",\"path\":\"docs/decisions/004-temporal-reference-transport.md\",\"sha256\":\"534b446d671444d076866aadcfd3905e54126561705f547eca2ff5f2684c0e9b\",\"size_bytes\":50119},{\"mode\":\"100644\",\"path\":\"docs/decisions/008-fixed-dependent-temporal-recovery.md\",\"sha256\":\"c7d18394d4a88b74e9b0b30ba5ba960bbc5177e19b2f6c115db91b23819b6737\",\"size_bytes\":61183},{\"mode\":\"100644\",\"path\":\"docs/temporal-batch-qualification.md\",\"sha256\":\"aff9ca328dfc97fe631ddfaf2e5258d289a2af5f441a84e1851ef150c5dc7a13\",\"size_bytes\":32084},{\"mode\":\"100644\",\"path\":\"docs/temporal-reference-transport.md\",\"sha256\":\"e55c1104dfeab40f374dc35cf3c907c86d4f4ed1410722ad3b4e802c8e7b96e8\",\"size_bytes\":16392},{\"mode\":\"100644\",\"path\":\"pyproject.toml\",\"sha256\":\"513e56fba610621e34ea8d850dbc46ad60ebbbae230ccc0d28056f693c65c5a5\",\"size_bytes\":597},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/__init__.py\",\"sha256\":\"220b0324cfb1c2ba39d190a7857a850dae59dfce2cd5064028007ccb3dc6771d\",\"size_bytes\":108},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/__init__.py\",\"sha256\":\"8c1b8c19884c2204c3ac30d898a48785e54a1694a59319be4b8bb7dd1619bd1b\",\"size_bytes\":75},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/source_audit.py\",\"sha256\":\"c94737305b1e5a80453541ce890bde4fcb700a0074e32344fe839b237374bfa7\",\"size_bytes\":12998},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/temporal_activity.py\",\"sha256\":\"3e084d5432c11d031385472b9eba32e1d62f06d4aa45e08acebd88bd803045f2\",\"size_bytes\":41070},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/temporal_workflow.py\",\"sha256\":\"a1723c70ccd8e440475ff0c359a5dfb1fa6e41ad2dff9881d2727879231434ac\",\"size_bytes\":37598},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/core/__init__.py\",\"sha256\":\"9224d4f77ea27f42ec63a05a490eae38aa51076ddc81aa8e0a486e7a36a71f5a\",\"size_bytes\":390},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/core/artifacts.py\",\"sha256\":\"4606b7b11a81044267b30fee332d9b6fd6540d862726a9579655ee27c7d9a883\",\"size_bytes\":9255},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/core/contracts.py\",\"sha256\":\"9462415baf84668825ad2c8cfc3f4f3df68332f65d1f1f4b301fbf01cf8537ca\",\"size_bytes\":3771},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/tool_runtime.py\",\"sha256\":\"7c5011e02b2cf07e5f15ad7854905ce0738271e167b873bad9256a8ed169199c\",\"size_bytes\":29040},{\"mode\":\"100644\",\"path\":\"tests/acceptance/temporal_dag_recovery_gate.py\",\"sha256\":\"a52665a198571e3bd865ac58e58ba9fa75854d436a64102232d054ba44b602d2\",\"size_bytes\":91},{\"mode\":\"100644\",\"path\":\"tests/acceptance/temporal_real_batch_gate.py\",\"sha256\":\"de107abe5edee5ded184709982585cc323ba1d89ea2a31717257b730b9936f58\",\"size_bytes\":1941},{\"mode\":\"100644\",\"path\":\"tests/acceptance/temporal_server_gate.py\",\"sha256\":\"5167765cba580fb0e5bc0c1af77239e24c52b87c4c235443174b0aa33771273d\",\"size_bytes\":4338},{\"mode\":\"100644\",\"path\":\"tests/test_a2a_worker_turn.py\",\"sha256\":\"e203e714d887e2787450a3f61cb76dfc3a3f536cc1912da6638b1a233ba5c880\",\"size_bytes\":74},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_activity_contract.py\",\"sha256\":\"d721482e11aba8c4b1128bcb7ce453d94404f60aec7d6080b00eb2b91ced1ca0\",\"size_bytes\":26064},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_cli_acquisition.py\",\"sha256\":\"a94e0125dcc9c43087b79da790a1dc56e62e755b21c66b64d1b7ae95ea63e1aa\",\"size_bytes\":34546},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_dag_recovery.py\",\"sha256\":\"848430ec2840fb988a908927fd1279b021a408718b406f8206b377f8b3245249\",\"size_bytes\":99923},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_server_gate_verifier.py\",\"sha256\":\"02da722ac8bfc271a535a4a7781610ecc87ee4e1fe31711007056baf70f74a90\",\"size_bytes\":88},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_server_harness_unit.py\",\"sha256\":\"45d14be60cc7cfb4f8b46fd15b92181dabca946d054acfabeaa5e9123bfa43fd\",\"size_bytes\":87},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_transport_owner_boundaries.py\",\"sha256\":\"7764555cd343c11d28e10891e780bbed7afca8758a738216459019b66981a2c4\",\"size_bytes\":13128},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_workflow_contract.py\",\"sha256\":\"2c0a531681d68d8bc9c9e896e89b98c76c72c6988da579c3c7e223f80dcce5af\",\"size_bytes\":19288}]}",
+    "dag2-originals.json": "{\"evidence_class\":\"FABRICATED_UNIT_DATA\",\"no_ref\":{\"adapter_returns\":1,\"cas_discovery_attempts\":0,\"handler_returns\":1,\"mission\":\"hosted-no-ref-cancel\",\"origin_record\":\"NOT_RETAINED\",\"original_body\":\"NOT_RETAINED\",\"original_digest\":\"NOT_RETAINED\",\"original_reference\":\"NOT_RETAINED\",\"recovery_reference_reads\":0,\"result_puts\":1},\"originals\":[{\"adapter_return_seq\":17,\"body\":{\"file_id\":\"normal-a.result.json\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219},\"capture_seq\":16,\"input_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"mission\":\"hosted-normal\",\"node\":\"A\",\"observation_execution_id\":\"00000000000000000000000000000003\",\"origin\":{\"capture_phase\":\"original_put_return_before_response\",\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execution_activity_id\":\"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"mission_id\":\"hosted-normal\",\"namespace\":\"default\",\"node_id\":\"A\",\"origin_kind\":\"trusted-single-operator-synthetic-put-observer\",\"original_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"schema_version\":\"opendot.temporal.dag-origin.v1\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"11111111-1111-4111-8111-111111111111\"},\"origin_sha256\":\"d92e6d4d7b3bf6936dd0d1e6e0c9b3f20b9fb9fb643b5c44e5c3ddb0c3a23d8c\",\"output\":5,\"output_sha256\":\"ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d\",\"put_operation_id\":1,\"put_return_seq\":15,\"receipt_call_id\":\"000000000000000000000003\",\"receipt_sha256\":\"4872fee41110f2dba3493bb20e791f08ffdb400639fcefb04cbfe6a9093369ad\",\"reference\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"}},{\"adapter_return_seq\":37,\"body\":{\"file_id\":\"normal-b.result.json\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783},\"capture_seq\":36,\"input_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"mission\":\"hosted-normal\",\"node\":\"B\",\"observation_execution_id\":\"00000000000000000000000000000004\",\"origin\":{\"capture_phase\":\"original_put_return_before_response\",\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"execution_activity_id\":\"dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"mission_id\":\"hosted-normal\",\"namespace\":\"default\",\"node_id\":\"B\",\"origin_kind\":\"trusted-single-operator-synthetic-put-observer\",\"original_result_ref\":{\"artifact_id\":\"sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"],\"task_id\":\"f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"uri\":\"artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"schema_version\":\"opendot.temporal.dag-origin.v1\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"11111111-1111-4111-8111-111111111111\"},\"origin_sha256\":\"e0aa131d8d2f1b60136c9a8fc2187c9ac59ac5a41f833a445a9744a9c075a907\",\"output\":6,\"output_sha256\":\"e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683\",\"put_operation_id\":2,\"put_return_seq\":35,\"receipt_call_id\":\"000000000000000000000004\",\"receipt_sha256\":\"8d3630ff2b71878d832c1034cfcd890071b2836e21a01e3bb87513df977fbf73\",\"reference\":{\"artifact_id\":\"sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"],\"task_id\":\"f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"uri\":\"artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\"}},{\"adapter_return_seq\":79,\"body\":{\"file_id\":\"reconcile-a.result.json\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225},\"capture_seq\":78,\"input_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"mission\":\"hosted-reconcile\",\"node\":\"A\",\"observation_execution_id\":\"00000000000000000000000000000005\",\"origin\":{\"capture_phase\":\"original_put_return_before_response\",\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execution_activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"mission_id\":\"hosted-reconcile\",\"namespace\":\"default\",\"node_id\":\"A\",\"origin_kind\":\"trusted-single-operator-synthetic-put-observer\",\"original_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"schema_version\":\"opendot.temporal.dag-origin.v1\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"22222222-2222-4222-8222-222222222222\"},\"origin_sha256\":\"3538846a70d663771b55eb51c152562ac02c7f01ec182d5742cdade1bd9129c8\",\"output\":5,\"output_sha256\":\"ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d\",\"put_operation_id\":3,\"put_return_seq\":77,\"receipt_call_id\":\"000000000000000000000005\",\"receipt_sha256\":\"ddb85b678842e45c8ba8d35ea6c3cbde2f90ac0e5c0c0225373e5336e7ca4ad9\",\"reference\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"}},{\"adapter_return_seq\":152,\"body\":{\"file_id\":\"reconcile-b.result.json\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789},\"capture_seq\":151,\"input_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"mission\":\"hosted-reconcile\",\"node\":\"B\",\"observation_execution_id\":\"00000000000000000000000000000006\",\"origin\":{\"capture_phase\":\"original_put_return_before_response\",\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"execution_activity_id\":\"dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"mission_id\":\"hosted-reconcile\",\"namespace\":\"default\",\"node_id\":\"B\",\"origin_kind\":\"trusted-single-operator-synthetic-put-observer\",\"original_result_ref\":{\"artifact_id\":\"sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"],\"task_id\":\"aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"uri\":\"artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"schema_version\":\"opendot.temporal.dag-origin.v1\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"22222222-2222-4222-8222-222222222222\"},\"origin_sha256\":\"08417850c8b0814a08277a3d784d06c5ed04f3b0aed4088f98c801e463dcda4d\",\"output\":6,\"output_sha256\":\"e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683\",\"put_operation_id\":4,\"put_return_seq\":150,\"receipt_call_id\":\"000000000000000000000006\",\"receipt_sha256\":\"0762f8295be9329d2529db5adfb96c4c79a0d23858f0f2dcaee60546502426fb\",\"reference\":{\"artifact_id\":\"sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"],\"task_id\":\"aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"uri\":\"artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\"}}],\"schema_version\":\"opendot.temporal.dag2-gate.originals.v1\"}",
+    "dag2-replays.json": "{\"evidence_class\":\"FABRICATED_UNIT_DATA\",\"replays\":[{\"activity_worker_count\":0,\"begin_seq\":62,\"completion_payload_sha256\":\"364a62b9e72aaf29577e1655f55d1b05a451db7dfd41935d88c8bc1b2677fb05\",\"counts_after\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"counts_before\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"default_pinned_sdk_runner\":true,\"end_seq\":63,\"history_file_id\":\"normal-final.history.json\",\"mission\":\"hosted-normal\",\"replay_failure\":null,\"replayer_input_sha256\":\"6725652a1894675ea54858b51413d77974f77637e51308f06993b7127ee173ec\",\"result_api\":\"WorkflowReplayResult.history_and_replay_failure\",\"retained_history_sha256\":\"6725652a1894675ea54858b51413d77974f77637e51308f06993b7127ee173ec\"},{\"activity_worker_count\":0,\"begin_seq\":180,\"completion_payload_sha256\":\"77759d7808f514ec59e3cef688bbe521e1b1b5ea379fce0ba495b21778998740\",\"counts_after\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"counts_before\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"default_pinned_sdk_runner\":true,\"end_seq\":181,\"history_file_id\":\"reconcile-final.history.json\",\"mission\":\"hosted-reconcile\",\"replay_failure\":null,\"replayer_input_sha256\":\"4de58f7fa90f1540e639aa84ca5c1c60365aa5b432f61af80ad14454f7e765c7\",\"result_api\":\"WorkflowReplayResult.history_and_replay_failure\",\"retained_history_sha256\":\"4de58f7fa90f1540e639aa84ca5c1c60365aa5b432f61af80ad14454f7e765c7\"}],\"schema_version\":\"opendot.temporal.dag2-gate.replays.v1\"}",
+    "dag2-trace.json": "{\"aggregate_counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":4,\"workflow_starts\":3},\"commands\":[{\"activity_id\":\"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"attempt\":1,\"entry_seq\":10,\"fault\":\"NONE\",\"kind\":\"execute\",\"maximum_attempts\":1,\"mission\":\"hosted-normal\",\"node\":\"A\",\"request_sha256\":\"033748dd346dc2f91786f8aa70240e45bf69293d0b484e8cf40e725ea84c20f7\",\"response_sha256\":\"a6340c56031d384eada17ddcd3c2da8dc51a70e0b62b0ec11548b78a0240b85c\",\"return_seq\":17,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schedule_observed_seq\":19,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":10,\"start_to_close_seconds\":10,\"started_event_id\":11,\"terminal_event_id\":12,\"terminal_observed_seq\":22,\"terminal_type\":\"ActivityTaskCompleted\",\"worker_generation\":2,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-inspect-normal-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"attempt\":1,\"entry_seq\":23,\"fault\":\"NONE\",\"kind\":\"normal_inspect\",\"maximum_attempts\":1,\"mission\":\"hosted-normal\",\"node\":\"A\",\"request_sha256\":\"7436b13f0c89c00282c085e96be30878f95bbec5c9e94c1d8bddbf1aa4a54708\",\"response_sha256\":\"7e59255c0ac1da8cd11696ccc854d00060fb88c1722d216a33844c812ff39d72\",\"return_seq\":24,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schedule_observed_seq\":26,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":20,\"start_to_close_seconds\":10,\"started_event_id\":21,\"terminal_event_id\":22,\"terminal_observed_seq\":29,\"terminal_type\":\"ActivityTaskCompleted\",\"worker_generation\":2,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"attempt\":1,\"entry_seq\":30,\"fault\":\"NONE\",\"kind\":\"execute\",\"maximum_attempts\":1,\"mission\":\"hosted-normal\",\"node\":\"B\",\"request_sha256\":\"cbc930a0bd3a48d6d7d6f78242117c634650257319e7f9d09e91bb072dcb3a78\",\"response_sha256\":\"3ff4e0378d3be3e90e48c3d26e9782f828c1e373011d7157b587aec37d30f0dd\",\"return_seq\":37,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schedule_observed_seq\":39,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":30,\"start_to_close_seconds\":10,\"started_event_id\":31,\"terminal_event_id\":32,\"terminal_observed_seq\":42,\"terminal_type\":\"ActivityTaskCompleted\",\"worker_generation\":2,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-inspect-normal-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"attempt\":1,\"entry_seq\":43,\"fault\":\"NONE\",\"kind\":\"normal_inspect\",\"maximum_attempts\":1,\"mission\":\"hosted-normal\",\"node\":\"B\",\"request_sha256\":\"fe47ddaa7c56f1efd7bf2262113df3ffc159774a43588bad1fe905e2e6edac73\",\"response_sha256\":\"550b3bb72c87e3401675bd38df67e39c1d540c92f6c6616a651d8faed6b1cf31\",\"return_seq\":44,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schedule_observed_seq\":46,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":40,\"start_to_close_seconds\":10,\"started_event_id\":41,\"terminal_event_id\":42,\"terminal_observed_seq\":49,\"terminal_type\":\"ActivityTaskCompleted\",\"worker_generation\":2,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"attempt\":1,\"entry_seq\":72,\"fault\":\"CONTROLLED_POST_RETURN_RESPONSE_FAILURE\",\"kind\":\"execute\",\"maximum_attempts\":1,\"mission\":\"hosted-reconcile\",\"node\":\"A\",\"request_sha256\":\"9cd89556e6714e217f12bddc1d171bf1d44c0d145bb61b5c59ca6a264fa47df9\",\"response_sha256\":null,\"return_seq\":79,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schedule_observed_seq\":82,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":10,\"start_to_close_seconds\":10,\"started_event_id\":11,\"terminal_event_id\":12,\"terminal_observed_seq\":85,\"terminal_type\":\"ActivityTaskFailed\",\"worker_generation\":4,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-inspect-reconcile-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"attempt\":1,\"entry_seq\":138,\"fault\":\"NONE\",\"kind\":\"reconcile_inspect\",\"maximum_attempts\":1,\"mission\":\"hosted-reconcile\",\"node\":\"A\",\"request_sha256\":\"abebb21dfcb11ea369631c6461e9fb341e10abc607a4c0020c99c7a36dc26477\",\"response_sha256\":\"0b1d5e90733e080997a9d49af736c570b6becbfbff78e614243cb5a4b4689ad5\",\"return_seq\":139,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schedule_observed_seq\":130,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":20,\"start_to_close_seconds\":10,\"started_event_id\":21,\"terminal_event_id\":22,\"terminal_observed_seq\":144,\"terminal_type\":\"ActivityTaskCompleted\",\"worker_generation\":6,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"attempt\":1,\"entry_seq\":145,\"fault\":\"NONE\",\"kind\":\"execute\",\"maximum_attempts\":1,\"mission\":\"hosted-reconcile\",\"node\":\"B\",\"request_sha256\":\"5f6028a3ef2053292d29728d506f7eaf0cf34461ab040ea8517190a80a4e90e0\",\"response_sha256\":\"46ac59fcb8d5d0505351381cae2b801ecf19ba3e5fefbbd7547c68d3597d1449\",\"return_seq\":152,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schedule_observed_seq\":154,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":30,\"start_to_close_seconds\":10,\"started_event_id\":31,\"terminal_event_id\":32,\"terminal_observed_seq\":157,\"terminal_type\":\"ActivityTaskCompleted\",\"worker_generation\":6,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-inspect-normal-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"attempt\":1,\"entry_seq\":158,\"fault\":\"NONE\",\"kind\":\"normal_inspect\",\"maximum_attempts\":1,\"mission\":\"hosted-reconcile\",\"node\":\"B\",\"request_sha256\":\"96e619af203ff7e5e927f80618a8e01a949a55b9f505ca220925c185de9b8f45\",\"response_sha256\":\"4c6c36b0e49833a071a42be1fdf9d3556eff309742a211a2f6b9f948f78e401a\",\"return_seq\":159,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schedule_observed_seq\":161,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":40,\"start_to_close_seconds\":10,\"started_event_id\":41,\"terminal_event_id\":42,\"terminal_observed_seq\":164,\"terminal_type\":\"ActivityTaskCompleted\",\"worker_generation\":6,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"activity_id\":\"dag2-execute-bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"attempt\":1,\"entry_seq\":190,\"fault\":\"CONTROLLED_POST_RETURN_RESPONSE_FAILURE\",\"kind\":\"execute\",\"maximum_attempts\":1,\"mission\":\"hosted-no-ref-cancel\",\"node\":\"A\",\"request_sha256\":\"e8309cc2dd3acdce7bb8433038a27d987e7199d6ff936f5e458341bd8d916ad8\",\"response_sha256\":null,\"return_seq\":196,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schedule_observed_seq\":199,\"schedule_to_close_seconds\":60,\"scheduled_event_id\":10,\"start_to_close_seconds\":10,\"started_event_id\":11,\"terminal_event_id\":12,\"terminal_observed_seq\":202,\"terminal_type\":\"ActivityTaskFailed\",\"worker_generation\":8,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}],\"events\":[{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":0,\"verification_cas_reads\":0,\"workflow_starts\":0},\"history_event_id\":null,\"kind\":\"server_start\",\"mission\":null,\"monotonic_ns\":1000000000,\"node\":null,\"operation_id\":null,\"seq\":1,\"worker_generation\":null},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":0},\"history_event_id\":null,\"kind\":\"seed_put_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1001000000,\"node\":null,\"operation_id\":null,\"seq\":2,\"worker_generation\":null},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":0},\"history_event_id\":null,\"kind\":\"workflow_start_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1002000000,\"node\":null,\"operation_id\":null,\"seq\":3,\"worker_generation\":null},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":0},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1003000000,\"node\":null,\"operation_id\":\"start-hosted-normal\",\"seq\":4,\"worker_generation\":null},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":0},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1004000000,\"node\":null,\"operation_id\":\"start-hosted-normal\",\"seq\":5,\"worker_generation\":null},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"workflow_start_acknowledged\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1005000000,\"node\":null,\"operation_id\":null,\"seq\":6,\"worker_generation\":null},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"bootstrap_constructed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1006000000,\"node\":null,\"operation_id\":null,\"seq\":7,\"worker_generation\":2},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1007000000,\"node\":null,\"operation_id\":null,\"seq\":8,\"worker_generation\":1},{\"counts\":{\"activity_entries\":0,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1008000000,\"node\":null,\"operation_id\":null,\"seq\":9,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":0,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1009000000,\"node\":\"A\",\"operation_id\":null,\"seq\":10,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":0,\"handler_returns\":0,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":1,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"runtime_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1010000000,\"node\":\"A\",\"operation_id\":null,\"seq\":11,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":1,\"handler_returns\":0,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":1,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"handler_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1011000000,\"node\":\"A\",\"operation_id\":null,\"seq\":12,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":1,\"runtime_returns\":0,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"handler_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1012000000,\"node\":\"A\",\"operation_id\":null,\"seq\":13,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":0,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":0,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"runtime_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1013000000,\"node\":\"A\",\"operation_id\":null,\"seq\":14,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"result_put_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1014000000,\"node\":\"A\",\"operation_id\":null,\"seq\":15,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":0,\"activity_schedules\":0,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"original_capture\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1015000000,\"node\":\"A\",\"operation_id\":null,\"seq\":16,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":1,\"activity_schedules\":0,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1016000000,\"node\":\"A\",\"operation_id\":null,\"seq\":17,\"worker_generation\":2},{\"counts\":{\"activity_entries\":1,\"activity_returns\":1,\"activity_schedules\":0,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1017000000,\"node\":null,\"operation_id\":\"history-schedule-18\",\"seq\":18,\"worker_generation\":null},{\"counts\":{\"activity_entries\":1,\"activity_returns\":1,\"activity_schedules\":1,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":10,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1017000000,\"node\":null,\"operation_id\":\"history-schedule-18\",\"seq\":19,\"worker_generation\":null},{\"counts\":{\"activity_entries\":1,\"activity_returns\":1,\"activity_schedules\":1,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1018000000,\"node\":null,\"operation_id\":\"history-terminal-19\",\"seq\":20,\"worker_generation\":null},{\"counts\":{\"activity_entries\":1,\"activity_returns\":1,\"activity_schedules\":1,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":12,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1018000000,\"node\":null,\"operation_id\":\"history-terminal-19\",\"seq\":21,\"worker_generation\":null},{\"counts\":{\"activity_entries\":1,\"activity_returns\":1,\"activity_schedules\":1,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":12,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1018000000,\"node\":\"A\",\"operation_id\":\"history-terminal-19\",\"seq\":22,\"worker_generation\":2},{\"counts\":{\"activity_entries\":2,\"activity_returns\":1,\"activity_schedules\":1,\"endpoint_cas_reads\":1,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1019000000,\"node\":\"A\",\"operation_id\":null,\"seq\":23,\"worker_generation\":2},{\"counts\":{\"activity_entries\":2,\"activity_returns\":2,\"activity_schedules\":1,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1021000000,\"node\":\"A\",\"operation_id\":null,\"seq\":24,\"worker_generation\":2},{\"counts\":{\"activity_entries\":2,\"activity_returns\":2,\"activity_schedules\":1,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1022000000,\"node\":null,\"operation_id\":\"history-schedule-23\",\"seq\":25,\"worker_generation\":null},{\"counts\":{\"activity_entries\":2,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":20,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1022000000,\"node\":null,\"operation_id\":\"history-schedule-23\",\"seq\":26,\"worker_generation\":null},{\"counts\":{\"activity_entries\":2,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1023000000,\"node\":null,\"operation_id\":\"history-terminal-24\",\"seq\":27,\"worker_generation\":null},{\"counts\":{\"activity_entries\":2,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":22,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1023000000,\"node\":null,\"operation_id\":\"history-terminal-24\",\"seq\":28,\"worker_generation\":null},{\"counts\":{\"activity_entries\":2,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":22,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1023000000,\"node\":\"A\",\"operation_id\":\"history-terminal-24\",\"seq\":29,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":1,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1024000000,\"node\":\"B\",\"operation_id\":null,\"seq\":30,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":1,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":2,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"runtime_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1025000000,\"node\":\"B\",\"operation_id\":null,\"seq\":31,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":2,\"handler_returns\":1,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":2,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"handler_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1026000000,\"node\":\"B\",\"operation_id\":null,\"seq\":32,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":2,\"runtime_returns\":1,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"handler_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1027000000,\"node\":\"B\",\"operation_id\":null,\"seq\":33,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":2,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":1,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"runtime_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1028000000,\"node\":\"B\",\"operation_id\":null,\"seq\":34,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"result_put_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1029000000,\"node\":\"B\",\"operation_id\":null,\"seq\":35,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":2,\"activity_schedules\":2,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"original_capture\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1030000000,\"node\":\"B\",\"operation_id\":null,\"seq\":36,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":3,\"activity_schedules\":2,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1031000000,\"node\":\"B\",\"operation_id\":null,\"seq\":37,\"worker_generation\":2},{\"counts\":{\"activity_entries\":3,\"activity_returns\":3,\"activity_schedules\":2,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1032000000,\"node\":null,\"operation_id\":\"history-schedule-33\",\"seq\":38,\"worker_generation\":null},{\"counts\":{\"activity_entries\":3,\"activity_returns\":3,\"activity_schedules\":3,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":30,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1032000000,\"node\":null,\"operation_id\":\"history-schedule-33\",\"seq\":39,\"worker_generation\":null},{\"counts\":{\"activity_entries\":3,\"activity_returns\":3,\"activity_schedules\":3,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1033000000,\"node\":null,\"operation_id\":\"history-terminal-34\",\"seq\":40,\"worker_generation\":null},{\"counts\":{\"activity_entries\":3,\"activity_returns\":3,\"activity_schedules\":3,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":32,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1033000000,\"node\":null,\"operation_id\":\"history-terminal-34\",\"seq\":41,\"worker_generation\":null},{\"counts\":{\"activity_entries\":3,\"activity_returns\":3,\"activity_schedules\":3,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":32,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1033000000,\"node\":\"B\",\"operation_id\":\"history-terminal-34\",\"seq\":42,\"worker_generation\":2},{\"counts\":{\"activity_entries\":4,\"activity_returns\":3,\"activity_schedules\":3,\"endpoint_cas_reads\":4,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1034000000,\"node\":\"B\",\"operation_id\":null,\"seq\":43,\"worker_generation\":2},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":3,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1036000000,\"node\":\"B\",\"operation_id\":null,\"seq\":44,\"worker_generation\":2},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":3,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1037000000,\"node\":null,\"operation_id\":\"history-schedule-38\",\"seq\":45,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":40,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1037000000,\"node\":null,\"operation_id\":\"history-schedule-38\",\"seq\":46,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1038000000,\"node\":null,\"operation_id\":\"history-terminal-39\",\"seq\":47,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":42,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1038000000,\"node\":null,\"operation_id\":\"history-terminal-39\",\"seq\":48,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":42,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1038000000,\"node\":\"B\",\"operation_id\":\"history-terminal-39\",\"seq\":49,\"worker_generation\":2},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1039000000,\"node\":null,\"operation_id\":\"history-normal-final\",\"seq\":50,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":46,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1040000000,\"node\":null,\"operation_id\":\"history-normal-final\",\"seq\":51,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1041000000,\"node\":null,\"operation_id\":\"query-normal-final\",\"seq\":52,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1042000000,\"node\":null,\"operation_id\":\"query-normal-final\",\"seq\":53,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":46,\"kind\":\"snapshot_retained\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1043000000,\"node\":null,\"operation_id\":\"history-normal-final\",\"seq\":54,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1044000000,\"node\":null,\"operation_id\":\"result-normal\",\"seq\":55,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1045000000,\"node\":null,\"operation_id\":\"result-normal\",\"seq\":56,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1046000000,\"node\":null,\"operation_id\":null,\"seq\":57,\"worker_generation\":2},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1047000000,\"node\":null,\"operation_id\":null,\"seq\":58,\"worker_generation\":2},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"activity_executor_completed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1048000000,\"node\":null,\"operation_id\":null,\"seq\":59,\"worker_generation\":2},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1049000000,\"node\":null,\"operation_id\":null,\"seq\":60,\"worker_generation\":1},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1050000000,\"node\":null,\"operation_id\":null,\"seq\":61,\"worker_generation\":1},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"replay_begin\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1051000000,\"node\":null,\"operation_id\":null,\"seq\":62,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":1,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"replay_end\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1052000000,\"node\":null,\"operation_id\":null,\"seq\":63,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"seed_put_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1053000000,\"node\":null,\"operation_id\":null,\"seq\":64,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"workflow_start_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1054000000,\"node\":null,\"operation_id\":null,\"seq\":65,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1055000000,\"node\":null,\"operation_id\":\"start-hosted-reconcile\",\"seq\":66,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":1},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1056000000,\"node\":null,\"operation_id\":\"start-hosted-reconcile\",\"seq\":67,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"workflow_start_acknowledged\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1057000000,\"node\":null,\"operation_id\":null,\"seq\":68,\"worker_generation\":null},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"bootstrap_constructed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1058000000,\"node\":null,\"operation_id\":null,\"seq\":69,\"worker_generation\":4},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1059000000,\"node\":null,\"operation_id\":null,\"seq\":70,\"worker_generation\":3},{\"counts\":{\"activity_entries\":4,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1060000000,\"node\":null,\"operation_id\":null,\"seq\":71,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":2,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1061000000,\"node\":\"A\",\"operation_id\":null,\"seq\":72,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":2,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":3,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"runtime_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1062000000,\"node\":\"A\",\"operation_id\":null,\"seq\":73,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":3,\"handler_returns\":2,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":3,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"handler_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1063000000,\"node\":\"A\",\"operation_id\":null,\"seq\":74,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":3,\"runtime_returns\":2,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"handler_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1064000000,\"node\":\"A\",\"operation_id\":null,\"seq\":75,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":5,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":2,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"runtime_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1065000000,\"node\":\"A\",\"operation_id\":null,\"seq\":76,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"result_put_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1066000000,\"node\":\"A\",\"operation_id\":null,\"seq\":77,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":4,\"activity_schedules\":4,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"original_capture\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1067000000,\"node\":\"A\",\"operation_id\":null,\"seq\":78,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":4,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1068000000,\"node\":\"A\",\"operation_id\":null,\"seq\":79,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":4,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"controlled_response_failure\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1069000000,\"node\":\"A\",\"operation_id\":null,\"seq\":80,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":4,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1070000000,\"node\":null,\"operation_id\":\"history-schedule-71\",\"seq\":81,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":10,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1070000000,\"node\":null,\"operation_id\":\"history-schedule-71\",\"seq\":82,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1071000000,\"node\":null,\"operation_id\":\"history-terminal-72\",\"seq\":83,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":12,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1071000000,\"node\":null,\"operation_id\":\"history-terminal-72\",\"seq\":84,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":12,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1071000000,\"node\":\"A\",\"operation_id\":\"history-terminal-72\",\"seq\":85,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1072000000,\"node\":null,\"operation_id\":\"history-reconcile-unknown-before-stop\",\"seq\":86,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":15,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1073000000,\"node\":null,\"operation_id\":\"history-reconcile-unknown-before-stop\",\"seq\":87,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1074000000,\"node\":null,\"operation_id\":\"query-reconcile-unknown-before-stop\",\"seq\":88,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1075000000,\"node\":null,\"operation_id\":\"query-reconcile-unknown-before-stop\",\"seq\":89,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":15,\"kind\":\"snapshot_retained\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1076000000,\"node\":null,\"operation_id\":\"history-reconcile-unknown-before-stop\",\"seq\":90,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1077000000,\"node\":null,\"operation_id\":null,\"seq\":91,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1078000000,\"node\":null,\"operation_id\":null,\"seq\":92,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"activity_executor_completed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1079000000,\"node\":null,\"operation_id\":null,\"seq\":93,\"worker_generation\":4},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1080000000,\"node\":null,\"operation_id\":null,\"seq\":94,\"worker_generation\":3},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1081000000,\"node\":null,\"operation_id\":null,\"seq\":95,\"worker_generation\":3},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"bootstrap_constructed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1082000000,\"node\":null,\"operation_id\":null,\"seq\":96,\"worker_generation\":6},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1083000000,\"node\":null,\"operation_id\":null,\"seq\":97,\"worker_generation\":5},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1084000000,\"node\":null,\"operation_id\":\"history-reconcile-unknown-after-replacement\",\"seq\":98,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":15,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1085000000,\"node\":null,\"operation_id\":\"history-reconcile-unknown-after-replacement\",\"seq\":99,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1086000000,\"node\":null,\"operation_id\":\"query-reconcile-unknown-after-replacement\",\"seq\":100,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1087000000,\"node\":null,\"operation_id\":\"query-reconcile-unknown-after-replacement\",\"seq\":101,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":15,\"kind\":\"snapshot_retained\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1088000000,\"node\":null,\"operation_id\":\"history-reconcile-unknown-after-replacement\",\"seq\":102,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_submit\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1089000000,\"node\":null,\"operation_id\":\"update-stale\",\"seq\":103,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1090000000,\"node\":null,\"operation_id\":\"update-stale\",\"seq\":104,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1091000000,\"node\":null,\"operation_id\":\"update-stale\",\"seq\":105,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_handle_returned\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1092000000,\"node\":null,\"operation_id\":\"update-stale\",\"seq\":106,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1093000000,\"node\":null,\"operation_id\":\"update-stale-result\",\"seq\":107,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1094000000,\"node\":null,\"operation_id\":\"update-stale-result\",\"seq\":108,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_refusal_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1095000000,\"node\":null,\"operation_id\":\"update-stale\",\"seq\":109,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_submit\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1096000000,\"node\":null,\"operation_id\":\"update-original\",\"seq\":110,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1097000000,\"node\":null,\"operation_id\":\"update-original\",\"seq\":111,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1098000000,\"node\":null,\"operation_id\":\"update-original\",\"seq\":112,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_handle_returned\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1099000000,\"node\":null,\"operation_id\":\"update-original\",\"seq\":113,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1100000000,\"node\":null,\"operation_id\":\"history-update-accepted\",\"seq\":114,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":19,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1100000000,\"node\":null,\"operation_id\":\"history-update-accepted\",\"seq\":115,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":19,\"kind\":\"update_accepted_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1100000000,\"node\":null,\"operation_id\":\"history-update-accepted\",\"seq\":116,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_submit\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1101000000,\"node\":null,\"operation_id\":\"update-repeat-same-id\",\"seq\":117,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1102000000,\"node\":null,\"operation_id\":\"update-repeat-same-id\",\"seq\":118,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1103000000,\"node\":null,\"operation_id\":\"update-repeat-same-id\",\"seq\":119,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_handle_returned\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1104000000,\"node\":null,\"operation_id\":\"update-repeat-same-id\",\"seq\":120,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":19,\"kind\":\"update_accepted_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1105000000,\"node\":null,\"operation_id\":\"history-update-accepted\",\"seq\":121,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_submit\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1106000000,\"node\":null,\"operation_id\":\"update-distinct-busy\",\"seq\":122,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1107000000,\"node\":null,\"operation_id\":\"update-distinct-busy\",\"seq\":123,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1108000000,\"node\":null,\"operation_id\":\"update-distinct-busy\",\"seq\":124,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_handle_returned\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1109000000,\"node\":null,\"operation_id\":\"update-distinct-busy\",\"seq\":125,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1110000000,\"node\":null,\"operation_id\":\"update-distinct-busy-result\",\"seq\":126,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1111000000,\"node\":null,\"operation_id\":\"update-distinct-busy-result\",\"seq\":127,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_refusal_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1112000000,\"node\":null,\"operation_id\":\"update-distinct-busy\",\"seq\":128,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":5,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1113000000,\"node\":null,\"operation_id\":\"history-schedule-114\",\"seq\":129,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":20,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1113000000,\"node\":null,\"operation_id\":\"history-schedule-114\",\"seq\":130,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1114000000,\"node\":null,\"operation_id\":\"history-reconcile-update-queued\",\"seq\":131,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":20,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1115000000,\"node\":null,\"operation_id\":\"history-reconcile-update-queued\",\"seq\":132,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1116000000,\"node\":null,\"operation_id\":\"query-reconcile-update-queued\",\"seq\":133,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1117000000,\"node\":null,\"operation_id\":\"query-reconcile-update-queued\",\"seq\":134,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":20,\"kind\":\"snapshot_retained\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1118000000,\"node\":null,\"operation_id\":\"history-reconcile-update-queued\",\"seq\":135,\"worker_generation\":null},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1119000000,\"node\":null,\"operation_id\":null,\"seq\":136,\"worker_generation\":6},{\"counts\":{\"activity_entries\":5,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1119000000,\"node\":null,\"operation_id\":\"update-original-result\",\"seq\":137,\"worker_generation\":null},{\"counts\":{\"activity_entries\":6,\"activity_returns\":5,\"activity_schedules\":6,\"endpoint_cas_reads\":6,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1120000000,\"node\":\"A\",\"operation_id\":null,\"seq\":138,\"worker_generation\":6},{\"counts\":{\"activity_entries\":6,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1122000000,\"node\":\"A\",\"operation_id\":null,\"seq\":139,\"worker_generation\":6},{\"counts\":{\"activity_entries\":6,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1122000000,\"node\":null,\"operation_id\":\"update-original-result\",\"seq\":140,\"worker_generation\":null},{\"counts\":{\"activity_entries\":6,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_result_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1122000000,\"node\":\"A\",\"operation_id\":\"update-original-result\",\"seq\":141,\"worker_generation\":null},{\"counts\":{\"activity_entries\":6,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1123000000,\"node\":null,\"operation_id\":\"history-terminal-124\",\"seq\":142,\"worker_generation\":null},{\"counts\":{\"activity_entries\":6,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":22,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1123000000,\"node\":null,\"operation_id\":\"history-terminal-124\",\"seq\":143,\"worker_generation\":null},{\"counts\":{\"activity_entries\":6,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":22,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1123000000,\"node\":\"A\",\"operation_id\":\"history-terminal-124\",\"seq\":144,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":3,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1124000000,\"node\":\"B\",\"operation_id\":null,\"seq\":145,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":3,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":4,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"runtime_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1125000000,\"node\":\"B\",\"operation_id\":null,\"seq\":146,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":4,\"handler_returns\":3,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":4,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"handler_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1126000000,\"node\":\"B\",\"operation_id\":null,\"seq\":147,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":4,\"runtime_returns\":3,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"handler_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1127000000,\"node\":\"B\",\"operation_id\":null,\"seq\":148,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":7,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":3,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"runtime_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1128000000,\"node\":\"B\",\"operation_id\":null,\"seq\":149,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"result_put_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1129000000,\"node\":\"B\",\"operation_id\":null,\"seq\":150,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":6,\"activity_schedules\":6,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"original_capture\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1130000000,\"node\":\"B\",\"operation_id\":null,\"seq\":151,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":7,\"activity_schedules\":6,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1131000000,\"node\":\"B\",\"operation_id\":null,\"seq\":152,\"worker_generation\":6},{\"counts\":{\"activity_entries\":7,\"activity_returns\":7,\"activity_schedules\":6,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1132000000,\"node\":null,\"operation_id\":\"history-schedule-133\",\"seq\":153,\"worker_generation\":null},{\"counts\":{\"activity_entries\":7,\"activity_returns\":7,\"activity_schedules\":7,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":30,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1132000000,\"node\":null,\"operation_id\":\"history-schedule-133\",\"seq\":154,\"worker_generation\":null},{\"counts\":{\"activity_entries\":7,\"activity_returns\":7,\"activity_schedules\":7,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1133000000,\"node\":null,\"operation_id\":\"history-terminal-134\",\"seq\":155,\"worker_generation\":null},{\"counts\":{\"activity_entries\":7,\"activity_returns\":7,\"activity_schedules\":7,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":32,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1133000000,\"node\":null,\"operation_id\":\"history-terminal-134\",\"seq\":156,\"worker_generation\":null},{\"counts\":{\"activity_entries\":7,\"activity_returns\":7,\"activity_schedules\":7,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":32,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1133000000,\"node\":\"B\",\"operation_id\":\"history-terminal-134\",\"seq\":157,\"worker_generation\":6},{\"counts\":{\"activity_entries\":8,\"activity_returns\":7,\"activity_schedules\":7,\"endpoint_cas_reads\":9,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1134000000,\"node\":\"B\",\"operation_id\":null,\"seq\":158,\"worker_generation\":6},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":7,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1136000000,\"node\":\"B\",\"operation_id\":null,\"seq\":159,\"worker_generation\":6},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":7,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1137000000,\"node\":null,\"operation_id\":\"history-schedule-138\",\"seq\":160,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":40,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1137000000,\"node\":null,\"operation_id\":\"history-schedule-138\",\"seq\":161,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1138000000,\"node\":null,\"operation_id\":\"history-terminal-139\",\"seq\":162,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":42,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1138000000,\"node\":null,\"operation_id\":\"history-terminal-139\",\"seq\":163,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":42,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1138000000,\"node\":\"B\",\"operation_id\":\"history-terminal-139\",\"seq\":164,\"worker_generation\":6},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1140000000,\"node\":null,\"operation_id\":\"update-get-completed\",\"seq\":165,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1141000000,\"node\":null,\"operation_id\":\"update-get-completed\",\"seq\":166,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"update_result_observed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1141000000,\"node\":null,\"operation_id\":\"update-get-completed\",\"seq\":167,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1142000000,\"node\":null,\"operation_id\":\"history-reconcile-final\",\"seq\":168,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":46,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1143000000,\"node\":null,\"operation_id\":\"history-reconcile-final\",\"seq\":169,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1144000000,\"node\":null,\"operation_id\":\"query-reconcile-final\",\"seq\":170,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1145000000,\"node\":null,\"operation_id\":\"query-reconcile-final\",\"seq\":171,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":46,\"kind\":\"snapshot_retained\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1146000000,\"node\":null,\"operation_id\":\"history-reconcile-final\",\"seq\":172,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1147000000,\"node\":null,\"operation_id\":\"result-reconcile\",\"seq\":173,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1148000000,\"node\":null,\"operation_id\":\"result-reconcile\",\"seq\":174,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1149000000,\"node\":null,\"operation_id\":null,\"seq\":175,\"worker_generation\":6},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1150000000,\"node\":null,\"operation_id\":null,\"seq\":176,\"worker_generation\":6},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"activity_executor_completed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1151000000,\"node\":null,\"operation_id\":null,\"seq\":177,\"worker_generation\":6},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1152000000,\"node\":null,\"operation_id\":null,\"seq\":178,\"worker_generation\":5},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1153000000,\"node\":null,\"operation_id\":null,\"seq\":179,\"worker_generation\":5},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"replay_begin\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1154000000,\"node\":null,\"operation_id\":null,\"seq\":180,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":2,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"replay_end\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1155000000,\"node\":null,\"operation_id\":null,\"seq\":181,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"seed_put_return\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1156000000,\"node\":null,\"operation_id\":null,\"seq\":182,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"workflow_start_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1157000000,\"node\":null,\"operation_id\":null,\"seq\":183,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1158000000,\"node\":null,\"operation_id\":\"start-hosted-no-ref-cancel\",\"seq\":184,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":2},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1159000000,\"node\":null,\"operation_id\":\"start-hosted-no-ref-cancel\",\"seq\":185,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"workflow_start_acknowledged\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1160000000,\"node\":null,\"operation_id\":null,\"seq\":186,\"worker_generation\":null},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"bootstrap_constructed\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1161000000,\"node\":null,\"operation_id\":null,\"seq\":187,\"worker_generation\":8},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1162000000,\"node\":null,\"operation_id\":null,\"seq\":188,\"worker_generation\":7},{\"counts\":{\"activity_entries\":8,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"worker_start\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1163000000,\"node\":null,\"operation_id\":null,\"seq\":189,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":4,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"activity_enter\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1164000000,\"node\":\"A\",\"operation_id\":null,\"seq\":190,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":4,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":5,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"runtime_enter\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1165000000,\"node\":\"A\",\"operation_id\":null,\"seq\":191,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":5,\"handler_returns\":4,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":5,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"handler_enter\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1166000000,\"node\":\"A\",\"operation_id\":null,\"seq\":192,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":5,\"runtime_returns\":4,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"handler_return\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1167000000,\"node\":\"A\",\"operation_id\":null,\"seq\":193,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":10,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":4,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"runtime_return\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1168000000,\"node\":\"A\",\"operation_id\":null,\"seq\":194,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":8,\"activity_schedules\":8,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":1,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"result_put_return\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1169000000,\"node\":\"A\",\"operation_id\":null,\"seq\":195,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":8,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"adapter_return\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1170000000,\"node\":\"A\",\"operation_id\":null,\"seq\":196,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":8,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"controlled_response_failure\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1171000000,\"node\":\"A\",\"operation_id\":null,\"seq\":197,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":8,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1172000000,\"node\":null,\"operation_id\":\"history-schedule-173\",\"seq\":198,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":10,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1172000000,\"node\":null,\"operation_id\":\"history-schedule-173\",\"seq\":199,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1173000000,\"node\":null,\"operation_id\":\"history-terminal-174\",\"seq\":200,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":12,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1173000000,\"node\":null,\"operation_id\":\"history-terminal-174\",\"seq\":201,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":12,\"kind\":\"activity_terminal_observed\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1173000000,\"node\":\"A\",\"operation_id\":\"history-terminal-174\",\"seq\":202,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1174000000,\"node\":null,\"operation_id\":\"history-no-ref-unknown\",\"seq\":203,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":15,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1175000000,\"node\":null,\"operation_id\":\"history-no-ref-unknown\",\"seq\":204,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1176000000,\"node\":null,\"operation_id\":\"query-no-ref-unknown\",\"seq\":205,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1177000000,\"node\":null,\"operation_id\":\"query-no-ref-unknown\",\"seq\":206,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":15,\"kind\":\"snapshot_retained\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1178000000,\"node\":null,\"operation_id\":\"history-no-ref-unknown\",\"seq\":207,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"cancel_submit\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1179000000,\"node\":null,\"operation_id\":null,\"seq\":208,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1180000000,\"node\":null,\"operation_id\":\"cancel-no-ref\",\"seq\":209,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1181000000,\"node\":null,\"operation_id\":\"cancel-no-ref\",\"seq\":210,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"cancel_acknowledged\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1182000000,\"node\":null,\"operation_id\":null,\"seq\":211,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1184000000,\"node\":null,\"operation_id\":\"history-no-ref-cancel-final\",\"seq\":212,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":20,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1185000000,\"node\":null,\"operation_id\":\"history-no-ref-cancel-final\",\"seq\":213,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":16,\"kind\":\"cancel_recorded_observed\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1185000000,\"node\":null,\"operation_id\":null,\"seq\":214,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1186000000,\"node\":null,\"operation_id\":\"query-no-ref-cancel-final\",\"seq\":215,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1187000000,\"node\":null,\"operation_id\":\"query-no-ref-cancel-final\",\"seq\":216,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":20,\"kind\":\"snapshot_retained\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1188000000,\"node\":null,\"operation_id\":\"history-no-ref-cancel-final\",\"seq\":217,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":1,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_issued\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1189000000,\"node\":null,\"operation_id\":\"result-no-ref\",\"seq\":218,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"rpc_settled\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1190000000,\"node\":null,\"operation_id\":\"result-no-ref\",\"seq\":219,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1191000000,\"node\":null,\"operation_id\":null,\"seq\":220,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1192000000,\"node\":null,\"operation_id\":null,\"seq\":221,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"activity_executor_completed\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1193000000,\"node\":null,\"operation_id\":null,\"seq\":222,\"worker_generation\":8},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"worker_stop_requested\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1194000000,\"node\":null,\"operation_id\":null,\"seq\":223,\"worker_generation\":7},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":0,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"worker_stop_completed\",\"mission\":\"hosted-no-ref-cancel\",\"monotonic_ns\":1195000000,\"node\":null,\"operation_id\":null,\"seq\":224,\"worker_generation\":7},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":1,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"verification_read\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1196000000,\"node\":\"A\",\"operation_id\":null,\"seq\":225,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":2,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"verification_read\",\"mission\":\"hosted-normal\",\"monotonic_ns\":1197000000,\"node\":\"B\",\"operation_id\":null,\"seq\":226,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":3,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"verification_read\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1198000000,\"node\":\"A\",\"operation_id\":null,\"seq\":227,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":4,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"verification_read\",\"mission\":\"hosted-reconcile\",\"monotonic_ns\":1199000000,\"node\":\"B\",\"operation_id\":null,\"seq\":228,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":4,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"server_stop_requested\",\"mission\":null,\"monotonic_ns\":1200000000,\"node\":null,\"operation_id\":null,\"seq\":229,\"worker_generation\":null},{\"counts\":{\"activity_entries\":9,\"activity_returns\":9,\"activity_schedules\":9,\"endpoint_cas_reads\":11,\"handler_entries\":5,\"handler_returns\":5,\"in_flight_calls\":0,\"observer_cas_reads\":0,\"pending_rpc_tasks\":0,\"result_puts\":5,\"runtime_entries\":5,\"runtime_returns\":5,\"seed_puts\":3,\"verification_cas_reads\":4,\"workflow_starts\":3},\"history_event_id\":null,\"kind\":\"server_stop_completed\",\"mission\":null,\"monotonic_ns\":1201000000,\"node\":null,\"operation_id\":null,\"seq\":230,\"worker_generation\":null}],\"evidence_class\":\"FABRICATED_UNIT_DATA\",\"rpc_operations\":[{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":4,\"kind\":\"start\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"start-hosted-normal\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":5,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":18,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-18\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":19,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":20,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-19\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":21,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":25,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-23\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":26,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":27,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-24\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":28,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":38,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-33\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":39,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":40,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-34\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":41,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":45,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-38\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":46,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":47,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-39\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":48,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":50,\"kind\":\"history\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-normal-final\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":51,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":52,\"kind\":\"query\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"query-normal-final\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":53,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":55,\"kind\":\"result\",\"mission\":\"hosted-normal\",\"observation_timeout_seconds\":1,\"operation_id\":\"result-normal\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"settled_seq\":56,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":66,\"kind\":\"start\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"start-hosted-reconcile\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":67,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":81,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-71\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":82,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":83,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-72\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":84,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":86,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-reconcile-unknown-before-stop\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":87,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":88,\"kind\":\"query\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"query-reconcile-unknown-before-stop\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":89,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":98,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-reconcile-unknown-after-replacement\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":99,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":100,\"kind\":\"query\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"query-reconcile-unknown-after-replacement\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":101,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":104,\"kind\":\"start_update\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-stale\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":105,\"update_id\":\"dag2-reconcile-stale\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":107,\"kind\":\"update_result\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-stale-result\",\"outcome\":\"EXPECTED_VALIDATOR_REFUSAL\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":108,\"update_id\":\"dag2-reconcile-stale\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":111,\"kind\":\"start_update\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-original\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":112,\"update_id\":\"dag2-reconcile-original\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":114,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-update-accepted\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":115,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":118,\"kind\":\"start_update\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-repeat-same-id\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":119,\"update_id\":\"dag2-reconcile-original\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":123,\"kind\":\"start_update\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-distinct-busy\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":124,\"update_id\":\"dag2-reconcile-busy\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":126,\"kind\":\"update_result\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-distinct-busy-result\",\"outcome\":\"EXPECTED_VALIDATOR_REFUSAL\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":127,\"update_id\":\"dag2-reconcile-busy\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":129,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-114\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":130,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":131,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-reconcile-update-queued\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":132,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":133,\"kind\":\"query\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"query-reconcile-update-queued\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":134,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":137,\"kind\":\"update_result\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-original-result\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":140,\"update_id\":\"dag2-reconcile-original\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":142,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-124\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":143,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":153,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-133\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":154,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":155,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-134\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":156,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":160,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-138\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":161,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":162,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-139\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":163,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":165,\"kind\":\"update_result\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"update-get-completed\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":166,\"update_id\":\"dag2-reconcile-original\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":168,\"kind\":\"history\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-reconcile-final\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":169,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":170,\"kind\":\"query\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"query-reconcile-final\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":171,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":173,\"kind\":\"result\",\"mission\":\"hosted-reconcile\",\"observation_timeout_seconds\":1,\"operation_id\":\"result-reconcile\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"settled_seq\":174,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":184,\"kind\":\"start\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"start-hosted-no-ref-cancel\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":185,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":198,\"kind\":\"history\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-schedule-173\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":199,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":200,\"kind\":\"history\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-terminal-174\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":201,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":203,\"kind\":\"history\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-no-ref-unknown\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":204,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":205,\"kind\":\"query\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"query-no-ref-unknown\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":206,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":209,\"kind\":\"cancel\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"cancel-no-ref\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":210,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":212,\"kind\":\"history\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"history-no-ref-cancel-final\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":213,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":215,\"kind\":\"query\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"query-no-ref-cancel-final\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":216,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"},{\"application_submissions\":1,\"follow_runs\":false,\"issued_seq\":218,\"kind\":\"result\",\"mission\":\"hosted-no-ref-cancel\",\"observation_timeout_seconds\":1,\"operation_id\":\"result-no-ref\",\"outcome\":\"SUCCESS\",\"rpc_timeout_seconds\":2,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"settled_seq\":219,\"update_id\":null,\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}],\"schema_version\":\"opendot.temporal.dag2-gate.trace.v1\",\"snapshots\":[{\"completion_payload_sha256\":\"364a62b9e72aaf29577e1655f55d1b05a451db7dfd41935d88c8bc1b2677fb05\",\"events\":[{\"event_id\":1,\"event_type\":\"WorkflowExecutionStarted\",\"extracted\":{\"attempt\":1,\"execution_timeout\":\"300s\",\"first_run_id\":\"11111111-1111-4111-8111-111111111111\",\"maximum_attempts\":1,\"payload_sha256\":\"c598a423b403ecb9d8618633fc7f9947f76d290f9759528cc8a4dd75e160116d\",\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"run_timeout\":\"300s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"task_timeout\":\"10s\",\"workflow_type\":\"opendot.synthetic.dependent-sum.v1\"}},{\"event_id\":2,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"task_timeout\":\"10s\"}},{\"event_id\":3,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":2}},{\"event_id\":4,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":2,\"started_event_id\":3}},{\"event_id\":10,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"033748dd346dc2f91786f8aa70240e45bf69293d0b484e8cf40e725ea84c20f7\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"workflow_task_completed_event_id\":4}},{\"event_id\":11,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":10}},{\"event_id\":12,\"event_type\":\"ActivityTaskCompleted\",\"extracted\":{\"payload_sha256\":\"a6340c56031d384eada17ddcd3c2da8dc51a70e0b62b0ec11548b78a0240b85c\",\"scheduled_event_id\":10,\"started_event_id\":11}},{\"event_id\":13,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"task_timeout\":\"10s\"}},{\"event_id\":14,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":13}},{\"event_id\":15,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":13,\"started_event_id\":14}},{\"event_id\":20,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-inspect-normal-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"7436b13f0c89c00282c085e96be30878f95bbec5c9e94c1d8bddbf1aa4a54708\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"workflow_task_completed_event_id\":15}},{\"event_id\":21,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":20}},{\"event_id\":22,\"event_type\":\"ActivityTaskCompleted\",\"extracted\":{\"payload_sha256\":\"7e59255c0ac1da8cd11696ccc854d00060fb88c1722d216a33844c812ff39d72\",\"scheduled_event_id\":20,\"started_event_id\":21}},{\"event_id\":23,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"task_timeout\":\"10s\"}},{\"event_id\":24,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":23}},{\"event_id\":25,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":23,\"started_event_id\":24}},{\"event_id\":30,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"cbc930a0bd3a48d6d7d6f78242117c634650257319e7f9d09e91bb072dcb3a78\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"workflow_task_completed_event_id\":25}},{\"event_id\":31,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":30}},{\"event_id\":32,\"event_type\":\"ActivityTaskCompleted\",\"extracted\":{\"payload_sha256\":\"3ff4e0378d3be3e90e48c3d26e9782f828c1e373011d7157b587aec37d30f0dd\",\"scheduled_event_id\":30,\"started_event_id\":31}},{\"event_id\":33,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"task_timeout\":\"10s\"}},{\"event_id\":34,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":33}},{\"event_id\":35,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":33,\"started_event_id\":34}},{\"event_id\":40,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-inspect-normal-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"fe47ddaa7c56f1efd7bf2262113df3ffc159774a43588bad1fe905e2e6edac73\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"workflow_task_completed_event_id\":35}},{\"event_id\":41,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":40}},{\"event_id\":42,\"event_type\":\"ActivityTaskCompleted\",\"extracted\":{\"payload_sha256\":\"550b3bb72c87e3401675bd38df67e39c1d540c92f6c6616a651d8faed6b1cf31\",\"scheduled_event_id\":40,\"started_event_id\":41}},{\"event_id\":43,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-normal\",\"task_timeout\":\"10s\"}},{\"event_id\":44,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":43}},{\"event_id\":45,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":43,\"started_event_id\":44}},{\"event_id\":46,\"event_type\":\"WorkflowExecutionCompleted\",\"extracted\":{\"payload_sha256\":\"364a62b9e72aaf29577e1655f55d1b05a451db7dfd41935d88c8bc1b2677fb05\",\"workflow_task_completed_event_id\":45}}],\"history\":{\"file_id\":\"normal-final.history.json\",\"sha256\":\"6725652a1894675ea54858b51413d77974f77637e51308f06993b7127ee173ec\",\"size_bytes\":27423},\"history_event_count\":29,\"last_event_id\":46,\"mission\":\"hosted-normal\",\"observation_seq\":54,\"snapshot_id\":\"normal-final\",\"state\":{\"file_id\":\"normal-final.state.json\",\"sha256\":\"364a62b9e72aaf29577e1655f55d1b05a451db7dfd41935d88c8bc1b2677fb05\",\"size_bytes\":5046},\"state_revision\":9,\"state_status\":\"COMPLETED\"},{\"completion_payload_sha256\":null,\"events\":[{\"event_id\":1,\"event_type\":\"WorkflowExecutionStarted\",\"extracted\":{\"attempt\":1,\"execution_timeout\":\"300s\",\"first_run_id\":\"22222222-2222-4222-8222-222222222222\",\"maximum_attempts\":1,\"payload_sha256\":\"f143a463eec448a85ae82b88cc0906f990202de700f192341a0d9b3322703533\",\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"run_timeout\":\"300s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\",\"workflow_type\":\"opendot.synthetic.dependent-sum.v1\"}},{\"event_id\":2,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":3,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":2}},{\"event_id\":4,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":2,\"started_event_id\":3}},{\"event_id\":10,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"9cd89556e6714e217f12bddc1d171bf1d44c0d145bb61b5c59ca6a264fa47df9\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":4}},{\"event_id\":11,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":10}},{\"event_id\":12,\"event_type\":\"ActivityTaskFailed\",\"extracted\":{\"failure_type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\",\"non_retryable\":true,\"scheduled_event_id\":10,\"started_event_id\":11}},{\"event_id\":13,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":14,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":13}},{\"event_id\":15,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":13,\"started_event_id\":14}}],\"history\":{\"file_id\":\"reconcile-unknown-before-stop.history.json\",\"sha256\":\"91d6b7fe716750084fc19540cf418927211331e0569c848fba8f6336fe6913ab\",\"size_bytes\":4603},\"history_event_count\":10,\"last_event_id\":15,\"mission\":\"hosted-reconcile\",\"observation_seq\":90,\"snapshot_id\":\"reconcile-unknown-before-stop\",\"state\":{\"file_id\":\"reconcile-unknown-before-stop.state.json\",\"sha256\":\"e9eacaaee7bede5bd69b3c49f561d308480bc61b9b6f1b41c0b9c5f7a0c54f28\",\"size_bytes\":2020},\"state_revision\":4,\"state_status\":\"PAUSED_UNKNOWN\"},{\"completion_payload_sha256\":null,\"events\":[{\"event_id\":1,\"event_type\":\"WorkflowExecutionStarted\",\"extracted\":{\"attempt\":1,\"execution_timeout\":\"300s\",\"first_run_id\":\"22222222-2222-4222-8222-222222222222\",\"maximum_attempts\":1,\"payload_sha256\":\"f143a463eec448a85ae82b88cc0906f990202de700f192341a0d9b3322703533\",\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"run_timeout\":\"300s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\",\"workflow_type\":\"opendot.synthetic.dependent-sum.v1\"}},{\"event_id\":2,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":3,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":2}},{\"event_id\":4,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":2,\"started_event_id\":3}},{\"event_id\":10,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"9cd89556e6714e217f12bddc1d171bf1d44c0d145bb61b5c59ca6a264fa47df9\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":4}},{\"event_id\":11,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":10}},{\"event_id\":12,\"event_type\":\"ActivityTaskFailed\",\"extracted\":{\"failure_type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\",\"non_retryable\":true,\"scheduled_event_id\":10,\"started_event_id\":11}},{\"event_id\":13,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":14,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":13}},{\"event_id\":15,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":13,\"started_event_id\":14}}],\"history\":{\"file_id\":\"reconcile-unknown-after-replacement.history.json\",\"sha256\":\"91d6b7fe716750084fc19540cf418927211331e0569c848fba8f6336fe6913ab\",\"size_bytes\":4603},\"history_event_count\":10,\"last_event_id\":15,\"mission\":\"hosted-reconcile\",\"observation_seq\":102,\"snapshot_id\":\"reconcile-unknown-after-replacement\",\"state\":{\"file_id\":\"reconcile-unknown-after-replacement.state.json\",\"sha256\":\"e9eacaaee7bede5bd69b3c49f561d308480bc61b9b6f1b41c0b9c5f7a0c54f28\",\"size_bytes\":2020},\"state_revision\":4,\"state_status\":\"PAUSED_UNKNOWN\"},{\"completion_payload_sha256\":null,\"events\":[{\"event_id\":1,\"event_type\":\"WorkflowExecutionStarted\",\"extracted\":{\"attempt\":1,\"execution_timeout\":\"300s\",\"first_run_id\":\"22222222-2222-4222-8222-222222222222\",\"maximum_attempts\":1,\"payload_sha256\":\"f143a463eec448a85ae82b88cc0906f990202de700f192341a0d9b3322703533\",\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"run_timeout\":\"300s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\",\"workflow_type\":\"opendot.synthetic.dependent-sum.v1\"}},{\"event_id\":2,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":3,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":2}},{\"event_id\":4,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":2,\"started_event_id\":3}},{\"event_id\":10,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"9cd89556e6714e217f12bddc1d171bf1d44c0d145bb61b5c59ca6a264fa47df9\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":4}},{\"event_id\":11,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":10}},{\"event_id\":12,\"event_type\":\"ActivityTaskFailed\",\"extracted\":{\"failure_type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\",\"non_retryable\":true,\"scheduled_event_id\":10,\"started_event_id\":11}},{\"event_id\":13,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":14,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":13}},{\"event_id\":15,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":13,\"started_event_id\":14}},{\"event_id\":19,\"event_type\":\"WorkflowExecutionUpdateAccepted\",\"extracted\":{\"accepted_request_sequencing_event_id\":15,\"payload_sha256\":\"f4611fe8f44d6f52511f2589286e4566278d3bd8c8c3b391737b70be2e8e760f\",\"protocol_instance_id\":\"dag2-reconcile-original\",\"update_id\":\"dag2-reconcile-original\",\"update_name\":\"reconcile_result\"}},{\"event_id\":20,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-inspect-reconcile-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"abebb21dfcb11ea369631c6461e9fb341e10abc607a4c0020c99c7a36dc26477\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":15}}],\"history\":{\"file_id\":\"reconcile-update-queued.history.json\",\"sha256\":\"89a5ff59165fb9d7f9333744f467e0cdc202c58f7afaf406550087a511ee3214\",\"size_bytes\":9003},\"history_event_count\":12,\"last_event_id\":20,\"mission\":\"hosted-reconcile\",\"observation_seq\":135,\"snapshot_id\":\"reconcile-update-queued\",\"state\":{\"file_id\":\"reconcile-update-queued.state.json\",\"sha256\":\"e2a0b4ef26c4ef57bdc1561186ea0671fd563e2c67e67f4dba4bfd5367bdfc03\",\"size_bytes\":2586},\"state_revision\":5,\"state_status\":\"PAUSED_UNKNOWN\"},{\"completion_payload_sha256\":\"77759d7808f514ec59e3cef688bbe521e1b1b5ea379fce0ba495b21778998740\",\"events\":[{\"event_id\":1,\"event_type\":\"WorkflowExecutionStarted\",\"extracted\":{\"attempt\":1,\"execution_timeout\":\"300s\",\"first_run_id\":\"22222222-2222-4222-8222-222222222222\",\"maximum_attempts\":1,\"payload_sha256\":\"f143a463eec448a85ae82b88cc0906f990202de700f192341a0d9b3322703533\",\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"run_timeout\":\"300s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\",\"workflow_type\":\"opendot.synthetic.dependent-sum.v1\"}},{\"event_id\":2,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":3,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":2}},{\"event_id\":4,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":2,\"started_event_id\":3}},{\"event_id\":10,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"9cd89556e6714e217f12bddc1d171bf1d44c0d145bb61b5c59ca6a264fa47df9\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":4}},{\"event_id\":11,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":10}},{\"event_id\":12,\"event_type\":\"ActivityTaskFailed\",\"extracted\":{\"failure_type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\",\"non_retryable\":true,\"scheduled_event_id\":10,\"started_event_id\":11}},{\"event_id\":13,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":14,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":13}},{\"event_id\":15,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":13,\"started_event_id\":14}},{\"event_id\":19,\"event_type\":\"WorkflowExecutionUpdateAccepted\",\"extracted\":{\"accepted_request_sequencing_event_id\":15,\"payload_sha256\":\"f4611fe8f44d6f52511f2589286e4566278d3bd8c8c3b391737b70be2e8e760f\",\"protocol_instance_id\":\"dag2-reconcile-original\",\"update_id\":\"dag2-reconcile-original\",\"update_name\":\"reconcile_result\"}},{\"event_id\":20,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-inspect-reconcile-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"abebb21dfcb11ea369631c6461e9fb341e10abc607a4c0020c99c7a36dc26477\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":15}},{\"event_id\":21,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":20}},{\"event_id\":22,\"event_type\":\"ActivityTaskCompleted\",\"extracted\":{\"payload_sha256\":\"0b1d5e90733e080997a9d49af736c570b6becbfbff78e614243cb5a4b4689ad5\",\"scheduled_event_id\":20,\"started_event_id\":21}},{\"event_id\":23,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":24,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":23}},{\"event_id\":25,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":23,\"started_event_id\":24}},{\"event_id\":26,\"event_type\":\"WorkflowExecutionUpdateCompleted\",\"extracted\":{\"accepted_event_id\":19,\"payload_sha256\":\"d65476aa49106e8f18b5a20be1a2f260170b60d5d93a4f4bbc7a9a7df9bbfc93\",\"update_id\":\"dag2-reconcile-original\"}},{\"event_id\":30,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"5f6028a3ef2053292d29728d506f7eaf0cf34461ab040ea8517190a80a4e90e0\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":25}},{\"event_id\":31,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":30}},{\"event_id\":32,\"event_type\":\"ActivityTaskCompleted\",\"extracted\":{\"payload_sha256\":\"46ac59fcb8d5d0505351381cae2b801ecf19ba3e5fefbbd7547c68d3597d1449\",\"scheduled_event_id\":30,\"started_event_id\":31}},{\"event_id\":33,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":34,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":33}},{\"event_id\":35,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":33,\"started_event_id\":34}},{\"event_id\":40,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-inspect-normal-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"activity_type\":\"opendot.synthetic.dependent-inspect.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"96e619af203ff7e5e927f80618a8e01a949a55b9f505ca220925c185de9b8f45\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"workflow_task_completed_event_id\":35}},{\"event_id\":41,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":40}},{\"event_id\":42,\"event_type\":\"ActivityTaskCompleted\",\"extracted\":{\"payload_sha256\":\"4c6c36b0e49833a071a42be1fdf9d3556eff309742a211a2f6b9f948f78e401a\",\"scheduled_event_id\":40,\"started_event_id\":41}},{\"event_id\":43,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-reconcile\",\"task_timeout\":\"10s\"}},{\"event_id\":44,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":43}},{\"event_id\":45,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":43,\"started_event_id\":44}},{\"event_id\":46,\"event_type\":\"WorkflowExecutionCompleted\",\"extracted\":{\"payload_sha256\":\"77759d7808f514ec59e3cef688bbe521e1b1b5ea379fce0ba495b21778998740\",\"workflow_task_completed_event_id\":45}}],\"history\":{\"file_id\":\"reconcile-final.history.json\",\"sha256\":\"4de58f7fa90f1540e639aa84ca5c1c60365aa5b432f61af80ad14454f7e765c7\",\"size_bytes\":29989},\"history_event_count\":31,\"last_event_id\":46,\"mission\":\"hosted-reconcile\",\"observation_seq\":172,\"snapshot_id\":\"reconcile-final\",\"state\":{\"file_id\":\"reconcile-final.state.json\",\"sha256\":\"77759d7808f514ec59e3cef688bbe521e1b1b5ea379fce0ba495b21778998740\",\"size_bytes\":5053},\"state_revision\":10,\"state_status\":\"COMPLETED\"},{\"completion_payload_sha256\":null,\"events\":[{\"event_id\":1,\"event_type\":\"WorkflowExecutionStarted\",\"extracted\":{\"attempt\":1,\"execution_timeout\":\"300s\",\"first_run_id\":\"33333333-3333-4333-8333-333333333333\",\"maximum_attempts\":1,\"payload_sha256\":\"7624bc95b43a2f4a19b68659edbca5a35328e2dce483575de3bec74c5693725c\",\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"run_timeout\":\"300s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"task_timeout\":\"10s\",\"workflow_type\":\"opendot.synthetic.dependent-sum.v1\"}},{\"event_id\":2,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"task_timeout\":\"10s\"}},{\"event_id\":3,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":2}},{\"event_id\":4,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":2,\"started_event_id\":3}},{\"event_id\":10,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"e8309cc2dd3acdce7bb8433038a27d987e7199d6ff936f5e458341bd8d916ad8\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"workflow_task_completed_event_id\":4}},{\"event_id\":11,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":10}},{\"event_id\":12,\"event_type\":\"ActivityTaskFailed\",\"extracted\":{\"failure_type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\",\"non_retryable\":true,\"scheduled_event_id\":10,\"started_event_id\":11}},{\"event_id\":13,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"task_timeout\":\"10s\"}},{\"event_id\":14,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":13}},{\"event_id\":15,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":13,\"started_event_id\":14}}],\"history\":{\"file_id\":\"no-ref-unknown.history.json\",\"sha256\":\"9d5f813d33a68689b377b61029fab619f186224503be60c08552b8cd53305656\",\"size_bytes\":4631},\"history_event_count\":10,\"last_event_id\":15,\"mission\":\"hosted-no-ref-cancel\",\"observation_seq\":207,\"snapshot_id\":\"no-ref-unknown\",\"state\":{\"file_id\":\"no-ref-unknown.state.json\",\"sha256\":\"64456310f7ba602a30dd1f85fa181f8de30902373ab330a5d4ea4458966d5292\",\"size_bytes\":2028},\"state_revision\":4,\"state_status\":\"PAUSED_UNKNOWN\"},{\"completion_payload_sha256\":\"0ba0a4f02034e0960eb944d571507c73cfafb646ecb0d989a440969f29aa4302\",\"events\":[{\"event_id\":1,\"event_type\":\"WorkflowExecutionStarted\",\"extracted\":{\"attempt\":1,\"execution_timeout\":\"300s\",\"first_run_id\":\"33333333-3333-4333-8333-333333333333\",\"maximum_attempts\":1,\"payload_sha256\":\"7624bc95b43a2f4a19b68659edbca5a35328e2dce483575de3bec74c5693725c\",\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"run_timeout\":\"300s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"task_timeout\":\"10s\",\"workflow_type\":\"opendot.synthetic.dependent-sum.v1\"}},{\"event_id\":2,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"task_timeout\":\"10s\"}},{\"event_id\":3,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":2}},{\"event_id\":4,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":2,\"started_event_id\":3}},{\"event_id\":10,\"event_type\":\"ActivityTaskScheduled\",\"extracted\":{\"activity_id\":\"dag2-execute-bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"activity_type\":\"opendot.synthetic.dependent-step.v1\",\"maximum_attempts\":1,\"payload_sha256\":\"e8309cc2dd3acdce7bb8433038a27d987e7199d6ff936f5e458341bd8d916ad8\",\"schedule_to_close_timeout\":\"60s\",\"start_to_close_timeout\":\"10s\",\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"workflow_task_completed_event_id\":4}},{\"event_id\":11,\"event_type\":\"ActivityTaskStarted\",\"extracted\":{\"attempt\":1,\"scheduled_event_id\":10}},{\"event_id\":12,\"event_type\":\"ActivityTaskFailed\",\"extracted\":{\"failure_type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\",\"non_retryable\":true,\"scheduled_event_id\":10,\"started_event_id\":11}},{\"event_id\":13,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"task_timeout\":\"10s\"}},{\"event_id\":14,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":13}},{\"event_id\":15,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":13,\"started_event_id\":14}},{\"event_id\":16,\"event_type\":\"WorkflowExecutionCancelRequested\",\"extracted\":{}},{\"event_id\":17,\"event_type\":\"WorkflowTaskScheduled\",\"extracted\":{\"attempt\":1,\"task_queue\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\",\"task_timeout\":\"10s\"}},{\"event_id\":18,\"event_type\":\"WorkflowTaskStarted\",\"extracted\":{\"scheduled_event_id\":17}},{\"event_id\":19,\"event_type\":\"WorkflowTaskCompleted\",\"extracted\":{\"scheduled_event_id\":17,\"started_event_id\":18}},{\"event_id\":20,\"event_type\":\"WorkflowExecutionCompleted\",\"extracted\":{\"payload_sha256\":\"0ba0a4f02034e0960eb944d571507c73cfafb646ecb0d989a440969f29aa4302\",\"workflow_task_completed_event_id\":19}}],\"history\":{\"file_id\":\"no-ref-cancel-final.history.json\",\"sha256\":\"e5c2fb5bdbe636ca936b8d9057783e0473f338077c711dadfdc7e0c7b85fcaaa\",\"size_bytes\":8384},\"history_event_count\":15,\"last_event_id\":20,\"mission\":\"hosted-no-ref-cancel\",\"observation_seq\":217,\"snapshot_id\":\"no-ref-cancel-final\",\"state\":{\"file_id\":\"no-ref-cancel-final.state.json\",\"sha256\":\"0ba0a4f02034e0960eb944d571507c73cfafb646ecb0d989a440969f29aa4302\",\"size_bytes\":2041},\"state_revision\":5,\"state_status\":\"STOPPED_WITH_UNKNOWN\"}],\"updates\":[{\"accepted_event_id\":null,\"actual_error_details\":\"UPDATE_REFUSED\",\"actual_error_type\":\"TemporalDagUpdateRejected\",\"bootstrap_constructed_seq\":96,\"completed_event_id\":null,\"endpoint_read_delta\":0,\"execute_delta\":0,\"expected_revision\":3,\"mission\":\"hosted-reconcile\",\"operation_id\":\"update-stale\",\"origin_capture_seq\":78,\"outcome\":\"VALIDATOR_REFUSED\",\"post_revision\":4,\"pre_revision\":4,\"precondition_oracle\":\"STALE_REVISION\",\"request_sha256\":\"293e09d42887a4135a587d4e8d90700b35a5e9a38f8cf988d6c22d3f9cb5a03e\",\"reservation_delta\":0,\"result_sha256\":null,\"submit_seq\":103,\"update_id\":\"dag2-reconcile-stale\"},{\"accepted_event_id\":19,\"actual_error_details\":null,\"actual_error_type\":null,\"bootstrap_constructed_seq\":96,\"completed_event_id\":26,\"endpoint_read_delta\":0,\"execute_delta\":0,\"expected_revision\":4,\"mission\":\"hosted-reconcile\",\"operation_id\":\"update-original\",\"origin_capture_seq\":78,\"outcome\":\"ACCEPTED_QUEUED\",\"post_revision\":5,\"pre_revision\":4,\"precondition_oracle\":\"VALID_RECONCILIATION\",\"request_sha256\":\"f4611fe8f44d6f52511f2589286e4566278d3bd8c8c3b391737b70be2e8e760f\",\"reservation_delta\":1,\"result_sha256\":null,\"submit_seq\":110,\"update_id\":\"dag2-reconcile-original\"},{\"accepted_event_id\":19,\"actual_error_details\":null,\"actual_error_type\":null,\"bootstrap_constructed_seq\":96,\"completed_event_id\":26,\"endpoint_read_delta\":0,\"execute_delta\":0,\"expected_revision\":4,\"mission\":\"hosted-reconcile\",\"operation_id\":\"update-repeat-same-id\",\"origin_capture_seq\":78,\"outcome\":\"SAME_UPDATE_QUEUED\",\"post_revision\":5,\"pre_revision\":5,\"precondition_oracle\":\"RECORDED_SAME_ID\",\"request_sha256\":\"f4611fe8f44d6f52511f2589286e4566278d3bd8c8c3b391737b70be2e8e760f\",\"reservation_delta\":0,\"result_sha256\":null,\"submit_seq\":117,\"update_id\":\"dag2-reconcile-original\"},{\"accepted_event_id\":null,\"actual_error_details\":\"UPDATE_REFUSED\",\"actual_error_type\":\"TemporalDagUpdateRejected\",\"bootstrap_constructed_seq\":96,\"completed_event_id\":null,\"endpoint_read_delta\":0,\"execute_delta\":0,\"expected_revision\":4,\"mission\":\"hosted-reconcile\",\"operation_id\":\"update-distinct-busy\",\"origin_capture_seq\":78,\"outcome\":\"VALIDATOR_REFUSED\",\"post_revision\":5,\"pre_revision\":5,\"precondition_oracle\":\"INSPECTION_BUSY\",\"request_sha256\":\"f4611fe8f44d6f52511f2589286e4566278d3bd8c8c3b391737b70be2e8e760f\",\"reservation_delta\":0,\"result_sha256\":null,\"submit_seq\":122,\"update_id\":\"dag2-reconcile-busy\"},{\"accepted_event_id\":19,\"actual_error_details\":null,\"actual_error_type\":null,\"bootstrap_constructed_seq\":96,\"completed_event_id\":26,\"endpoint_read_delta\":0,\"execute_delta\":0,\"expected_revision\":4,\"mission\":\"hosted-reconcile\",\"operation_id\":\"update-get-completed\",\"origin_capture_seq\":78,\"outcome\":\"SAME_COMPLETED_RESULT\",\"post_revision\":10,\"pre_revision\":10,\"precondition_oracle\":\"RECORDED_SAME_ID\",\"request_sha256\":\"f4611fe8f44d6f52511f2589286e4566278d3bd8c8c3b391737b70be2e8e760f\",\"reservation_delta\":0,\"result_sha256\":\"d65476aa49106e8f18b5a20be1a2f260170b60d5d93a4f4bbc7a9a7df9bbfc93\",\"submit_seq\":165,\"update_id\":\"dag2-reconcile-original\"}]}",
+    "no-ref-cancel-final.history.json": "{\"events\":[{\"eventId\":\"1\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_STARTED\",\"workflowExecutionStartedEventAttributes\":{\"attempt\":1,\"firstExecutionRunId\":\"33333333-3333-4333-8333-333333333333\",\"input\":{\"payloads\":[{\"data\":\"eyJtaXNzaW9uX2lkIjoiaG9zdGVkLW5vLXJlZi1jYW5jZWwiLCJwbGFuX3NoYTI1NiI6IjE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMiLCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXN0YXJ0LnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"originalExecutionRunId\":\"33333333-3333-4333-8333-333333333333\",\"retryPolicy\":{\"maximumAttempts\":1},\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"},\"workflowExecutionTimeout\":\"300s\",\"workflowRunTimeout\":\"300s\",\"workflowTaskTimeout\":\"10s\",\"workflowType\":{\"name\":\"opendot.synthetic.dependent-sum.v1\"}}},{\"eventId\":\"2\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"}}},{\"eventId\":\"3\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"2\"}},{\"eventId\":\"4\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"2\",\"startedEventId\":\"3\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YmMwNDU0ZjIwYmE5MjVmYjE4NzFjYmIxYzgyN2I1MWU0NDYxYzI5OGE1YzQ3MTU1ZjI0NjQyOGVjN2E5YjYyZiIsIm1pc3Npb25faWQiOiJob3N0ZWQtbm8tcmVmLWNhbmNlbCIsIm5vZGVfaWQiOiJBIiwicGFyZW50X3Jlc3VsdF9yZWYiOm51bGwsInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RlcC52MSIsInNlZWRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zZWVkLnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJzaXplX2J5dGVzIjo0MCwic291cmNlX3JlZnMiOltdLCJ0YXNrX2lkIjoic2VlZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIifX0=\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"},\"workflowTaskCompletedEventId\":\"4\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"10\"},\"eventId\":\"11\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskFailedEventAttributes\":{\"failure\":{\"applicationFailureInfo\":{\"nonRetryable\":true,\"type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\"}},\"scheduledEventId\":\"10\",\"startedEventId\":\"11\"},\"eventId\":\"12\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_FAILED\"},{\"eventId\":\"13\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"}}},{\"eventId\":\"14\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"13\"}},{\"eventId\":\"15\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"13\",\"startedEventId\":\"14\"}},{\"eventId\":\"16\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_CANCEL_REQUESTED\",\"workflowExecutionCancelRequestedEventAttributes\":{}},{\"eventId\":\"17\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"}}},{\"eventId\":\"18\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"17\"}},{\"eventId\":\"19\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"17\",\"startedEventId\":\"18\"}},{\"eventId\":\"20\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_COMPLETED\",\"workflowExecutionCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJhZG1pc3Npb25fY2xvc2VkIjp0cnVlLCJjYW5jZWxfcmVxdWVzdGVkIjp0cnVlLCJkZWFkbGluZV91bml4X21zIjoxNzkwOTc1MTAzMDAwLCJkZXZpY2VfY29udHJvbF9hdXRob3JpdHkiOmZhbHNlLCJleHRlcm5hbF9lZmZlY3RfYXV0aGVudGljaXR5IjoiTk9UX1BST1ZFRCIsImluZGVwZW5kZW50X3JldmlldyI6Ik5PVF9FVkFMVUFURUQiLCJtaXNzaW9uX2lkIjoiaG9zdGVkLW5vLXJlZi1jYW5jZWwiLCJtaXNzaW9uX3N0YXR1cyI6IlNUT1BQRURfV0lUSF9VTktOT1dOIiwibmFtZXNwYWNlIjoiZGVmYXVsdCIsIm5vZGVzIjp7IkEiOnsiYWNjZXB0ZWRfcmVzdWx0X3JlZiI6bnVsbCwiY2FuZGlkYXRlX3Jlc3VsdF9yZWYiOm51bGwsImVmZmVjdF9pZCI6InNoYTI1NjpiYzA0NTRmMjBiYTkyNWZiMTg3MWNiYjFjODI3YjUxZTQ0NjFjMjk4YTVjNDcxNTVmMjQ2NDI4ZWM3YTliNjJmIiwiZXhlY3V0ZV9yZXNlcnZlZCI6dHJ1ZSwiaW5zcGVjdF9yZXNlcnZlZCI6MCwibm9ybWFsX2luc3BlY3RfcmVzZXJ2ZWQiOmZhbHNlLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicmVhc29uX2NvZGUiOiJDQU5DRUxMRUQiLCJyZWNvbmNpbGVfaW5zcGVjdF9yZXNlcnZlZCI6ZmFsc2UsInN0YXR1cyI6IlVOS05PV04ifSwiQiI6eyJhY2NlcHRlZF9yZXN1bHRfcmVmIjpudWxsLCJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6bnVsbCwiZWZmZWN0X2lkIjpudWxsLCJleGVjdXRlX3Jlc2VydmVkIjpmYWxzZSwiaW5zcGVjdF9yZXNlcnZlZCI6MCwibm9ybWFsX2luc3BlY3RfcmVzZXJ2ZWQiOmZhbHNlLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicmVhc29uX2NvZGUiOiJDQU5DRUxMRUQiLCJyZWNvbmNpbGVfaW5zcGVjdF9yZXNlcnZlZCI6ZmFsc2UsInN0YXR1cyI6IkNBTkNFTExFRF9CRUZPUkVfQURNSVNTSU9OIn19LCJvd25lcl9pbnRlZ3JhdGlvbiI6Ik5PVF9FVkFMVUFURUQiLCJwbGFuX3NoYTI1NiI6IjE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMiLCJwcm9maWxlIjoic3ludGhldGljLmRlcGVuZGVudF9zdW0udjEiLCJyZXNvdXJjZXMiOnsiYWN0aXZpdHlfY29tbWFuZF9saW1pdCI6NiwiYWN0aXZpdHlfY29tbWFuZHNfdXNlZCI6MSwiZXhlY3V0ZV9saW1pdCI6MiwiZXhlY3V0ZV91c2VkIjoxLCJub3JtYWxfaW5zcGVjdF9saW1pdCI6Miwibm9ybWFsX2luc3BlY3RfdXNlZCI6MCwicmVjb25jaWxlX2luc3BlY3RfbGltaXQiOjIsInJlY29uY2lsZV9pbnNwZWN0X3VzZWQiOjAsInJlc3VsdF9ieXRlc19yZXNlcnZlZCI6MzI3Njh9LCJyZXZpc2lvbiI6NSwicnVuX2lkIjoiMzMzMzMzMzMtMzMzMy00MzMzLTgzMzMtMzMzMzMzMzMzMzMzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGF0ZS52MSIsInNjaWVudGlmaWNfdmFsaWRpdHkiOmZhbHNlLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn0sInRlcm1pbmF0aW9uX3N0YXR1cyI6Ik5PVF9FU1RBQkxJU0hFRCIsIndvcmtmbG93X2lkIjoib3BlbmRvdC1kYWcyLWhvc3RlZC1uby1yZWYtY2FuY2VsLTE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMifQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"workflowTaskCompletedEventId\":\"19\"}}]}",
+    "no-ref-cancel-final.state.json": "{\"admission_closed\":true,\"cancel_requested\":true,\"deadline_unix_ms\":1790975103000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-no-ref-cancel\",\"mission_status\":\"STOPPED_WITH_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"CANCELLED\",\"reconcile_inspect_reserved\":false,\"status\":\"UNKNOWN\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"CANCELLED\",\"reconcile_inspect_reserved\":false,\"status\":\"CANCELLED_BEFORE_ADMISSION\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":5,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+    "no-ref-unknown.history.json": "{\"events\":[{\"eventId\":\"1\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_STARTED\",\"workflowExecutionStartedEventAttributes\":{\"attempt\":1,\"firstExecutionRunId\":\"33333333-3333-4333-8333-333333333333\",\"input\":{\"payloads\":[{\"data\":\"eyJtaXNzaW9uX2lkIjoiaG9zdGVkLW5vLXJlZi1jYW5jZWwiLCJwbGFuX3NoYTI1NiI6IjE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMiLCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXN0YXJ0LnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"originalExecutionRunId\":\"33333333-3333-4333-8333-333333333333\",\"retryPolicy\":{\"maximumAttempts\":1},\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"},\"workflowExecutionTimeout\":\"300s\",\"workflowRunTimeout\":\"300s\",\"workflowTaskTimeout\":\"10s\",\"workflowType\":{\"name\":\"opendot.synthetic.dependent-sum.v1\"}}},{\"eventId\":\"2\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"}}},{\"eventId\":\"3\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"2\"}},{\"eventId\":\"4\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"2\",\"startedEventId\":\"3\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YmMwNDU0ZjIwYmE5MjVmYjE4NzFjYmIxYzgyN2I1MWU0NDYxYzI5OGE1YzQ3MTU1ZjI0NjQyOGVjN2E5YjYyZiIsIm1pc3Npb25faWQiOiJob3N0ZWQtbm8tcmVmLWNhbmNlbCIsIm5vZGVfaWQiOiJBIiwicGFyZW50X3Jlc3VsdF9yZWYiOm51bGwsInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RlcC52MSIsInNlZWRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zZWVkLnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJzaXplX2J5dGVzIjo0MCwic291cmNlX3JlZnMiOltdLCJ0YXNrX2lkIjoic2VlZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIifX0=\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"},\"workflowTaskCompletedEventId\":\"4\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"10\"},\"eventId\":\"11\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskFailedEventAttributes\":{\"failure\":{\"applicationFailureInfo\":{\"nonRetryable\":true,\"type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\"}},\"scheduledEventId\":\"10\",\"startedEventId\":\"11\"},\"eventId\":\"12\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_FAILED\"},{\"eventId\":\"13\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-no-ref-cancel\"}}},{\"eventId\":\"14\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"13\"}},{\"eventId\":\"15\",\"eventTime\":\"2026-10-02T21:00:03Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"13\",\"startedEventId\":\"14\"}}]}",
+    "no-ref-unknown.state.json": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975103000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-no-ref-cancel\",\"mission_status\":\"PAUSED_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:bc0454f20ba925fb1871cbb1c827b51e4461c298a5c47155f246428ec7a9b62f\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTION_UNKNOWN\",\"reconcile_inspect_reserved\":false,\"status\":\"UNKNOWN\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":4,\"run_id\":\"33333333-3333-4333-8333-333333333333\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-no-ref-cancel-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+    "normal-a.result.json": "{\"activity_id\":\"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"device_control_authority\":false,\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"mission_id\":\"hosted-normal\",\"namespace\":\"default\",\"node_id\":\"A\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":5,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":null,\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000003\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":101,\"execution_id\":\"00000000000000000000000000000003\",\"execution_kind\":\"in_process\",\"input_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":101},\"input_hash\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"latency_s\":0.0,\"output_hash\":\"ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"11111111-1111-4111-8111-111111111111\"}",
+    "normal-b.result.json": "{\"activity_id\":\"dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"device_control_authority\":false,\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"mission_id\":\"hosted-normal\",\"namespace\":\"default\",\"node_id\":\"B\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":6,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000004\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":102,\"execution_id\":\"00000000000000000000000000000004\",\"execution_kind\":\"in_process\",\"input_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":102},\"input_hash\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"latency_s\":0.0,\"output_hash\":\"e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"11111111-1111-4111-8111-111111111111\"}",
+    "normal-final.history.json": "{\"events\":[{\"eventId\":\"1\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_STARTED\",\"workflowExecutionStartedEventAttributes\":{\"attempt\":1,\"firstExecutionRunId\":\"11111111-1111-4111-8111-111111111111\",\"input\":{\"payloads\":[{\"data\":\"eyJtaXNzaW9uX2lkIjoiaG9zdGVkLW5vcm1hbCIsInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RhcnQudjEiLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn19\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"originalExecutionRunId\":\"11111111-1111-4111-8111-111111111111\",\"retryPolicy\":{\"maximumAttempts\":1},\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"},\"workflowExecutionTimeout\":\"300s\",\"workflowRunTimeout\":\"300s\",\"workflowTaskTimeout\":\"10s\",\"workflowType\":{\"name\":\"opendot.synthetic.dependent-sum.v1\"}}},{\"eventId\":\"2\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"}}},{\"eventId\":\"3\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"2\"}},{\"eventId\":\"4\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"2\",\"startedEventId\":\"3\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6MTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsIm1pc3Npb25faWQiOiJob3N0ZWQtbm9ybWFsIiwibm9kZV9pZCI6IkEiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"},\"workflowTaskCompletedEventId\":\"4\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"10\"},\"eventId\":\"11\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6MTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsInJlc3VsdF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6YjJlMzRiOTMyYWQwY2NlNzZmZjRkNmEyOGRjMGE2MmIzNjEwNzU0MDY2OWRiNDdhYmI3ZWQ4MWYyNGVjZmQ1ZiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlc3VsdC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiJiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIiwic2l6ZV9ieXRlcyI6MjIxOSwic291cmNlX3JlZnMiOlsic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiXSwidGFza19pZCI6IjEwYWQ2YzVmYTZmYTE1ZTZmMjBiZGZjYzQ0YjljYjNiYTMyMjczYWNmOTFjOWUxMmRhY2U3NGU2YWVlZGNkMzAiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni9iMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIn0sInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RlcC1yZXNwb25zZS52MSJ9\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"scheduledEventId\":\"10\",\"startedEventId\":\"11\"},\"eventId\":\"12\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_COMPLETED\"},{\"eventId\":\"13\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"}}},{\"eventId\":\"14\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"13\"}},{\"eventId\":\"15\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"13\",\"startedEventId\":\"14\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-inspect-normal-10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-inspect.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImIyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYiLCJzaXplX2J5dGVzIjoyMjE5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiMTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2L2IyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYifSwiZWZmZWN0X2lkIjoic2hhMjU2OjEwYWQ2YzVmYTZmYTE1ZTZmMjBiZGZjYzQ0YjljYjNiYTMyMjczYWNmOTFjOWUxMmRhY2U3NGU2YWVlZGNkMzAiLCJleHBlY3RlZF9yZXZpc2lvbiI6NCwibWlzc2lvbl9pZCI6Imhvc3RlZC1ub3JtYWwiLCJtb2RlIjoibm9ybWFsIiwibm9kZV9pZCI6IkEiLCJvcmlnaW5hbF9ldmlkZW5jZV9zaGEyNTYiOm51bGwsIm9yaWdpbmFsX3Jlc3VsdF9zaGEyNTYiOm51bGwsInBhcmVudF9yZXN1bHRfcmVmIjpudWxsLCJwbGFuX3NoYTI1NiI6IjE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMiLCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLWluc3BlY3QudjEiLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn19\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"},\"workflowTaskCompletedEventId\":\"15\"},\"eventId\":\"20\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"20\"},\"eventId\":\"21\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6MTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsImV4cGVjdGVkX3JldmlzaW9uIjo0LCJpbnB1dF9wYXlsb2FkX3NoYTI1NiI6Ijg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJtb2RlIjoibm9ybWFsIiwib3JpZ2luYWxfZXZpZGVuY2Vfc2hhMjU2IjpudWxsLCJvdXRwdXQiOjUsInJlYXNvbl9jb2RlIjoiUkVTVUxUX1ZFUklGSUVEIiwicmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImIyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYiLCJzaXplX2J5dGVzIjoyMjE5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiMTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2L2IyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYifSwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1pbnNwZWN0aW9uLnYxIiwic3RhdHVzIjoiQ09OU0lTVEVOVF9DT01QTEVURUQifQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"scheduledEventId\":\"20\",\"startedEventId\":\"21\"},\"eventId\":\"22\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_COMPLETED\"},{\"eventId\":\"23\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"}}},{\"eventId\":\"24\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"23\"}},{\"eventId\":\"25\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"23\",\"startedEventId\":\"24\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6ZjYwNzkyODg3YmYyZmU2YTFjOWQ5NDhjMjI4YjU2ZThjZTQyOGRkNzFhZWM2N2RmNzZiMDFiZDViNjhiZGE4MyIsIm1pc3Npb25faWQiOiJob3N0ZWQtbm9ybWFsIiwibm9kZV9pZCI6IkIiLCJwYXJlbnRfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImIyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYiLCJzaXplX2J5dGVzIjoyMjE5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiMTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2L2IyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYifSwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"},\"workflowTaskCompletedEventId\":\"25\"},\"eventId\":\"30\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"30\"},\"eventId\":\"31\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6ZjYwNzkyODg3YmYyZmU2YTFjOWQ5NDhjMjI4YjU2ZThjZTQyOGRkNzFhZWM2N2RmNzZiMDFiZDViNjhiZGE4MyIsInJlc3VsdF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ZWVmMTBjMWZkYmM3MDU3NGIyYjQyZmRmOTBlZTA0NzdiODBmYzMyMmQ1ODM5MjIyYTg5MDhlOTJkMTYwYmQ5OSIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlc3VsdC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiJlZWYxMGMxZmRiYzcwNTc0YjJiNDJmZGY5MGVlMDQ3N2I4MGZjMzIyZDU4MzkyMjJhODkwOGU5MmQxNjBiZDk5Iiwic2l6ZV9ieXRlcyI6Mjc4Mywic291cmNlX3JlZnMiOlsic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJzaGEyNTY6YjJlMzRiOTMyYWQwY2NlNzZmZjRkNmEyOGRjMGE2MmIzNjEwNzU0MDY2OWRiNDdhYmI3ZWQ4MWYyNGVjZmQ1ZiJdLCJ0YXNrX2lkIjoiZjYwNzkyODg3YmYyZmU2YTFjOWQ5NDhjMjI4YjU2ZThjZTQyOGRkNzFhZWM2N2RmNzZiMDFiZDViNjhiZGE4MyIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2L2VlZjEwYzFmZGJjNzA1NzRiMmI0MmZkZjkwZWUwNDc3YjgwZmMzMjJkNTgzOTIyMmE4OTA4ZTkyZDE2MGJkOTkifSwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLXJlc3BvbnNlLnYxIn0=\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"scheduledEventId\":\"30\",\"startedEventId\":\"31\"},\"eventId\":\"32\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_COMPLETED\"},{\"eventId\":\"33\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"}}},{\"eventId\":\"34\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"33\"}},{\"eventId\":\"35\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"33\",\"startedEventId\":\"34\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-inspect-normal-f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-inspect.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjplZWYxMGMxZmRiYzcwNTc0YjJiNDJmZGY5MGVlMDQ3N2I4MGZjMzIyZDU4MzkyMjJhODkwOGU5MmQxNjBiZDk5IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImVlZjEwYzFmZGJjNzA1NzRiMmI0MmZkZjkwZWUwNDc3YjgwZmMzMjJkNTgzOTIyMmE4OTA4ZTkyZDE2MGJkOTkiLCJzaXplX2J5dGVzIjoyNzgzLCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIl0sInRhc2tfaWQiOiJmNjA3OTI4ODdiZjJmZTZhMWM5ZDk0OGMyMjhiNTZlOGNlNDI4ZGQ3MWFlYzY3ZGY3NmIwMWJkNWI2OGJkYTgzIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvZWVmMTBjMWZkYmM3MDU3NGIyYjQyZmRmOTBlZTA0NzdiODBmYzMyMmQ1ODM5MjIyYTg5MDhlOTJkMTYwYmQ5OSJ9LCJlZmZlY3RfaWQiOiJzaGEyNTY6ZjYwNzkyODg3YmYyZmU2YTFjOWQ5NDhjMjI4YjU2ZThjZTQyOGRkNzFhZWM2N2RmNzZiMDFiZDViNjhiZGE4MyIsImV4cGVjdGVkX3JldmlzaW9uIjo4LCJtaXNzaW9uX2lkIjoiaG9zdGVkLW5vcm1hbCIsIm1vZGUiOiJub3JtYWwiLCJub2RlX2lkIjoiQiIsIm9yaWdpbmFsX2V2aWRlbmNlX3NoYTI1NiI6bnVsbCwib3JpZ2luYWxfcmVzdWx0X3NoYTI1NiI6bnVsbCwicGFyZW50X3Jlc3VsdF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6YjJlMzRiOTMyYWQwY2NlNzZmZjRkNmEyOGRjMGE2MmIzNjEwNzU0MDY2OWRiNDdhYmI3ZWQ4MWYyNGVjZmQ1ZiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlc3VsdC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiJiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIiwic2l6ZV9ieXRlcyI6MjIxOSwic291cmNlX3JlZnMiOlsic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiXSwidGFza19pZCI6IjEwYWQ2YzVmYTZmYTE1ZTZmMjBiZGZjYzQ0YjljYjNiYTMyMjczYWNmOTFjOWUxMmRhY2U3NGU2YWVlZGNkMzAiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni9iMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIn0sInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctaW5zcGVjdC52MSIsInNlZWRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zZWVkLnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJzaXplX2J5dGVzIjo0MCwic291cmNlX3JlZnMiOltdLCJ0YXNrX2lkIjoic2VlZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIifX0=\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"},\"workflowTaskCompletedEventId\":\"35\"},\"eventId\":\"40\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"40\"},\"eventId\":\"41\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6ZjYwNzkyODg3YmYyZmU2YTFjOWQ5NDhjMjI4YjU2ZThjZTQyOGRkNzFhZWM2N2RmNzZiMDFiZDViNjhiZGE4MyIsImV4cGVjdGVkX3JldmlzaW9uIjo4LCJpbnB1dF9wYXlsb2FkX3NoYTI1NiI6IjZkMjNhN2E2Njk3NWVmZDM1MzU2ODQ4YjFmNjliODQ4ZTk5YzNjNzZkYzVhMzc0MGUzNTMyOGQ0MWMwNTQ0MGEiLCJtb2RlIjoibm9ybWFsIiwib3JpZ2luYWxfZXZpZGVuY2Vfc2hhMjU2IjpudWxsLCJvdXRwdXQiOjYsInJlYXNvbl9jb2RlIjoiUkVTVUxUX1ZFUklGSUVEIiwicmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjplZWYxMGMxZmRiYzcwNTc0YjJiNDJmZGY5MGVlMDQ3N2I4MGZjMzIyZDU4MzkyMjJhODkwOGU5MmQxNjBiZDk5IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImVlZjEwYzFmZGJjNzA1NzRiMmI0MmZkZjkwZWUwNDc3YjgwZmMzMjJkNTgzOTIyMmE4OTA4ZTkyZDE2MGJkOTkiLCJzaXplX2J5dGVzIjoyNzgzLCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIl0sInRhc2tfaWQiOiJmNjA3OTI4ODdiZjJmZTZhMWM5ZDk0OGMyMjhiNTZlOGNlNDI4ZGQ3MWFlYzY3ZGY3NmIwMWJkNWI2OGJkYTgzIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvZWVmMTBjMWZkYmM3MDU3NGIyYjQyZmRmOTBlZTA0NzdiODBmYzMyMmQ1ODM5MjIyYTg5MDhlOTJkMTYwYmQ5OSJ9LCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLWluc3BlY3Rpb24udjEiLCJzdGF0dXMiOiJDT05TSVNURU5UX0NPTVBMRVRFRCJ9\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"scheduledEventId\":\"40\",\"startedEventId\":\"41\"},\"eventId\":\"42\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_COMPLETED\"},{\"eventId\":\"43\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-normal\"}}},{\"eventId\":\"44\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"43\"}},{\"eventId\":\"45\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"43\",\"startedEventId\":\"44\"}},{\"eventId\":\"46\",\"eventTime\":\"2026-10-02T21:00:01Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_COMPLETED\",\"workflowExecutionCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJhZG1pc3Npb25fY2xvc2VkIjp0cnVlLCJjYW5jZWxfcmVxdWVzdGVkIjpmYWxzZSwiZGVhZGxpbmVfdW5peF9tcyI6MTc5MDk3NTEwMTAwMCwiZGV2aWNlX2NvbnRyb2xfYXV0aG9yaXR5IjpmYWxzZSwiZXh0ZXJuYWxfZWZmZWN0X2F1dGhlbnRpY2l0eSI6Ik5PVF9QUk9WRUQiLCJpbmRlcGVuZGVudF9yZXZpZXciOiJOT1RfRVZBTFVBVEVEIiwibWlzc2lvbl9pZCI6Imhvc3RlZC1ub3JtYWwiLCJtaXNzaW9uX3N0YXR1cyI6IkNPTVBMRVRFRCIsIm5hbWVzcGFjZSI6ImRlZmF1bHQiLCJub2RlcyI6eyJBIjp7ImFjY2VwdGVkX3Jlc3VsdF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6YjJlMzRiOTMyYWQwY2NlNzZmZjRkNmEyOGRjMGE2MmIzNjEwNzU0MDY2OWRiNDdhYmI3ZWQ4MWYyNGVjZmQ1ZiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlc3VsdC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiJiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIiwic2l6ZV9ieXRlcyI6MjIxOSwic291cmNlX3JlZnMiOlsic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiXSwidGFza19pZCI6IjEwYWQ2YzVmYTZmYTE1ZTZmMjBiZGZjYzQ0YjljYjNiYTMyMjczYWNmOTFjOWUxMmRhY2U3NGU2YWVlZGNkMzAiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni9iMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIn0sImNhbmRpZGF0ZV9yZXN1bHRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2OmIyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1yZXN1bHQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiYjJlMzRiOTMyYWQwY2NlNzZmZjRkNmEyOGRjMGE2MmIzNjEwNzU0MDY2OWRiNDdhYmI3ZWQ4MWYyNGVjZmQ1ZiIsInNpemVfYnl0ZXMiOjIyMTksInNvdXJjZV9yZWZzIjpbInNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIl0sInRhc2tfaWQiOiIxMGFkNmM1ZmE2ZmExNWU2ZjIwYmRmY2M0NGI5Y2IzYmEzMjI3M2FjZjkxYzllMTJkYWNlNzRlNmFlZWRjZDMwIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvYjJlMzRiOTMyYWQwY2NlNzZmZjRkNmEyOGRjMGE2MmIzNjEwNzU0MDY2OWRiNDdhYmI3ZWQ4MWYyNGVjZmQ1ZiJ9LCJlZmZlY3RfaWQiOiJzaGEyNTY6MTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsImV4ZWN1dGVfcmVzZXJ2ZWQiOnRydWUsImluc3BlY3RfcmVzZXJ2ZWQiOjEsIm5vcm1hbF9pbnNwZWN0X3Jlc2VydmVkIjp0cnVlLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicmVhc29uX2NvZGUiOiJSRVNVTFRfVkVSSUZJRUQiLCJyZWNvbmNpbGVfaW5zcGVjdF9yZXNlcnZlZCI6ZmFsc2UsInN0YXR1cyI6IkFDQ0VQVEVEIn0sIkIiOnsiYWNjZXB0ZWRfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjplZWYxMGMxZmRiYzcwNTc0YjJiNDJmZGY5MGVlMDQ3N2I4MGZjMzIyZDU4MzkyMjJhODkwOGU5MmQxNjBiZDk5IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImVlZjEwYzFmZGJjNzA1NzRiMmI0MmZkZjkwZWUwNDc3YjgwZmMzMjJkNTgzOTIyMmE4OTA4ZTkyZDE2MGJkOTkiLCJzaXplX2J5dGVzIjoyNzgzLCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIl0sInRhc2tfaWQiOiJmNjA3OTI4ODdiZjJmZTZhMWM5ZDk0OGMyMjhiNTZlOGNlNDI4ZGQ3MWFlYzY3ZGY3NmIwMWJkNWI2OGJkYTgzIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvZWVmMTBjMWZkYmM3MDU3NGIyYjQyZmRmOTBlZTA0NzdiODBmYzMyMmQ1ODM5MjIyYTg5MDhlOTJkMTYwYmQ5OSJ9LCJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjplZWYxMGMxZmRiYzcwNTc0YjJiNDJmZGY5MGVlMDQ3N2I4MGZjMzIyZDU4MzkyMjJhODkwOGU5MmQxNjBiZDk5IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImVlZjEwYzFmZGJjNzA1NzRiMmI0MmZkZjkwZWUwNDc3YjgwZmMzMjJkNTgzOTIyMmE4OTA4ZTkyZDE2MGJkOTkiLCJzaXplX2J5dGVzIjoyNzgzLCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIl0sInRhc2tfaWQiOiJmNjA3OTI4ODdiZjJmZTZhMWM5ZDk0OGMyMjhiNTZlOGNlNDI4ZGQ3MWFlYzY3ZGY3NmIwMWJkNWI2OGJkYTgzIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvZWVmMTBjMWZkYmM3MDU3NGIyYjQyZmRmOTBlZTA0NzdiODBmYzMyMmQ1ODM5MjIyYTg5MDhlOTJkMTYwYmQ5OSJ9LCJlZmZlY3RfaWQiOiJzaGEyNTY6ZjYwNzkyODg3YmYyZmU2YTFjOWQ5NDhjMjI4YjU2ZThjZTQyOGRkNzFhZWM2N2RmNzZiMDFiZDViNjhiZGE4MyIsImV4ZWN1dGVfcmVzZXJ2ZWQiOnRydWUsImluc3BlY3RfcmVzZXJ2ZWQiOjEsIm5vcm1hbF9pbnNwZWN0X3Jlc2VydmVkIjp0cnVlLCJwYXJlbnRfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1NjpiMmUzNGI5MzJhZDBjY2U3NmZmNGQ2YTI4ZGMwYTYyYjM2MTA3NTQwNjY5ZGI0N2FiYjdlZDgxZjI0ZWNmZDVmIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6ImIyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYiLCJzaXplX2J5dGVzIjoyMjE5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiMTBhZDZjNWZhNmZhMTVlNmYyMGJkZmNjNDRiOWNiM2JhMzIyNzNhY2Y5MWM5ZTEyZGFjZTc0ZTZhZWVkY2QzMCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2L2IyZTM0YjkzMmFkMGNjZTc2ZmY0ZDZhMjhkYzBhNjJiMzYxMDc1NDA2NjlkYjQ3YWJiN2VkODFmMjRlY2ZkNWYifSwicmVhc29uX2NvZGUiOiJSRVNVTFRfVkVSSUZJRUQiLCJyZWNvbmNpbGVfaW5zcGVjdF9yZXNlcnZlZCI6ZmFsc2UsInN0YXR1cyI6IkFDQ0VQVEVEIn19LCJvd25lcl9pbnRlZ3JhdGlvbiI6Ik5PVF9FVkFMVUFURUQiLCJwbGFuX3NoYTI1NiI6IjE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMiLCJwcm9maWxlIjoic3ludGhldGljLmRlcGVuZGVudF9zdW0udjEiLCJyZXNvdXJjZXMiOnsiYWN0aXZpdHlfY29tbWFuZF9saW1pdCI6NiwiYWN0aXZpdHlfY29tbWFuZHNfdXNlZCI6NCwiZXhlY3V0ZV9saW1pdCI6MiwiZXhlY3V0ZV91c2VkIjoyLCJub3JtYWxfaW5zcGVjdF9saW1pdCI6Miwibm9ybWFsX2luc3BlY3RfdXNlZCI6MiwicmVjb25jaWxlX2luc3BlY3RfbGltaXQiOjIsInJlY29uY2lsZV9pbnNwZWN0X3VzZWQiOjAsInJlc3VsdF9ieXRlc19yZXNlcnZlZCI6MzI3Njh9LCJyZXZpc2lvbiI6OSwicnVuX2lkIjoiMTExMTExMTEtMTExMS00MTExLTgxMTEtMTExMTExMTExMTExIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGF0ZS52MSIsInNjaWVudGlmaWNfdmFsaWRpdHkiOmZhbHNlLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn0sInRlcm1pbmF0aW9uX3N0YXR1cyI6Ik5PVF9FU1RBQkxJU0hFRCIsIndvcmtmbG93X2lkIjoib3BlbmRvdC1kYWcyLWhvc3RlZC1ub3JtYWwtMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyJ9\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"workflowTaskCompletedEventId\":\"45\"}}]}",
+    "normal-final.state.json": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975101000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-normal\",\"mission_status\":\"COMPLETED\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"effect_id\":\"sha256:10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"],\"task_id\":\"f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"uri\":\"artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\",\"size_bytes\":2783,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"],\"task_id\":\"f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"uri\":\"artifact://sha256/eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99\"},\"effect_id\":\"sha256:f60792887bf2fe6a1c9d948c228b56e8ce428dd71aec67df76b01bd5b68bda83\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":{\"artifact_id\":\"sha256:b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\",\"size_bytes\":2219,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"10ad6c5fa6fa15e6f20bdfcc44b9cb3ba32273acf91c9e12dace74e6aeedcd30\",\"uri\":\"artifact://sha256/b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f\"},\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":4,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":2,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":9,\"run_id\":\"11111111-1111-4111-8111-111111111111\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-normal-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+    "pip-report.json": "{\"environment\":{\"python_version\":\"3.12\"},\"install\":[{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"540761f738bdfe5cb5bd7240b659e116a0b5094b94282aef09b8d8c2d66e9c52\"}},\"url\":\"https://files.pythonhosted.org/fabricated/temporalio-1.34.0-py3-none-any.whl\"},\"metadata\":{\"name\":\"temporalio\",\"version\":\"1.34.0\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"14c953d3519113f8ccec533a9efdb6b10c28afef75d11cdd6d422640c40b3a49\"}},\"url\":\"https://files.pythonhosted.org/fabricated/nexus_rpc-1.4.0-py3-none-any.whl\"},\"metadata\":{\"name\":\"nexus-rpc\",\"version\":\"1.4.0\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"89f23aa53c24553a2416fd4fd1ec06f74fa42b14b546d8883128813f775bbfd2\"}},\"url\":\"https://files.pythonhosted.org/fabricated/protobuf-7.36.2-py3-none-any.whl\"},\"metadata\":{\"name\":\"protobuf\",\"version\":\"7.36.2\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"5155e48569e0dabff303fdf578db96cd31ea9a4a63b18018a4ceac6b0ae17462\"}},\"url\":\"https://files.pythonhosted.org/fabricated/types_protobuf-7.35.1.20260906-py3-none-any.whl\"},\"metadata\":{\"name\":\"types-protobuf\",\"version\":\"7.35.1.20260906\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8\"}},\"url\":\"https://files.pythonhosted.org/fabricated/typing_extensions-4.16.0-py3-none-any.whl\"},\"metadata\":{\"name\":\"typing_extensions\",\"version\":\"4.16.0\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c\"}},\"url\":\"https://files.pythonhosted.org/fabricated/pytest-9.1.1-py3-none-any.whl\"},\"metadata\":{\"name\":\"pytest\",\"version\":\"9.1.1\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12\"}},\"url\":\"https://files.pythonhosted.org/fabricated/iniconfig-2.3.0-py3-none-any.whl\"},\"metadata\":{\"name\":\"iniconfig\",\"version\":\"2.3.0\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c\"}},\"url\":\"https://files.pythonhosted.org/fabricated/packaging-26.3-py3-none-any.whl\"},\"metadata\":{\"name\":\"packaging\",\"version\":\"26.3\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746\"}},\"url\":\"https://files.pythonhosted.org/fabricated/pluggy-1.6.0-py3-none-any.whl\"},\"metadata\":{\"name\":\"pluggy\",\"version\":\"1.6.0\"}},{\"download_info\":{\"archive_info\":{\"hashes\":{\"sha256\":\"2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9\"}},\"url\":\"https://files.pythonhosted.org/fabricated/Pygments-2.21.0-py3-none-any.whl\"},\"metadata\":{\"name\":\"Pygments\",\"version\":\"2.21.0\"}}],\"pip_version\":\"26.0\",\"version\":\"1\"}",
+    "reconcile-a.result.json": "{\"activity_id\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"device_control_authority\":false,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"mission_id\":\"hosted-reconcile\",\"namespace\":\"default\",\"node_id\":\"A\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":5,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":null,\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000005\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":101,\"execution_id\":\"00000000000000000000000000000005\",\"execution_kind\":\"in_process\",\"input_sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":101},\"input_hash\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"latency_s\":0.0,\"output_hash\":\"ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"22222222-2222-4222-8222-222222222222\"}",
+    "reconcile-b.result.json": "{\"activity_id\":\"dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"device_control_authority\":false,\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"independent_review\":\"NOT_EVALUATED\",\"input_payload_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"mission_id\":\"hosted-reconcile\",\"namespace\":\"default\",\"node_id\":\"B\",\"observation_provenance\":\"serialized_runtime_report_not_live_proof\",\"output\":6,\"owner_integration\":\"NOT_EVALUATED\",\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"receipt_report\":{\"attempts\":1,\"breaker_state\":\"closed\",\"call_id\":\"000000000000000000000006\",\"error_type\":null,\"execution_liveness\":{},\"execution_observation\":{\"dispatcher_pid\":102,\"execution_id\":\"00000000000000000000000000000006\",\"execution_kind\":\"in_process\",\"input_sha256\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"read_only_declared\":true,\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"review_target_sha256\":null,\"worker_pid\":102},\"input_hash\":\"6d23a7a66975efd35356848b1f69b848e99c3c76dc5a3740e35328d41c05440a\",\"latency_s\":0.0,\"output_hash\":\"e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683\",\"semantic_valid\":true,\"status\":\"COMPLETED\",\"tool_id\":\"synthetic.bounded_sum\",\"tool_version\":\"1\"},\"registration_sha256\":\"5f2b1e81954530f31c7d2c83b9c582883b8391190ebe13b69b8bf91f044cb0c3\",\"schema_version\":\"opendot.temporal.dag-result.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"workflow_run_id\":\"22222222-2222-4222-8222-222222222222\"}",
+    "reconcile-final.history.json": "{\"events\":[{\"eventId\":\"1\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_STARTED\",\"workflowExecutionStartedEventAttributes\":{\"attempt\":1,\"firstExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"input\":{\"payloads\":[{\"data\":\"eyJtaXNzaW9uX2lkIjoiaG9zdGVkLXJlY29uY2lsZSIsInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RhcnQudjEiLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn19\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"originalExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"retryPolicy\":{\"maximumAttempts\":1},\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowExecutionTimeout\":\"300s\",\"workflowRunTimeout\":\"300s\",\"workflowTaskTimeout\":\"10s\",\"workflowType\":{\"name\":\"opendot.synthetic.dependent-sum.v1\"}}},{\"eventId\":\"2\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"3\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"2\"}},{\"eventId\":\"4\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"2\",\"startedEventId\":\"3\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsIm1pc3Npb25faWQiOiJob3N0ZWQtcmVjb25jaWxlIiwibm9kZV9pZCI6IkEiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"4\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"10\"},\"eventId\":\"11\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskFailedEventAttributes\":{\"failure\":{\"applicationFailureInfo\":{\"nonRetryable\":true,\"type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\"}},\"scheduledEventId\":\"10\",\"startedEventId\":\"11\"},\"eventId\":\"12\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_FAILED\"},{\"eventId\":\"13\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"14\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"13\"}},{\"eventId\":\"15\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"13\",\"startedEventId\":\"14\"}},{\"eventId\":\"19\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ACCEPTED\",\"workflowExecutionUpdateAcceptedEventAttributes\":{\"acceptedRequest\":{\"input\":{\"args\":{\"payloads\":[{\"data\":\"eyJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzaXplX2J5dGVzIjoyMjI1LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiYjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgifSwiZWZmZWN0X2lkIjoic2hhMjU2OmIxZDhjZDViNTAzZjJkY2UwMjVmMGQ3NmNlNmUzNTEzZjIwN2RkNTc5MTQ5N2VjMmZjOGNhN2I3ODFmZjFmZmQiLCJleHBlY3RlZF9yZXZpc2lvbiI6NCwibm9kZV9pZCI6IkEiLCJvcmlnaW5hbF9ldmlkZW5jZV9zaGEyNTYiOiIzNTM4ODQ2YTcwZDY2Mzc3MWI1NWViNTFjMTUyNTYyYWMwMmM3ZjAxZWMxODJkNTc0MmNkYWRlMWJkOTEyOWM4Iiwib3JpZ2luYWxfcmVzdWx0X3NoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlY29uY2lsZS52MSJ9\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"name\":\"reconcile_result\"},\"meta\":{\"updateId\":\"dag2-reconcile-original\"}},\"acceptedRequestMessageId\":\"fabricated-message\",\"acceptedRequestSequencingEventId\":\"15\",\"protocolInstanceId\":\"dag2-reconcile-original\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-inspect-reconcile-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-inspect.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzaXplX2J5dGVzIjoyMjI1LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiYjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgifSwiZWZmZWN0X2lkIjoic2hhMjU2OmIxZDhjZDViNTAzZjJkY2UwMjVmMGQ3NmNlNmUzNTEzZjIwN2RkNTc5MTQ5N2VjMmZjOGNhN2I3ODFmZjFmZmQiLCJleHBlY3RlZF9yZXZpc2lvbiI6NSwibWlzc2lvbl9pZCI6Imhvc3RlZC1yZWNvbmNpbGUiLCJtb2RlIjoicmVjb25jaWxlIiwibm9kZV9pZCI6IkEiLCJvcmlnaW5hbF9ldmlkZW5jZV9zaGEyNTYiOiIzNTM4ODQ2YTcwZDY2Mzc3MWI1NWViNTFjMTUyNTYyYWMwMmM3ZjAxZWMxODJkNTc0MmNkYWRlMWJkOTEyOWM4Iiwib3JpZ2luYWxfcmVzdWx0X3NoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1pbnNwZWN0LnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"15\"},\"eventId\":\"20\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"20\"},\"eventId\":\"21\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsImV4cGVjdGVkX3JldmlzaW9uIjo1LCJpbnB1dF9wYXlsb2FkX3NoYTI1NiI6Ijg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJtb2RlIjoicmVjb25jaWxlIiwib3JpZ2luYWxfZXZpZGVuY2Vfc2hhMjU2IjoiMzUzODg0NmE3MGQ2NjM3NzFiNTVlYjUxYzE1MjU2MmFjMDJjN2YwMWVjMTgyZDU3NDJjZGFkZTFiZDkxMjljOCIsIm91dHB1dCI6NSwicmVhc29uX2NvZGUiOiJSRVNVTFRfVkVSSUZJRUQiLCJyZXN1bHRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2Ojc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1yZXN1bHQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiNzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCIsInNpemVfYnl0ZXMiOjIyMjUsInNvdXJjZV9yZWZzIjpbInNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIl0sInRhc2tfaWQiOiJiMWQ4Y2Q1YjUwM2YyZGNlMDI1ZjBkNzZjZTZlMzUxM2YyMDdkZDU3OTE0OTdlYzJmYzhjYTdiNzgxZmYxZmZkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvNzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCJ9LCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLWluc3BlY3Rpb24udjEiLCJzdGF0dXMiOiJDT05TSVNURU5UX0NPTVBMRVRFRCJ9\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"scheduledEventId\":\"20\",\"startedEventId\":\"21\"},\"eventId\":\"22\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_COMPLETED\"},{\"eventId\":\"23\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"24\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"23\"}},{\"eventId\":\"25\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"23\",\"startedEventId\":\"24\"}},{\"eventId\":\"26\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_COMPLETED\",\"workflowExecutionUpdateCompletedEventAttributes\":{\"acceptedEventId\":\"19\",\"meta\":{\"updateId\":\"dag2-reconcile-original\"},\"outcome\":{\"success\":{\"payloads\":[{\"data\":\"eyJhY2NlcHRlZF9yZXN1bHRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2Ojc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1yZXN1bHQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiNzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCIsInNpemVfYnl0ZXMiOjIyMjUsInNvdXJjZV9yZWZzIjpbInNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIl0sInRhc2tfaWQiOiJiMWQ4Y2Q1YjUwM2YyZGNlMDI1ZjBkNzZjZTZlMzUxM2YyMDdkZDU3OTE0OTdlYzJmYzhjYTdiNzgxZmYxZmZkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvNzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCJ9LCJlZmZlY3RfaWQiOiJzaGEyNTY6YjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsIm1pc3Npb25fc3RhdHVzIjoiUlVOTklORyIsIm5vZGVfaWQiOiJBIiwicmVhc29uX2NvZGUiOiJSRVNVTFRfVkVSSUZJRUQiLCJyZXZpc2lvbiI6Niwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1yZWNvbmNpbGlhdGlvbi52MSIsInN0YXR1cyI6IkFDQ0VQVEVEIn0=\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]}}}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YWEyYTVmZTYyZGExMTcwNTJmNWYxYWUxYTI1ZmFiNzRhNzQ0ZDgyNzQ4NzYxZWVlZjE2ODlmYTE4Yzk0ZWNkMiIsIm1pc3Npb25faWQiOiJob3N0ZWQtcmVjb25jaWxlIiwibm9kZV9pZCI6IkIiLCJwYXJlbnRfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzaXplX2J5dGVzIjoyMjI1LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiYjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgifSwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"25\"},\"eventId\":\"30\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"30\"},\"eventId\":\"31\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YWEyYTVmZTYyZGExMTcwNTJmNWYxYWUxYTI1ZmFiNzRhNzQ0ZDgyNzQ4NzYxZWVlZjE2ODlmYTE4Yzk0ZWNkMiIsInJlc3VsdF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6NzA5YTY5NzEyYTY0OTc2NTNiY2Q1M2VmNTFlYzE0NTc2Zjc0MjE1Nzg2YzgxZDRiMmQ5YmM2ZmI1YWY5ZTg3YiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlc3VsdC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI3MDlhNjk3MTJhNjQ5NzY1M2JjZDUzZWY1MWVjMTQ1NzZmNzQyMTU3ODZjODFkNGIyZDliYzZmYjVhZjllODdiIiwic2l6ZV9ieXRlcyI6Mjc4OSwic291cmNlX3JlZnMiOlsic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJzaGEyNTY6NzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCJdLCJ0YXNrX2lkIjoiYWEyYTVmZTYyZGExMTcwNTJmNWYxYWUxYTI1ZmFiNzRhNzQ0ZDgyNzQ4NzYxZWVlZjE2ODlmYTE4Yzk0ZWNkMiIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2LzcwOWE2OTcxMmE2NDk3NjUzYmNkNTNlZjUxZWMxNDU3NmY3NDIxNTc4NmM4MWQ0YjJkOWJjNmZiNWFmOWU4N2IifSwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLXJlc3BvbnNlLnYxIn0=\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"scheduledEventId\":\"30\",\"startedEventId\":\"31\"},\"eventId\":\"32\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_COMPLETED\"},{\"eventId\":\"33\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"34\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"33\"}},{\"eventId\":\"35\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"33\",\"startedEventId\":\"34\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-inspect-normal-aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-inspect.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3MDlhNjk3MTJhNjQ5NzY1M2JjZDUzZWY1MWVjMTQ1NzZmNzQyMTU3ODZjODFkNGIyZDliYzZmYjVhZjllODdiIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6IjcwOWE2OTcxMmE2NDk3NjUzYmNkNTNlZjUxZWMxNDU3NmY3NDIxNTc4NmM4MWQ0YjJkOWJjNmZiNWFmOWU4N2IiLCJzaXplX2J5dGVzIjoyNzg5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4Il0sInRhc2tfaWQiOiJhYTJhNWZlNjJkYTExNzA1MmY1ZjFhZTFhMjVmYWI3NGE3NDRkODI3NDg3NjFlZWVmMTY4OWZhMThjOTRlY2QyIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvNzA5YTY5NzEyYTY0OTc2NTNiY2Q1M2VmNTFlYzE0NTc2Zjc0MjE1Nzg2YzgxZDRiMmQ5YmM2ZmI1YWY5ZTg3YiJ9LCJlZmZlY3RfaWQiOiJzaGEyNTY6YWEyYTVmZTYyZGExMTcwNTJmNWYxYWUxYTI1ZmFiNzRhNzQ0ZDgyNzQ4NzYxZWVlZjE2ODlmYTE4Yzk0ZWNkMiIsImV4cGVjdGVkX3JldmlzaW9uIjo5LCJtaXNzaW9uX2lkIjoiaG9zdGVkLXJlY29uY2lsZSIsIm1vZGUiOiJub3JtYWwiLCJub2RlX2lkIjoiQiIsIm9yaWdpbmFsX2V2aWRlbmNlX3NoYTI1NiI6bnVsbCwib3JpZ2luYWxfcmVzdWx0X3NoYTI1NiI6bnVsbCwicGFyZW50X3Jlc3VsdF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6NzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlc3VsdC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4Iiwic2l6ZV9ieXRlcyI6MjIyNSwic291cmNlX3JlZnMiOlsic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiXSwidGFza19pZCI6ImIxZDhjZDViNTAzZjJkY2UwMjVmMGQ3NmNlNmUzNTEzZjIwN2RkNTc5MTQ5N2VjMmZjOGNhN2I3ODFmZjFmZmQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni83NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4In0sInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctaW5zcGVjdC52MSIsInNlZWRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zZWVkLnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiLCJzaXplX2J5dGVzIjo0MCwic291cmNlX3JlZnMiOltdLCJ0YXNrX2lkIjoic2VlZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIifX0=\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"35\"},\"eventId\":\"40\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"40\"},\"eventId\":\"41\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YWEyYTVmZTYyZGExMTcwNTJmNWYxYWUxYTI1ZmFiNzRhNzQ0ZDgyNzQ4NzYxZWVlZjE2ODlmYTE4Yzk0ZWNkMiIsImV4cGVjdGVkX3JldmlzaW9uIjo5LCJpbnB1dF9wYXlsb2FkX3NoYTI1NiI6IjZkMjNhN2E2Njk3NWVmZDM1MzU2ODQ4YjFmNjliODQ4ZTk5YzNjNzZkYzVhMzc0MGUzNTMyOGQ0MWMwNTQ0MGEiLCJtb2RlIjoibm9ybWFsIiwib3JpZ2luYWxfZXZpZGVuY2Vfc2hhMjU2IjpudWxsLCJvdXRwdXQiOjYsInJlYXNvbl9jb2RlIjoiUkVTVUxUX1ZFUklGSUVEIiwicmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3MDlhNjk3MTJhNjQ5NzY1M2JjZDUzZWY1MWVjMTQ1NzZmNzQyMTU3ODZjODFkNGIyZDliYzZmYjVhZjllODdiIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6IjcwOWE2OTcxMmE2NDk3NjUzYmNkNTNlZjUxZWMxNDU3NmY3NDIxNTc4NmM4MWQ0YjJkOWJjNmZiNWFmOWU4N2IiLCJzaXplX2J5dGVzIjoyNzg5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4Il0sInRhc2tfaWQiOiJhYTJhNWZlNjJkYTExNzA1MmY1ZjFhZTFhMjVmYWI3NGE3NDRkODI3NDg3NjFlZWVmMTY4OWZhMThjOTRlY2QyIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvNzA5YTY5NzEyYTY0OTc2NTNiY2Q1M2VmNTFlYzE0NTc2Zjc0MjE1Nzg2YzgxZDRiMmQ5YmM2ZmI1YWY5ZTg3YiJ9LCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLWluc3BlY3Rpb24udjEiLCJzdGF0dXMiOiJDT05TSVNURU5UX0NPTVBMRVRFRCJ9\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"scheduledEventId\":\"40\",\"startedEventId\":\"41\"},\"eventId\":\"42\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_COMPLETED\"},{\"eventId\":\"43\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"44\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"43\"}},{\"eventId\":\"45\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"43\",\"startedEventId\":\"44\"}},{\"eventId\":\"46\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_COMPLETED\",\"workflowExecutionCompletedEventAttributes\":{\"result\":{\"payloads\":[{\"data\":\"eyJhZG1pc3Npb25fY2xvc2VkIjp0cnVlLCJjYW5jZWxfcmVxdWVzdGVkIjpmYWxzZSwiZGVhZGxpbmVfdW5peF9tcyI6MTc5MDk3NTEwMjAwMCwiZGV2aWNlX2NvbnRyb2xfYXV0aG9yaXR5IjpmYWxzZSwiZXh0ZXJuYWxfZWZmZWN0X2F1dGhlbnRpY2l0eSI6Ik5PVF9QUk9WRUQiLCJpbmRlcGVuZGVudF9yZXZpZXciOiJOT1RfRVZBTFVBVEVEIiwibWlzc2lvbl9pZCI6Imhvc3RlZC1yZWNvbmNpbGUiLCJtaXNzaW9uX3N0YXR1cyI6IkNPTVBMRVRFRCIsIm5hbWVzcGFjZSI6ImRlZmF1bHQiLCJub2RlcyI6eyJBIjp7ImFjY2VwdGVkX3Jlc3VsdF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6NzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlc3VsdC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4Iiwic2l6ZV9ieXRlcyI6MjIyNSwic291cmNlX3JlZnMiOlsic2hhMjU2Ojg5Nzg0MWFmZWRlMzM1NmRiNGQyNzYzMjU4ZmM4Nzk3MGY1OTAzNDNhNjU4NGRiOTExODM5MjJmYjYzYzhiMDIiXSwidGFza19pZCI6ImIxZDhjZDViNTAzZjJkY2UwMjVmMGQ3NmNlNmUzNTEzZjIwN2RkNTc5MTQ5N2VjMmZjOGNhN2I3ODFmZjFmZmQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni83NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4In0sImNhbmRpZGF0ZV9yZXN1bHRfcmVmIjp7ImFydGlmYWN0X2lkIjoic2hhMjU2Ojc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJpbnRlZ3JpdHlfdmVyaWZpZWQiOmZhbHNlLCJtaW1lX3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwicHJvZHVjZXIiOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1yZXN1bHQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiNzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCIsInNpemVfYnl0ZXMiOjIyMjUsInNvdXJjZV9yZWZzIjpbInNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIl0sInRhc2tfaWQiOiJiMWQ4Y2Q1YjUwM2YyZGNlMDI1ZjBkNzZjZTZlMzUxM2YyMDdkZDU3OTE0OTdlYzJmYzhjYTdiNzgxZmYxZmZkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvNzY2MmJlOGFhYWY0YWExZDMzZWM2ZTM0NGVlNGFkYmVlNzNlMjZiMGM0YTdkYTk5OTEyN2U1M2MxOWE0NzYwOCJ9LCJlZmZlY3RfaWQiOiJzaGEyNTY6YjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsImV4ZWN1dGVfcmVzZXJ2ZWQiOnRydWUsImluc3BlY3RfcmVzZXJ2ZWQiOjEsIm5vcm1hbF9pbnNwZWN0X3Jlc2VydmVkIjpmYWxzZSwicGFyZW50X3Jlc3VsdF9yZWYiOm51bGwsInJlYXNvbl9jb2RlIjoiUkVTVUxUX1ZFUklGSUVEIiwicmVjb25jaWxlX2luc3BlY3RfcmVzZXJ2ZWQiOnRydWUsInN0YXR1cyI6IkFDQ0VQVEVEIn0sIkIiOnsiYWNjZXB0ZWRfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3MDlhNjk3MTJhNjQ5NzY1M2JjZDUzZWY1MWVjMTQ1NzZmNzQyMTU3ODZjODFkNGIyZDliYzZmYjVhZjllODdiIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6IjcwOWE2OTcxMmE2NDk3NjUzYmNkNTNlZjUxZWMxNDU3NmY3NDIxNTc4NmM4MWQ0YjJkOWJjNmZiNWFmOWU4N2IiLCJzaXplX2J5dGVzIjoyNzg5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4Il0sInRhc2tfaWQiOiJhYTJhNWZlNjJkYTExNzA1MmY1ZjFhZTFhMjVmYWI3NGE3NDRkODI3NDg3NjFlZWVmMTY4OWZhMThjOTRlY2QyIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvNzA5YTY5NzEyYTY0OTc2NTNiY2Q1M2VmNTFlYzE0NTc2Zjc0MjE1Nzg2YzgxZDRiMmQ5YmM2ZmI1YWY5ZTg3YiJ9LCJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3MDlhNjk3MTJhNjQ5NzY1M2JjZDUzZWY1MWVjMTQ1NzZmNzQyMTU3ODZjODFkNGIyZDliYzZmYjVhZjllODdiIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6IjcwOWE2OTcxMmE2NDk3NjUzYmNkNTNlZjUxZWMxNDU3NmY3NDIxNTc4NmM4MWQ0YjJkOWJjNmZiNWFmOWU4N2IiLCJzaXplX2J5dGVzIjoyNzg5LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4Il0sInRhc2tfaWQiOiJhYTJhNWZlNjJkYTExNzA1MmY1ZjFhZTFhMjVmYWI3NGE3NDRkODI3NDg3NjFlZWVmMTY4OWZhMThjOTRlY2QyIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvNzA5YTY5NzEyYTY0OTc2NTNiY2Q1M2VmNTFlYzE0NTc2Zjc0MjE1Nzg2YzgxZDRiMmQ5YmM2ZmI1YWY5ZTg3YiJ9LCJlZmZlY3RfaWQiOiJzaGEyNTY6YWEyYTVmZTYyZGExMTcwNTJmNWYxYWUxYTI1ZmFiNzRhNzQ0ZDgyNzQ4NzYxZWVlZjE2ODlmYTE4Yzk0ZWNkMiIsImV4ZWN1dGVfcmVzZXJ2ZWQiOnRydWUsImluc3BlY3RfcmVzZXJ2ZWQiOjEsIm5vcm1hbF9pbnNwZWN0X3Jlc2VydmVkIjp0cnVlLCJwYXJlbnRfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzaXplX2J5dGVzIjoyMjI1LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiYjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgifSwicmVhc29uX2NvZGUiOiJSRVNVTFRfVkVSSUZJRUQiLCJyZWNvbmNpbGVfaW5zcGVjdF9yZXNlcnZlZCI6ZmFsc2UsInN0YXR1cyI6IkFDQ0VQVEVEIn19LCJvd25lcl9pbnRlZ3JhdGlvbiI6Ik5PVF9FVkFMVUFURUQiLCJwbGFuX3NoYTI1NiI6IjE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMiLCJwcm9maWxlIjoic3ludGhldGljLmRlcGVuZGVudF9zdW0udjEiLCJyZXNvdXJjZXMiOnsiYWN0aXZpdHlfY29tbWFuZF9saW1pdCI6NiwiYWN0aXZpdHlfY29tbWFuZHNfdXNlZCI6NCwiZXhlY3V0ZV9saW1pdCI6MiwiZXhlY3V0ZV91c2VkIjoyLCJub3JtYWxfaW5zcGVjdF9saW1pdCI6Miwibm9ybWFsX2luc3BlY3RfdXNlZCI6MSwicmVjb25jaWxlX2luc3BlY3RfbGltaXQiOjIsInJlY29uY2lsZV9pbnNwZWN0X3VzZWQiOjEsInJlc3VsdF9ieXRlc19yZXNlcnZlZCI6MzI3Njh9LCJyZXZpc2lvbiI6MTAsInJ1bl9pZCI6IjIyMjIyMjIyLTIyMjItNDIyMi04MjIyLTIyMjIyMjIyMjIyMiIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RhdGUudjEiLCJzY2llbnRpZmljX3ZhbGlkaXR5IjpmYWxzZSwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9LCJ0ZXJtaW5hdGlvbl9zdGF0dXMiOiJOT1RfRVNUQUJMSVNIRUQiLCJ3b3JrZmxvd19pZCI6Im9wZW5kb3QtZGFnMi1ob3N0ZWQtcmVjb25jaWxlLTE5ODQzMDc5YTVkYTAwNzU0ZWMxYjUzOTk5NjJjMzM4NzRiOTA3ZWI0ZDBkNmZjZjU1Y2QzYmUyZjRkZmZiNjMifQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"workflowTaskCompletedEventId\":\"45\"}}]}",
+    "reconcile-final.state.json": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"COMPLETED\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":true,\"status\":\"ACCEPTED\"},\"B\":{\"accepted_result_ref\":{\"artifact_id\":\"sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"],\"task_id\":\"aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"uri\":\"artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\"},\"candidate_result_ref\":{\"artifact_id\":\"sha256:709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\",\"size_bytes\":2789,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"],\"task_id\":\"aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"uri\":\"artifact://sha256/709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b\"},\"effect_id\":\"sha256:aa2a5fe62da117052f5f1ae1a25fab74a744d82748761eeef1689fa18c94ecd2\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":true,\"parent_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"reason_code\":\"RESULT_VERIFIED\",\"reconcile_inspect_reserved\":false,\"status\":\"ACCEPTED\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":4,\"execute_limit\":2,\"execute_used\":2,\"normal_inspect_limit\":2,\"normal_inspect_used\":1,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":10,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+    "reconcile-unknown-after-replacement.history.json": "{\"events\":[{\"eventId\":\"1\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_STARTED\",\"workflowExecutionStartedEventAttributes\":{\"attempt\":1,\"firstExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"input\":{\"payloads\":[{\"data\":\"eyJtaXNzaW9uX2lkIjoiaG9zdGVkLXJlY29uY2lsZSIsInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RhcnQudjEiLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn19\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"originalExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"retryPolicy\":{\"maximumAttempts\":1},\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowExecutionTimeout\":\"300s\",\"workflowRunTimeout\":\"300s\",\"workflowTaskTimeout\":\"10s\",\"workflowType\":{\"name\":\"opendot.synthetic.dependent-sum.v1\"}}},{\"eventId\":\"2\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"3\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"2\"}},{\"eventId\":\"4\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"2\",\"startedEventId\":\"3\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsIm1pc3Npb25faWQiOiJob3N0ZWQtcmVjb25jaWxlIiwibm9kZV9pZCI6IkEiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"4\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"10\"},\"eventId\":\"11\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskFailedEventAttributes\":{\"failure\":{\"applicationFailureInfo\":{\"nonRetryable\":true,\"type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\"}},\"scheduledEventId\":\"10\",\"startedEventId\":\"11\"},\"eventId\":\"12\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_FAILED\"},{\"eventId\":\"13\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"14\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"13\"}},{\"eventId\":\"15\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"13\",\"startedEventId\":\"14\"}}]}",
+    "reconcile-unknown-after-replacement.state.json": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"PAUSED_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTION_UNKNOWN\",\"reconcile_inspect_reserved\":false,\"status\":\"UNKNOWN\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":4,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+    "reconcile-unknown-before-stop.history.json": "{\"events\":[{\"eventId\":\"1\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_STARTED\",\"workflowExecutionStartedEventAttributes\":{\"attempt\":1,\"firstExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"input\":{\"payloads\":[{\"data\":\"eyJtaXNzaW9uX2lkIjoiaG9zdGVkLXJlY29uY2lsZSIsInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RhcnQudjEiLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn19\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"originalExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"retryPolicy\":{\"maximumAttempts\":1},\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowExecutionTimeout\":\"300s\",\"workflowRunTimeout\":\"300s\",\"workflowTaskTimeout\":\"10s\",\"workflowType\":{\"name\":\"opendot.synthetic.dependent-sum.v1\"}}},{\"eventId\":\"2\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"3\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"2\"}},{\"eventId\":\"4\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"2\",\"startedEventId\":\"3\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsIm1pc3Npb25faWQiOiJob3N0ZWQtcmVjb25jaWxlIiwibm9kZV9pZCI6IkEiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"4\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"10\"},\"eventId\":\"11\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskFailedEventAttributes\":{\"failure\":{\"applicationFailureInfo\":{\"nonRetryable\":true,\"type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\"}},\"scheduledEventId\":\"10\",\"startedEventId\":\"11\"},\"eventId\":\"12\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_FAILED\"},{\"eventId\":\"13\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"14\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"13\"}},{\"eventId\":\"15\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"13\",\"startedEventId\":\"14\"}}]}",
+    "reconcile-unknown-before-stop.state.json": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"PAUSED_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"EXECUTION_UNKNOWN\",\"reconcile_inspect_reserved\":false,\"status\":\"UNKNOWN\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":1,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":0,\"result_bytes_reserved\":32768},\"revision\":4,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+    "reconcile-update-queued.history.json": "{\"events\":[{\"eventId\":\"1\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_STARTED\",\"workflowExecutionStartedEventAttributes\":{\"attempt\":1,\"firstExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"input\":{\"payloads\":[{\"data\":\"eyJtaXNzaW9uX2lkIjoiaG9zdGVkLXJlY29uY2lsZSIsInBsYW5fc2hhMjU2IjoiMTk4NDMwNzlhNWRhMDA3NTRlYzFiNTM5OTk2MmMzMzg3NGI5MDdlYjRkMGQ2ZmNmNTVjZDNiZTJmNGRmZmI2MyIsInNjaGVtYV92ZXJzaW9uIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc3RhcnQudjEiLCJzZWVkX3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctc2VlZC52MSIsInNjaGVtYV92ZXJzaW9uIjoiMS4wLjAiLCJzaGEyNTYiOiI4OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIiwic2l6ZV9ieXRlcyI6NDAsInNvdXJjZV9yZWZzIjpbXSwidGFza19pZCI6InNlZWQiLCJ1cmkiOiJhcnRpZmFjdDovL3NoYTI1Ni84OTc4NDFhZmVkZTMzNTZkYjRkMjc2MzI1OGZjODc5NzBmNTkwMzQzYTY1ODRkYjkxMTgzOTIyZmI2M2M4YjAyIn19\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"originalExecutionRunId\":\"22222222-2222-4222-8222-222222222222\",\"retryPolicy\":{\"maximumAttempts\":1},\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowExecutionTimeout\":\"300s\",\"workflowRunTimeout\":\"300s\",\"workflowTaskTimeout\":\"10s\",\"workflowType\":{\"name\":\"opendot.synthetic.dependent-sum.v1\"}}},{\"eventId\":\"2\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"3\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"2\"}},{\"eventId\":\"4\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"2\",\"startedEventId\":\"3\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-execute-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-step.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJlZmZlY3RfaWQiOiJzaGEyNTY6YjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsIm1pc3Npb25faWQiOiJob3N0ZWQtcmVjb25jaWxlIiwibm9kZV9pZCI6IkEiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1zdGVwLnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"4\"},\"eventId\":\"10\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"},{\"activityTaskStartedEventAttributes\":{\"attempt\":1,\"scheduledEventId\":\"10\"},\"eventId\":\"11\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_STARTED\"},{\"activityTaskFailedEventAttributes\":{\"failure\":{\"applicationFailureInfo\":{\"nonRetryable\":true,\"type\":\"DAG2_TEST_RESPONSE_UNAVAILABLE\"}},\"scheduledEventId\":\"10\",\"startedEventId\":\"11\"},\"eventId\":\"12\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_FAILED\"},{\"eventId\":\"13\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_SCHEDULED\",\"workflowTaskScheduledEventAttributes\":{\"attempt\":1,\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"}}},{\"eventId\":\"14\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_STARTED\",\"workflowTaskStartedEventAttributes\":{\"scheduledEventId\":\"13\"}},{\"eventId\":\"15\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_TASK_COMPLETED\",\"workflowTaskCompletedEventAttributes\":{\"scheduledEventId\":\"13\",\"startedEventId\":\"14\"}},{\"eventId\":\"19\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ACCEPTED\",\"workflowExecutionUpdateAcceptedEventAttributes\":{\"acceptedRequest\":{\"input\":{\"args\":{\"payloads\":[{\"data\":\"eyJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzaXplX2J5dGVzIjoyMjI1LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiYjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgifSwiZWZmZWN0X2lkIjoic2hhMjU2OmIxZDhjZDViNTAzZjJkY2UwMjVmMGQ3NmNlNmUzNTEzZjIwN2RkNTc5MTQ5N2VjMmZjOGNhN2I3ODFmZjFmZmQiLCJleHBlY3RlZF9yZXZpc2lvbiI6NCwibm9kZV9pZCI6IkEiLCJvcmlnaW5hbF9ldmlkZW5jZV9zaGEyNTYiOiIzNTM4ODQ2YTcwZDY2Mzc3MWI1NWViNTFjMTUyNTYyYWMwMmM3ZjAxZWMxODJkNTc0MmNkYWRlMWJkOTEyOWM4Iiwib3JpZ2luYWxfcmVzdWx0X3NoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzY2hlbWFfdmVyc2lvbiI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXJlY29uY2lsZS52MSJ9\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"name\":\"reconcile_result\"},\"meta\":{\"updateId\":\"dag2-reconcile-original\"}},\"acceptedRequestMessageId\":\"fabricated-message\",\"acceptedRequestSequencingEventId\":\"15\",\"protocolInstanceId\":\"dag2-reconcile-original\"}},{\"activityTaskScheduledEventAttributes\":{\"activityId\":\"dag2-inspect-reconcile-b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"activityType\":{\"name\":\"opendot.synthetic.dependent-inspect.v1\"},\"input\":{\"payloads\":[{\"data\":\"eyJjYW5kaWRhdGVfcmVzdWx0X3JlZiI6eyJhcnRpZmFjdF9pZCI6InNoYTI1Njo3NjYyYmU4YWFhZjRhYTFkMzNlYzZlMzQ0ZWU0YWRiZWU3M2UyNmIwYzRhN2RhOTk5MTI3ZTUzYzE5YTQ3NjA4IiwiaW50ZWdyaXR5X3ZlcmlmaWVkIjpmYWxzZSwibWltZV90eXBlIjoiYXBwbGljYXRpb24vanNvbiIsInByb2R1Y2VyIjoib3BlbmRvdC50ZW1wb3JhbC5kYWctcmVzdWx0LnYxIiwic2NoZW1hX3ZlcnNpb24iOiIxLjAuMCIsInNoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJzaXplX2J5dGVzIjoyMjI1LCJzb3VyY2VfcmVmcyI6WyJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJdLCJ0YXNrX2lkIjoiYjFkOGNkNWI1MDNmMmRjZTAyNWYwZDc2Y2U2ZTM1MTNmMjA3ZGQ1NzkxNDk3ZWMyZmM4Y2E3Yjc4MWZmMWZmZCIsInVyaSI6ImFydGlmYWN0Oi8vc2hhMjU2Lzc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgifSwiZWZmZWN0X2lkIjoic2hhMjU2OmIxZDhjZDViNTAzZjJkY2UwMjVmMGQ3NmNlNmUzNTEzZjIwN2RkNTc5MTQ5N2VjMmZjOGNhN2I3ODFmZjFmZmQiLCJleHBlY3RlZF9yZXZpc2lvbiI6NSwibWlzc2lvbl9pZCI6Imhvc3RlZC1yZWNvbmNpbGUiLCJtb2RlIjoicmVjb25jaWxlIiwibm9kZV9pZCI6IkEiLCJvcmlnaW5hbF9ldmlkZW5jZV9zaGEyNTYiOiIzNTM4ODQ2YTcwZDY2Mzc3MWI1NWViNTFjMTUyNTYyYWMwMmM3ZjAxZWMxODJkNTc0MmNkYWRlMWJkOTEyOWM4Iiwib3JpZ2luYWxfcmVzdWx0X3NoYTI1NiI6Ijc2NjJiZThhYWFmNGFhMWQzM2VjNmUzNDRlZTRhZGJlZTczZTI2YjBjNGE3ZGE5OTkxMjdlNTNjMTlhNDc2MDgiLCJwYXJlbnRfcmVzdWx0X3JlZiI6bnVsbCwicGxhbl9zaGEyNTYiOiIxOTg0MzA3OWE1ZGEwMDc1NGVjMWI1Mzk5OTYyYzMzODc0YjkwN2ViNGQwZDZmY2Y1NWNkM2JlMmY0ZGZmYjYzIiwic2NoZW1hX3ZlcnNpb24iOiJvcGVuZG90LnRlbXBvcmFsLmRhZy1pbnNwZWN0LnYxIiwic2VlZF9yZWYiOnsiYXJ0aWZhY3RfaWQiOiJzaGEyNTY6ODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsImludGVncml0eV92ZXJpZmllZCI6ZmFsc2UsIm1pbWVfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJwcm9kdWNlciI6Im9wZW5kb3QudGVtcG9yYWwuZGFnLXNlZWQudjEiLCJzY2hlbWFfdmVyc2lvbiI6IjEuMC4wIiwic2hhMjU2IjoiODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiIsInNpemVfYnl0ZXMiOjQwLCJzb3VyY2VfcmVmcyI6W10sInRhc2tfaWQiOiJzZWVkIiwidXJpIjoiYXJ0aWZhY3Q6Ly9zaGEyNTYvODk3ODQxYWZlZGUzMzU2ZGI0ZDI3NjMyNThmYzg3OTcwZjU5MDM0M2E2NTg0ZGI5MTE4MzkyMmZiNjNjOGIwMiJ9fQ==\",\"metadata\":{\"encoding\":\"anNvbi9wbGFpbg==\"}}]},\"retryPolicy\":{\"maximumAttempts\":1},\"scheduleToCloseTimeout\":\"60s\",\"startToCloseTimeout\":\"10s\",\"taskQueue\":{\"name\":\"opendot-dag2-1001-1-hosted-reconcile\"},\"workflowTaskCompletedEventId\":\"15\"},\"eventId\":\"20\",\"eventTime\":\"2026-10-02T21:00:02Z\",\"eventType\":\"EVENT_TYPE_ACTIVITY_TASK_SCHEDULED\"}]}",
+    "reconcile-update-queued.state.json": "{\"admission_closed\":true,\"cancel_requested\":false,\"deadline_unix_ms\":1790975102000,\"device_control_authority\":false,\"external_effect_authenticity\":\"NOT_PROVED\",\"independent_review\":\"NOT_EVALUATED\",\"mission_id\":\"hosted-reconcile\",\"mission_status\":\"PAUSED_UNKNOWN\",\"namespace\":\"default\",\"nodes\":{\"A\":{\"accepted_result_ref\":null,\"candidate_result_ref\":{\"artifact_id\":\"sha256:7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-result.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\",\"size_bytes\":2225,\"source_refs\":[\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"],\"task_id\":\"b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"uri\":\"artifact://sha256/7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608\"},\"effect_id\":\"sha256:b1d8cd5b503f2dce025f0d76ce6e3513f207dd5791497ec2fc8ca7b781ff1ffd\",\"execute_reserved\":true,\"inspect_reserved\":1,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"RECONCILE_RESERVED\",\"reconcile_inspect_reserved\":true,\"status\":\"VERIFYING\"},\"B\":{\"accepted_result_ref\":null,\"candidate_result_ref\":null,\"effect_id\":null,\"execute_reserved\":false,\"inspect_reserved\":0,\"normal_inspect_reserved\":false,\"parent_result_ref\":null,\"reason_code\":\"NOT_ADMITTED\",\"reconcile_inspect_reserved\":false,\"status\":\"WAITING\"}},\"owner_integration\":\"NOT_EVALUATED\",\"plan_sha256\":\"19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\",\"profile\":\"synthetic.dependent_sum.v1\",\"resources\":{\"activity_command_limit\":6,\"activity_commands_used\":2,\"execute_limit\":2,\"execute_used\":1,\"normal_inspect_limit\":2,\"normal_inspect_used\":0,\"reconcile_inspect_limit\":2,\"reconcile_inspect_used\":1,\"result_bytes_reserved\":32768},\"revision\":5,\"run_id\":\"22222222-2222-4222-8222-222222222222\",\"schema_version\":\"opendot.temporal.dag-state.v1\",\"scientific_validity\":false,\"seed_ref\":{\"artifact_id\":\"sha256:897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"integrity_verified\":false,\"mime_type\":\"application/json\",\"producer\":\"opendot.temporal.dag-seed.v1\",\"schema_version\":\"1.0.0\",\"sha256\":\"897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\",\"size_bytes\":40,\"source_refs\":[],\"task_id\":\"seed\",\"uri\":\"artifact://sha256/897841afede3356db4d2763258fc87970f590343a6584db91183922fb63c8b02\"},\"termination_status\":\"NOT_ESTABLISHED\",\"workflow_id\":\"opendot-dag2-hosted-reconcile-19843079a5da00754ec1b5399962c33874b907eb4d0d6fcf55cd3be2f4dffb63\"}",
+    "required-nodes.txt": "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_real_a_to_b_and_original_receipts\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_quiescent_worker_replacement_preserves_state\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_recorded_history_replay_has_no_activity_execution\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_original_put_reconciliation_never_reexecutes_a\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_unknown_without_reference_blocks_b\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_cancellation_keeps_unadmitted_b_closed\ntests/acceptance/temporal_dag_recovery_gate.py::test_dag2_duplicate_and_stale_updates_consume_no_allowance\n",
+    "results.xml": "<testsuites><testsuite name=\"pytest\" tests=\"7\" failures=\"0\" errors=\"0\" skipped=\"0\"><testcase classname=\"tests.acceptance.temporal_dag_recovery_gate\" name=\"test_dag2_real_a_to_b_and_original_receipts\"/><testcase classname=\"tests.acceptance.temporal_dag_recovery_gate\" name=\"test_dag2_quiescent_worker_replacement_preserves_state\"/><testcase classname=\"tests.acceptance.temporal_dag_recovery_gate\" name=\"test_dag2_recorded_history_replay_has_no_activity_execution\"/><testcase classname=\"tests.acceptance.temporal_dag_recovery_gate\" name=\"test_dag2_original_put_reconciliation_never_reexecutes_a\"/><testcase classname=\"tests.acceptance.temporal_dag_recovery_gate\" name=\"test_dag2_unknown_without_reference_blocks_b\"/><testcase classname=\"tests.acceptance.temporal_dag_recovery_gate\" name=\"test_dag2_cancellation_keeps_unadmitted_b_closed\"/><testcase classname=\"tests.acceptance.temporal_dag_recovery_gate\" name=\"test_dag2_duplicate_and_stale_updates_consume_no_allowance\"/></testsuite></testsuites>",
+    "shared-unit-summary.json": "{\"acceptance\":\"PASS\",\"collected_node_count\":1593,\"collection_exit_code\":0,\"collection_sha256\":\"441b4bdc7d01473a866eb42b39c11e8aa6f8bf056673abee8ae5d04b2d5a657f\",\"error_count\":0,\"executed_node_count\":1593,\"expected_node_count\":1593,\"failed_count\":0,\"passed_count\":1593,\"reason_code\":\"OK\",\"schema_version\":\"opendot.temporal.unit-gate.v1\",\"skipped_count\":0,\"test_exit_code\":0}",
+    "source-manifest.json": "{\"commit\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"files\":[{\"mode\":\"100644\",\"path\":\".github/workflows/portable.yml\",\"sha256\":\"93179aa62c32d527b2e51f7ff39d21dfa747c0249a61f1edf83c240cad116796\",\"size_bytes\":2776},{\"mode\":\"100644\",\"path\":\".github/workflows/temporal-server.yml\",\"sha256\":\"1495215a3009ce1a0ae3d78f3d7a2a84001d1ca864f95b77094e46cee1628657\",\"size_bytes\":82},{\"mode\":\"100644\",\"path\":\".gitignore\",\"sha256\":\"5bc54a4d08ea5c8e82985212943bfeee3f2726e5c09f525d1e9edd81241eeb45\",\"size_bytes\":108},{\"mode\":\"100644\",\"path\":\"AGENTS.md\",\"sha256\":\"ca1a5c5c2c6ca4d0fb60eba4ef2b249734a7d1725ac93600acc29182ea0ac2f7\",\"size_bytes\":54},{\"mode\":\"100644\",\"path\":\"CAPABILITIES.md\",\"sha256\":\"3151ff19ddb662fc6bf290f25449d1303dd798584ad2da41d23cab5ee38cc9ab\",\"size_bytes\":21008},{\"mode\":\"100644\",\"path\":\"CAPABILITIES.zh-CN.md\",\"sha256\":\"a09e4f6a98e2bd081ff1dbd14129f444f6a670bc8fcf36652a5debc5b75e5ccf\",\"size_bytes\":19272},{\"mode\":\"100644\",\"path\":\"CHANGELOG.md\",\"sha256\":\"35823b5f6aac63e80692567d1e4e767d9ce4263bc5124e8de8ab948142443e85\",\"size_bytes\":22579},{\"mode\":\"100644\",\"path\":\"CONTRIBUTING.md\",\"sha256\":\"64b817a16a53d07720f54461e22e10684d71a314f387b53b09500a50731f6428\",\"size_bytes\":5487},{\"mode\":\"100644\",\"path\":\"LAUNCH-COPY.md\",\"sha256\":\"8ac025efd12a9cfb9773c315a4b0530361d81b2974d8fd8f4dc3cd6612f2dea3\",\"size_bytes\":8648},{\"mode\":\"100644\",\"path\":\"LICENSE\",\"sha256\":\"cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30\",\"size_bytes\":11358},{\"mode\":\"100644\",\"path\":\"NOTICE\",\"sha256\":\"735c9cf9950c633044b21a82d3508ecdc36b4eb6635ecfc38769418c50fc87d5\",\"size_bytes\":2233},{\"mode\":\"100644\",\"path\":\"OVERVIEW.md\",\"sha256\":\"459c8261f7b1573f619ecb326048787f0c810aed44438f393fc98b31e65dae21\",\"size_bytes\":14818},{\"mode\":\"100644\",\"path\":\"OVERVIEW.zh-CN.md\",\"sha256\":\"33a3fb95ae2ebc23b959b1e327b20e3326b2805f7e5bd0c768928126ea200903\",\"size_bytes\":13922},{\"mode\":\"100644\",\"path\":\"README.md\",\"sha256\":\"34e19f89b05d07bfb13f27a8c19260d8670e5b7e093fafc5cdfc9998e36eec6e\",\"size_bytes\":12662},{\"mode\":\"100644\",\"path\":\"README.zh-CN.md\",\"sha256\":\"0056d2211fcf0af701708139f0f3fa2c69350408da7ca116f4708d60c537ec70\",\"size_bytes\":12144},{\"mode\":\"100644\",\"path\":\"RESEARCH-MAP.md\",\"sha256\":\"3a20b7622248b17ffd351f35e366fd86f74b2485e5c6eab9563c2314b64baa27\",\"size_bytes\":22183},{\"mode\":\"100644\",\"path\":\"RESEARCH-MAP.zh-CN.md\",\"sha256\":\"1c1088a004efe86aef2b590867297f1b87957099c9b48d1e65078bb5af733a7b\",\"size_bytes\":19285},{\"mode\":\"100644\",\"path\":\"SECURITY.md\",\"sha256\":\"751a3b03025c70a64f1d978a50d1a96ce3c2eacb67719fcfeff3e72ae465ba72\",\"size_bytes\":4534},{\"mode\":\"100644\",\"path\":\"SUPPORT.md\",\"sha256\":\"e8b388bff6c659af986740e85ba8d3a88333b09ee7c0af62d85548470906dc41\",\"size_bytes\":8855},{\"mode\":\"100644\",\"path\":\"assets/brand/NOTICE\",\"sha256\":\"30e0bb23fb8c7773c8a5f7a26ab13f527bddac1ea102df648081c164ee65b293\",\"size_bytes\":632},{\"mode\":\"100644\",\"path\":\"assets/brand/README.md\",\"sha256\":\"1c0ae59daa834f88b8946a6173e571ba2c6a66a3a403d96e50acd3f94cc0d8df\",\"size_bytes\":1616},{\"mode\":\"100644\",\"path\":\"assets/brand/opendot-mark-dark.svg\",\"sha256\":\"8aa7e9855bc04ed9c55a5d5b50bf2ea10700a358098f3fa14f64a9a0b138a561\",\"size_bytes\":740},{\"mode\":\"100644\",\"path\":\"assets/brand/opendot-mark-light.svg\",\"sha256\":\"48626473f3e84a64f61991b5196baffe86881e2fe3e503ae7ceeb99b7c9b35e4\",\"size_bytes\":741},{\"mode\":\"100644\",\"path\":\"assets/brand/opendot-readme-banner-dark.svg\",\"sha256\":\"cdbb61483de4bf5d08303adca2fdaae300c86cdfe2cf0c0daa366875ac0644d6\",\"size_bytes\":1956},{\"mode\":\"100644\",\"path\":\"assets/brand/opendot-readme-banner-light.svg\",\"sha256\":\"90d77a05284ad258f5ca36dd82c059888fdb5e37d8d4cc10d8a8c02a4bbe1c8d\",\"size_bytes\":1957},{\"mode\":\"100644\",\"path\":\"assets/brand/opendot-wordmark-dark.svg\",\"sha256\":\"a793e0a97c089f765c7e10e5cebfe9ecc855c086c3cb24fefb670fbb0a4815f7\",\"size_bytes\":1649},{\"mode\":\"100644\",\"path\":\"assets/brand/opendot-wordmark-light.svg\",\"sha256\":\"f81881545bb16424008c66b07cb40fff2a1cfeeb6ca87c6ceae7a0159dc74ba9\",\"size_bytes\":1650},{\"mode\":\"100644\",\"path\":\"ci/README.md\",\"sha256\":\"1a36f7b2c6ad5ccc6e337e63345419184a4ac6187a0e45cdc48994cdc2dde7bf\",\"size_bytes\":12294},{\"mode\":\"100644\",\"path\":\"ci/acquire_temporal_cli.py\",\"sha256\":\"4283fe5927703ef8b9bbbfedd4a911e824cf4eb3888a80b78dfbe0c6c60779fb\",\"size_bytes\":15673},{\"mode\":\"100644\",\"path\":\"ci/agent-contract-nodes.txt\",\"sha256\":\"130b15599401b90a10d387c0b945cc44a48f57f2750a950e28bbf1037ce54d23\",\"size_bytes\":2960},{\"mode\":\"100644\",\"path\":\"ci/build-toolchain-requirements.txt\",\"sha256\":\"306c857c7ec3f3a6add61c31d85889e3e37289a3f2453d8a2bb346bb42616e4e\",\"size_bytes\":161},{\"mode\":\"100644\",\"path\":\"ci/callable-nodes.txt\",\"sha256\":\"132e7a9448eb315fe400b818ad6b4aa8b870415d1cd93437906720140217b026\",\"size_bytes\":13323},{\"mode\":\"100644\",\"path\":\"ci/check_docs.py\",\"sha256\":\"c38018d52abe87e03923dd8a3fd8776f8d084f4aad9a55c151a8c9c527f3bc23\",\"size_bytes\":13205},{\"mode\":\"100644\",\"path\":\"ci/composition-nodes.txt\",\"sha256\":\"c5838be625dadd476d6f58b0e1df5af6c7a338435513a27274b68c9c8d58a3b0\",\"size_bytes\":44619},{\"mode\":\"100644\",\"path\":\"ci/delivery-workflow-nodes.txt\",\"sha256\":\"a9dab10d0546604e923b9c8c77d3c5f2b86b00b83d3c9460c174d3ea7b29d70c\",\"size_bytes\":70964},{\"mode\":\"100644\",\"path\":\"ci/git-workspace-nodes.txt\",\"sha256\":\"aa9aa95e003d98bf7c1bfd89fda90ee60bbab76582a089bea2e30cb53a7337a0\",\"size_bytes\":6410},{\"mode\":\"100644\",\"path\":\"ci/portable-nodes.txt\",\"sha256\":\"5487ce415fda1190c04064be52f20b224b8937160c296e3efb1d67fd773bfefd\",\"size_bytes\":48778},{\"mode\":\"100644\",\"path\":\"ci/public-regression-nodes.txt\",\"sha256\":\"0ff13bb8eefbfa9be744da77897f40e90495794690d5f16b7d7b9cb4d57abecd\",\"size_bytes\":27333},{\"mode\":\"100644\",\"path\":\"ci/readonly-artifact-nodes.txt\",\"sha256\":\"3352ae15611cf43e9501a9cfd61decceb54f0573dc8cb0e3b820759512646089\",\"size_bytes\":8633},{\"mode\":\"100644\",\"path\":\"ci/requirements.txt\",\"sha256\":\"d4a40a3a0837215c3ab557d110437034fc36e3de888a3720301ab7d40e433600\",\"size_bytes\":700},{\"mode\":\"100644\",\"path\":\"ci/run_temporal_server_gate.py\",\"sha256\":\"67c564a27112512dd779dc05e1d3d60cb484ebdfe2661590c2298d6fbe03c32d\",\"size_bytes\":75},{\"mode\":\"100644\",\"path\":\"ci/solver-crosscheck-nodes.txt\",\"sha256\":\"e8c801dc458f171865a567d0faac7f9f4d2aa79527e86f5419b8f6a7a4c75430\",\"size_bytes\":16694},{\"mode\":\"100644\",\"path\":\"ci/source-boundary-nodes.txt\",\"sha256\":\"43f1ee20eeb2aa69d9e8671c5d7951da15b1817b1b9feb4672df430195beaf8d\",\"size_bytes\":8590},{\"mode\":\"100644\",\"path\":\"ci/source-provenance-nodes.txt\",\"sha256\":\"45f235fec98c2e2268b0bb7e0433bab3384ab8663eea83393fed9a407d796303\",\"size_bytes\":7469},{\"mode\":\"100644\",\"path\":\"ci/source_provenance.py\",\"sha256\":\"ef49f4d72c79dfd2697aad50e7a9370b464b776362a257418b628eee0e09349a\",\"size_bytes\":14137},{\"mode\":\"100644\",\"path\":\"ci/summarize_tests.py\",\"sha256\":\"16de68818d286c79b306309593a03e0e52ea3009aa8547dec9ca4339cf9f33a4\",\"size_bytes\":1146},{\"mode\":\"100644\",\"path\":\"ci/temporal-batch-nodes.txt\",\"sha256\":\"95e46d92e349792635e6d18acc1815f981ddb80f325f244ddc3d84063c3b08e1\",\"size_bytes\":43719},{\"mode\":\"100644\",\"path\":\"ci/temporal-dag-recovery-nodes.txt\",\"sha256\":\"569a56e0c7a0d8a1964aefa8ad28be060680bd71171262831929ab891352247c\",\"size_bytes\":79},{\"mode\":\"100644\",\"path\":\"ci/temporal-real-batch-nodes.txt\",\"sha256\":\"7ad383036ff782bf7b1c684c4857c5cb5f3952ea3e9fa1f72f5a975822c62b1d\",\"size_bytes\":377},{\"mode\":\"100644\",\"path\":\"ci/temporal-sdk-requirements.txt\",\"sha256\":\"f8ea76390c3f260bf48aa68ed64c4e80cf52e00bfb675d09be4eedd123748d89\",\"size_bytes\":788},{\"mode\":\"100644\",\"path\":\"ci/temporal-server-nodes.txt\",\"sha256\":\"315d557eda272ea471ca85b4e32b432d2c059b72ae6082bee529a54003acd37f\",\"size_bytes\":632},{\"mode\":\"100644\",\"path\":\"ci/verify_temporal_server_gate.py\",\"sha256\":\"b165b613c931690d1abc6ac686363ff2e8a66dacb58a200be38eb5626d897faf\",\"size_bytes\":78},{\"mode\":\"100644\",\"path\":\"docs/PROVENANCE.md\",\"sha256\":\"26bc26f76c45efcefc30d99c7688b420294e6aeabb76a8e26d2565e5ad3c8273\",\"size_bytes\":9195},{\"mode\":\"100644\",\"path\":\"docs/a2a-http-transport.md\",\"sha256\":\"4c23f8128ab1ae431c3dcc6122dd28ca7a6968d88f952da20a681063a4bef44f\",\"size_bytes\":13112},{\"mode\":\"100644\",\"path\":\"docs/a2a-worker-turn.md\",\"sha256\":\"8965a64eec08e8d62f9d0e7e1eacf3d03cda49282b5c0779a40d5781cb848d49\",\"size_bytes\":17686},{\"mode\":\"100644\",\"path\":\"docs/a5-candidate-verification.md\",\"sha256\":\"d99fa924a15c076be00eab499de87e4e22186fddd65dfc052e7b2ac9647c7c8e\",\"size_bytes\":6024},{\"mode\":\"100644\",\"path\":\"docs/a6-candidate-verification.md\",\"sha256\":\"c34846f0d707e813f109442ab7c57462faf6fef165a9ee47b3cb97b76929d60c\",\"size_bytes\":3889},{\"mode\":\"100644\",\"path\":\"docs/agent-contracts-verification.md\",\"sha256\":\"9db5f9da780bf1c9a3974fe1e34520831396f03a145de429d2b1afbbb44dd472\",\"size_bytes\":3390},{\"mode\":\"100644\",\"path\":\"docs/agent-contracts.md\",\"sha256\":\"bbdbb1bd9643941976593428768fe5dc3b063d1a9c163bc854ffab89f1d0aabd\",\"size_bytes\":4925},{\"mode\":\"100644\",\"path\":\"docs/architecture.md\",\"sha256\":\"f1a23fbd017b749dec39f791bd3397f3f9e51f209ed7326f2fbfff673a1961b7\",\"size_bytes\":9780},{\"mode\":\"100644\",\"path\":\"docs/build-toolchain.md\",\"sha256\":\"cf5ff574709f156daa0c5536167c68af50e0def47b06d9fe7999ad6c797e902b\",\"size_bytes\":1937},{\"mode\":\"100644\",\"path\":\"docs/cad-geometry.md\",\"sha256\":\"0affb2ba226186e2c6e29bd0a8ff3397cb9a6ffcaca99fed4043355067482c79\",\"size_bytes\":10629},{\"mode\":\"100644\",\"path\":\"docs/cad-mesh.md\",\"sha256\":\"fa905cb5a88f141851e90359990eba7eade0c02f4c03a689f12e14d2e9379947\",\"size_bytes\":11774},{\"mode\":\"100644\",\"path\":\"docs/callable-execution-verification.md\",\"sha256\":\"89427939cbd405686ee0b7cbc8f5bea87a62f68cf4cc964670508d563d1014e7\",\"size_bytes\":4898},{\"mode\":\"100644\",\"path\":\"docs/callable-execution.md\",\"sha256\":\"ac6a384f0652ab7414f95f7acd4179829fc2fd522a838de4325ca8a99a18f8d2\",\"size_bytes\":7194},{\"mode\":\"100644\",\"path\":\"docs/canonical-artifacts-verification.md\",\"sha256\":\"4b356a41ef52a28cb26792dbb13776b68efed1caf799a2955893230664e961fa\",\"size_bytes\":2908},{\"mode\":\"100644\",\"path\":\"docs/canonical-artifacts.md\",\"sha256\":\"524a312c6601db4d4215d8a562f05a5a29ca55bc234ab613c5f0c895b7bd6a36\",\"size_bytes\":9870},{\"mode\":\"100644\",\"path\":\"docs/ci-toolchain.md\",\"sha256\":\"7248d934830c1c2db824d31f19342104756bf24dc505f786cd8918ebe6436df1\",\"size_bytes\":4692},{\"mode\":\"100644\",\"path\":\"docs/claim-status.md\",\"sha256\":\"54f50b447c74cea465d3f32e04ae2b3a9f6d9f9bf2d928c6f6d9d8c43d043c37\",\"size_bytes\":23208},{\"mode\":\"100644\",\"path\":\"docs/combined-candidate-verification.md\",\"sha256\":\"3595d49e0e274bb930ea13a422cfc90cf715b41fbbbd46b2b48125783d1c3a86\",\"size_bytes\":5803},{\"mode\":\"100644\",\"path\":\"docs/decisions/001-source-admission.md\",\"sha256\":\"4c899405c0d7329c10f2fa37f073a9f74eb70d31a7efbf0bcd8d0247c270758c\",\"size_bytes\":2050},{\"mode\":\"100644\",\"path\":\"docs/decisions/002-canonical-artifact-core.md\",\"sha256\":\"a4fa2869c982c742757f11514287743f0119b4cec66318dc12991c56094e9d3c\",\"size_bytes\":3612},{\"mode\":\"100644\",\"path\":\"docs/decisions/003-agent-metadata-contracts.md\",\"sha256\":\"ed6757a910c73e9ba0368e1384130630bfa3350e6d8982e2970e0fcf80bdda17\",\"size_bytes\":2333},{\"mode\":\"100644\",\"path\":\"docs/decisions/004-temporal-reference-transport.md\",\"sha256\":\"534b446d671444d076866aadcfd3905e54126561705f547eca2ff5f2684c0e9b\",\"size_bytes\":50119},{\"mode\":\"100644\",\"path\":\"docs/decisions/005-bounded-artifact-reads.md\",\"sha256\":\"8aa14f9073a7069b3356e2526410cfc71a213822a76ffb493a76b94ae3f85e5f\",\"size_bytes\":7953},{\"mode\":\"100644\",\"path\":\"docs/decisions/006-fixed-measurement-composition.md\",\"sha256\":\"793740b8ab48d022583a20068210aa1d545041321d43de1dd544db8867415a83\",\"size_bytes\":9499},{\"mode\":\"100644\",\"path\":\"docs/decisions/007-bounded-external-worker-turn.md\",\"sha256\":\"0c4b5e46852ea63ed3035fe75978f45d5f35f335a685786e16fc6c2781b83ecb\",\"size_bytes\":16534},{\"mode\":\"100644\",\"path\":\"docs/decisions/008-fixed-dependent-temporal-recovery.md\",\"sha256\":\"c7d18394d4a88b74e9b0b30ba5ba960bbc5177e19b2f6c115db91b23819b6737\",\"size_bytes\":61183},{\"mode\":\"100644\",\"path\":\"docs/delivery-workflows-verification.md\",\"sha256\":\"ee80e342473e7f48bc593269c7a82537845a23ec4801035000d64f87cc177a32\",\"size_bytes\":4996},{\"mode\":\"100644\",\"path\":\"docs/documentation-checks.md\",\"sha256\":\"e81cf680f223b165577a8949b22720a73cd326eadbc60bc4f1b133d0b2bbe745\",\"size_bytes\":7702},{\"mode\":\"100644\",\"path\":\"docs/documentation-plan.md\",\"sha256\":\"cb4b73b033c3e13656420a59b92d703283e2a857f3c3778b723626c73d27373a\",\"size_bytes\":2065},{\"mode\":\"100644\",\"path\":\"docs/evidence.md\",\"sha256\":\"7913fe230ede9e7fdcd9d4721e118784a8c510e35533a202be2a494d4447a415\",\"size_bytes\":3462},{\"mode\":\"100644\",\"path\":\"docs/execution-core-verification.md\",\"sha256\":\"f3fbd9f156bd23b4a77b8aa5807719bb82611ebb4cd1a9d5d1751412d651d529\",\"size_bytes\":5166},{\"mode\":\"100644\",\"path\":\"docs/getting-started.md\",\"sha256\":\"b4a6c08be948fb8e927569e1bfb4d01acb84b82ab39ad42f2d3037962487b500\",\"size_bytes\":10413},{\"mode\":\"100644\",\"path\":\"docs/git-provenance-verification.md\",\"sha256\":\"63aa3bac0e591333f05c34cc5d71f372b42e46a3499807359d1d4940c0d3b458\",\"size_bytes\":4101},{\"mode\":\"100644\",\"path\":\"docs/git-workspaces-residue-fix.md\",\"sha256\":\"b5e0c3bf0f194a2478c31e51bc07ac7dbfd79b82f287413f22c67bd25ffb59b6\",\"size_bytes\":2114},{\"mode\":\"100644\",\"path\":\"docs/git-workspaces-verification.md\",\"sha256\":\"1ee7fb57a5ea5745ebea7f3f1bb4138a8a2c43680e2a8bc0b3e4046c234e9999\",\"size_bytes\":4305},{\"mode\":\"100644\",\"path\":\"docs/git-workspaces.md\",\"sha256\":\"8ea0e5df695fea7000fbfe4923607a8397a4123dcf9a11363b0e92916aea6158\",\"size_bytes\":8205},{\"mode\":\"100644\",\"path\":\"docs/gmsh-cpu-ceiling.md\",\"sha256\":\"3b7bb77a2ced31e9a611a73da4a2ddbbcbc7a3f4f4101f5962b75b0058ac4e89\",\"size_bytes\":3710},{\"mode\":\"100644\",\"path\":\"docs/host-development/README.md\",\"sha256\":\"46dd30813c84d2aaa37520e8720e78c681f8df3984294c2b44e007475ca86bc7\",\"size_bytes\":4854},{\"mode\":\"100644\",\"path\":\"docs/host-development/receipt.json\",\"sha256\":\"cb0a83ea625bbc71d3110371109695619df724c6fb9e3ad2a8ff09e2a6b9a362\",\"size_bytes\":12671},{\"mode\":\"100644\",\"path\":\"docs/installed-quickstart.md\",\"sha256\":\"79f818e68f8833a9b29df196e401f65151b5854ef1ee8202a9696d56a071be64\",\"size_bytes\":17608},{\"mode\":\"100644\",\"path\":\"docs/installed-quickstart.zh-CN.md\",\"sha256\":\"c75b4826af287adb2b0bfd2b0ab3beb81b88d10cbcc3a0dd2cd00d994b4e1827\",\"size_bytes\":16412},{\"mode\":\"100644\",\"path\":\"docs/integration-review.md\",\"sha256\":\"581fc65ff5371955a239621eacc563a1f6055268e1083618f339c89cb280538f\",\"size_bytes\":3554},{\"mode\":\"100644\",\"path\":\"docs/local-source-audit.md\",\"sha256\":\"ef599087ab44239e9fd48e0d9abac93f7b2c19da7fae8e04f4fca6d99c417202\",\"size_bytes\":6092},{\"mode\":\"100644\",\"path\":\"docs/marketing-copy.md\",\"sha256\":\"df5d7e66db74c94c4f5208dd29a48a4c4f582a7fcfaf1420e77bbde97c2eceb7\",\"size_bytes\":3436},{\"mode\":\"100644\",\"path\":\"docs/metadata-predecessor-acceptance.md\",\"sha256\":\"0aff710133ab6050ffb996fc183515a7f38a72f919bc0ebfb1fbefc3c59d069e\",\"size_bytes\":1952},{\"mode\":\"100644\",\"path\":\"docs/module-cli.md\",\"sha256\":\"f00a322e60fbf46b9f97cfecbe6ce90d91c182f76b10103e9c5f0294175acbf4\",\"size_bytes\":2752},{\"mode\":\"100644\",\"path\":\"docs/parallel-development-verification.md\",\"sha256\":\"601b4af77f7bb7522c09d677cb4cd7497375f56fe9eee79d9c91dfea1230924f\",\"size_bytes\":3132},{\"mode\":\"100644\",\"path\":\"docs/peer-benchmark.md\",\"sha256\":\"ba5e5f9aab042898ca72a6e3034d01005a0aecd27668b3c2e90b0715cc6b3eb9\",\"size_bytes\":3726},{\"mode\":\"100644\",\"path\":\"docs/peer-repository-snapshot.json\",\"sha256\":\"c02db82c6445ca54d7d448a5f8d26faf68fdfdbf737290b38ca975e61300b212\",\"size_bytes\":1516},{\"mode\":\"100644\",\"path\":\"docs/pr23-ci-evidence.json\",\"sha256\":\"a6b71334adf3b11a7156bbf41b1ef0213b69096b8cabd21245d45c6975caeb24\",\"size_bytes\":16944},{\"mode\":\"100644\",\"path\":\"docs/proposed-release-readiness.md\",\"sha256\":\"0637320be0e65f8c693ff3e7c5e9ac59985598ce42be8324e08e48db2c455379\",\"size_bytes\":4837},{\"mode\":\"100644\",\"path\":\"docs/provenance-integration-verification.md\",\"sha256\":\"1155cf6ea90d80571ff06fd3dcc0002667b6837176b0aa43b57dc63d12cb6590\",\"size_bytes\":6148},{\"mode\":\"100644\",\"path\":\"docs/readonly-artifacts-verification.md\",\"sha256\":\"38ff65dc5ba1e9fbbe24b9dab56a8757485a895fb73bad0aef0f3404c14d5ecb\",\"size_bytes\":2559},{\"mode\":\"100644\",\"path\":\"docs/release-checklist.md\",\"sha256\":\"7b554d1243163c421fb9a797ebb10ed1ea73bd24a2362dcf3af7ddc35d48010a\",\"size_bytes\":11761},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/README.md\",\"sha256\":\"bee01b9bb465413b52fa9a605e7d418f671a5e07befe1e2fc7bc7125eb6e7ee6\",\"size_bytes\":7993},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/SHA256SUMS\",\"sha256\":\"96916b3980920574d91e116f09fe7f189fe7791537b365423abd0f0744b1e883\",\"size_bytes\":1139},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/build_inventory.py\",\"sha256\":\"dc7b5d11f1bf40ec3bb7d3517320675e1fd3cb80d070305c37183c537cf70381\",\"size_bytes\":34510},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/component-inventory.json\",\"sha256\":\"0f65712d1fe8ec6b9392ae0957d2fa39450ccf7de508e8eb13a36a0c7a25f434\",\"size_bytes\":307191},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/generation-result.json\",\"sha256\":\"2fe4039f75a97354ec0c003c6839b2c7e83649af0bb517f18de54107b4e2b8d3\",\"size_bytes\":819},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/hardening-review.json\",\"sha256\":\"a75bc8b57f8782082e336f5637a78b030c3f5f18a1a0cef450361da7c4a53107\",\"size_bytes\":1898},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/hardening.patch\",\"sha256\":\"46777d7e9fc8d5aaca7a47818687f9a7ab7a8099680cd9e623933b184e1cefd8\",\"size_bytes\":10104},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/temporal-rust-lock-inventory.json\",\"sha256\":\"4c1b7aae20e991a2ecf722afe3f21aa27f3df709395fb5e5317c71bfbf548827\",\"size_bytes\":99468},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/test-details.txt\",\"sha256\":\"d9afc1d4f5a34fbb7901af9155ea5ea40063ba799a9e4f96966e5cd04e95b851\",\"size_bytes\":1746},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/test-result.json\",\"sha256\":\"0b2be3754450e282ea320d07ce9a2c2bdee98ea77e8c0e3a895641207e4166a3\",\"size_bytes\":175},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/test_inventory.py\",\"sha256\":\"ad17db749f445a60e4290e55c31b7e8c044c789669471af2c355e4b782462b9c\",\"size_bytes\":10847},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/upstream-license-evidence.json\",\"sha256\":\"c244f272e6bb9c6e92c8a6937bf80ba2a7033368afd54c4a74669a2e8e202e61\",\"size_bytes\":5864},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/validation-results.json\",\"sha256\":\"6b12c93f283058f9022d987cd074bdd4495f471537073404bf307ca7fb51ba52\",\"size_bytes\":3086},{\"mode\":\"100644\",\"path\":\"docs/release-inventory/v0.3.0a3/verification-result.json\",\"sha256\":\"e7cd67d120f6439aba7cf70e690e69dcb9cce5ec22b725504a1442060ab54938\",\"size_bytes\":817},{\"mode\":\"100644\",\"path\":\"docs/research/README.md\",\"sha256\":\"a0f62e2b04f51eabc028b2f5bc25c4d798bfdaf11b4a1a77caf925f0c9204359\",\"size_bytes\":4501},{\"mode\":\"100644\",\"path\":\"docs/research/academic-needs.md\",\"sha256\":\"32c4265723aa88e95d1e5bfd5567174c2f1d69ee3fd70ba2fba46c61d355e9cb\",\"size_bytes\":3621},{\"mode\":\"100644\",\"path\":\"docs/research/delta-20261002/README.md\",\"sha256\":\"09a6f746b9f50a102f7b055fe9872febea1c5d03c7c4fa5996e713f1157964ee\",\"size_bytes\":11688},{\"mode\":\"100644\",\"path\":\"docs/research/delta-20261002/source-needs-delta.json\",\"sha256\":\"fcccb1cbec6d74e7bb40cd8a191dc69dd37a5b100569075895f9183d07bdfed7\",\"size_bytes\":32979},{\"mode\":\"100644\",\"path\":\"docs/research/demand-gap-20261001/README.md\",\"sha256\":\"f42e2b24ca85d4bc204f8b944a6f05419aac0a0b19d2cace56a0c4ce13383b22\",\"size_bytes\":2975},{\"mode\":\"100644\",\"path\":\"docs/research/demand-gap-20261001/README.zh-CN.md\",\"sha256\":\"bb8d860522d706cd539aad193bb95facc2a864b179a7f89ecc88a49e97b2901c\",\"size_bytes\":7091},{\"mode\":\"100644\",\"path\":\"docs/research/demand-gap-20261001/acceptance-cases.json\",\"sha256\":\"5a581f3a9e3d6e9a92e3cd95bb95692fa253aa6305d5163a022e3ef23562a4da\",\"size_bytes\":5273},{\"mode\":\"100644\",\"path\":\"docs/research/demand-gap-20261001/source-needs-delta.json\",\"sha256\":\"f6b274298df5e150c7a277e8e4ff554b5feea1dffbf832c5d400048e4217d932\",\"size_bytes\":9653},{\"mode\":\"100644\",\"path\":\"docs/research/hillhouse-delta-20261002/README.md\",\"sha256\":\"1ad79d0c68a99190878f9785de88a0b1d49ee9d5aab34cd1b6d8f892ea10d6c8\",\"size_bytes\":4605},{\"mode\":\"100644\",\"path\":\"docs/research/hillhouse-delta-20261002/source-needs-delta.json\",\"sha256\":\"3490040def92021a3bea55bb6a6d6449818f57dd2eb7581bb0049d9802659be4\",\"size_bytes\":6714},{\"mode\":\"100644\",\"path\":\"docs/research/hillhouse-industry.md\",\"sha256\":\"8ef3b5b8418d5897f3e651e1e5a37a1335ae5482b0897856f49daedeeb2faa74\",\"size_bytes\":3557},{\"mode\":\"100644\",\"path\":\"docs/research/hillhouse-primary-addendum.zh-CN.md\",\"sha256\":\"be16381bffdf7a78f94226fbf2de8d53307a3ec6102c391d73dac8c5dff7de80\",\"size_bytes\":7676},{\"mode\":\"100644\",\"path\":\"docs/research/industry-cases.md\",\"sha256\":\"144009ede34e5028d7039c7061a0f19453ca92b99bebf195dfa9db58763a9fd7\",\"size_bytes\":10245},{\"mode\":\"100644\",\"path\":\"docs/research/interoperability-delta-20261002/README.md\",\"sha256\":\"9b752f268faa35f05ade3ac8a49d4058213b91b6c651ce0c445805dd59fe9283\",\"size_bytes\":8533},{\"mode\":\"100644\",\"path\":\"docs/research/interoperability-delta-20261002/source-needs-delta.json\",\"sha256\":\"44a462109f858167850beb480e9395299c7f234ac8196d2aa681ed091ca76ad3\",\"size_bytes\":21086},{\"mode\":\"100644\",\"path\":\"docs/research/lidang.md\",\"sha256\":\"18e6211d65ba65f8da36fe7ee4bd599495800afd576fea9d84eea5a14e402d3c\",\"size_bytes\":10707},{\"mode\":\"100644\",\"path\":\"docs/research/official-strategy.md\",\"sha256\":\"eba63f5ced64624d007a54ec860accfe34af445077232ed2fece155d590fe737\",\"size_bytes\":13163},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/BENCHMARK.md\",\"sha256\":\"579334d0aa8faadaf6a058df710792f26c051161f1996bcb05a2e6d3b1d443f9\",\"size_bytes\":8214},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/INDEPENDENT-REVIEW.md\",\"sha256\":\"92f38dff6e93e254a2865f992dd9eb9f3c9d71d2bb2a0490a512c887c26ddfc4\",\"size_bytes\":4241},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/PRIMARY-SOURCES.md\",\"sha256\":\"4a5bfe359f4565f48d51ecf7125d61609bcaab0da2d574f50de2f1a4d96ab867\",\"size_bytes\":4203},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/PROJECTION.json\",\"sha256\":\"f75f94e0a8279eb0b7c751b12d1af18ae03cbf88790b0ba66f898d92960ece67\",\"size_bytes\":1583},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/README.md\",\"sha256\":\"f6b0e5b52b41cb5a926a8577f66f31125571e6472088bbd3885d561a8cf16a2f\",\"size_bytes\":3018},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/SHA256SUMS\",\"sha256\":\"dcf60026a6b0cee6059106420debdb558522cec2db659a7650885de6873e2481\",\"size_bytes\":1243},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/TICKETS.md\",\"sha256\":\"711600a48ad2d4830c390e3247e0a216eea0af2d221259b0d377cd55285b45d5\",\"size_bytes\":8064},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/VALIDATION.json\",\"sha256\":\"5d18d71fa8785d40de6a2db0f3d9204b9654131eb42bb75edee16e9ac9be376b\",\"size_bytes\":826},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/WORKFLOW-SPEC.md\",\"sha256\":\"165f5bcfa055e01ff6bc7c692013060b4bf1c2d91564f86e6adf91c8e97a3523\",\"size_bytes\":7232},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/evidence/repository-snapshot.json\",\"sha256\":\"c62250df3791aa5f48c8502c4e4b8ae6d0158f54864d9ef43a9b3f49000b01af\",\"size_bytes\":6957},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/evidence/source-needs-additions.json\",\"sha256\":\"c0de38a1543f3a8a477ae299c13a614ac837561587e7abfe87105c9aa86483d7\",\"size_bytes\":3483},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/frozen-oracle/SHA256SUMS\",\"sha256\":\"9c127f2f8ac08e5331d8aa1aa15e95c5ba8dbb5ab657c661ed7d4ed0e32732bd\",\"size_bytes\":255},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/frozen-oracle/case-oracles.json\",\"sha256\":\"2b17507cc2ef6e7861c8fbad90cf611dccccf64b828537dc09cb6b6b0a2731ed\",\"size_bytes\":2572},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/frozen-oracle/expected-summary.json\",\"sha256\":\"4df81c0c33cd274af97197d6d9eb2d3e05c63579e026eb41b2ef8718d41d63e5\",\"size_bytes\":238},{\"mode\":\"100644\",\"path\":\"docs/research/oss-workflows/frozen-oracle/measurements.csv\",\"sha256\":\"12fa76e2cb8defb752ce08a2fdd386b0f943579d1438e3022cb2e345bdcae0d9\",\"size_bytes\":85},{\"mode\":\"100644\",\"path\":\"docs/research/refresh-20261001/README.zh-CN.md\",\"sha256\":\"28ad58d64aaf5d81a1ef54470f6931eb28f0b6d21239bb065dbcd69633fb68bd\",\"size_bytes\":4298},{\"mode\":\"100644\",\"path\":\"docs/research/refresh-20261001/manifest.json\",\"sha256\":\"9f5edda686ab27d4a4c688109b03ca3173653cb152bf136d30acc2c479fb8056\",\"size_bytes\":428},{\"mode\":\"100644\",\"path\":\"docs/research/refresh-20261001/source-needs-delta.json\",\"sha256\":\"75adc941dab8a7a0c0134aba25d330915ad2f302df7adc29bcc11c9541dbabe9\",\"size_bytes\":16749},{\"mode\":\"100644\",\"path\":\"docs/research/scaling-literature-20261002/README.md\",\"sha256\":\"01c560a4c3d189b98768e89e7d853ba74e388e23f982d676953fe7b6effb0c66\",\"size_bytes\":11286},{\"mode\":\"100644\",\"path\":\"docs/research/scaling-literature-20261002/evidence.json\",\"sha256\":\"ac26911ec0b1cba021f38edbaf0ea591fc162f00a67a87248d99b32e7ab51fc8\",\"size_bytes\":9470},{\"mode\":\"100644\",\"path\":\"docs/research/sequoia-hongshan.md\",\"sha256\":\"1f1669f008a276b98e4d54e34ef276386cb096fca986f58970f9c74e68013518\",\"size_bytes\":6276},{\"mode\":\"100644\",\"path\":\"docs/research/source-needs-index.json\",\"sha256\":\"05cdaf2a1dbd50edb890c4455c8e371b14ba49741bf9292a98e1ad72a83b183b\",\"size_bytes\":55273},{\"mode\":\"100644\",\"path\":\"docs/simulated-lab.md\",\"sha256\":\"2abde03a46304cb79bb5dd7cda3b506ab57ea5d5f7eb573527c911a48e5cdecd\",\"size_bytes\":11595},{\"mode\":\"100644\",\"path\":\"docs/solver-cpu-ceiling.md\",\"sha256\":\"bee1d59d0d9571622662512bf63501aacb305b51eb54dbdebbc63077eeb46916\",\"size_bytes\":3721},{\"mode\":\"100644\",\"path\":\"docs/solver-version-gate.md\",\"sha256\":\"eb6c2d39b0748e58f94ca1011d2d6b78848dc274b31b0b8558b38371d108e7d8\",\"size_bytes\":1444},{\"mode\":\"100644\",\"path\":\"docs/source-admission-verification.md\",\"sha256\":\"0674d59713129285200595647c3774c827f0eba14f1475b5fcd4864117d4bb9c\",\"size_bytes\":3909},{\"mode\":\"100644\",\"path\":\"docs/source-admission.md\",\"sha256\":\"2b0da8769bc47bf042c063596b166a6f2c94361d3da1a6809b080ef306c0ff17\",\"size_bytes\":4982},{\"mode\":\"100644\",\"path\":\"docs/source-lock-schema.md\",\"sha256\":\"43f04b7d01a3452476555733b8b38984f85f8cc74d40db8de1ea28f263281aa9\",\"size_bytes\":3513},{\"mode\":\"100644\",\"path\":\"docs/source-provenance-inventory.md\",\"sha256\":\"1777fc135a584651958183e477ed7a4a4f5a797597072953ed28437dad72f424\",\"size_bytes\":9859},{\"mode\":\"100644\",\"path\":\"docs/structural-beam.md\",\"sha256\":\"f8172c935abd8d9c4e02bde14024c92e9a4fd8ad094026eaba6804306bd475aa\",\"size_bytes\":11783},{\"mode\":\"100644\",\"path\":\"docs/structural-default-v2.md\",\"sha256\":\"c4c28ead2f159d3be5fd186669a90831b2bdb752c692edd49e85f1050f5bfd7d\",\"size_bytes\":7258},{\"mode\":\"100644\",\"path\":\"docs/structural-elastic-energy.md\",\"sha256\":\"02c713e4b72f060f54c4f8e648527aaad1377ba493926c7eb1495c28820143d5\",\"size_bytes\":9173},{\"mode\":\"100644\",\"path\":\"docs/structural-v2-candidate-verification.md\",\"sha256\":\"c59e9fefb70410f6d9b45e45bfaac97d0ecea2383e32860a1d854ffd68286180\",\"size_bytes\":7332},{\"mode\":\"100644\",\"path\":\"docs/synthetic-lab-qualification.md\",\"sha256\":\"6da580f7bbb82503bcdd677f354f741b72f508e4cfe00f55a166fba8726d1217\",\"size_bytes\":6390},{\"mode\":\"100644\",\"path\":\"docs/temporal-batch-qualification.md\",\"sha256\":\"aff9ca328dfc97fe631ddfaf2e5258d289a2af5f441a84e1851ef150c5dc7a13\",\"size_bytes\":32084},{\"mode\":\"100644\",\"path\":\"docs/temporal-qualification-evidence.md\",\"sha256\":\"345bf3b682accfdb2f7936f08f71b342e881e967816cea22e46c16c220ebc2ee\",\"size_bytes\":8928},{\"mode\":\"100644\",\"path\":\"docs/temporal-reference-failure-matrix.md\",\"sha256\":\"a0b6a92abb09009266ce18dddbe1168d8892ed37d0317ad451dbf44d522fb95e\",\"size_bytes\":13344},{\"mode\":\"100644\",\"path\":\"docs/temporal-reference-transport.md\",\"sha256\":\"e55c1104dfeab40f374dc35cf3c907c86d4f4ed1410722ad3b4e802c8e7b96e8\",\"size_bytes\":16392},{\"mode\":\"100644\",\"path\":\"docs/thermal-conduction.md\",\"sha256\":\"2a8d9d0867bf341d545c6bddefbff9a5379c2a1dbaf3477e439508794bc8610d\",\"size_bytes\":9490},{\"mode\":\"100644\",\"path\":\"docs/thermal-source.md\",\"sha256\":\"1ef95be7706ee3503937dc03f14a043b1751f89da4d03c1612e3ec97807ac903\",\"size_bytes\":6641},{\"mode\":\"100644\",\"path\":\"docs/verification-status.md\",\"sha256\":\"3dccd0f8354d09cc8167b90040e7c11eab0063b63ad8cbe43a26cb969707d8d0\",\"size_bytes\":10836},{\"mode\":\"100644\",\"path\":\"docs/verifier-ci-verification.md\",\"sha256\":\"6059921dccfe90bbc499cbb00e8cea0d7382ce1eca5255fb8ade49c81e52d54a\",\"size_bytes\":4041},{\"mode\":\"100644\",\"path\":\"examples/agent-contracts/README.md\",\"sha256\":\"ed71cb85d0042848b77fe1c865abebf1db33d198b6765c33d0cc4f05a32fdb98\",\"size_bytes\":1407},{\"mode\":\"100644\",\"path\":\"examples/agent-contracts/demo.py\",\"sha256\":\"df9da208f39a1c8f55eaf6265024d3f6164dbb23611a3e13d745e4bbbcbff700\",\"size_bytes\":1331},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/README.md\",\"sha256\":\"c6ba7614fc95a47767dbed82f9272843be41c83a07e8edf46ef68b9c39527bf3\",\"size_bytes\":9352},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/README.zh-CN.md\",\"sha256\":\"b7725054bfb8e26ca3ba80806f80613cc32a9c12b8613f0fe09f338ed95fa773\",\"size_bytes\":6712},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/beam.parameters.json\",\"sha256\":\"6c9292925a217698a004c07cff631018f53cbbd4b8cc171e703ed4b95dc15817\",\"size_bytes\":65},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/mesh-beam.json\",\"sha256\":\"a9c919ca82cdb09d696886805528b536fd53c5e09b042634925b87ae5f8d26cb\",\"size_bytes\":365},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/native-geometry-reference/README.md\",\"sha256\":\"d951920e159fce4800dc33c91a5f7de5b948a8e13a78e60c2948b8bcde54da79\",\"size_bytes\":6343},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/native-geometry-reference/beam.step\",\"sha256\":\"6a58ae02b21d6f3c70505398c86193f7f3de4d4bbd20c36267400eeb08fa2ec9\",\"size_bytes\":15366},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/native-geometry-reference/evidence.json\",\"sha256\":\"345e2a9ad27e786fd82f0339a974bfbe3e58854e65da45b083112ca25672a232\",\"size_bytes\":4569},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/requirements-tested.txt\",\"sha256\":\"3666768a86346a91776a20c888ab4c2cf8a9f48ddcd0097ef294d81d04a7ad92\",\"size_bytes\":617},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/thermal-benchmark.json\",\"sha256\":\"15a9f25950e08311404cb8019ccc465a90e8a9b81cbacd19cd2a36e19eaede9e\",\"size_bytes\":550},{\"mode\":\"100644\",\"path\":\"examples/cad_cae/thermal_workflow.py\",\"sha256\":\"90c13e6c9cbf0932be2383fe87c351b9bf1a0c7e546c9ea215c7f4e2ba084e75\",\"size_bytes\":10682},{\"mode\":\"100644\",\"path\":\"examples/callable-artifacts/README.md\",\"sha256\":\"4fbf9a5467f234ffae39c0ddbf2915aab9ea22eb3fa9ecdc3bc938213546efdd\",\"size_bytes\":2229},{\"mode\":\"100644\",\"path\":\"examples/callable-artifacts/demo.py\",\"sha256\":\"5796099bec60bb4cf9a3c46fce5b74c8ddf068572fecb7237e41a27df49b00d8\",\"size_bytes\":4898},{\"mode\":\"100644\",\"path\":\"examples/callable-execution/README.md\",\"sha256\":\"038348900b2321013a8fe6774b7314693a84769fba48731e4fe72e0859251953\",\"size_bytes\":668},{\"mode\":\"100644\",\"path\":\"examples/callable-execution/demo.py\",\"sha256\":\"1cccad24fa11854ac1c62fa3e500735518e438cc2368776738dc41a17c68dca2\",\"size_bytes\":3265},{\"mode\":\"100644\",\"path\":\"examples/canonical-artifacts/README.md\",\"sha256\":\"fb949cab9bac00427a661e6105f5e46cdf159a9f7a7af9aa8c118c24fab1c0d1\",\"size_bytes\":1671},{\"mode\":\"100644\",\"path\":\"examples/canonical-artifacts/roundtrip.py\",\"sha256\":\"3f6e4f3a974df5b002a3e0cff034caf5c87d67c5c815a916ba5275d15a4f45ed\",\"size_bytes\":3266},{\"mode\":\"100644\",\"path\":\"examples/git-workspaces/README.md\",\"sha256\":\"fddbdb326a73341a8b2fac399231d38784c838fe57986993b4cc608864e3e76b\",\"size_bytes\":1026},{\"mode\":\"100644\",\"path\":\"examples/git-workspaces/demo.py\",\"sha256\":\"ea127099f339f98d8d045f94c0e1c8263b6e014834146e61638f871c6244a1bc\",\"size_bytes\":3263},{\"mode\":\"100644\",\"path\":\"examples/lab-qualification/fixture.json\",\"sha256\":\"791516f90df6c8b004e02706752114f6628911396756ac86f6c19258a037f979\",\"size_bytes\":9261},{\"mode\":\"100644\",\"path\":\"examples/lab-qualification/manifest.json\",\"sha256\":\"1dcde9c63280f4f99e6c2ea9e3ca6d392399e4d0792a4a9e4f81d581d2ce817f\",\"size_bytes\":334},{\"mode\":\"100644\",\"path\":\"examples/measurement-review/README.md\",\"sha256\":\"4d8c62344f77fc82b64ce2c7fb65dcbb2f6c37100d3a5c2cdf38870fc3775362\",\"size_bytes\":21979},{\"mode\":\"100644\",\"path\":\"examples/measurement-review/README.zh-CN.md\",\"sha256\":\"07f49180f18df93bd74a9a7b490f324d1dfabcc9b0c935bdc3acb6446f56c1d6\",\"size_bytes\":20029},{\"mode\":\"100644\",\"path\":\"examples/measurement-review/batch.csv\",\"sha256\":\"12fa76e2cb8defb752ce08a2fdd386b0f943579d1438e3022cb2e345bdcae0d9\",\"size_bytes\":85},{\"mode\":\"100644\",\"path\":\"examples/measurement-review/compare.py\",\"sha256\":\"d5b3e28ca4f1b9eadd7454e58bde55f17979644d76b0a64f7d668d8b5812d67d\",\"size_bytes\":38615},{\"mode\":\"100644\",\"path\":\"examples/measurement-review/comparison-fixtures.json\",\"sha256\":\"dd72773f56886888be00c7f5a2c8ec461eb3f9e0eb984043bf20fdd5191cb1cd\",\"size_bytes\":5404},{\"mode\":\"100644\",\"path\":\"examples/measurement-review/demo.py\",\"sha256\":\"8a363374fc05cf9fd93314c8814729e29653d0a997a22c74f652842e37904624\",\"size_bytes\":9826},{\"mode\":\"100644\",\"path\":\"examples/measurement-review/utility_report.py\",\"sha256\":\"2ca99647c134f38c81fe24f726a4de48b7813ecbe008e573d0ce4131f6586594\",\"size_bytes\":23608},{\"mode\":\"100644\",\"path\":\"examples/simulated-lab/requirements-tested.txt\",\"sha256\":\"21c0631d58011d1b254ceba5bd866d859a1d013c2388b3e25b11c03978dcd2d9\",\"size_bytes\":475},{\"mode\":\"100644\",\"path\":\"examples/source-audit/manifest.json\",\"sha256\":\"f4d81f12c83b7f222931348677b01b6f27df8905513cfbaebac3cf86cbfe26ae\",\"size_bytes\":1000},{\"mode\":\"100644\",\"path\":\"examples/source-audit/sources/synthetic.json\",\"sha256\":\"d65f012d4b80a52bf3fdb01c19e4efecd0e5ec09df5854659b6d3e3767ebe781\",\"size_bytes\":801},{\"mode\":\"100644\",\"path\":\"examples/source-boundary/README.md\",\"sha256\":\"6ae832448f6b8f4b8c29ac5b0ab74de193e49f1fd152e830c0e4b503bf3e68aa\",\"size_bytes\":9510},{\"mode\":\"100644\",\"path\":\"examples/source-boundary/demo.py\",\"sha256\":\"fe70a4cfacbba3a69dd8f340057d5bb4a1486f3c2a470b853250008151601be1\",\"size_bytes\":18618},{\"mode\":\"100644\",\"path\":\"examples/source-boundary/parameter-fixtures.json\",\"sha256\":\"c163f3137817657efc344d362885a77d13264c0276b533253c287cb42c9497f3\",\"size_bytes\":4113},{\"mode\":\"100644\",\"path\":\"examples/source-boundary/proposals.json\",\"sha256\":\"5a581f3a9e3d6e9a92e3cd95bb95692fa253aa6305d5163a022e3ef23562a4da\",\"size_bytes\":5273},{\"mode\":\"100644\",\"path\":\"pyproject.toml\",\"sha256\":\"513e56fba610621e34ea8d850dbc46ad60ebbbae230ccc0d28056f693c65c5a5\",\"size_bytes\":597},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/__init__.py\",\"sha256\":\"220b0324cfb1c2ba39d190a7857a850dae59dfce2cd5064028007ccb3dc6771d\",\"size_bytes\":108},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/__main__.py\",\"sha256\":\"d4b66a08d3ddf2fe00027dd0cd6caa2f5e360432e813a634bc00182271f183a3\",\"size_bytes\":3346},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/__init__.py\",\"sha256\":\"8c1b8c19884c2204c3ac30d898a48785e54a1694a59319be4b8bb7dd1619bd1b\",\"size_bytes\":75},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/_simulated_lab_worker.py\",\"sha256\":\"cf3c9f95f5cfcc7835483214fab7dc4da0e4634ee108c28301c674d5dddca4f4\",\"size_bytes\":3155},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/a2a_http_transport.py\",\"sha256\":\"abf6599baf3823991d88844d013a145a747b4e646b1db398a4f35ee90a2cbfc5\",\"size_bytes\":9366},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/a2a_worker_turn.py\",\"sha256\":\"ed6c2399da397850c608cd1bbec985553bd8364c3a2162cfa6f81754f9c4a4d9\",\"size_bytes\":18709},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/lab_qualification.py\",\"sha256\":\"a04bfcb78ee8aaef6af16bf3e387d8dcf13a80938895e71437af033388a22b9d\",\"size_bytes\":12766},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/simulated_lab.py\",\"sha256\":\"7f65a2fa0c1e8cc710cd13e62f5af7797d5f1953db5eb824a3a9e12e59f16fd2\",\"size_bytes\":16738},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/source_admission.py\",\"sha256\":\"829bbbb039cfac63d16ff06ae1f84f1e1c34240521728295585590f91d54b0a1\",\"size_bytes\":10628},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/source_audit.py\",\"sha256\":\"c94737305b1e5a80453541ce890bde4fcb700a0074e32344fe839b237374bfa7\",\"size_bytes\":12998},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/temporal_activity.py\",\"sha256\":\"3e084d5432c11d031385472b9eba32e1d62f06d4aa45e08acebd88bd803045f2\",\"size_bytes\":41070},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/adapters/temporal_workflow.py\",\"sha256\":\"a1723c70ccd8e440475ff0c359a5dfb1fa6e41ad2dff9881d2727879231434ac\",\"size_bytes\":37598},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/core/__init__.py\",\"sha256\":\"9224d4f77ea27f42ec63a05a490eae38aa51076ddc81aa8e0a486e7a36a71f5a\",\"size_bytes\":390},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/core/artifacts.py\",\"sha256\":\"4606b7b11a81044267b30fee332d9b6fd6540d862726a9579655ee27c7d9a883\",\"size_bytes\":9255},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/core/contracts.py\",\"sha256\":\"9462415baf84668825ad2c8cfc3f4f3df68332f65d1f1f4b301fbf01cf8537ca\",\"size_bytes\":3771},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/executors/_gmsh_worker.py\",\"sha256\":\"a478f69b2c7a3e5b36aaf754e07bb4dbbbe83a91d3423e305f3619e1397ab746\",\"size_bytes\":8113},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/executors/geometry.py\",\"sha256\":\"96e3626b68b86c21547cb930bba1591de7270f9bcffc3cdadfa0a9b9ac7a5edb\",\"size_bytes\":21462},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/executors/gmsh_mesh.py\",\"sha256\":\"5890ee43c71fdbbfe2a01e72548a9c0a6da78c09584428399011d5971df2d31f\",\"size_bytes\":22676},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/executors/structural_beam.py\",\"sha256\":\"0484f455d3991984a2e3187e8a2412af445f3dbd0b0473ba93e4ffe2f46cc47e\",\"size_bytes\":34841},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/executors/thermal_conduction.py\",\"sha256\":\"f5f8daf73d6d2aa662b84416da82356077bf9c1c4652f9c785febe890b4e48d4\",\"size_bytes\":24794},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/executors/thermal_source.py\",\"sha256\":\"44f0b06075f41e5346598794b932900d123105e4b36e8e6824b85671be2fd629\",\"size_bytes\":14519},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/git_workspace.py\",\"sha256\":\"02b4dff4d9382bcaf00df655f376799658d59482c017822458d3c6f9049b6ecc\",\"size_bytes\":21525},{\"mode\":\"100644\",\"path\":\"src/opendot_engineering/tool_runtime.py\",\"sha256\":\"7c5011e02b2cf07e5f15ad7854905ce0738271e167b873bad9256a8ed169199c\",\"size_bytes\":29040},{\"mode\":\"100644\",\"path\":\"templates/change-request.md\",\"sha256\":\"60fd80dd2043a339d973e3e25980f726b4bc3ee8caea5af72aee30fc1e613b73\",\"size_bytes\":1334},{\"mode\":\"100644\",\"path\":\"templates/issue-report.md\",\"sha256\":\"98f3d3055c9130f59cf455f6a098a01429bf4f45405de960b20a0dc0fd33154e\",\"size_bytes\":1201},{\"mode\":\"100644\",\"path\":\"tests/acceptance/temporal_dag_recovery_gate.py\",\"sha256\":\"a52665a198571e3bd865ac58e58ba9fa75854d436a64102232d054ba44b602d2\",\"size_bytes\":91},{\"mode\":\"100644\",\"path\":\"tests/acceptance/temporal_real_batch_gate.py\",\"sha256\":\"de107abe5edee5ded184709982585cc323ba1d89ea2a31717257b730b9936f58\",\"size_bytes\":1941},{\"mode\":\"100644\",\"path\":\"tests/acceptance/temporal_server_gate.py\",\"sha256\":\"5167765cba580fb0e5bc0c1af77239e24c52b87c4c235443174b0aa33771273d\",\"size_bytes\":4338},{\"mode\":\"100644\",\"path\":\"tests/fixtures/a2a_worker_turn_v1.json\",\"sha256\":\"186974f72da383b35d0bb47de2163e3611b5612348140accfc9da5f70d4745e3\",\"size_bytes\":13571},{\"mode\":\"100644\",\"path\":\"tests/test_a2a_http_transport.py\",\"sha256\":\"687a6692eee9f8765797a458412b241b7603000f029eea0fe9bac89f28724282\",\"size_bytes\":36105},{\"mode\":\"100644\",\"path\":\"tests/test_a2a_worker_turn.py\",\"sha256\":\"e203e714d887e2787450a3f61cb76dfc3a3f536cc1912da6638b1a233ba5c880\",\"size_bytes\":74},{\"mode\":\"100644\",\"path\":\"tests/test_adapter_provenance.py\",\"sha256\":\"7582d066504bdd08bdc7ca7984d59be3845b002bfd4c030eeaca1d9da5a13745\",\"size_bytes\":15905},{\"mode\":\"100644\",\"path\":\"tests/test_agent_contracts.py\",\"sha256\":\"e69f601e99ddd8988a1c60f5c4dcaffb9ed4412caa91269155f31ea24604ff3f\",\"size_bytes\":8511},{\"mode\":\"100644\",\"path\":\"tests/test_bounded_artifact_reads.py\",\"sha256\":\"32085875a7783af30586f4118a23fc00b94c380d194db815027417f1e73784d2\",\"size_bytes\":10836},{\"mode\":\"100644\",\"path\":\"tests/test_cad_thermal_workflow.py\",\"sha256\":\"6561e4055673e48e5e4e1d3dd66e20d9a2a9ec76f3b8886d3b0130273c9da533\",\"size_bytes\":15633},{\"mode\":\"100644\",\"path\":\"tests/test_callable_artifacts.py\",\"sha256\":\"601ff8a6fe09e44dc7ab7ab61b693b187de556a56815cab575c77560b6c1c4b0\",\"size_bytes\":4026},{\"mode\":\"100644\",\"path\":\"tests/test_callable_cleanup_regressions.py\",\"sha256\":\"5b542f9b305e75e41346bd73d8222bc54c0044529f63542d8fcede148fa924e2\",\"size_bytes\":3930},{\"mode\":\"100644\",\"path\":\"tests/test_callable_contracts.py\",\"sha256\":\"6fdf0a1b5901b8e8df8e7f7f634d658465c2f066e888c2380c460076a4167555\",\"size_bytes\":4023},{\"mode\":\"100644\",\"path\":\"tests/test_callable_independent_regressions.py\",\"sha256\":\"111247a14dd3c9c1d63ed047153cf9bc68a1c49e5f2cf059d263330bb63e113f\",\"size_bytes\":15287},{\"mode\":\"100644\",\"path\":\"tests/test_callable_profile.py\",\"sha256\":\"484b0e69cd9c0ea2d99333466f23e6a766e7a969cc921d993a1ef3ab8f99a8c7\",\"size_bytes\":40945},{\"mode\":\"100644\",\"path\":\"tests/test_callable_repaired_edges.py\",\"sha256\":\"0958d2a3cd5962bd7d89644051c790391d4d0dd4984486a5bc476c3cecacaee1\",\"size_bytes\":5892},{\"mode\":\"100644\",\"path\":\"tests/test_canonical_artifacts.py\",\"sha256\":\"87d28c4156badb30f0dedde193a1db206d762c32d3b4bbbcac9681d62aab33f8\",\"size_bytes\":11547},{\"mode\":\"100644\",\"path\":\"tests/test_ci_summary.py\",\"sha256\":\"de3852980fe94432ec63682da3d98450643e97688bcfa8de888033882a815e98\",\"size_bytes\":902},{\"mode\":\"100644\",\"path\":\"tests/test_ci_toolchain_lock.py\",\"sha256\":\"fe45a895d6896ea1da0cc0e05eea1fa63d2a7d409634558097faaa99155f8067\",\"size_bytes\":4340},{\"mode\":\"100644\",\"path\":\"tests/test_demo_output_errors.py\",\"sha256\":\"84c328678d60599531f3141fa6c2043761bab93957ed7a1eabea02f8f1b1113c\",\"size_bytes\":6818},{\"mode\":\"100644\",\"path\":\"tests/test_documentation_checks.py\",\"sha256\":\"eb904e0b802e0229bfb16e8f7e8ef8f545401846ca0e0ddf3b0716668dd6dbfd\",\"size_bytes\":16280},{\"mode\":\"100644\",\"path\":\"tests/test_geometry.py\",\"sha256\":\"7b55725c88edab1195aca61db224ab3a14996bdbde3634493f7fdc9eee9b540a\",\"size_bytes\":8968},{\"mode\":\"100644\",\"path\":\"tests/test_git_workspace.py\",\"sha256\":\"8377aa2c2085e94d8fb2ad4fb5e2dced081e2c4a876ccdb56eed898599307c85\",\"size_bytes\":25711},{\"mode\":\"100644\",\"path\":\"tests/test_gmsh_cpu_ceiling.py\",\"sha256\":\"49532240cc2529c31c5b195fb869315bfb33600df6c662b302477f2160cc93d9\",\"size_bytes\":13705},{\"mode\":\"100644\",\"path\":\"tests/test_gmsh_mesh.py\",\"sha256\":\"2dbe346af12cc9f4d18332cec6788585012a1692cb51de7797d3e3fce72a406f\",\"size_bytes\":18968},{\"mode\":\"100644\",\"path\":\"tests/test_incremental_utility_report.py\",\"sha256\":\"1da380d0075e388d0811d05864c2a22e58a7c8834298ebba3c5fb77f726ab424\",\"size_bytes\":23711},{\"mode\":\"100644\",\"path\":\"tests/test_lab_qualification.py\",\"sha256\":\"f180d4338368140eda55fed5ca2f3a8d0e2d7d1fe0f7736fe9db03585086e5df\",\"size_bytes\":14620},{\"mode\":\"100644\",\"path\":\"tests/test_measurement_comparison_example.py\",\"sha256\":\"2e7cad23db2d1f2f1304f2a563f5f6b293fecedd991fb64f7d12e4e425c93056\",\"size_bytes\":18864},{\"mode\":\"100644\",\"path\":\"tests/test_measurement_review_example.py\",\"sha256\":\"49eda9fde532db40a1d0cdc2c5d17ee9b62758a221938a0ceb003329864c84bb\",\"size_bytes\":6261},{\"mode\":\"100644\",\"path\":\"tests/test_module_cli.py\",\"sha256\":\"0781b2a84e414e16e88f980bb1962c18f4d3fa83713cc4d114cf491c7d1022c6\",\"size_bytes\":6748},{\"mode\":\"100644\",\"path\":\"tests/test_readonly_artifacts.py\",\"sha256\":\"da4556c425844ebd84083df14fe902ec9aa227f1ccf12f721eadcda2be0f62eb\",\"size_bytes\":11071},{\"mode\":\"100644\",\"path\":\"tests/test_research_index.py\",\"sha256\":\"6c4db38b2d35822c7401693adb47be440ee247c106094bc5ac37752e4a31f6b5\",\"size_bytes\":14210},{\"mode\":\"100644\",\"path\":\"tests/test_simulated_lab.py\",\"sha256\":\"c9f209d57e4a68eb3f9ed1023f0a596220327f9fea5708e3d8e306fb9a365fe9\",\"size_bytes\":17430},{\"mode\":\"100644\",\"path\":\"tests/test_solver_cpu_ceiling.py\",\"sha256\":\"7d5b628196bea01ce003a528de76b6470cfbde72709fc3758e143a678db1fa4b\",\"size_bytes\":6918},{\"mode\":\"100644\",\"path\":\"tests/test_solver_version_identity.py\",\"sha256\":\"adae18121e560ea965ceb0d676e04a059c2d8c4d916a57776a2a03f2fcdaae41\",\"size_bytes\":16188},{\"mode\":\"100644\",\"path\":\"tests/test_source_admission.py\",\"sha256\":\"cf87dfe5e98457087a52019dbea5a1e3042e9c643f06af9543af3b78fe45c3f6\",\"size_bytes\":16313},{\"mode\":\"100644\",\"path\":\"tests/test_source_audit.py\",\"sha256\":\"1ac4a7675568a7905b7f54296c20ce8b6d167e96fcbfa2bed99ac58568592adb\",\"size_bytes\":12251},{\"mode\":\"100644\",\"path\":\"tests/test_source_boundary_example.py\",\"sha256\":\"c37ab1b2857789e4d0572bdaf381eaad6f8d60a39d6b8487e29cacd44f9901fe\",\"size_bytes\":10472},{\"mode\":\"100644\",\"path\":\"tests/test_source_conflict_example.py\",\"sha256\":\"2cd0d670307c7ddd61a76f7b421b460a9e42987f9a8e5124065e86357f4d37df\",\"size_bytes\":8485},{\"mode\":\"100644\",\"path\":\"tests/test_source_provenance.py\",\"sha256\":\"715627867b1dba7f023b733d47770867b110393b97ec7c2e8c8ca6cb7a97da9c\",\"size_bytes\":20683},{\"mode\":\"100644\",\"path\":\"tests/test_structural_beam.py\",\"sha256\":\"893be8bb72c6da3f0346b3a04359584453fdab4c95bf9fff2aa2b7b1fa21d296\",\"size_bytes\":12120},{\"mode\":\"100644\",\"path\":\"tests/test_structural_default_v2.py\",\"sha256\":\"c63fe2f6d55cd4d66210ab8956f0abdde8a6333b08dca2759efd0c84919851ec\",\"size_bytes\":13985},{\"mode\":\"100644\",\"path\":\"tests/test_structural_elastic_energy.py\",\"sha256\":\"d96575cca83c830d430cf2025984d3b24cf2163171eddf052d94c2290c61e9c2\",\"size_bytes\":11118},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_activity_contract.py\",\"sha256\":\"d721482e11aba8c4b1128bcb7ce453d94404f60aec7d6080b00eb2b91ced1ca0\",\"size_bytes\":26064},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_cli_acquisition.py\",\"sha256\":\"a94e0125dcc9c43087b79da790a1dc56e62e755b21c66b64d1b7ae95ea63e1aa\",\"size_bytes\":34546},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_dag_recovery.py\",\"sha256\":\"848430ec2840fb988a908927fd1279b021a408718b406f8206b377f8b3245249\",\"size_bytes\":99923},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_server_gate_verifier.py\",\"sha256\":\"02da722ac8bfc271a535a4a7781610ecc87ee4e1fe31711007056baf70f74a90\",\"size_bytes\":88},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_server_harness_unit.py\",\"sha256\":\"45d14be60cc7cfb4f8b46fd15b92181dabca946d054acfabeaa5e9123bfa43fd\",\"size_bytes\":87},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_transport_owner_boundaries.py\",\"sha256\":\"7764555cd343c11d28e10891e780bbed7afca8758a738216459019b66981a2c4\",\"size_bytes\":13128},{\"mode\":\"100644\",\"path\":\"tests/test_temporal_workflow_contract.py\",\"sha256\":\"2c0a531681d68d8bc9c9e896e89b98c76c72c6988da579c3c7e223f80dcce5af\",\"size_bytes\":19288},{\"mode\":\"100644\",\"path\":\"tests/test_thermal_conduction.py\",\"sha256\":\"df63f2ab3045bfe7f5439205eb1225ca02c883c9d4cbaea9ed993a65cd0add5b\",\"size_bytes\":8880},{\"mode\":\"100644\",\"path\":\"tests/test_thermal_source.py\",\"sha256\":\"d15266ca09325e5cd4cae9b203b18e01ec1f31fa79752743bfb903597be4baab\",\"size_bytes\":10631}],\"schema_version\":\"opendot.temporal.dag2-gate.source-manifest.v1\",\"tree\":\"cccccccccccccccccccccccccccccccccccccccc\"}"
+  },
+  "manifest": {
+    "aggregate_bytes": 375107,
+    "evidence_class": "FABRICATED_UNIT_DATA",
+    "files": [
+      {
+        "file_id": "acquisition-receipt.json",
+        "sha256": "14f05dbed7c9fa755367b517e3ff3b38bf7681e0249c5affddada9d4898590b3",
+        "size_bytes": 794
+      },
+      {
+        "file_id": "collected-nodes.txt",
+        "sha256": "d0f274bd17f99d395c6e03215c5896928495b416a45361086cfd7e05a7ab6263",
+        "size_bytes": 705
+      },
+      {
+        "file_id": "dag-sdk-summary.json",
+        "sha256": "57671543c4ca205490457ea1714d1eb43fd7708ec87ddbe66e30269245e94918",
+        "size_bytes": 369
+      },
+      {
+        "file_id": "dag2-cleanup.json",
+        "sha256": "2ce3627022103bae07f91e5df3857ad11baf85ab3b2579faab7d19a5d93e13c1",
+        "size_bytes": 4156
+      },
+      {
+        "file_id": "dag2-diagnostic.json",
+        "sha256": "d858b3b3679f70c86df10cf3b9e54970ac50248ad33d9ebaa1bf0eaf7b2bd2f4",
+        "size_bytes": 237
+      },
+      {
+        "file_id": "dag2-environment.json",
+        "sha256": "59e1877bf17b9e7d4bc507b8b9f4702c6acfdb60cd46f81f4ee71f99632e2730",
+        "size_bytes": 11049
+      },
+      {
+        "file_id": "dag2-originals.json",
+        "sha256": "ad99857990e41d940f6815260aa267bce940a6652e3d650774e8d0ab4ab34e46",
+        "size_bytes": 10956
+      },
+      {
+        "file_id": "dag2-replays.json",
+        "sha256": "567a51d1fc41cd43ca933a01dd05d1898c172e4491975c59e055b1202a25355c",
+        "size_bytes": 2480
+      },
+      {
+        "file_id": "dag2-trace.json",
+        "sha256": "63421c652efdfcd74306f1e2b7b568ac46d1bccacbc9b1c62465c50bf6329fcb",
+        "size_bytes": 173760
+      },
+      {
+        "file_id": "no-ref-cancel-final.history.json",
+        "sha256": "e5c2fb5bdbe636ca936b8d9057783e0473f338077c711dadfdc7e0c7b85fcaaa",
+        "size_bytes": 8384
+      },
+      {
+        "file_id": "no-ref-cancel-final.state.json",
+        "sha256": "0ba0a4f02034e0960eb944d571507c73cfafb646ecb0d989a440969f29aa4302",
+        "size_bytes": 2041
+      },
+      {
+        "file_id": "no-ref-unknown.history.json",
+        "sha256": "9d5f813d33a68689b377b61029fab619f186224503be60c08552b8cd53305656",
+        "size_bytes": 4631
+      },
+      {
+        "file_id": "no-ref-unknown.state.json",
+        "sha256": "64456310f7ba602a30dd1f85fa181f8de30902373ab330a5d4ea4458966d5292",
+        "size_bytes": 2028
+      },
+      {
+        "file_id": "normal-a.result.json",
+        "sha256": "b2e34b932ad0cce76ff4d6a28dc0a62b36107540669db47abb7ed81f24ecfd5f",
+        "size_bytes": 2219
+      },
+      {
+        "file_id": "normal-b.result.json",
+        "sha256": "eef10c1fdbc70574b2b42fdf90ee0477b80fc322d5839222a8908e92d160bd99",
+        "size_bytes": 2783
+      },
+      {
+        "file_id": "normal-final.history.json",
+        "sha256": "6725652a1894675ea54858b51413d77974f77637e51308f06993b7127ee173ec",
+        "size_bytes": 27423
+      },
+      {
+        "file_id": "normal-final.state.json",
+        "sha256": "364a62b9e72aaf29577e1655f55d1b05a451db7dfd41935d88c8bc1b2677fb05",
+        "size_bytes": 5046
+      },
+      {
+        "file_id": "pip-report.json",
+        "sha256": "ecbe91957cc145284c8b37a435207b2c331c00f52f4b1f49f884044672a8b1f1",
+        "size_bytes": 2696
+      },
+      {
+        "file_id": "reconcile-a.result.json",
+        "sha256": "7662be8aaaf4aa1d33ec6e344ee4adbee73e26b0c4a7da999127e53c19a47608",
+        "size_bytes": 2225
+      },
+      {
+        "file_id": "reconcile-b.result.json",
+        "sha256": "709a69712a6497653bcd53ef51ec14576f74215786c81d4b2d9bc6fb5af9e87b",
+        "size_bytes": 2789
+      },
+      {
+        "file_id": "reconcile-final.history.json",
+        "sha256": "4de58f7fa90f1540e639aa84ca5c1c60365aa5b432f61af80ad14454f7e765c7",
+        "size_bytes": 29989
+      },
+      {
+        "file_id": "reconcile-final.state.json",
+        "sha256": "77759d7808f514ec59e3cef688bbe521e1b1b5ea379fce0ba495b21778998740",
+        "size_bytes": 5053
+      },
+      {
+        "file_id": "reconcile-unknown-after-replacement.history.json",
+        "sha256": "91d6b7fe716750084fc19540cf418927211331e0569c848fba8f6336fe6913ab",
+        "size_bytes": 4603
+      },
+      {
+        "file_id": "reconcile-unknown-after-replacement.state.json",
+        "sha256": "e9eacaaee7bede5bd69b3c49f561d308480bc61b9b6f1b41c0b9c5f7a0c54f28",
+        "size_bytes": 2020
+      },
+      {
+        "file_id": "reconcile-unknown-before-stop.history.json",
+        "sha256": "91d6b7fe716750084fc19540cf418927211331e0569c848fba8f6336fe6913ab",
+        "size_bytes": 4603
+      },
+      {
+        "file_id": "reconcile-unknown-before-stop.state.json",
+        "sha256": "e9eacaaee7bede5bd69b3c49f561d308480bc61b9b6f1b41c0b9c5f7a0c54f28",
+        "size_bytes": 2020
+      },
+      {
+        "file_id": "reconcile-update-queued.history.json",
+        "sha256": "89a5ff59165fb9d7f9333744f467e0cdc202c58f7afaf406550087a511ee3214",
+        "size_bytes": 9003
+      },
+      {
+        "file_id": "reconcile-update-queued.state.json",
+        "sha256": "e2a0b4ef26c4ef57bdc1561186ea0671fd563e2c67e67f4dba4bfd5367bdfc03",
+        "size_bytes": 2586
+      },
+      {
+        "file_id": "required-nodes.txt",
+        "sha256": "d0f274bd17f99d395c6e03215c5896928495b416a45361086cfd7e05a7ab6263",
+        "size_bytes": 705
+      },
+      {
+        "file_id": "results.xml",
+        "sha256": "2ee8be145506310f8f3a0d08fc6b3404271be925c57a550929a43e03cc14d7ce",
+        "size_bytes": 995
+      },
+      {
+        "file_id": "shared-unit-summary.json",
+        "sha256": "91c7e80e6163eb5ec515782bea2ee359ac0c4267008be9ad05f1aaaa1fd40f8a",
+        "size_bytes": 373
+      },
+      {
+        "file_id": "source-manifest.json",
+        "sha256": "1f283fb04665509115e17c6dc4a36d7868bd4698c303f3926b51d58465476f86",
+        "size_bytes": 46386
+      }
+    ],
+    "schema_version": "opendot.temporal.dag2-gate.manifest.v1"
+  },
+  "never_live_or_sdk_replay_proof": true
+}
+''')
+
+# One canonical fabricated pack. These are input views, never production-derived
+# expected oracles. Every consumer receives detached objects.
+_DAG2_TEST_DOCUMENTS = {name: json.loads(raw)
+                        for name, raw in DAG2_TEST_FULL_PACK['files'].items()
+                        if name.endswith('.json')}
+
+DAG2_TEST_COMPONENT_ONLY = json.loads(r'''
+{
+  "causal_order": {
+    "bootstrap_constructed": 2,
+    "origin_capture": 1,
+    "reconcile_activity_entry": 6,
+    "replacement_activity_worker_start": 5,
+    "update_submit": 4,
+    "worker_start": 3
+  },
+  "external_readback": {
+    "acceptance": "REJECTED",
+    "checked_out_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "claims": {
+      "actual_crash_process_fencing": "NOT_EVALUATED",
+      "device_control_authority": false,
+      "external_effect_authenticity": "NOT_PROVED",
+      "independent_review": "NOT_EVALUATED",
+      "issue_7_closed": false,
+      "lost_network_ack": "NOT_EVALUATED",
+      "natural_300_second_deadline": "NOT_EVALUATED",
+      "owner_integration": "NOT_EVALUATED",
+      "scientific_validity": false,
+      "termination_status": "NOT_ESTABLISHED"
+    },
+    "identity": {
+      "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "event": "workflow_dispatch",
+      "qualification": "dag2",
+      "ref": "refs/heads/fabricated-unit-dag2",
+      "repository": "opendot-fixture/example",
+      "retain_public_evidence": false,
+      "run_attempt": 1,
+      "run_id": 1001,
+      "run_url": "https://github.com/opendot-fixture/example/actions/runs/1001/attempts/1",
+      "tree": "cccccccccccccccccccccccccccccccccccccccc",
+      "workflow_id": 91,
+      "workflow_path": ".github/workflows/temporal-server.yml",
+      "workflow_sha256": "1495215a3009ce1a0ae3d78f3d7a2a84001d1ca864f95b77094e46cee1628657"
+    },
+    "job_conclusion": "success",
+    "job_id": 101,
+    "job_name": "temporal-server",
+    "local_record_summary_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "pr_base_commit": null,
+    "pr_head_commit": null,
+    "readback_capture_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "remote_commit_tree": "cccccccccccccccccccccccccccccccccccccccc",
+    "remote_complete_manifest_sha256": "1f283fb04665509115e17c6dc4a36d7868bd4698c303f3926b51d58465476f86",
+    "remote_workflow_blob_sha256": "1495215a3009ce1a0ae3d78f3d7a2a84001d1ca864f95b77094e46cee1628657",
+    "required_step_conclusions": [
+      {
+        "conclusion": "success",
+        "step_name": "fabricated"
+      }
+    ],
+    "retrieved_via": "AUTHORIZED_GITHUB_CONNECTOR",
+    "reviewer_decision": "REJECT",
+    "run_conclusion": "success",
+    "run_status": "completed",
+    "schema_version": "opendot.temporal.dag2-gate.external-readback.v1",
+    "selected_attempt": 1,
+    "selected_profile": "dag2",
+    "source_review_receipt_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "workflow_active": true
+  },
+  "failure_summary": {
+    "activity_schedules_observed": 0,
+    "audit_failure": null,
+    "claims": {
+      "actual_crash_process_fencing": "NOT_EVALUATED",
+      "device_control_authority": false,
+      "external_effect_authenticity": "NOT_PROVED",
+      "independent_review": "NOT_EVALUATED",
+      "issue_7_closed": false,
+      "lost_network_ack": "NOT_EVALUATED",
+      "natural_300_second_deadline": "NOT_EVALUATED",
+      "owner_integration": "NOT_EVALUATED",
+      "scientific_validity": false,
+      "termination_status": "NOT_ESTABLISHED"
+    },
+    "cleanup_failure": null,
+    "cleanup_status": "NOT_STARTED",
+    "collected_nodes": 0,
+    "count_evidence": "UNAVAILABLE",
+    "error_nodes": 0,
+    "evidence_class": "FABRICATED_UNIT_DATA",
+    "expected_nodes": 7,
+    "failed_nodes": 0,
+    "hosted_acceptance": "REJECTED",
+    "missions_admitted": 0,
+    "passed_nodes": 0,
+    "primary_failure": {
+      "code": "MISSING_EVIDENCE",
+      "phase": "preflight"
+    },
+    "record_validation": "FAIL",
+    "runtime_entries_observed": 0,
+    "schema_version": "opendot.temporal.dag2-gate.failure-summary.v1",
+    "skipped_nodes": 0
+  },
+  "history_order": {
+    "A.accepted": 1,
+    "B.scheduled": 2
+  },
+  "junit": {
+    "node_ids": [
+      "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_real_a_to_b_and_original_receipts",
+      "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_quiescent_worker_replacement_preserves_state",
+      "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_recorded_history_replay_has_no_activity_execution",
+      "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_original_put_reconciliation_never_reexecutes_a",
+      "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_unknown_without_reference_blocks_b",
+      "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_cancellation_keeps_unadmitted_b_closed",
+      "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_duplicate_and_stale_updates_consume_no_allowance"
+    ]
+  },
+  "known_evidence_total_bytes": 1000,
+  "projection_total_bytes": 100,
+  "raw_history_serialized_bytes": 1546,
+  "required_nodes": [
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_real_a_to_b_and_original_receipts",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_quiescent_worker_replacement_preserves_state",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_recorded_history_replay_has_no_activity_execution",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_original_put_reconciliation_never_reexecutes_a",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_unknown_without_reference_blocks_b",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_cancellation_keeps_unadmitted_b_closed",
+    "tests/acceptance/temporal_dag_recovery_gate.py::test_dag2_duplicate_and_stale_updates_consume_no_allowance"
+  ],
+  "retained_body_serialized_bytes": 2219,
+  "seed_serialized_bytes": 40,
+  "source_closure": {
+    "activity_sha256": "3e084d5432c11d031385472b9eba32e1d62f06d4aa45e08acebd88bd803045f2"
+  },
+  "state_serialized_bytes": 100,
+  "summary": {
+    "activity_executor_completions": 4,
+    "activity_schedules": 9,
+    "claims": {
+      "actual_crash_process_fencing": "NOT_EVALUATED",
+      "device_control_authority": false,
+      "external_effect_authenticity": "NOT_PROVED",
+      "independent_review": "NOT_EVALUATED",
+      "issue_7_closed": false,
+      "lost_network_ack": "NOT_EVALUATED",
+      "natural_300_second_deadline": "NOT_EVALUATED",
+      "owner_integration": "NOT_EVALUATED",
+      "scientific_validity": false,
+      "termination_status": "NOT_ESTABLISHED"
+    },
+    "cleanup_status": "PASS",
+    "collected_nodes": 7,
+    "collection_sha256": "d0f274bd17f99d395c6e03215c5896928495b416a45361086cfd7e05a7ab6263",
+    "endpoint_cas_reads": 11,
+    "error_nodes": 0,
+    "evidence_class": "FABRICATED_UNIT_DATA",
+    "evidence_manifest_sha256": "60340aaa43df27e877b35b6e7cf167948c0a54377671faf8c64f0cd273a46fcf",
+    "expected_nodes": 7,
+    "failed_nodes": 0,
+    "handler_returns": 5,
+    "hosted_acceptance": "REQUIRES_EXTERNAL_GITHUB_READBACK",
+    "identity": {
+      "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "event": "workflow_dispatch",
+      "qualification": "dag2",
+      "ref": "refs/heads/fabricated-unit-dag2",
+      "repository": "opendot-fixture/example",
+      "retain_public_evidence": false,
+      "run_attempt": 1,
+      "run_id": 1001,
+      "run_url": "https://github.com/opendot-fixture/example/actions/runs/1001/attempts/1",
+      "tree": "cccccccccccccccccccccccccccccccccccccccc",
+      "workflow_id": 91,
+      "workflow_path": ".github/workflows/temporal-server.yml",
+      "workflow_sha256": "1495215a3009ce1a0ae3d78f3d7a2a84001d1ca864f95b77094e46cee1628657"
+    },
+    "junit_sha256": "2ee8be145506310f8f3a0d08fc6b3404271be925c57a550929a43e03cc14d7ce",
+    "mission_count": 3,
+    "node_manifest_sha256": "d0f274bd17f99d395c6e03215c5896928495b416a45361086cfd7e05a7ab6263",
+    "original_result_puts": 5,
+    "passed_nodes": 7,
+    "reason_code": "OK",
+    "record_validation": "PASS",
+    "replays": 2,
+    "retained_originals": 4,
+    "runtime_entries": 5,
+    "schema_version": "opendot.temporal.dag2-gate.summary.v1",
+    "skipped_nodes": 0,
+    "source_manifest_sha256": "1f283fb04665509115e17c6dc4a36d7868bd4698c303f3926b51d58465476f86",
+    "worker_shutdowns": 8,
+    "xfail_nodes": 0
+  },
+  "trace_serialized_bytes": 100,
+  "wire_envelope_serialized_bytes": 100
+}
+''')
+
+def _dag2_component_base():
+    base = deepcopy(DAG2_TEST_COMPONENT_ONLY)
+    for key, file_id in {'environment': 'dag2-environment.json', 'trace': 'dag2-trace.json', 'cleanup': 'dag2-cleanup.json', 'diagnostic': 'dag2-diagnostic.json', 'no_ref_final': 'no-ref-cancel-final.state.json', 'retained_body': 'normal-a.result.json'}.items():
+        base[key] = deepcopy(_DAG2_TEST_DOCUMENTS[file_id])
+    originals = _DAG2_TEST_DOCUMENTS['dag2-originals.json']
+    base['originals'] = {str(index): deepcopy(row)
+                         for index, row in enumerate(originals['originals'])}
+    base['originals']['no_ref'] = deepcopy(originals['no_ref'])
+    base['replays'] = deepcopy(_DAG2_TEST_DOCUMENTS['dag2-replays.json']['replays'])
+    base['raw_history'] = json.loads(
+        DAG2_TEST_POSITIVE['raw_extraction_component_fixture']['raw_history_utf8'])
+    return base
+
+
+DAG2_TEST_BASE = _dag2_component_base()
+
+
+
+# Concrete catalog aliases are fixed here before verifier implementation.
+DAG2_TEST_TARGETS = {
+    'environment': 'environment', 'external_readback': 'external_readback',
+    'source_closure': 'owner_pins', 'retained_body': 'retained_body',
+    'no_ref_final': 'state', 'cleanup': 'cleanup', 'summary': 'summary',
+    'failure_summary': 'failure_summary', 'diagnostic': 'diagnostic',
+    'required_nodes': 'required_nodes', 'junit': 'junit',
+    'raw_history': 'raw_history', 'causal_order': 'causal_order',
+    'history_order': 'history_order',
+    'raw_history_serialized_bytes': 'history_bytes',
+    'trace_serialized_bytes': 'trace_bytes',
+    'known_evidence_total_bytes': 'evidence_bytes',
+    'projection_total_bytes': 'projection_bytes',
+    'retained_body_serialized_bytes': 'result_bytes',
+    'wire_envelope_serialized_bytes': 'wire_bytes',
+    'state_serialized_bytes': 'state_bytes', 'seed_serialized_bytes': 'seed_bytes',
+}
+DAG2_TEST_STARTED_HISTORY = {
+    'events': [{'eventId': '1', 'eventTime': '2026-10-02T18:00:00Z',
+                'eventType': 'EVENT_TYPE_WORKFLOW_EXECUTION_STARTED',
+                'workflowExecutionStartedEventAttributes': {
+                    'workflowType': {'name': 'opendot.synthetic.dependent-sum.v1'},
+                    'taskQueue': {'name': 'opendot-dag2-1001-1-hosted-normal'},
+                    'input': {'payloads': [{'metadata': {'encoding': 'anNvbi9wbGFpbg=='},
+                                            'data': 'e30='}]},
+                    'workflowExecutionTimeout': '300s', 'workflowRunTimeout': '300s',
+                    'workflowTaskTimeout': '10s', 'retryPolicy': {'maximumAttempts': 1},
+                    'attempt': 1,
+                    'originalExecutionRunId': '11111111-1111-4111-8111-111111111111',
+                    'firstExecutionRunId': '11111111-1111-4111-8111-111111111111'}}]
+}
+
+
+def _dag2_test_bytes(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'),
+                      ensure_ascii=False, allow_nan=False).encode('utf-8')
+
+
+def _dag2_test_context():
+    return {
+        'identity': deepcopy(DAG2_TEST_BASE['environment']['identity']),
+        'source_closure': deepcopy(DAG2_TEST_BASE['environment']['source_closure']),
+        'source_sha256': DAG2_TEST_BASE['environment']['source_before_sha256'],
+        'bootstraps': deepcopy(DAG2_TEST_BASE['environment']['bootstrap']),
+        'originals': deepcopy(DAG2_TEST_BASE['originals']),
+        'retained_bodies': {mission + '/' + node: deepcopy(row['body'])
+                            for mission, f in DAG2_TEST_POSITIVE['fixtures'].items()
+                            for node, row in f['originals'].items()},
+        'projection': deepcopy(DAG2_TEST_POSITIVE['raw_extraction_component_fixture']['extracted_projection']),
+        'run_id': '11111111-1111-4111-8111-111111111111',
+        'workflow_id': DAG2_TEST_POSITIVE['fixtures']['hosted-normal']['workflow_id'],
+        'updates': deepcopy(DAG2_TEST_BASE['trace']['updates']),
+    }
+
+
+def _dag2_case_base(case):
+    base = _dag2_component_base()
+    if 'workflowExecutionStartedEventAttributes' in case['mutation']['target']:
+        # This alias uses the independently defined start-event component, not
+        # the one-event scheduled-Activity extraction component.
+        import base64
+        base['raw_history'] = deepcopy(DAG2_TEST_STARTED_HISTORY)
+        base['raw_history']['events'][0]['workflowExecutionStartedEventAttributes']['input']['payloads'][0]['data'] = (
+            base64.b64encode(_dag2_test_bytes(DAG2_TEST_POSITIVE['fixtures']['hosted-normal']['start'])).decode('ascii'))
+    return base
+
+
+def _dag2_mutate(base, mutation):
+    parts = mutation['target'].split('/')
+    parent = base
+    for part in parts[:-1]:
+        parent = parent[int(part)] if type(parent) is list else parent[part]
+    key = int(parts[-1]) if type(parent) is list else parts[-1]
+    op, value = mutation['operation'], deepcopy(mutation['value'])
+    if op == 'replace':
+        parent[key] = value
+    elif op == 'add':
+        if parent[key] is None:
+            parent[key] = {}
+        parent[key].update(value)
+    elif op == 'remove':
+        del parent[key]
+    elif op == 'duplicate':
+        assert type(parent) is list
+        parent.insert(key + 1, deepcopy(parent[key]))
+    elif op == 'swap':
+        target = parent[key]
+        a, b = value
+        target[a], target[b] = target[b], target[a]
+    elif op == 'repeat-count':
+        parent[key] = [deepcopy(parent[key][0]) for _ in range(value)]
+    elif op == 'repeat-byte-count':
+        parent[key] = b' ' * value
+    else:
+        raise AssertionError('unmapped frozen mutation')
+
+
+def _dag2_invoke_case(base, case):
+    parts = case['mutation']['target'].split('/')
+    root = parts[0]
+    context = _dag2_test_context()
+    if root == 'originals':
+        name = 'no_ref' if parts[1] == 'no_ref' else 'original'
+        value = base[root][parts[1]]
+    elif root == 'trace':
+        name, value = parts[1], base[root][parts[1]]
+    elif root == 'replays':
+        name, value = 'replays', base[root]
+    else:
+        name, value = DAG2_TEST_TARGETS[root], base[root]
+    if name == 'raw_history':
+        value = _dag2_test_bytes(value)
+        if 'workflowExecutionStartedEventAttributes' in case['mutation']['target']:
+            context['projection'] = None
+    return gate.validate_dag2_component(name, value, context=context,
+                                        validation_intent=case['validation_intent'])
+
+
+@pytest.mark.parametrize('case', DAG2_TEST_CATALOG['negative_cases'],
+                         ids=[row['fixture_id'] for row in DAG2_TEST_CATALOG['negative_cases']])
+def test_dag2_frozen_negative_catalog(case):
+    base = _dag2_case_base(case)
+    _dag2_mutate(base, case['mutation'])
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_invoke_case(base, case)
+    assert caught.value.code == case['expected_code']
+    assert caught.value.boundary == case['rejection_boundary']
+    assert str(caught.value) == case['expected_code']
+    assert case['evidence_class'] == 'FABRICATED_UNIT_DATA'
+    assert case['may_produce_hosted_acceptance'] is False
+    assert case['may_start_service'] is False
+
+
+@pytest.mark.parametrize('case', DAG2_TEST_CATALOG['positive_cases'],
+                         ids=[row['fixture_id'] for row in DAG2_TEST_CATALOG['positive_cases']])
+def test_dag2_frozen_positive_catalog(case):
+    context = _dag2_test_context()
+    fixture_id = case['fixture_id']
+    if 'oracle' in case:
+        fixture = DAG2_TEST_POSITIVE['fixtures'][case['oracle']]
+        for row in fixture['states']:
+            result = gate.validate_dag2_component('state', deepcopy(row['state']), context=context,
+                                                 validation_intent='UNIT_RECORD_CONSISTENCY')
+            assert result == 'UNIT_RECORD_VALID'
+            assert hashlib.sha256(_dag2_test_bytes(row['state'])).hexdigest() == row['state_sha256']
+        for row in fixture['originals'].values():
+            assert gate.validate_dag2_component('retained_body', deepcopy(row['body']), context=context,
+                                                validation_intent='UNIT_RECORD_CONSISTENCY') == 'UNIT_RECORD_VALID'
+        assert hashlib.sha256(_dag2_test_bytes(fixture['completion_payload'])).hexdigest() == fixture['completion_payload_sha256']
+    elif fixture_id == 'normal-schedule-observed-after-entry':
+        command = deepcopy(DAG2_TEST_BASE['trace']['commands'][0])
+        assert command['entry_seq'] < command['return_seq'] < command['schedule_observed_seq']
+        assert gate.validate_dag2_component('command', command, context=context,
+                                            validation_intent='UNIT_RECORD_CONSISTENCY') == case['expected']
+    elif fixture_id == 'sdk-validator-returned-handle':
+        refusal = deepcopy(DAG2_TEST_BASE['trace']['updates'][0])
+        assert gate.validate_dag2_component('update', refusal, context=context,
+                                            validation_intent='UNIT_RECORD_CONSISTENCY') == case['expected']
+        assert refusal['actual_error_type'] == 'TemporalDagUpdateRejected'
+        assert refusal['actual_error_details'] == 'UPDATE_REFUSED'
+    elif fixture_id == 'missing-pytest-failure':
+        assert gate.validate_dag2_component('failure_summary', deepcopy(DAG2_TEST_BASE['failure_summary']),
+                                            context=context, validation_intent='UNIT_RECORD_CONSISTENCY') == case['expected']
+    elif fixture_id == 'late-rpc-settle-after-observer-timeout':
+        rpc = deepcopy(DAG2_TEST_BASE['trace']['rpc_operations'][0])
+        rpc['outcome'] = 'UNCONFIRMED'
+        rpc['settled_seq'] = 3
+        with pytest.raises(gate.GateError) as caught:
+            gate.validate_dag2_component('rpc_operations', [rpc], context=context,
+                                          validation_intent='UNIT_RECORD_CONSISTENCY')
+        assert caught.value.code == 'RPC_UNCONFIRMED'
+        assert rpc['application_submissions'] == 1
+        assert case['expected'] == 'FAIL_PRESERVED_NO_RESUBMISSION'
+    elif fixture_id == 'four-retained-plus-one-counted':
+        assert gate.validate_dag2_component('aggregate_counts', deepcopy(DAG2_TEST_BASE['trace']['aggregate_counts']),
+                                            context=context, validation_intent='UNIT_RECORD_CONSISTENCY') == case['expected']
+        assert len([k for k in DAG2_TEST_BASE['originals'] if k != 'no_ref']) == case['retained_originals']
+        assert DAG2_TEST_BASE['trace']['aggregate_counts']['result_puts'] == case['counted_result_puts']
+        assert DAG2_TEST_BASE['originals']['no_ref']['cas_discovery_attempts'] == case['no_ref_cas_discovery']
+    else:
+        raise AssertionError('unmapped frozen positive')
+
+
+@pytest.mark.parametrize('mission', ['hosted-normal', 'hosted-reconcile', 'hosted-no-ref-cancel'])
+def test_dag2_literal_states_and_originals_are_independent(mission):
+    fixture = DAG2_TEST_POSITIVE['fixtures'][mission]
+    for row in fixture['states']:
+        raw = row['canonical_state_utf8'].encode()
+        assert json.loads(raw) == row['state']
+        assert hashlib.sha256(raw).hexdigest() == row['state_sha256']
+    for row in fixture['originals'].values():
+        raw = row['canonical_body_utf8'].encode()
+        assert json.loads(raw) == row['body']
+        assert hashlib.sha256(raw).hexdigest() == row['body_sha256']
+        assert row['reference']['sha256'] == row['body_sha256']
+        assert row['reference']['size_bytes'] == len(raw)
+        assert row['origin']['original_result_ref'] == row['reference']
+        assert hashlib.sha256(_dag2_test_bytes(row['origin'])).hexdigest() == row['origin_sha256']
+        assert hashlib.sha256(_dag2_test_bytes(row['body']['receipt_report'])).hexdigest() == row['receipt_sha256']
+
+
+def test_dag2_raw_bytes_independently_reconstruct_literal_projection():
+    fixture = DAG2_TEST_POSITIVE['raw_extraction_component_fixture']
+    raw = fixture['raw_history_utf8'].encode()
+    assert hashlib.sha256(raw).hexdigest() == fixture['raw_history_sha256']
+    assert gate.dag2_extract_history(raw) == fixture['extracted_projection']
+    assert fixture['component_only_not_complete_history'] is True
+    assert DAG2_TEST_POSITIVE['not_a_hosted_evidence_pack'] is True
+
+
+@pytest.mark.parametrize('name', sorted(k for k, v in DAG2_TEST_SCHEMAS['$defs'].items()
+                                      if v.get('type') == 'object'))
+def test_dag2_every_evidence_object_is_closed(name):
+    definition = DAG2_TEST_SCHEMAS['$defs'][name]
+    assert definition['additionalProperties'] is False
+    assert set(definition['required']) == set(definition['properties'])
+    with pytest.raises(gate.GateError) as caught:
+        gate.dag2_validate_schema({'unexpected': 'private'}, name)
+    assert caught.value.code == 'INVALID_SCHEMA'
+
+
+@pytest.mark.parametrize('raw', [b'{"x":1,"x":2}', b'{"x":NaN}', b'{"x":Infinity}', b'\xff'])
+def test_dag2_strict_json_rejects_nonplain_inputs(raw):
+    with pytest.raises(gate.GateError) as caught:
+        gate.strict_json(raw)
+    assert caught.value.code == 'INVALID_JSON'
+
+
+def test_dag2_frozen_catalog_is_complete_and_bounded():
+    assert len(DAG2_TEST_CATALOG['negative_cases']) == 129
+    assert len(DAG2_TEST_CATALOG['positive_cases']) == 8
+    assert len({row['fixture_id'] for row in DAG2_TEST_CATALOG['negative_cases']}) == 129
+    assert len(DAG2_TEST_FILES['required_files']) == 32
+    assert DAG2_TEST_FILES['required_files'] == sorted(DAG2_TEST_FILES['required_files'])
+    assert len(DAG2_TEST_ORACLES['source_closure']) == 36
+    assert len(DAG2_TEST_ORACLES['required_nodes']) == 7
+    assert sum(len(f['states']) for f in DAG2_TEST_POSITIVE['fixtures'].values()) == 24
+    assert len(DAG2_TEST_RAW_RULES['events']) == 15
+
+
+# Complete fabricated audit bytes, frozen before any DAG2 verifier implementation.
+# Canonical full pack is initialized above the detached component views.
+
+DAG2_TEST_FULL_PACK_ALIASES = json.loads(r'''
+{
+  "a-reexecuted": {
+    "file_id": "dag2-trace.json",
+    "pointer": "aggregate_counts/runtime_entries"
+  },
+  "activity-attempt-two": {
+    "file_id": "dag2-trace.json",
+    "pointer": "commands/0/attempt"
+  },
+  "activity-wrong-timeout": {
+    "file_id": "dag2-trace.json",
+    "pointer": "commands/0/start_to_close_seconds"
+  },
+  "aggregate-evidence-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "known_evidence_total_bytes"
+  },
+  "application-start-retry": {
+    "file_id": "dag2-trace.json",
+    "pointer": "rpc_operations/0/application_submissions"
+  },
+  "b-before-a-acceptance": {
+    "file_id": "CAUSAL_ALIAS",
+    "pointer": "history_order"
+  },
+  "base64-noncanonical": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/4/activityTaskScheduledEventAttributes/input/payloads/0/data"
+  },
+  "bootstrap-after-first-schedule": {
+    "file_id": "CAUSAL_ALIAS",
+    "pointer": "causal_order"
+  },
+  "bootstrap-after-update": {
+    "file_id": "CAUSAL_ALIAS",
+    "pointer": "causal_order"
+  },
+  "bootstrap-eager-start": {
+    "file_id": "dag2-environment.json",
+    "pointer": "bootstrap/0/request_eager_start"
+  },
+  "bootstrap-foreign-run": {
+    "file_id": "dag2-environment.json",
+    "pointer": "bootstrap/0/run_id"
+  },
+  "bootstrap-mutable": {
+    "file_id": "dag2-environment.json",
+    "pointer": "bootstrap/0/immutable_config"
+  },
+  "busy-wire-reason-invented": {
+    "file_id": "dag2-trace.json",
+    "pointer": "updates/3/actual_error_details"
+  },
+  "cancel-extra-request": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "workflow_handle_cancel_calls"
+  },
+  "cancel-not-recorded": {
+    "file_id": "no-ref-cancel-final.state.json",
+    "pointer": "cancel_requested"
+  },
+  "candidate-populates-origin": {
+    "file_id": "dag2-originals.json",
+    "pointer": "originals/0/origin/origin_kind"
+  },
+  "cleanup-deadline-reset": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "observation_cleanup_elapsed_ms"
+  },
+  "constructor-unbound-run": {
+    "file_id": "dag2-environment.json",
+    "pointer": "bootstrap/0/run_id"
+  },
+  "dag2-pr-event": {
+    "file_id": "dag2-environment.json",
+    "pointer": "identity/event"
+  },
+  "dirty-source": {
+    "file_id": "dag2-environment.json",
+    "pointer": "source_after_sha256"
+  },
+  "duplicate-history-event": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/4"
+  },
+  "duplicate-node": {
+    "file_id": "required-nodes.txt",
+    "pointer": "0"
+  },
+  "duplicate-source-path": {
+    "file_id": "dag2-environment.json",
+    "pointer": "source_closure/0"
+  },
+  "endpoint-read-count-wrong": {
+    "file_id": "dag2-trace.json",
+    "pointer": "aggregate_counts/endpoint_cas_reads"
+  },
+  "event-count-cap": {
+    "file_id": "dag2-trace.json",
+    "pointer": "events"
+  },
+  "extra-command": {
+    "file_id": "dag2-trace.json",
+    "pointer": "commands/0"
+  },
+  "extra-field": {
+    "file_id": "dag2-environment.json",
+    "pointer": ""
+  },
+  "extra-result-put": {
+    "file_id": "dag2-trace.json",
+    "pointer": "aggregate_counts/result_puts"
+  },
+  "extra-seed-put": {
+    "file_id": "dag2-trace.json",
+    "pointer": "aggregate_counts/seed_puts"
+  },
+  "extra-worker-stop": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "public_worker_shutdown_calls"
+  },
+  "failure-summary-fabricates-counts": {
+    "file_id": "dag2-failure-summary.json",
+    "pointer": "count_evidence"
+  },
+  "final-stops-overflow": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "final_stop_elapsed_ms"
+  },
+  "follow-new-run": {
+    "file_id": "dag2-trace.json",
+    "pointer": "rpc_operations/0/follow_runs"
+  },
+  "foreign-original-run": {
+    "file_id": "dag2-originals.json",
+    "pointer": "originals/0/origin/workflow_run_id"
+  },
+  "forged-github-env": {
+    "file_id": "INVOCATION_ONLY",
+    "pointer": "retrieved_via"
+  },
+  "generic-cleanup-cancel": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "force_or_task_cancellation_calls"
+  },
+  "handler-return-missing": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "handler_returns"
+  },
+  "history-foreign-run": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/0/workflowExecutionStartedEventAttributes/originalExecutionRunId"
+  },
+  "history-size-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "raw_history_serialized_bytes"
+  },
+  "inspector-runtime-call": {
+    "file_id": "dag2-trace.json",
+    "pointer": "aggregate_counts/runtime_entries"
+  },
+  "integer-bool": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "public_worker_shutdown_calls"
+  },
+  "integer-float": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "public_worker_shutdown_calls"
+  },
+  "invented-class": {
+    "file_id": "dag2-environment.json",
+    "pointer": "evidence_class"
+  },
+  "json-self-attestation": {
+    "file_id": "INVOCATION_ONLY",
+    "pointer": "retrieved_via"
+  },
+  "junit-wrong-identity": {
+    "file_id": "results.xml",
+    "pointer": "node_ids/0"
+  },
+  "missing-actual-readback": {
+    "file_id": "INVOCATION_ONLY",
+    "pointer": ""
+  },
+  "missing-collected-node": {
+    "file_id": "dag2-summary.json",
+    "pointer": "collected_nodes"
+  },
+  "missing-executor-completion": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "activity_executor_shutdown_calls"
+  },
+  "missing-source-path": {
+    "file_id": "dag2-environment.json",
+    "pointer": "source_closure/0"
+  },
+  "missing-worker-stop": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "public_worker_shutdown_calls"
+  },
+  "mutable-default-dependency": {
+    "file_id": "dag2-environment.json",
+    "pointer": "sdk_version"
+  },
+  "nested-private-field": {
+    "file_id": "dag2-summary.json",
+    "pointer": "claims"
+  },
+  "no-ref-b-accepted": {
+    "file_id": "no-ref-cancel-final.state.json",
+    "pointer": "nodes/B/status"
+  },
+  "no-ref-b-execute": {
+    "file_id": "no-ref-cancel-final.state.json",
+    "pointer": "resources/execute_used"
+  },
+  "no-ref-body-read": {
+    "file_id": "dag2-originals.json",
+    "pointer": "no_ref/recovery_reference_reads"
+  },
+  "no-ref-cas-scan": {
+    "file_id": "dag2-originals.json",
+    "pointer": "no_ref/cas_discovery_attempts"
+  },
+  "no-ref-recovered-origin": {
+    "file_id": "dag2-originals.json",
+    "pointer": "no_ref/origin_record"
+  },
+  "observer-added-read": {
+    "file_id": "dag2-trace.json",
+    "pointer": "aggregate_counts/observer_cas_reads"
+  },
+  "observer-clock-regresses": {
+    "file_id": "dag2-trace.json",
+    "pointer": "events/1/monotonic_ns"
+  },
+  "observer-sequence-duplicate": {
+    "file_id": "dag2-trace.json",
+    "pointer": "events/1/seq"
+  },
+  "old-adapter-pin": {
+    "file_id": "dag2-environment.json",
+    "pointer": "source_closure/19/sha256"
+  },
+  "origin-body-replaced": {
+    "file_id": "dag2-originals.json",
+    "pointer": "originals/0/body/sha256"
+  },
+  "origin-capture-phase-late": {
+    "file_id": "dag2-originals.json",
+    "pointer": "originals/0/origin/capture_phase"
+  },
+  "payload-wrong-encoding": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/4/activityTaskScheduledEventAttributes/input/payloads/0/metadata/encoding"
+  },
+  "physical-termination-claim": {
+    "file_id": "dag2-summary.json",
+    "pointer": "claims/termination_status"
+  },
+  "private-path-file-id": {
+    "file_id": "dag2-trace.json",
+    "pointer": "snapshots/0/history/file_id"
+  },
+  "projection-size-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "projection_total_bytes"
+  },
+  "proxy-enabled": {
+    "file_id": "dag2-environment.json",
+    "pointer": "effective_proxy_refused"
+  },
+  "put-captured-after-update": {
+    "file_id": "CAUSAL_ALIAS",
+    "pointer": "causal_order"
+  },
+  "queued-inspection-started-before-worker": {
+    "file_id": "CAUSAL_ALIAS",
+    "pointer": "causal_order"
+  },
+  "raw-exception-leak": {
+    "file_id": "dag2-diagnostic.json",
+    "pointer": "primary_failure"
+  },
+  "raw-history-projection-disagreement": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/4/activityTaskScheduledEventAttributes/activityId"
+  },
+  "raw-payload-mismatch": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/4/activityTaskScheduledEventAttributes/input/payloads/0/data"
+  },
+  "raw-result-size-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "retained_body_serialized_bytes"
+  },
+  "receipt-transport-only": {
+    "file_id": "normal-a.result.json",
+    "pointer": "receipt_report/status"
+  },
+  "receipt-uppercase-breaker": {
+    "file_id": "normal-a.result.json",
+    "pointer": "receipt_report/breaker_state"
+  },
+  "receipt-wrong-input": {
+    "file_id": "normal-a.result.json",
+    "pointer": "receipt_report/input_hash"
+  },
+  "receipt-wrong-output": {
+    "file_id": "normal-a.result.json",
+    "pointer": "receipt_report/output_hash"
+  },
+  "remote-job-failed": {
+    "file_id": "INVOCATION_ONLY",
+    "pointer": "job_conclusion"
+  },
+  "remote-not-completed": {
+    "file_id": "INVOCATION_ONLY",
+    "pointer": "run_status"
+  },
+  "reordered-nodes": {
+    "file_id": "required-nodes.txt",
+    "pointer": ""
+  },
+  "replay-cas-read": {
+    "file_id": "dag2-replays.json",
+    "pointer": "replays/0/counts_after/endpoint_cas_reads"
+  },
+  "replay-failure": {
+    "file_id": "dag2-replays.json",
+    "pointer": "replays/0/replay_failure"
+  },
+  "replay-has-activity-worker": {
+    "file_id": "dag2-replays.json",
+    "pointer": "replays/0/activity_worker_count"
+  },
+  "replay-new-projection": {
+    "file_id": "dag2-replays.json",
+    "pointer": "replays/0/replayer_input_sha256"
+  },
+  "replay-runtime-entry": {
+    "file_id": "dag2-replays.json",
+    "pointer": "replays/0/counts_after/runtime_entries"
+  },
+  "result-null": {
+    "file_id": "normal-a.result.json",
+    "pointer": "output"
+  },
+  "result-self-consistent-wrong-output": {
+    "file_id": "normal-a.result.json",
+    "pointer": "output"
+  },
+  "retention-for-dag2": {
+    "file_id": "dag2-environment.json",
+    "pointer": "identity/retain_public_evidence"
+  },
+  "rpc-operation-cap": {
+    "file_id": "dag2-trace.json",
+    "pointer": "rpc_operations"
+  },
+  "same-id-changed-payload": {
+    "file_id": "dag2-trace.json",
+    "pointer": "updates/2/request_sha256"
+  },
+  "same-id-extra-reservation": {
+    "file_id": "dag2-trace.json",
+    "pointer": "updates/2/reservation_delta"
+  },
+  "scenario-deadline-overflow": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "scenario_elapsed_ms"
+  },
+  "sdk-stage-with-no-history-acceptance": {
+    "file_id": "dag2-trace.json",
+    "pointer": "updates/1/accepted_event_id"
+  },
+  "seed-size-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "seed_serialized_bytes"
+  },
+  "server-exit-nonzero": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "server_exit_code"
+  },
+  "skip-is-not-pass": {
+    "file_id": "dag2-summary.json",
+    "pointer": "skipped_nodes"
+  },
+  "stale-update-changes-revision": {
+    "file_id": "dag2-trace.json",
+    "pointer": "updates/0/post_revision"
+  },
+  "stale-update-reads-cas": {
+    "file_id": "dag2-trace.json",
+    "pointer": "updates/0/endpoint_read_delta"
+  },
+  "state-size-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "state_serialized_bytes"
+  },
+  "trace-size-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "trace_serialized_bytes"
+  },
+  "two-activity-slots": {
+    "file_id": "dag2-environment.json",
+    "pointer": "bootstrap/0/activity_slots"
+  },
+  "two-executor-threads": {
+    "file_id": "dag2-environment.json",
+    "pointer": "bootstrap/0/activity_executor_threads"
+  },
+  "unavailable-counts-nonzero": {
+    "file_id": "dag2-failure-summary.json",
+    "pointer": "passed_nodes"
+  },
+  "unexpected-node": {
+    "file_id": "required-nodes.txt",
+    "pointer": "0"
+  },
+  "unexpected-science-claim": {
+    "file_id": "dag2-summary.json",
+    "pointer": "claims/scientific_validity"
+  },
+  "unit-cannot-be-hosted": {
+    "file_id": "dag2-environment.json",
+    "pointer": "evidence_class"
+  },
+  "unknown-history-event": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/4/eventType"
+  },
+  "unknown-observer-kind": {
+    "file_id": "dag2-trace.json",
+    "pointer": "events/0/kind"
+  },
+  "unknown-raw-event-field": {
+    "file_id": "normal-final.history.json",
+    "pointer": "events/4/unexpected"
+  },
+  "unresolved-rpc-forgotten": {
+    "file_id": "dag2-trace.json",
+    "pointer": "rpc_operations/0/settled_seq"
+  },
+  "verification-read-no-ref": {
+    "file_id": "dag2-trace.json",
+    "pointer": "aggregate_counts/verification_cas_reads"
+  },
+  "wire-size-cap": {
+    "file_id": "SIZE_ALIAS",
+    "pointer": "wire_envelope_serialized_bytes"
+  },
+  "worker-stop-in-flight": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "in_flight_calls"
+  },
+  "worker-stop-rpc-pending": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "pending_rpc_tasks"
+  },
+  "worker-stop-update-pending": {
+    "file_id": "dag2-cleanup.json",
+    "pointer": "accepted_updates_unfinished"
+  },
+  "write-unconfirmed": {
+    "file_id": "dag2-diagnostic.json",
+    "pointer": "audit_failure"
+  },
+  "wrong-adr": {
+    "file_id": "dag2-environment.json",
+    "pointer": "adr008_sha256"
+  },
+  "wrong-attempt": {
+    "file_id": "dag2-environment.json",
+    "pointer": "identity/run_attempt"
+  },
+  "wrong-cli": {
+    "file_id": "dag2-environment.json",
+    "pointer": "cli_version"
+  },
+  "wrong-commit": {
+    "file_id": "dag2-environment.json",
+    "pointer": "identity/commit"
+  },
+  "wrong-original-size": {
+    "file_id": "dag2-originals.json",
+    "pointer": "originals/0/reference/size_bytes"
+  },
+  "wrong-plan": {
+    "file_id": "dag2-environment.json",
+    "pointer": "plan_sha256"
+  },
+  "wrong-profile": {
+    "file_id": "dag2-environment.json",
+    "pointer": "identity/qualification"
+  },
+  "wrong-runtime-registration": {
+    "file_id": "dag2-environment.json",
+    "pointer": "bootstrap/0/registration_sha256"
+  },
+  "wrong-server": {
+    "file_id": "dag2-environment.json",
+    "pointer": "server_version"
+  },
+  "wrong-tree": {
+    "file_id": "dag2-environment.json",
+    "pointer": "identity/tree"
+  },
+  "wrong-workflow-hash": {
+    "file_id": "dag2-environment.json",
+    "pointer": "identity/workflow_sha256"
+  },
+  "xfail-is-not-pass": {
+    "file_id": "dag2-summary.json",
+    "pointer": "xfail_nodes"
+  }
+}
+''')
+
+
+def _dag2_full_pack_write(tmp_path, files, manifest_override=None):
+    manifest_rows = []
+    for name, content in files.items():
+        data = content.encode() if type(content) is str else content
+        (tmp_path / name).write_bytes(data)
+        if name in DAG2_TEST_FILES['required_files']:
+            manifest_rows.append({'file_id': name, 'sha256': hashlib.sha256(data).hexdigest(),
+                                  'size_bytes': len(data)})
+    manifest = {'schema_version': 'opendot.temporal.dag2-gate.manifest.v1',
+                'evidence_class': 'FABRICATED_UNIT_DATA',
+                'files': sorted(manifest_rows, key=lambda row: row['file_id']),
+                'aggregate_bytes': sum(row['size_bytes'] for row in manifest_rows)}
+    if manifest_override is not None:
+        manifest.update(manifest_override)
+    (tmp_path / 'dag2-manifest.json').write_bytes(_dag2_test_bytes(manifest))
+    return tmp_path
+
+
+# Exact transport-only rebinding; empty rows deliberately retain all internal
+# references. Semantic ArtifactRefs/origins, payload/completion/receipt digests,
+# states, counts, projections and trusted expectations are NEVER rewritten.
+# The writer separately recomputes only the outer 32-file byte manifest.
+DAG2_TEST_MUTATION_BINDINGS = {'unit-cannot-be-hosted': [],
+ 'invented-class': [],
+ 'forged-github-env': [],
+ 'json-self-attestation': [],
+ 'wrong-commit': [],
+ 'wrong-tree': [],
+ 'wrong-workflow-hash': [],
+ 'wrong-attempt': [],
+ 'wrong-profile': [],
+ 'dag2-pr-event': [],
+ 'retention-for-dag2': [],
+ 'missing-actual-readback': [],
+ 'remote-not-completed': [],
+ 'remote-job-failed': [],
+ 'wrong-plan': [],
+ 'wrong-adr': [],
+ 'mutable-default-dependency': [],
+ 'wrong-cli': [],
+ 'wrong-server': [],
+ 'proxy-enabled': [],
+ 'dirty-source': [],
+ 'old-adapter-pin': [],
+ 'constructor-unbound-run': [],
+ 'bootstrap-foreign-run': [],
+ 'bootstrap-mutable': [],
+ 'bootstrap-eager-start': [],
+ 'two-activity-slots': [],
+ 'two-executor-threads': [],
+ 'wrong-runtime-registration': [],
+ 'candidate-populates-origin': [],
+ 'origin-capture-phase-late': [],
+ 'foreign-original-run': [],
+ 'origin-body-replaced': [],
+ 'wrong-original-size': [],
+ 'receipt-uppercase-breaker': [['normal-a.result.json',
+                                'dag2-originals.json',
+                                'originals/0/body/sha256',
+                                'sha256'],
+                               ['normal-a.result.json',
+                                'dag2-originals.json',
+                                'originals/0/body/size_bytes',
+                                'size_bytes']],
+ 'receipt-wrong-input': [['normal-a.result.json',
+                          'dag2-originals.json',
+                          'originals/0/body/sha256',
+                          'sha256'],
+                         ['normal-a.result.json',
+                          'dag2-originals.json',
+                          'originals/0/body/size_bytes',
+                          'size_bytes']],
+ 'receipt-wrong-output': [['normal-a.result.json',
+                           'dag2-originals.json',
+                           'originals/0/body/sha256',
+                           'sha256'],
+                          ['normal-a.result.json',
+                           'dag2-originals.json',
+                           'originals/0/body/size_bytes',
+                           'size_bytes']],
+ 'receipt-transport-only': [['normal-a.result.json',
+                             'dag2-originals.json',
+                             'originals/0/body/sha256',
+                             'sha256'],
+                            ['normal-a.result.json',
+                             'dag2-originals.json',
+                             'originals/0/body/size_bytes',
+                             'size_bytes']],
+ 'result-self-consistent-wrong-output': [['normal-a.result.json',
+                                          'dag2-originals.json',
+                                          'originals/0/body/sha256',
+                                          'sha256'],
+                                         ['normal-a.result.json',
+                                          'dag2-originals.json',
+                                          'originals/0/body/size_bytes',
+                                          'size_bytes']],
+ 'result-null': [['normal-a.result.json',
+                  'dag2-originals.json',
+                  'originals/0/body/sha256',
+                  'sha256'],
+                 ['normal-a.result.json',
+                  'dag2-originals.json',
+                  'originals/0/body/size_bytes',
+                  'size_bytes']],
+ 'no-ref-recovered-origin': [],
+ 'no-ref-cas-scan': [],
+ 'no-ref-body-read': [],
+ 'no-ref-b-execute': [['no-ref-cancel-final.state.json',
+                       'dag2-trace.json',
+                       'snapshots/6/state/sha256',
+                       'sha256'],
+                      ['no-ref-cancel-final.state.json',
+                       'dag2-trace.json',
+                       'snapshots/6/state/size_bytes',
+                       'size_bytes']],
+ 'no-ref-b-accepted': [['no-ref-cancel-final.state.json',
+                        'dag2-trace.json',
+                        'snapshots/6/state/sha256',
+                        'sha256'],
+                       ['no-ref-cancel-final.state.json',
+                        'dag2-trace.json',
+                        'snapshots/6/state/size_bytes',
+                        'size_bytes']],
+ 'activity-attempt-two': [],
+ 'activity-wrong-timeout': [],
+ 'unresolved-rpc-forgotten': [],
+ 'follow-new-run': [],
+ 'application-start-retry': [],
+ 'replay-failure': [],
+ 'replay-new-projection': [],
+ 'replay-has-activity-worker': [],
+ 'replay-runtime-entry': [],
+ 'replay-cas-read': [],
+ 'stale-update-reads-cas': [],
+ 'stale-update-changes-revision': [],
+ 'same-id-extra-reservation': [],
+ 'same-id-changed-payload': [],
+ 'busy-wire-reason-invented': [],
+ 'sdk-stage-with-no-history-acceptance': [],
+ 'cancel-not-recorded': [['no-ref-cancel-final.state.json',
+                          'dag2-trace.json',
+                          'snapshots/6/state/sha256',
+                          'sha256'],
+                         ['no-ref-cancel-final.state.json',
+                          'dag2-trace.json',
+                          'snapshots/6/state/size_bytes',
+                          'size_bytes']],
+ 'cancel-extra-request': [],
+ 'generic-cleanup-cancel': [],
+ 'missing-worker-stop': [],
+ 'extra-worker-stop': [],
+ 'missing-executor-completion': [],
+ 'worker-stop-in-flight': [],
+ 'worker-stop-rpc-pending': [],
+ 'worker-stop-update-pending': [],
+ 'handler-return-missing': [],
+ 'server-exit-nonzero': [],
+ 'scenario-deadline-overflow': [],
+ 'cleanup-deadline-reset': [],
+ 'final-stops-overflow': [],
+ 'extra-seed-put': [],
+ 'a-reexecuted': [],
+ 'extra-result-put': [],
+ 'inspector-runtime-call': [],
+ 'endpoint-read-count-wrong': [],
+ 'observer-added-read': [],
+ 'verification-read-no-ref': [],
+ 'integer-bool': [],
+ 'integer-float': [],
+ 'skip-is-not-pass': [],
+ 'xfail-is-not-pass': [],
+ 'missing-collected-node': [],
+ 'failure-summary-fabricates-counts': [],
+ 'unavailable-counts-nonzero': [],
+ 'private-path-file-id': [],
+ 'unexpected-science-claim': [],
+ 'physical-termination-claim': [],
+ 'extra-field': [],
+ 'nested-private-field': [],
+ 'raw-exception-leak': [],
+ 'missing-source-path': [],
+ 'duplicate-source-path': [],
+ 'duplicate-node': [],
+ 'reordered-nodes': [],
+ 'unexpected-node': [],
+ 'junit-wrong-identity': [],
+ 'duplicate-history-event': [['normal-final.history.json',
+                              'dag2-trace.json',
+                              'snapshots/0/history/sha256',
+                              'sha256'],
+                             ['normal-final.history.json',
+                              'dag2-trace.json',
+                              'snapshots/0/history/size_bytes',
+                              'size_bytes'],
+                             ['normal-final.history.json',
+                              'dag2-replays.json',
+                              'replays/0/retained_history_sha256',
+                              'sha256'],
+                             ['normal-final.history.json',
+                              'dag2-replays.json',
+                              'replays/0/replayer_input_sha256',
+                              'sha256']],
+ 'unknown-history-event': [['normal-final.history.json',
+                            'dag2-trace.json',
+                            'snapshots/0/history/sha256',
+                            'sha256'],
+                           ['normal-final.history.json',
+                            'dag2-trace.json',
+                            'snapshots/0/history/size_bytes',
+                            'size_bytes'],
+                           ['normal-final.history.json',
+                            'dag2-replays.json',
+                            'replays/0/retained_history_sha256',
+                            'sha256'],
+                           ['normal-final.history.json',
+                            'dag2-replays.json',
+                            'replays/0/replayer_input_sha256',
+                            'sha256']],
+ 'history-foreign-run': [['normal-final.history.json',
+                          'dag2-trace.json',
+                          'snapshots/0/history/sha256',
+                          'sha256'],
+                         ['normal-final.history.json',
+                          'dag2-trace.json',
+                          'snapshots/0/history/size_bytes',
+                          'size_bytes'],
+                         ['normal-final.history.json',
+                          'dag2-replays.json',
+                          'replays/0/retained_history_sha256',
+                          'sha256'],
+                         ['normal-final.history.json',
+                          'dag2-replays.json',
+                          'replays/0/replayer_input_sha256',
+                          'sha256']],
+ 'extra-command': [],
+ 'unknown-observer-kind': [],
+ 'put-captured-after-update': [],
+ 'bootstrap-after-update': [],
+ 'bootstrap-after-first-schedule': [],
+ 'b-before-a-acceptance': [],
+ 'queued-inspection-started-before-worker': [],
+ 'observer-sequence-duplicate': [],
+ 'observer-clock-regresses': [],
+ 'history-size-cap': [['normal-final.history.json',
+                       'dag2-trace.json',
+                       'snapshots/0/history/sha256',
+                       'sha256'],
+                      ['normal-final.history.json',
+                       'dag2-trace.json',
+                       'snapshots/0/history/size_bytes',
+                       'size_bytes'],
+                      ['normal-final.history.json',
+                       'dag2-replays.json',
+                       'replays/0/retained_history_sha256',
+                       'sha256'],
+                      ['normal-final.history.json',
+                       'dag2-replays.json',
+                       'replays/0/replayer_input_sha256',
+                       'sha256']],
+ 'event-count-cap': [],
+ 'trace-size-cap': [],
+ 'aggregate-evidence-cap': [],
+ 'projection-size-cap': [],
+ 'rpc-operation-cap': [],
+ 'raw-result-size-cap': [['normal-a.result.json',
+                          'dag2-originals.json',
+                          'originals/0/body/sha256',
+                          'sha256'],
+                         ['normal-a.result.json',
+                          'dag2-originals.json',
+                          'originals/0/body/size_bytes',
+                          'size_bytes']],
+ 'wire-size-cap': [['normal-final.history.json',
+                    'dag2-trace.json',
+                    'snapshots/0/history/sha256',
+                    'sha256'],
+                   ['normal-final.history.json',
+                    'dag2-trace.json',
+                    'snapshots/0/history/size_bytes',
+                    'size_bytes'],
+                   ['normal-final.history.json',
+                    'dag2-replays.json',
+                    'replays/0/retained_history_sha256',
+                    'sha256'],
+                   ['normal-final.history.json',
+                    'dag2-replays.json',
+                    'replays/0/replayer_input_sha256',
+                    'sha256']],
+ 'state-size-cap': [['normal-final.state.json',
+                     'dag2-trace.json',
+                     'snapshots/0/state/sha256',
+                     'sha256'],
+                    ['normal-final.state.json',
+                     'dag2-trace.json',
+                     'snapshots/0/state/size_bytes',
+                     'size_bytes']],
+ 'seed-size-cap': [['normal-final.history.json',
+                    'dag2-trace.json',
+                    'snapshots/0/history/sha256',
+                    'sha256'],
+                   ['normal-final.history.json',
+                    'dag2-trace.json',
+                    'snapshots/0/history/size_bytes',
+                    'size_bytes'],
+                   ['normal-final.history.json',
+                    'dag2-replays.json',
+                    'replays/0/retained_history_sha256',
+                    'sha256'],
+                   ['normal-final.history.json',
+                    'dag2-replays.json',
+                    'replays/0/replayer_input_sha256',
+                    'sha256']],
+ 'write-unconfirmed': [],
+ 'raw-history-projection-disagreement': [['normal-final.history.json',
+                                          'dag2-trace.json',
+                                          'snapshots/0/history/sha256',
+                                          'sha256'],
+                                         ['normal-final.history.json',
+                                          'dag2-trace.json',
+                                          'snapshots/0/history/size_bytes',
+                                          'size_bytes'],
+                                         ['normal-final.history.json',
+                                          'dag2-replays.json',
+                                          'replays/0/retained_history_sha256',
+                                          'sha256'],
+                                         ['normal-final.history.json',
+                                          'dag2-replays.json',
+                                          'replays/0/replayer_input_sha256',
+                                          'sha256']],
+ 'base64-noncanonical': [['normal-final.history.json',
+                          'dag2-trace.json',
+                          'snapshots/0/history/sha256',
+                          'sha256'],
+                         ['normal-final.history.json',
+                          'dag2-trace.json',
+                          'snapshots/0/history/size_bytes',
+                          'size_bytes'],
+                         ['normal-final.history.json',
+                          'dag2-replays.json',
+                          'replays/0/retained_history_sha256',
+                          'sha256'],
+                         ['normal-final.history.json',
+                          'dag2-replays.json',
+                          'replays/0/replayer_input_sha256',
+                          'sha256']],
+ 'payload-wrong-encoding': [['normal-final.history.json',
+                             'dag2-trace.json',
+                             'snapshots/0/history/sha256',
+                             'sha256'],
+                            ['normal-final.history.json',
+                             'dag2-trace.json',
+                             'snapshots/0/history/size_bytes',
+                             'size_bytes'],
+                            ['normal-final.history.json',
+                             'dag2-replays.json',
+                             'replays/0/retained_history_sha256',
+                             'sha256'],
+                            ['normal-final.history.json',
+                             'dag2-replays.json',
+                             'replays/0/replayer_input_sha256',
+                             'sha256']],
+ 'unknown-raw-event-field': [['normal-final.history.json',
+                              'dag2-trace.json',
+                              'snapshots/0/history/sha256',
+                              'sha256'],
+                             ['normal-final.history.json',
+                              'dag2-trace.json',
+                              'snapshots/0/history/size_bytes',
+                              'size_bytes'],
+                             ['normal-final.history.json',
+                              'dag2-replays.json',
+                              'replays/0/retained_history_sha256',
+                              'sha256'],
+                             ['normal-final.history.json',
+                              'dag2-replays.json',
+                              'replays/0/replayer_input_sha256',
+                              'sha256']],
+ 'raw-payload-mismatch': [['normal-final.history.json',
+                           'dag2-trace.json',
+                           'snapshots/0/history/sha256',
+                           'sha256'],
+                          ['normal-final.history.json',
+                           'dag2-trace.json',
+                           'snapshots/0/history/size_bytes',
+                           'size_bytes'],
+                          ['normal-final.history.json',
+                           'dag2-replays.json',
+                           'replays/0/retained_history_sha256',
+                           'sha256'],
+                          ['normal-final.history.json',
+                           'dag2-replays.json',
+                           'replays/0/replayer_input_sha256',
+                           'sha256']]}
+
+def _dag2_rebind_mutated_files(files, case):
+    """Rebind only the frozen case's named byte envelopes; never repair semantics."""
+    documents = {}
+    for source, target, pointer, transform in DAG2_TEST_MUTATION_BINDINGS[case['fixture_id']]:
+        raw = files[source]
+        raw = raw.encode('utf-8') if type(raw) is str else raw
+        if target not in documents:
+            documents[target] = json.loads(files[target])
+        parent = documents[target]
+        parts = pointer.split('/')
+        for part in parts[:-1]:
+            parent = parent[int(part)] if type(parent) is list else parent[part]
+        assert transform in ('sha256', 'size_bytes')
+        parent[parts[-1]] = (hashlib.sha256(raw).hexdigest()
+                             if transform == 'sha256' else len(raw))
+    for target, document in documents.items():
+        files[target] = _dag2_test_bytes(document).decode('utf-8')
+
+
+def _dag2_validate_complete_pack(audit):
+    """Use the real existing verifier owner; a missing API is not acceptance."""
+    return gate.validate_dag2_audit(
+        audit, deepcopy(DAG2_TEST_FULL_PACK['expected_identity']),
+        validation_intent='UNIT_RECORD_CONSISTENCY',
+        expected_unit_receipts=deepcopy(DAG2_TEST_PACK_METADATA['expected_unit_receipts']))
+
+
+DAG2_TEST_MISSING_PYTEST_DIAGNOSTIC = {
+    'schema_version': 'opendot.temporal.dag2-gate.diagnostic.v1',
+    'evidence_class': 'FABRICATED_UNIT_DATA',
+    'primary_failure': {'code': 'MISSING_EVIDENCE', 'phase': 'preflight'},
+    'cleanup_failure': None, 'audit_failure': None,
+    'cleanup_status': 'NOT_STARTED', 'evidence_status': 'INCOMPLETE', 'result': 'FAIL',
+}
+
+
+def _dag2_missing_pytest_audit(tmp_path):
+    """Preflight failed before pytest: only the fixed diagnostic was retained.
+
+    No collection, JUnit, successful manifest, mission, counter, or stop record
+    exists. The failure output must keep count_evidence=UNAVAILABLE, so its
+    numeric zeroes do not establish that no execution happened.
+    """
+    (tmp_path / 'dag2-diagnostic.json').write_bytes(
+        _dag2_test_bytes(DAG2_TEST_MISSING_PYTEST_DIAGNOSTIC))
+    return tmp_path
+
+
+def _dag2_rebind_wrong_result_local_record(files):
+    """One bounded adversary, not a globally consistent alternate mission.
+
+    The wrong body and its local original record are internally coherent. The
+    independent A=5 oracle and downstream histories/states/projections stay
+    frozen. RESULT_INVALID must come from body semantics before downstream
+    cross-reference mismatches; rewriting those expectations is forbidden.
+    """
+    body = json.loads(files['normal-a.result.json'])
+    assert body['output'] == 7
+    wrong_hash = '7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451'
+    body['receipt_report']['output_hash'] = wrong_hash
+    raw = _dag2_test_bytes(body)
+    files['normal-a.result.json'] = raw.decode()
+    originals = json.loads(files['dag2-originals.json'])
+    row = originals['originals'][0]
+    digest = hashlib.sha256(raw).hexdigest()
+    for reference in (row['reference'], row['origin']['original_result_ref']):
+        reference['sha256'] = digest
+        reference['artifact_id'] = 'sha256:' + digest
+        reference['uri'] = 'artifact://sha256/' + digest
+        reference['size_bytes'] = len(raw)
+    row['body']['sha256'] = digest
+    row['body']['size_bytes'] = len(raw)
+    row['output'] = 7
+    row['output_sha256'] = wrong_hash
+    row['receipt_sha256'] = hashlib.sha256(_dag2_test_bytes(body['receipt_report'])).hexdigest()
+    row['origin_sha256'] = hashlib.sha256(_dag2_test_bytes(row['origin'])).hexdigest()
+    files['dag2-originals.json'] = _dag2_test_bytes(originals).decode()
+
+
+def _dag2_full_pack_mutate(case):
+    import base64
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    alias = DAG2_TEST_FULL_PACK_ALIASES[case['fixture_id']]
+    file_id, pointer = alias['file_id'], alias['pointer']
+    mutation = deepcopy(case['mutation'])
+    manifest_override = None
+    external = deepcopy(DAG2_TEST_BASE['external_readback'])
+    if file_id == 'INVOCATION_ONLY':
+        wrapper = {'external_readback': external}
+        _dag2_mutate(wrapper, mutation)
+        external = wrapper['external_readback']
+    elif file_id in ('dag2-summary.json', 'dag2-failure-summary.json'):
+        # Public output is validated by the production emitter boundary, never
+        # smuggled into the fixed 32-input evidence allowlist.
+        pass
+    elif file_id == 'CAUSAL_ALIAS':
+        environment = json.loads(files['dag2-environment.json'])
+        trace = json.loads(files['dag2-trace.json'])
+        originals = json.loads(files['dag2-originals.json'])
+        cleanup = json.loads(files['dag2-cleanup.json'])
+        left, right = mutation['value']
+        bindings = {
+            'origin_capture': (originals['originals'][2], 'capture_seq'),
+            'bootstrap_constructed': (environment['bootstrap'][2], 'constructed_seq'),
+            'update_submit': (trace['updates'][1], 'submit_seq'),
+            'worker_start': (cleanup['worker_stops'][0], 'start_seq'),
+            'replacement_activity_worker_start': (environment['bootstrap'][2], 'started_seq'),
+            'reconcile_activity_entry': (trace['commands'][5], 'entry_seq'),
+            'A.accepted': (trace['commands'][1], 'terminal_event_id'),
+            'B.scheduled': (trace['commands'][2], 'scheduled_event_id'),
+        }
+        if case['fixture_id'] == 'bootstrap-after-first-schedule':
+            bindings['bootstrap_constructed'] = (environment['bootstrap'][0], 'constructed_seq')
+        a, ak = bindings[left]
+        b, bk = bindings[right]
+        a[ak], b[bk] = b[bk], a[ak]
+        for name, value in [('dag2-environment.json', environment), ('dag2-trace.json', trace),
+                            ('dag2-originals.json', originals), ('dag2-cleanup.json', cleanup)]:
+            files[name] = _dag2_test_bytes(value).decode()
+    elif file_id == 'SIZE_ALIAS':
+        size = mutation['value']
+        if pointer == 'known_evidence_total_bytes':
+            manifest_override = {'aggregate_bytes': size}
+        elif pointer == 'projection_total_bytes':
+            # Constructed projections are nested in the same-capped trace.
+            # This is distinct valid JSON, but whole-pack trace sizing dominates
+            # projection-only sizing. Dedicated component coverage is below.
+            trace = json.loads(files['dag2-trace.json'])
+            projections = [snapshot['events'] for snapshot in trace['snapshots']]
+            event = deepcopy(projections[0][0])
+            increment = len(_dag2_test_bytes(event)) + 1
+            copies = (size - len(_dag2_test_bytes(projections))) // increment + 1
+            assert 0 < copies < 2048
+            projections[0].extend(deepcopy(event) for _ in range(copies))
+            assert len(_dag2_test_bytes(projections)) >= size
+            files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+        elif pointer in ('wire_envelope_serialized_bytes', 'seed_serialized_bytes'):
+            raw = json.loads(files['normal-final.history.json'])
+            if pointer == 'wire_envelope_serialized_bytes':
+                raw['events'][4]['activityTaskScheduledEventAttributes']['input']['payloads'][0]['data'] = (
+                    base64.b64encode(b'"' + b'x' * size + b'"').decode())
+            else:
+                start = deepcopy(DAG2_TEST_POSITIVE['fixtures']['hosted-normal']['start'])
+                start['seed_ref']['size_bytes'] = size
+                raw['events'][0]['workflowExecutionStartedEventAttributes']['input']['payloads'][0]['data'] = (
+                    base64.b64encode(_dag2_test_bytes(start)).decode())
+            files['normal-final.history.json'] = _dag2_test_bytes(raw).decode()
+        else:
+            target = {'raw_history_serialized_bytes': 'normal-final.history.json',
+                      'trace_serialized_bytes': 'dag2-trace.json',
+                      'retained_body_serialized_bytes': 'normal-a.result.json',
+                      'state_serialized_bytes': 'normal-final.state.json'}[pointer]
+            files[target] = b' ' * size
+    elif file_id == 'required-nodes.txt':
+        wrapper = {'nodes': files[file_id].splitlines()}
+        mutation['target'] = 'nodes' + ('/' + pointer if pointer else '')
+        _dag2_mutate(wrapper, mutation)
+        files[file_id] = '\n'.join(wrapper['nodes']) + '\n'
+    elif file_id == 'results.xml':
+        files[file_id] = files[file_id].replace('tests.acceptance.temporal_dag_recovery_gate',
+                                               'tests.acceptance.other', 1).replace(
+            'test_dag2_real_a_to_b_and_original_receipts', 'test_fake', 1)
+    else:
+        assert file_id in files
+        wrapper = {'document': json.loads(files[file_id])}
+        mutation['target'] = 'document' + ('/' + pointer if pointer else '')
+        _dag2_mutate(wrapper, mutation)
+        files[file_id] = _dag2_test_bytes(wrapper['document']).decode()
+    if case['fixture_id'] == 'result-self-consistent-wrong-output':
+        _dag2_rebind_wrong_result_local_record(files)
+    _dag2_rebind_mutated_files(files, case)
+    return files, manifest_override, external
+
+
+def test_dag2_complete_fabricated_audit_pack(tmp_path):
+    audit = _dag2_full_pack_write(tmp_path, DAG2_TEST_FULL_PACK['files'])
+    result = gate.validate_dag2_audit(audit, deepcopy(DAG2_TEST_FULL_PACK['expected_identity']),
+                                      validation_intent='UNIT_RECORD_CONSISTENCY',
+                                      expected_unit_receipts=deepcopy(DAG2_TEST_PACK_METADATA['expected_unit_receipts']))
+    assert result['record_validation'] == 'UNIT_RECORD_VALID'
+    assert result['hosted_acceptance'] == 'REQUIRES_EXTERNAL_GITHUB_READBACK'
+    assert result.get('hosted_acceptance') != 'HOSTED_REAL_SERVICE_ACCEPTED'
+    assert DAG2_TEST_FULL_PACK['never_live_or_sdk_replay_proof'] is True
+
+
+@pytest.mark.parametrize('case', DAG2_TEST_CATALOG['negative_cases'],
+                         ids=[row['fixture_id'] for row in DAG2_TEST_CATALOG['negative_cases']])
+def test_dag2_complete_pack_rejects_frozen_mutation(tmp_path, case):
+    files, override, external = _dag2_full_pack_mutate(case)
+    alias = DAG2_TEST_FULL_PACK_ALIASES[case['fixture_id']]
+    output_kind = alias['file_id']
+    if output_kind == 'dag2-failure-summary.json':
+        audit = _dag2_missing_pytest_audit(tmp_path)
+        validated = gate.validate_dag2_failure_audit(
+            audit, deepcopy(DAG2_TEST_FULL_PACK['expected_identity']), expected_nodes=7)
+        proposed = deepcopy(DAG2_TEST_BASE['failure_summary'])
+    else:
+        audit = _dag2_full_pack_write(tmp_path, files, override)
+        if output_kind == 'dag2-summary.json':
+            validated = _dag2_validate_complete_pack(audit)
+            proposed = deepcopy(DAG2_TEST_BASE['summary'])
+    if output_kind in ('dag2-summary.json', 'dag2-failure-summary.json'):
+        gate.validate_dag2_public_output(deepcopy(proposed), validated_audit=validated)
+    with pytest.raises(gate.GateError) as caught:
+        if output_kind in ('dag2-summary.json', 'dag2-failure-summary.json'):
+            wrapper = {'output': proposed}
+            mutation = deepcopy(case['mutation'])
+            mutation['target'] = 'output' + ('/' + alias['pointer'] if alias['pointer'] else '')
+            _dag2_mutate(wrapper, mutation)
+            gate.validate_dag2_public_output(wrapper['output'], validated_audit=validated)
+        else:
+            gate.validate_dag2_audit(
+                audit, deepcopy(DAG2_TEST_FULL_PACK['expected_identity']),
+                validation_intent=case['validation_intent'],
+                expected_unit_receipts=deepcopy(DAG2_TEST_PACK_METADATA['expected_unit_receipts']),
+                untrusted_external_readback=external)
+    assert caught.value.code == case['expected_code']
+    assert caught.value.boundary == case['rejection_boundary']
+    assert str(caught.value) == case['expected_code']
+
+
+def test_dag2_complete_pack_literal_integrity():
+    files = DAG2_TEST_FULL_PACK['files']
+    assert sorted(files) == DAG2_TEST_FILES['required_files']
+    assert len(files) == 32
+    assert len(DAG2_TEST_FULL_PACK_ALIASES) == 129
+    expected = DAG2_TEST_FULL_PACK['manifest']
+    assert expected['aggregate_bytes'] == sum(len(value.encode()) for value in files.values())
+    for row in expected['files']:
+        raw = files[row['file_id']].encode()
+        assert row['sha256'] == hashlib.sha256(raw).hexdigest()
+        assert row['size_bytes'] == len(raw)
+    trace = json.loads(files['dag2-trace.json'])
+    final_histories = {mission: json.loads(files[name])['events'] for mission, name in [
+        ('hosted-normal', 'normal-final.history.json'),
+        ('hosted-reconcile', 'reconcile-final.history.json'),
+        ('hosted-no-ref-cancel', 'no-ref-cancel-final.history.json')]}
+    assert len(trace['commands']) == 9
+    assert len(trace['snapshots']) == 7
+    assert len(trace['events']) <= 512
+    for snapshot in trace['snapshots']:
+        data = files[snapshot['history']['file_id']].encode()
+        assert hashlib.sha256(data).hexdigest() == snapshot['history']['sha256']
+        events = json.loads(data)['events']
+        assert events == [event for event in final_histories[snapshot['mission']]
+                          if int(event['eventId']) <= snapshot['last_event_id']]
+        ids = [int(event['eventId']) for event in events]
+        assert ids == sorted(set(ids))
+        state_raw = files[snapshot['state']['file_id']].encode()
+        assert hashlib.sha256(state_raw).hexdigest() == snapshot['state']['sha256']
+    assert trace['aggregate_counts']['result_puts'] == 5
+    assert len(json.loads(files['dag2-originals.json'])['originals']) == 4
+    assert not any('no-ref' in name and name.endswith('.result.json') for name in files)
+
+
+@pytest.mark.parametrize('retrieved_via', ['AUTHORIZED_GITHUB_CONNECTOR', 'AUTHORIZED_GITHUB_BROWSER'])
+def test_dag2_self_consistent_external_readback_never_authenticates(tmp_path, retrieved_via):
+    audit = _dag2_full_pack_write(tmp_path, DAG2_TEST_FULL_PACK['files'])
+    external = deepcopy(DAG2_TEST_BASE['external_readback'])
+    external.update(
+        retrieved_via=retrieved_via,
+        identity=deepcopy(DAG2_TEST_FULL_PACK['expected_identity']),
+        checked_out_commit=DAG2_TEST_FULL_PACK['expected_identity']['commit'],
+        remote_commit_tree=DAG2_TEST_FULL_PACK['expected_identity']['tree'],
+        remote_workflow_blob_sha256=DAG2_TEST_FULL_PACK['expected_identity']['workflow_sha256'],
+        remote_complete_manifest_sha256=hashlib.sha256(
+            DAG2_TEST_FULL_PACK['files']['source-manifest.json'].encode()).hexdigest(),
+        run_status='completed', run_conclusion='success', job_conclusion='success',
+        job_id=101, workflow_active=True, selected_profile='dag2', selected_attempt=1,
+        reviewer_decision='ACCEPT', acceptance='HOSTED_REAL_SERVICE_ACCEPTED',
+        required_step_conclusions=[
+            {'step_name': 'Install exact hash-locked SDK and test wheels', 'conclusion': 'success'},
+            {'step_name': 'Require exact pure and SDK-only unit collection and execution', 'conclusion': 'success'},
+            {'step_name': 'Acquire and verify exact official CLI without executing it', 'conclusion': 'success'},
+            {'step_name': 'Assert every required real-server node', 'conclusion': 'skipped'},
+            {'step_name': 'Require complete evidence and graceful cleanup', 'conclusion': 'skipped'},
+            {'step_name': 'Assert separate manually selected 200-job batch', 'conclusion': 'skipped'},
+            {'step_name': 'Assert separate manually selected fixed DAG2 profile', 'conclusion': 'success'},
+            {'step_name': 'Require complete DAG2 evidence and graceful cleanup', 'conclusion': 'success'},
+        ])
+    gate.dag2_validate_schema(external, 'external_readback')
+    result = gate.validate_dag2_audit(audit, deepcopy(DAG2_TEST_FULL_PACK['expected_identity']),
+                                      validation_intent='UNIT_RECORD_CONSISTENCY',
+                                      expected_unit_receipts=deepcopy(DAG2_TEST_PACK_METADATA['expected_unit_receipts']),
+                                      untrusted_external_readback=external)
+    assert result['record_validation'] == 'UNIT_RECORD_VALID'
+    assert result['hosted_acceptance'] == 'REQUIRES_EXTERNAL_GITHUB_READBACK'
+    with pytest.raises(gate.GateError) as caught:
+        gate.validate_dag2_audit(audit, deepcopy(DAG2_TEST_FULL_PACK['expected_identity']),
+                                  validation_intent='EXTERNAL_ORIGIN_GATE_UNTRUSTED_INPUT',
+                                  expected_unit_receipts=deepcopy(DAG2_TEST_PACK_METADATA['expected_unit_receipts']),
+                                  untrusted_external_readback=external)
+    assert caught.value.code == 'HOSTED_ORIGIN_UNAUTHENTICATED'
+    assert caught.value.boundary == 'external_origin_gate'
+
+
+# Trusted unit invocation metadata; never hosted-origin authority.
+DAG2_TEST_PACK_METADATA = json.loads(r'''
+{
+  "complete_source_path_count": 293,
+  "deadline_oracle": {
+    "final_stop_deadline_ns": 61190000000,
+    "observation_cleanup_deadline_ns": 41190000000,
+    "scenario_deadline_ns": 151000000000,
+    "scenario_exit_seq": 219,
+    "scenario_start_seq": 1
+  },
+  "evidence_class": "FABRICATED_UNIT_DATA",
+  "expected_unit_receipts": {
+    "dag_sdk": {
+      "collection_sha256": "a605f5855ee77b508f236c0ba1356c90442c0bfb1fd082ae64e315c5975d2c6e",
+      "expected_node_count": 314
+    },
+    "shared": {
+      "collection_sha256": "441b4bdc7d01473a866eb42b39c11e8aa6f8bf056673abee8ae5d04b2d5a657f",
+      "expected_node_count": 1593
+    }
+  },
+  "fabricated_mutable_source_utf8": {
+    ".github/workflows/temporal-server.yml": "# FABRICATED_UNIT_DATA: source identity for .github/workflows/temporal-server.yml\n",
+    "AGENTS.md": "# FABRICATED_UNIT_DATA: source identity for AGENTS.md\n",
+    "ci/run_temporal_server_gate.py": "# FABRICATED_UNIT_DATA: source identity for ci/run_temporal_server_gate.py\n",
+    "ci/temporal-dag-recovery-nodes.txt": "# FABRICATED_UNIT_DATA: source identity for ci/temporal-dag-recovery-nodes.txt\n",
+    "ci/verify_temporal_server_gate.py": "# FABRICATED_UNIT_DATA: source identity for ci/verify_temporal_server_gate.py\n",
+    "tests/acceptance/temporal_dag_recovery_gate.py": "# FABRICATED_UNIT_DATA: source identity for tests/acceptance/temporal_dag_recovery_gate.py\n",
+    "tests/test_a2a_worker_turn.py": "# FABRICATED_UNIT_DATA: source identity for tests/test_a2a_worker_turn.py\n",
+    "tests/test_temporal_server_gate_verifier.py": "# FABRICATED_UNIT_DATA: source identity for tests/test_temporal_server_gate_verifier.py\n",
+    "tests/test_temporal_server_harness_unit.py": "# FABRICATED_UNIT_DATA: source identity for tests/test_temporal_server_harness_unit.py\n"
+  },
+  "fixture_revision": "V2_OBSERVER_OWNERSHIP_ERRATUM_NOT_OBSERVED_EXECUTION",
+  "hash_domains": {
+    "fixture_pack_manifest": "SHA256_OF_32_NAMED_INPUT_BYTES_EXCLUDES_MANIFEST_AND_OUTPUT",
+    "fixture_source_rows": "SHA256_OF_EXPLICIT_FABRICATED_MUTABLE_SOURCE_UTF8_NOT_REPOSITORY_BYTES",
+    "fixture_summary_manifest": "SHA256_OF_COMPLETE_MANIFEST_BYTES_NOT_SELF_AUTHENTICATION",
+    "future_source_identity": "EXTERNALLY_FROZEN_FINAL_REVIEWED_TREE_NOT_EMBEDDED_SELF_HASH",
+    "immutable_source_rows": "SEALED_BASELINE_LITERAL_INPUTS_NOT_MUTATION_DERIVED_EXPECTATIONS",
+    "retained_unit_receipts": "HISTORICAL_ACTUAL_COLLECTION_NODE_BYTES_NOT_FINAL_SOURCE_QUALIFICATION"
+  },
+  "qualification_status": "NOT_RUN",
+  "source_inventory_basis": "SEALED_291_BASELINE_PLUS_TWO_NEW_INTEGRATION_PATHS",
+  "unit_count_basis": "RETAINED_PREIMPLEMENTATION_COLLECTIONS_ONLY_NOT_FINAL_YAML_COUNTS"
+}
+''')
+
+
+
+def test_dag2_fixture_views_are_detached_and_materialization_is_stable(tmp_path):
+    first, second = _dag2_component_base(), _dag2_component_base()
+    assert first == second == DAG2_TEST_BASE
+    first['trace']['commands'][0]['attempt'] = 99
+    first['originals']['0']['origin']['node_id'] = 'changed'
+    assert second == DAG2_TEST_BASE
+    assert _dag2_component_base() == second
+    for name in ('one', 'two'):
+        directory = tmp_path / name
+        directory.mkdir()
+        _dag2_full_pack_write(directory, DAG2_TEST_FULL_PACK['files'])
+        assert (directory / 'dag2-manifest.json').read_bytes() == _dag2_test_bytes(
+            DAG2_TEST_FULL_PACK['manifest'])
+        for file_id, raw in DAG2_TEST_FULL_PACK['files'].items():
+            assert (directory / file_id).read_bytes() == raw.encode('utf-8')
+    assert hashlib.sha256((tmp_path / 'one/dag2-manifest.json').read_bytes()).hexdigest() == (
+        DAG2_TEST_BASE['summary']['evidence_manifest_sha256'])
+    assert not {'dag2-manifest.json', 'dag2-summary.json', 'dag2-failure-summary.json'} & set(
+        DAG2_TEST_FILES['required_files'])
+
+
+@pytest.mark.parametrize('case', DAG2_TEST_CATALOG['negative_cases'],
+                         ids=[row['fixture_id'] for row in DAG2_TEST_CATALOG['negative_cases']])
+def test_dag2_fixture_mutation_plumbing_preserves_frozen_expectations(case):
+    # This checks fixture mechanics only; the complete-pack tests above require
+    # the real production API and the independently literal code/boundary.
+    before = _dag2_test_bytes([DAG2_TEST_FULL_PACK, DAG2_TEST_POSITIVE,
+                               DAG2_TEST_ORACLES, DAG2_TEST_CATALOG,
+                               DAG2_TEST_PACK_METADATA, DAG2_TEST_BASE])
+    files, override, external = _dag2_full_pack_mutate(case)
+    assert sorted(files) == DAG2_TEST_FILES['required_files']
+    assert set(DAG2_TEST_MUTATION_BINDINGS) == {
+        row['fixture_id'] for row in DAG2_TEST_CATALOG['negative_cases']}
+    alias = DAG2_TEST_FULL_PACK_ALIASES[case['fixture_id']]
+    if alias['file_id'] in ('dag2-summary.json', 'dag2-failure-summary.json'):
+        assert files == DAG2_TEST_FULL_PACK['files']
+        assert override is None
+    elif case['fixture_id'] == 'unit-cannot-be-hosted':
+        assert files == DAG2_TEST_FULL_PACK['files']
+        assert case['validation_intent'] == 'HOSTED_CANDIDATE_ADMISSION'
+    else:
+        assert (files != DAG2_TEST_FULL_PACK['files'] or override is not None
+                or external != DAG2_TEST_BASE['external_readback'])
+    if any(source.endswith('.history.json') for source, _, _, _ in
+           DAG2_TEST_MUTATION_BINDINGS[case['fixture_id']]):
+        # Raw mutations must not regenerate their separately frozen projection.
+        assert json.loads(files['dag2-trace.json'])['snapshots'][0]['events'] == (
+            _DAG2_TEST_DOCUMENTS['dag2-trace.json']['snapshots'][0]['events'])
+    assert _dag2_test_bytes([DAG2_TEST_FULL_PACK, DAG2_TEST_POSITIVE,
+                             DAG2_TEST_ORACLES, DAG2_TEST_CATALOG,
+                             DAG2_TEST_PACK_METADATA, DAG2_TEST_BASE]) == before
+
+
+def test_dag2_fixture_source_hash_domains_are_separate():
+    source = _DAG2_TEST_DOCUMENTS['source-manifest.json']
+    rows = source['files']
+    assert len(rows) == 293
+    assert [row['path'] for row in rows] == sorted({row['path'] for row in rows})
+    by_path = {row['path']: row for row in rows}
+    environment = _DAG2_TEST_DOCUMENTS['dag2-environment.json']
+    assert [row['path'] for row in environment['source_closure']] == DAG2_TEST_ORACLES['source_closure']
+    assert all(row == by_path[row['path']] for row in environment['source_closure'])
+    synthetic = DAG2_TEST_PACK_METADATA['fabricated_mutable_source_utf8']
+    assert len(synthetic) == 9
+    for path, text in synthetic.items():
+        assert text.startswith('# FABRICATED_UNIT_DATA: source identity for ')
+        assert by_path[path]['sha256'] == hashlib.sha256(text.encode()).hexdigest()
+        assert by_path[path]['size_bytes'] == len(text.encode())
+    assert environment['identity']['workflow_sha256'] == by_path[
+        '.github/workflows/temporal-server.yml']['sha256']
+    assert DAG2_TEST_PACK_METADATA['qualification_status'] == 'NOT_RUN'
+    assert DAG2_TEST_PACK_METADATA['unit_count_basis'] == (
+        'RETAINED_PREIMPLEMENTATION_COLLECTIONS_ONLY_NOT_FINAL_YAML_COUNTS')
+    assert DAG2_TEST_PACK_METADATA['hash_domains']['fixture_source_rows'] == (
+        'SHA256_OF_EXPLICIT_FABRICATED_MUTABLE_SOURCE_UTF8_NOT_REPOSITORY_BYTES')
+
+
+def test_dag2_fixture_missing_pytest_is_genuinely_incomplete(tmp_path):
+    audit = _dag2_missing_pytest_audit(tmp_path)
+    assert (audit / 'dag2-diagnostic.json').read_bytes() == _dag2_test_bytes(
+        DAG2_TEST_MISSING_PYTEST_DIAGNOSTIC)
+    for name in DAG2_TEST_FILES['required_files']:
+        if name != 'dag2-diagnostic.json':
+            assert not (audit / name).exists()
+    assert not (audit / 'dag2-manifest.json').exists()
+    assert DAG2_TEST_BASE['failure_summary']['count_evidence'] == 'UNAVAILABLE'
+    assert DAG2_TEST_BASE['failure_summary']['primary_failure'] == {
+        'code': 'MISSING_EVIDENCE', 'phase': 'preflight'}
+
+
+@pytest.mark.parametrize('output_kind', ['success', 'missing-pytest-failure'])
+def test_dag2_public_output_unmodified_positive_control(tmp_path, output_kind):
+    if output_kind == 'success':
+        audit = _dag2_full_pack_write(tmp_path, DAG2_TEST_FULL_PACK['files'])
+        validated = _dag2_validate_complete_pack(audit)
+        proposed = deepcopy(DAG2_TEST_BASE['summary'])
+    else:
+        audit = _dag2_missing_pytest_audit(tmp_path)
+        validated = gate.validate_dag2_failure_audit(
+            audit, deepcopy(DAG2_TEST_FULL_PACK['expected_identity']), expected_nodes=7)
+        proposed = deepcopy(DAG2_TEST_BASE['failure_summary'])
+    gate.validate_dag2_public_output(proposed, validated_audit=validated)
+
+
+def test_dag2_self_consistent_wrong_result_keeps_literal_semantic_oracle():
+    body = deepcopy(DAG2_TEST_BASE['retained_body'])
+    body['output'] = 7
+    body['receipt_report']['output_hash'] = (
+        '7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451')
+    assert hashlib.sha256(_dag2_test_bytes(body['output'])).hexdigest() == body['receipt_report']['output_hash']
+    assert DAG2_TEST_POSITIVE['fixtures']['hosted-normal']['originals']['A']['body']['output'] == 5
+    with pytest.raises(gate.GateError) as caught:
+        gate.validate_dag2_component('retained_body', body, context=_dag2_test_context(),
+                                     validation_intent='UNIT_RECORD_CONSISTENCY')
+    assert caught.value.code == 'RESULT_INVALID'
+    assert caught.value.boundary == 'record_validation'
+    assert str(caught.value) == 'RESULT_INVALID'
+
+
+def test_dag2_wrong_supplied_projection_does_not_rewrite_raw_history(tmp_path):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    trace['snapshots'][0]['events'][4]['extracted']['activity_id'] = (
+        'dag2-execute-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    assert files['normal-final.history.json'] == DAG2_TEST_FULL_PACK['files']['normal-final.history.json']
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'HISTORY_PROJECTION_MISMATCH'
+    assert caught.value.boundary == 'record_validation'
+    assert str(caught.value) == 'HISTORY_PROJECTION_MISMATCH'
+
+
+@pytest.mark.parametrize('operation', ['update-stale', 'update-distinct-busy'])
+def test_dag2_fixture_refusals_own_distinct_returned_handle_result(operation):
+    trace = _dag2_component_base()['trace']
+    start = next(row for row in trace['rpc_operations'] if row['operation_id'] == operation)
+    result = next(row for row in trace['rpc_operations'] if row['operation_id'] == operation + '-result')
+    update = next(row for row in trace['updates'] if row['operation_id'] == operation)
+    assert start['kind'] == 'start_update'
+    assert start['outcome'] == 'SUCCESS'
+    assert result['kind'] == 'update_result'
+    assert result['outcome'] == 'EXPECTED_VALIDATOR_REFUSAL'
+    assert start['operation_id'] != result['operation_id']
+    assert start['issued_seq'] < start['settled_seq'] < result['issued_seq'] < result['settled_seq']
+    assert start['update_id'] == result['update_id'] == update['update_id']
+    assert start['run_id'] == result['run_id'] == '22222222-2222-4222-8222-222222222222'
+    assert start['application_submissions'] == result['application_submissions'] == 1
+    assert update['actual_error_type'] == 'TemporalDagUpdateRejected'
+    assert update['actual_error_details'] == 'UPDATE_REFUSED'
+    assert update['pre_revision'] == update['post_revision']
+    assert all(update[field] == 0 for field in ('endpoint_read_delta', 'execute_delta', 'reservation_delta'))
+
+
+def test_dag2_fixture_projection_overflow_is_distinct_but_trace_dominated():
+    cases = {row['fixture_id']: row for row in DAG2_TEST_CATALOG['negative_cases']}
+    projection_files, _, _ = _dag2_full_pack_mutate(cases['projection-size-cap'])
+    trace_files, _, _ = _dag2_full_pack_mutate(cases['trace-size-cap'])
+    assert projection_files != trace_files
+    trace = json.loads(projection_files['dag2-trace.json'])
+    projections = [snapshot['events'] for snapshot in trace['snapshots']]
+    assert len(_dag2_test_bytes(projections)) > 262144
+    assert len(_dag2_test_bytes(trace)) > len(_dag2_test_bytes(projections))
+    assert trace_files['dag2-trace.json'] == b' ' * 262145
+    # Do not claim a projection-only whole-pack boundary: same cap, containment.
+    assert cases['projection-size-cap']['expected_code'] == 'SIZE_LIMIT'
+    assert cases['projection-size-cap']['rejection_boundary'] == 'record_validation'
+
+
+def test_dag2_projection_component_checks_its_exact_limit_independently():
+    context = _dag2_test_context()
+    assert gate.validate_dag2_component('projection_bytes', 262144, context=context,
+                                        validation_intent='UNIT_RECORD_CONSISTENCY') == 'UNIT_RECORD_VALID'
+    with pytest.raises(gate.GateError) as caught:
+        gate.validate_dag2_component('projection_bytes', 262145, context=context,
+                                     validation_intent='UNIT_RECORD_CONSISTENCY')
+    assert caught.value.code == 'SIZE_LIMIT'
+    assert caught.value.boundary == 'record_validation'
+    assert str(caught.value) == 'SIZE_LIMIT'
+
+
+def test_dag2_fixture_wrong_result_local_record_is_coherent_oracle_is_frozen():
+    case = next(row for row in DAG2_TEST_CATALOG['negative_cases']
+                if row['fixture_id'] == 'result-self-consistent-wrong-output')
+    files, _, _ = _dag2_full_pack_mutate(case)
+    body = json.loads(files['normal-a.result.json'])
+    row = json.loads(files['dag2-originals.json'])['originals'][0]
+    raw = files['normal-a.result.json'].encode()
+    digest = hashlib.sha256(raw).hexdigest()
+    assert body['output'] == row['output'] == 7
+    assert body['receipt_report']['output_hash'] == row['output_sha256'] == (
+        '7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451')
+    assert row['body']['sha256'] == row['reference']['sha256'] == digest
+    assert row['body']['size_bytes'] == row['reference']['size_bytes'] == len(raw)
+    assert row['reference'] == row['origin']['original_result_ref']
+    assert row['reference']['artifact_id'] == 'sha256:' + digest
+    assert row['reference']['uri'] == 'artifact://sha256/' + digest
+    assert row['receipt_sha256'] == hashlib.sha256(_dag2_test_bytes(body['receipt_report'])).hexdigest()
+    assert row['origin_sha256'] == hashlib.sha256(_dag2_test_bytes(row['origin'])).hexdigest()
+    assert DAG2_TEST_POSITIVE['fixtures']['hosted-normal']['originals']['A']['body']['output'] == 5
+    for name in DAG2_TEST_FILES['required_files']:
+        if name not in ('normal-a.result.json', 'dag2-originals.json'):
+            assert files[name] == DAG2_TEST_FULL_PACK['files'][name]
+    # Existing complete-pack test now sends these exact files to the real audit
+    # validator and requires RESULT_INVALID before downstream reference checks.
+    assert case['expected_code'] == 'RESULT_INVALID'
+
+
+DAG2_TEST_SOURCE_MANIFEST_ADVERSARIES = (
+    ('missing-row', 'SOURCE_MISMATCH', 'record_validation'),
+    ('extra-row', 'SOURCE_MISMATCH', 'record_validation'),
+    ('duplicate-row', 'SOURCE_MISMATCH', 'record_validation'),
+    ('reordered-rows', 'SOURCE_MISMATCH', 'record_validation'),
+    ('immutable-pin', 'OWNER_MISMATCH', 'preflight'),
+    ('immutable-size', 'OWNER_MISMATCH', 'preflight'),
+    ('closure-only', 'SOURCE_MISMATCH', 'record_validation'),
+    ('unknown-mutable-path', 'SOURCE_MISMATCH', 'record_validation'),
+    ('immutable-placeholder', 'OWNER_MISMATCH', 'preflight'),
+)
+
+
+def _dag2_source_manifest_adversary(kind):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    manifest = json.loads(files['source-manifest.json'])
+    rows = manifest['files']
+    immutable = next(row for row in rows if row['path'] == 'src/opendot_engineering/tool_runtime.py')
+    if kind == 'missing-row':
+        rows.remove(immutable)
+    elif kind in ('extra-row', 'unknown-mutable-path'):
+        row = deepcopy(immutable)
+        row['path'] = ('extra-unreviewed.py' if kind == 'extra-row'
+                       else 'tests/fabricated-new-owner.py')
+        rows.append(row)
+        rows.sort(key=lambda item: item['path'])
+    elif kind == 'duplicate-row':
+        rows.insert(rows.index(immutable) + 1, deepcopy(immutable))
+    elif kind == 'reordered-rows':
+        rows[0], rows[1] = rows[1], rows[0]
+    elif kind in ('immutable-pin', 'immutable-placeholder'):
+        immutable['sha256'] = ('f' if kind == 'immutable-pin' else '0') * 64
+    elif kind == 'immutable-size':
+        immutable['size_bytes'] += 1
+    elif kind == 'closure-only':
+        manifest['files'] = [row for row in rows if row['path'] in DAG2_TEST_ORACLES['source_closure']]
+    else:
+        raise AssertionError('unknown source manifest adversary')
+    files['source-manifest.json'] = _dag2_test_bytes(manifest).decode()
+    environment = json.loads(files['dag2-environment.json'])
+    digest = hashlib.sha256(files['source-manifest.json'].encode()).hexdigest()
+    for field in ('complete_tracked_manifest_sha256', 'source_before_sha256', 'source_after_sha256'):
+        environment[field] = digest
+    if kind in ('immutable-pin', 'immutable-size', 'immutable-placeholder'):
+        # Match the transport closure too; sealed immutable owner pins stay fixed.
+        for row in environment['source_closure']:
+            if row['path'] == immutable['path']:
+                row.update(immutable)
+    files['dag2-environment.json'] = _dag2_test_bytes(environment).decode()
+    return files
+
+
+@pytest.mark.parametrize('kind,code,boundary', DAG2_TEST_SOURCE_MANIFEST_ADVERSARIES)
+def test_dag2_complete_pack_rejects_rehashed_source_manifest(tmp_path, kind, code, boundary):
+    audit = _dag2_full_pack_write(tmp_path, _dag2_source_manifest_adversary(kind))
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == code
+    assert caught.value.boundary == boundary
+    assert str(caught.value) == code
+
+
+DAG2_TEST_REFUSAL_ADVERSARIES = (
+    ('missing-result', 'UPDATE_MISMATCH'),
+    ('aliased-result-operation', 'UPDATE_MISMATCH'),
+    ('wrong-update-id', 'UPDATE_MISMATCH'),
+    ('refusal-at-start', 'UPDATE_MISMATCH'),
+    ('unresolved-result-omitted-from-cleanup', 'RPC_UNCONFIRMED'),
+)
+
+
+def _dag2_refusal_adversary(operation, kind):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    start = next(row for row in trace['rpc_operations'] if row['operation_id'] == operation)
+    result = next(row for row in trace['rpc_operations'] if row['operation_id'] == operation + '-result')
+    if kind == 'missing-result':
+        trace['rpc_operations'].remove(result)
+    elif kind == 'aliased-result-operation':
+        result['operation_id'] = start['operation_id']
+    elif kind == 'wrong-update-id':
+        result['update_id'] = 'dag2-reconcile-foreign'
+    elif kind == 'refusal-at-start':
+        start['outcome'] = 'EXPECTED_VALIDATOR_REFUSAL'
+    elif kind == 'unresolved-result-omitted-from-cleanup':
+        result['settled_seq'] = None
+        result['outcome'] = 'UNCONFIRMED'
+        # Retain the owned result task: falsely zero cleanup must not hide it.
+        assert json.loads(files['dag2-cleanup.json'])['pending_rpc_tasks'] == 0
+    else:
+        raise AssertionError('unknown refusal adversary')
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    return files
+
+
+@pytest.mark.parametrize('operation', ['update-stale', 'update-distinct-busy'])
+@pytest.mark.parametrize('kind,code', DAG2_TEST_REFUSAL_ADVERSARIES)
+def test_dag2_complete_pack_refusal_requires_owned_result(tmp_path, operation, kind, code):
+    audit = _dag2_full_pack_write(tmp_path, _dag2_refusal_adversary(operation, kind))
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == code
+    assert caught.value.boundary == 'record_validation'
+    assert str(caught.value) == code
+
+
+def test_dag2_fixture_additional_adversaries_preserve_trusted_expectations():
+    before = _dag2_test_bytes([DAG2_TEST_FULL_PACK, DAG2_TEST_POSITIVE, DAG2_TEST_ORACLES])
+    for kind, _, _ in DAG2_TEST_SOURCE_MANIFEST_ADVERSARIES:
+        files = _dag2_source_manifest_adversary(kind)
+        assert files != DAG2_TEST_FULL_PACK['files']
+        assert sorted(files) == DAG2_TEST_FILES['required_files']
+        environment = json.loads(files['dag2-environment.json'])
+        assert environment['source_before_sha256'] == hashlib.sha256(
+            files['source-manifest.json'].encode()).hexdigest()
+        assert environment['source_before_sha256'] == environment['source_after_sha256']
+    for operation in ('update-stale', 'update-distinct-busy'):
+        for kind, _ in DAG2_TEST_REFUSAL_ADVERSARIES:
+            files = _dag2_refusal_adversary(operation, kind)
+            assert files != DAG2_TEST_FULL_PACK['files']
+            assert sorted(files) == DAG2_TEST_FILES['required_files']
+    assert _dag2_test_bytes([DAG2_TEST_FULL_PACK, DAG2_TEST_POSITIVE, DAG2_TEST_ORACLES]) == before
+
+
+def _dag2_fixture_observer_causality_errors(files):
+    """Fixed fabricated-profile cross-check, independent of production APIs."""
+    trace = json.loads(files['dag2-trace.json'])
+    events = trace['events']
+    by_seq = {row['seq']: row for row in events}
+    rpc = {row['operation_id']: row for row in trace['rpc_operations']}
+    histories = {mission: {int(row['eventId']): row for row in json.loads(files[name])['events']}
+                 for mission, name in (
+                     ('hosted-normal', 'normal-final.history.json'),
+                     ('hosted-reconcile', 'reconcile-final.history.json'),
+                     ('hosted-no-ref-cancel', 'no-ref-cancel-final.history.json'))}
+    errors = []
+    if [row['seq'] for row in events] != list(range(1, len(events) + 1)):
+        errors.append('observer-sequence')
+    if len(rpc) != len(trace['rpc_operations']) or len(rpc) > 64 or len(events) > 512:
+        errors.append('ownership-cap')
+    for operation, row in rpc.items():
+        issued = by_seq.get(row['issued_seq'], {})
+        settled = by_seq.get(row['settled_seq'], {})
+        if not (issued.get('kind') == 'rpc_issued' and settled.get('kind') == 'rpc_settled'
+                and issued.get('operation_id') == settled.get('operation_id') == operation
+                and row['issued_seq'] < row['settled_seq']):
+            errors.append('rpc-order:' + operation)
+    # The first successful accepted-handle result is separately owned, even
+    # though the later same-ID fetch carries the frozen result digest. A
+    # completed-result fetch cannot stand in for observing the original handle.
+    original = rpc.get('update-original-result', {})
+    submitted = rpc.get('update-original', {})
+    completed = rpc.get('update-get-completed', {})
+    observations = [event for event in events
+                    if event['kind'] == 'update_result_observed'
+                    and event['operation_id'] == 'update-original-result']
+    worker_starts = [event for event in events if event['kind'] == 'worker_start'
+                     and event['worker_generation'] == 6]
+    inspection = next(command for command in trace['commands']
+                      if command['mission'] == 'hosted-reconcile'
+                      and command['kind'] == 'reconcile_inspect')
+    if not (original.get('kind') == 'update_result'
+            and original.get('outcome') == 'SUCCESS'
+            and original.get('application_submissions') == 1
+            and all(original.get(field) == submitted.get(field) == completed.get(field)
+                    for field in ('mission', 'workflow_id', 'run_id', 'update_id'))
+            and original.get('update_id') == 'dag2-reconcile-original'
+            and len(observations) == len(worker_starts) == 1
+            and worker_starts[0]['seq'] < original.get('issued_seq', 0)
+            < inspection['entry_seq'] < inspection['return_seq']
+            < original.get('settled_seq', 0) < observations[0]['seq']
+            < completed.get('issued_seq', 0)
+            and observations[0]['mission'] == 'hosted-reconcile'):
+        errors.append('original-result-ownership')
+    elif any(by_seq[seq]['counts']['pending_rpc_tasks'] != sum(
+            row['issued_seq'] <= seq < row['settled_seq'] for row in rpc.values())
+            for seq in range(original['issued_seq'], original['settled_seq'] + 1)):
+        errors.append('original-result-pending')
+    for update in trace['updates']:
+        if update['outcome'] == 'SAME_COMPLETED_RESULT':
+            owner = rpc.get(update['operation_id'], {})
+            observed = [event for event in events if event['kind'] == 'update_result_observed'
+                        and event['operation_id'] == update['operation_id']]
+            # This local get-existing-result action begins at the owned result
+            # RPC issuance; it is not a new Update or a post-result submission.
+            if not (owner.get('kind') == 'update_result'
+                    and update['submit_seq'] == owner.get('issued_seq')
+                    and len(observed) == 1
+                    and owner.get('issued_seq', len(events) + 1) < owner.get('settled_seq', 0)
+                    and owner.get('settled_seq', len(events) + 1) < observed[0]['seq']):
+                errors.append('completed-result-submit-order:' + update['operation_id'])
+    for snapshot in trace['snapshots']:
+        retained = by_seq.get(snapshot['observation_seq'], {})
+        owner = rpc.get(retained.get('operation_id'), {})
+        settled = by_seq.get(owner.get('settled_seq'), {})
+        raw = json.loads(files[snapshot['history']['file_id']])['events']
+        if not (retained.get('kind') == 'snapshot_retained'
+                and owner.get('kind') == 'history'
+                and owner.get('mission') == retained.get('mission') == snapshot['mission']
+                and settled.get('kind') == 'rpc_settled'
+                and settled.get('operation_id') == retained.get('operation_id')
+                and owner.get('settled_seq', len(events) + 1) < retained.get('seq', 0)
+                and settled.get('history_event_id') == retained.get('history_event_id')
+                == snapshot['last_event_id'] == int(raw[-1]['eventId'])):
+            errors.append('snapshot-history-ownership:' + snapshot['snapshot_id'])
+    for command in trace['commands']:
+        observation = by_seq.get(command['schedule_observed_seq'], {})
+        owner = rpc.get(observation.get('operation_id'), {})
+        if not (observation.get('kind') == 'rpc_settled'
+                and observation.get('history_event_id') == command['scheduled_event_id']
+                and owner.get('kind') == 'history'
+                and owner.get('mission') == command['mission']
+                and owner.get('settled_seq') == observation.get('seq')
+                and histories[command['mission']][command['scheduled_event_id']]['eventType'] ==
+                'EVENT_TYPE_ACTIVITY_TASK_SCHEDULED'):
+            errors.append('schedule-fetch:' + command['activity_id'])
+    for event in events:
+        kind = event['kind']
+        if kind == 'activity_terminal_observed':
+            raw = histories[event['mission']].get(event['history_event_id'], {})
+            owner = rpc.get(event['operation_id'], {})
+            settled = by_seq.get(owner.get('settled_seq'), {})
+            if raw.get('eventType') not in ('EVENT_TYPE_ACTIVITY_TASK_COMPLETED', 'EVENT_TYPE_ACTIVITY_TASK_FAILED'):
+                errors.append('terminal-is-not-terminal:' + str(event['seq']))
+            if not (owner.get('kind') == 'history' and owner.get('mission') == event['mission']
+                    and owner.get('settled_seq', len(events) + 1) < event['seq']
+                    and settled.get('history_event_id') == event['history_event_id']):
+                errors.append('terminal-fetch:' + str(event['seq']))
+        elif kind in ('update_accepted_observed', 'cancel_recorded_observed'):
+            expected_type = ('EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ACCEPTED'
+                             if kind == 'update_accepted_observed'
+                             else 'EVENT_TYPE_WORKFLOW_EXECUTION_CANCEL_REQUESTED')
+            raw = histories[event['mission']].get(event['history_event_id'], {})
+            observed_id = event['history_event_id']
+            fetched = any(row['kind'] == 'history' and row['mission'] == event['mission']
+                          and row['settled_seq'] < event['seq']
+                          and type(by_seq[row['settled_seq']]['history_event_id']) is int
+                          and type(observed_id) is int
+                          and by_seq[row['settled_seq']]['history_event_id'] >= observed_id
+                          for row in rpc.values())
+            if kind == 'update_accepted_observed':
+                owner = rpc.get(event['operation_id'], {})
+                settled = by_seq.get(owner.get('settled_seq'), {})
+                fetched = (owner.get('kind') == 'history'
+                           and owner.get('outcome') == 'SUCCESS'
+                           and owner.get('mission') == event['mission']
+                           and owner.get('settled_seq', len(events) + 1) < event['seq']
+                           and type(settled.get('history_event_id')) is int
+                           and type(observed_id) is int
+                           and settled['history_event_id'] >= observed_id)
+            if raw.get('eventType') != expected_type or not fetched:
+                errors.append(kind + '-fetch:' + str(event['seq']))
+        elif kind in ('update_result_observed', 'query_observed'):
+            owner = rpc.get(event['operation_id'], {})
+            expected_kind = 'update_result' if kind == 'update_result_observed' else 'query'
+            if not (owner.get('kind') == expected_kind and owner.get('mission') == event['mission']
+                    and owner.get('settled_seq', len(events) + 1) < event['seq']):
+                errors.append(kind + '-owner:' + str(event['seq']))
+    return errors
+
+
+def test_dag2_fixture_observer_causality_binds_owned_history_and_result():
+    assert _dag2_fixture_observer_causality_errors(DAG2_TEST_FULL_PACK['files']) == []
+    trace = json.loads(DAG2_TEST_FULL_PACK['files']['dag2-trace.json'])
+    assert len(trace['rpc_operations']) == 48
+    assert len(trace['events']) == 230
+    assert len(DAG2_TEST_FULL_PACK['files']['dag2-trace.json'].encode()) < 262144
+
+
+@pytest.mark.parametrize('fault', ['schedule-is-terminal', 'terminal-without-fetch',
+                                   'acceptance-before-fetch', 'cancel-before-fetch',
+                                   'result-before-settlement', 'inspector-masquerades-as-query',
+                                   'completed-result-submit-after-settlement',
+                                   'original-result-operation-missing',
+                                   'snapshot-retention-links-missing',
+                                   'accepted-observer-unowned'])
+def test_dag2_fixture_observer_causality_catches_reviewed_regressions(fault):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    by_seq = {row['seq']: row for row in trace['events']}
+    if fault == 'accepted-observer-unowned':
+        for event in trace['events']:
+            if event['kind'] == 'update_accepted_observed':
+                event['operation_id'] = None
+    elif fault == 'snapshot-retention-links-missing':
+        for event in trace['events']:
+            if event['kind'] == 'snapshot_retained':
+                event['operation_id'] = None
+    elif fault == 'original-result-operation-missing':
+        trace['rpc_operations'] = [row for row in trace['rpc_operations']
+                                   if row['operation_id'] != 'update-original-result']
+    elif fault == 'schedule-is-terminal':
+        for command in trace['commands']:
+            by_seq[command['schedule_observed_seq']]['kind'] = 'activity_terminal_observed'
+    elif fault == 'terminal-without-fetch':
+        for event in trace['events']:
+            if event['kind'] == 'activity_terminal_observed':
+                event['operation_id'] = None
+    elif fault == 'acceptance-before-fetch':
+        for event in trace['events']:
+            if event['kind'] == 'update_accepted_observed':
+                event['history_event_id'] = None
+    elif fault == 'completed-result-submit-after-settlement':
+        update = next(row for row in trace['updates'] if row['outcome'] == 'SAME_COMPLETED_RESULT')
+        owner = next(row for row in trace['rpc_operations'] if row['operation_id'] == update['operation_id'])
+        update['submit_seq'] = owner['settled_seq'] + 1
+    elif fault in ('cancel-before-fetch', 'result-before-settlement'):
+        kind = 'cancel_recorded_observed' if fault == 'cancel-before-fetch' else 'update_result_observed'
+        event = next(row for row in trace['events'] if row['kind'] == kind)
+        event['seq'] = 1
+    else:
+        for command in trace['commands']:
+            if command['kind'].endswith('inspect'):
+                event = by_seq[command['return_seq']]
+                event['kind'] = 'query_observed'
+                event['operation_id'] = None
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    errors = _dag2_fixture_observer_causality_errors(files)
+    assert errors
+    if fault == 'accepted-observer-unowned':
+        assert len([error for error in errors
+                    if error.startswith('update_accepted_observed-fetch:')]) == 2
+    elif fault == 'snapshot-retention-links-missing':
+        assert len([error for error in errors
+                    if error.startswith('snapshot-history-ownership:')]) == 7
+    elif fault == 'original-result-operation-missing':
+        assert 'original-result-ownership' in errors
+    elif fault == 'schedule-is-terminal':
+        assert len([error for error in errors if error.startswith('terminal-is-not-terminal:')]) == 9
+    elif fault == 'terminal-without-fetch':
+        assert len([error for error in errors if error.startswith('terminal-fetch:')]) == 9
+
+
+@pytest.mark.parametrize('late_mismatch,expected_code', [
+    ('required', 'REQUIRED_NODES'),
+    ('junit', 'JUNIT_IDENTITY'),
+])
+def test_dag2_cli_late_input_mismatch_cannot_emit_success(
+        tmp_path, monkeypatch, capsys, late_mismatch, expected_code):
+    """A fully validated unit snapshot cannot mask a later CLI binding failure."""
+    from types import SimpleNamespace
+    audit = tmp_path / 'audit'
+    audit.mkdir()
+    _dag2_full_pack_write(audit, DAG2_TEST_FULL_PACK['files'])
+    validated = _dag2_validate_complete_pack(audit)
+    identity = tmp_path / 'expected-identity.json'
+    identity.write_bytes(_dag2_test_bytes(DAG2_TEST_FULL_PACK['expected_identity']))
+    reviewed = audit / 'source-manifest.json'
+    wrong = tmp_path / ('wrong-required.txt' if late_mismatch == 'required' else 'wrong-results.xml')
+    wrong.write_bytes(b'wrong independently supplied CLI receipt\n')
+    monkeypatch.setattr(gate, 'DAG2_REVIEWED_SHARED_RECEIPT',
+                        deepcopy(DAG2_TEST_PACK_METADATA['expected_unit_receipts']['shared']))
+    # Only the already-proven input-validation result is controlled. The actual
+    # CLI's late checks, exception handling, output validator and emitter run.
+    monkeypatch.setattr(gate, 'validate_dag2_audit', lambda *args, **kwargs: validated)
+    summary = tmp_path / 'step-summary.txt'
+    args = SimpleNamespace(
+        audit=audit, expected_revision=DAG2_TEST_FULL_PACK['expected_identity']['commit'],
+        expected_identity=identity, reviewed_source_manifest=reviewed,
+        expected_source_manifest_sha256=hashlib.sha256(reviewed.read_bytes()).hexdigest(),
+        required=wrong if late_mismatch == 'required' else audit / 'required-nodes.txt',
+        junit=wrong if late_mismatch == 'junit' else audit / 'results.xml', summary=summary)
+    exit_code = gate._dag2_main(args)
+    stdout = capsys.readouterr().out
+    assert exit_code != 0
+    assert not (audit / 'dag2-summary.json').exists()
+    assert not summary.exists() or '"record_validation":"PASS"' not in summary.read_text()
+    output = json.loads(stdout)
+    assert output['schema_version'] == 'opendot.temporal.dag2-gate.diagnostic.v1'
+    assert output['result'] == 'FAIL'
+    assert output['primary_failure'] == {'phase': 'verification', 'code': expected_code}
+    assert '"record_validation":"PASS"' not in stdout
+
+
+@pytest.mark.parametrize('operation_id', [
+    'start-hosted-normal', 'history-normal-final', 'query-normal-final',
+    'result-normal', 'update-get-completed',
+])
+def test_dag2_owned_success_rpc_cannot_claim_validator_refusal(tmp_path, operation_id):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    operation = next(row for row in trace['rpc_operations'] if row['operation_id'] == operation_id)
+    assert operation['outcome'] == 'SUCCESS'
+    operation['outcome'] = 'EXPECTED_VALIDATOR_REFUSAL'
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'RPC_UNCONFIRMED'
+    assert caught.value.boundary == 'record_validation'
+
+
+def _dag2_rebind_reviewed_history_transport(files, filename, raw, projection_edits=None):
+    """Rebind only raw-file envelopes and explicit scalar projection edits."""
+    files[filename] = _dag2_test_bytes(raw).decode()
+    encoded = files[filename].encode()
+    trace = json.loads(files['dag2-trace.json'])
+    for snapshot in trace['snapshots']:
+        if snapshot['history']['file_id'] == filename:
+            snapshot['history']['sha256'] = hashlib.sha256(encoded).hexdigest()
+            snapshot['history']['size_bytes'] = len(encoded)
+            for event_id, key, value in projection_edits or ():
+                event = next(row for row in snapshot['events'] if row['event_id'] == event_id)
+                event['extracted'][key] = value
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    replays = json.loads(files['dag2-replays.json'])
+    for replay in replays['replays']:
+        if replay['history_file_id'] == filename:
+            replay['retained_history_sha256'] = hashlib.sha256(encoded).hexdigest()
+            replay['replayer_input_sha256'] = hashlib.sha256(encoded).hexdigest()
+    files['dag2-replays.json'] = _dag2_test_bytes(replays).decode()
+
+
+def test_dag2_workflow_task_schedule_cannot_be_reused_after_completion(tmp_path):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    filename = 'normal-final.history.json'
+    raw = json.loads(files[filename])
+    for event_id, attribute in [('14', 'workflowTaskStartedEventAttributes'),
+                                ('15', 'workflowTaskCompletedEventAttributes')]:
+        event = next(row for row in raw['events'] if row['eventId'] == event_id)
+        assert event[attribute]['scheduledEventId'] == '13'
+        event[attribute]['scheduledEventId'] = '2'
+    _dag2_rebind_reviewed_history_transport(files, filename, raw,
+                                           [(14, 'scheduled_event_id', 2),
+                                            (15, 'scheduled_event_id', 2)])
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'HISTORY_LINKAGE'
+    assert caught.value.boundary == 'record_validation'
+
+
+def test_dag2_retained_raw_event_prefix_cannot_change_unprojected_fields(tmp_path):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    filename = 'reconcile-unknown-before-stop.history.json'
+    raw = json.loads(files[filename])
+    event = next(row for row in raw['events'] if row['eventId'] == '2')
+    event['eventTime'] = '2026-10-02T18:00:02Z'
+    # eventTime is deliberately absent from the independently frozen projection.
+    _dag2_rebind_reviewed_history_transport(files, filename, raw)
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'HISTORY_MISMATCH'
+    assert caught.value.boundary == 'record_validation'
+
+
+@pytest.mark.parametrize('fault,expected_code', [
+    ('missing-mission-result', 'RPC_UNCONFIRMED'),
+    ('unapproved-start-update', 'UPDATE_MISMATCH'),
+    ('queued-before-update', 'CAUSAL_ORDER'),
+])
+def test_dag2_complete_rpc_and_snapshot_stage_ownership(tmp_path, fault, expected_code):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    if fault == 'queued-before-update':
+        trace['snapshots'][3]['observation_seq'] = trace['snapshots'][1]['observation_seq']
+    else:
+        operation = next(row for row in trace['rpc_operations'] if row['operation_id'] == 'result-normal')
+        assert operation['kind'] == 'result'
+        if fault == 'missing-mission-result':
+            operation['kind'] = 'query'
+        else:
+            operation.update(kind='start_update', update_id='dag2-unapproved-update')
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == expected_code
+    assert caught.value.boundary == 'record_validation'
+
+
+@pytest.mark.parametrize('nested_type_fault', ['boolean-as-integer', 'integer-as-float'])
+def test_dag2_state_references_require_recursive_exact_types(tmp_path, nested_type_fault):
+    import base64
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    state = json.loads(files['normal-final.state.json'])
+    if nested_type_fault == 'boolean-as-integer':
+        state['nodes']['A']['accepted_result_ref']['integrity_verified'] = 0
+    else:
+        reference = state['nodes']['B']['candidate_result_ref']
+        reference['size_bytes'] = float(reference['size_bytes'])
+    state_raw = _dag2_test_bytes(state)
+    state_hash = hashlib.sha256(state_raw).hexdigest()
+    files['normal-final.state.json'] = state_raw.decode()
+    raw = json.loads(files['normal-final.history.json'])
+    completion = raw['events'][-1]
+    assert completion['eventId'] == '46'
+    completion['workflowExecutionCompletedEventAttributes']['result']['payloads'][0]['data'] = (
+        base64.b64encode(state_raw).decode())
+    _dag2_rebind_reviewed_history_transport(files, 'normal-final.history.json', raw,
+                                           [(46, 'payload_sha256', state_hash)])
+    trace = json.loads(files['dag2-trace.json'])
+    snapshot = trace['snapshots'][0]
+    snapshot['state'].update(sha256=state_hash, size_bytes=len(state_raw))
+    snapshot['completion_payload_sha256'] = state_hash
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    replays = json.loads(files['dag2-replays.json'])
+    replays['replays'][0]['completion_payload_sha256'] = state_hash
+    files['dag2-replays.json'] = _dag2_test_bytes(replays).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'INVALID_TYPE'
+    assert caught.value.boundary == 'record_validation'
+
+
+def test_dag2_last_mission_cannot_escape_absolute_scenario_deadline(tmp_path):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    first_no_ref = min(row['seq'] for row in trace['events'] if row['mission'] == 'hosted-no-ref-cancel')
+    for row in trace['events']:
+        if row['seq'] >= first_no_ref:
+            row['monotonic_ns'] += 160_000_000_000
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    assert json.loads(files['dag2-cleanup.json'])['scenario_elapsed_ms'] == 190
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'DEADLINE_EXHAUSTED'
+    assert caught.value.boundary == 'record_validation'
+
+
+def test_dag2_worker_stop_requires_scheduled_and_update_settlement(tmp_path):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    names = ['dag2-trace.json', 'dag2-environment.json', 'dag2-originals.json',
+             'dag2-cleanup.json', 'dag2-replays.json']
+    documents = {name: json.loads(files[name]) for name in names}
+    trace = documents['dag2-trace.json']
+    queued_seq = next(row['observation_seq'] for row in trace['snapshots'] if row['snapshot_id'] == 'reconcile-update-queued')
+    queued = next(row for row in trace['events'] if row['seq'] == queued_seq)
+    stop = next(row for row in documents['dag2-cleanup.json']['worker_stops'] if row['generation'] == 5)
+    moved_seqs = (stop['stop_requested_seq'], stop['stop_completed_seq'])
+    moved = [deepcopy(row) for row in trace['events'] if row['seq'] in moved_seqs]
+    assert [row['kind'] for row in moved] == ['worker_stop_requested', 'worker_stop_completed']
+    assert all(row['worker_generation'] == 5 for row in moved)
+    for row in moved:
+        row['counts'] = deepcopy(queued['counts'])
+        row['monotonic_ns'] = queued['monotonic_ns']
+    reordered = []
+    for row in trace['events']:
+        if row['seq'] not in moved_seqs:
+            reordered.append(row)
+        if row['seq'] == queued_seq:
+            reordered.extend(moved)
+    trace['events'] = reordered
+    remap = {row['seq']: index for index, row in enumerate(reordered, 1)}
+    stop = next(row for row in documents['dag2-cleanup.json']['worker_stops']
+                if row['generation'] == 5)
+    stop['quiescent_snapshot_seq'] = queued_seq
+    def rebind_sequences(value):
+        if type(value) is dict:
+            for key, child in value.items():
+                if (key == 'seq' or key.endswith('_seq')) and type(child) is int:
+                    value[key] = remap[child]
+                else:
+                    rebind_sequences(child)
+        elif type(value) is list:
+            for child in value:
+                rebind_sequences(child)
+    for name, document in documents.items():
+        rebind_sequences(document)
+        files[name] = _dag2_test_bytes(document).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'CLEANUP_UNCONFIRMED'
+    assert caught.value.boundary == 'record_validation'
+
+
+@pytest.mark.parametrize('filename', ['dag2-cleanup.json', 'dag2-diagnostic.json'])
+def test_dag2_all_audits_must_share_one_evidence_class(tmp_path, filename):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    document = json.loads(files[filename])
+    document['evidence_class'] = 'OBSERVED_HOSTED_CANDIDATE'
+    files[filename] = _dag2_test_bytes(document).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'INVALID_VALUE'
+    assert caught.value.boundary == 'record_validation'
+
+
+def test_dag2_snapshot_requires_owned_history_covering_its_last_event(tmp_path):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    snapshot = trace['snapshots'][0]
+    owner = next(row for row in trace['rpc_operations']
+                 if row['operation_id'] == 'history-normal-final')
+    settlement = next(row for row in trace['events'] if row['seq'] == owner['settled_seq'])
+    assert snapshot['last_event_id'] == 46
+    # The actual final Activity terminal does not cover Workflow completion46.
+    settlement['history_event_id'] = 42
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'HISTORY_LINKAGE'
+    assert caught.value.boundary == 'record_validation'
+
+
+@pytest.mark.parametrize('omitted_control', ['original', 'same-id-repeat'])
+def test_dag2_each_accepted_update_control_requires_owned_observation(tmp_path, omitted_control):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    names = ['dag2-trace.json', 'dag2-environment.json', 'dag2-originals.json',
+             'dag2-cleanup.json', 'dag2-replays.json']
+    documents = {name: json.loads(files[name]) for name in names}
+    trace = documents['dag2-trace.json']
+    accepted = [row for row in trace['events'] if row['kind'] == 'update_accepted_observed']
+    assert len(accepted) == 2
+    omitted = accepted[0 if omitted_control == 'original' else 1]['seq']
+    trace['events'] = [row for row in trace['events'] if row['seq'] != omitted]
+    remap = {row['seq']: index for index, row in enumerate(trace['events'], 1)}
+    def rebind_sequences(value):
+        if type(value) is dict:
+            for key, child in value.items():
+                if (key == 'seq' or key.endswith('_seq')) and type(child) is int:
+                    value[key] = remap[child]
+                else:
+                    rebind_sequences(child)
+        elif type(value) is list:
+            for child in value:
+                rebind_sequences(child)
+    for name, document in documents.items():
+        rebind_sequences(document)
+        files[name] = _dag2_test_bytes(document).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code == 'UPDATE_MISMATCH'
+    assert caught.value.boundary == 'record_validation'
+
+
+@pytest.mark.parametrize('extra_kind', [
+    'bootstrap_constructed', 'worker_stop_requested', 'worker_stop_completed',
+    'activity_executor_completed', 'replay_begin', 'replay_end',
+    'update_submit', 'update_handle_returned', 'update_refusal_observed',
+    'update_result_observed', 'cancel_submit', 'cancel_acknowledged',
+    'observer_failure',
+])
+def test_dag2_success_trace_rejects_unowned_extra_observer_events(tmp_path, extra_kind):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    extra = deepcopy(trace['events'][-1])
+    extra.update(seq=extra['seq'] + 1, kind=extra_kind,
+                 mission='hosted-normal', node=None, worker_generation=None,
+                 operation_id=None, history_event_id=None)
+    trace['events'].append(extra)
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code in {'COUNTER_MISMATCH', 'CLEANUP_UNCONFIRMED'}
+    assert caught.value.boundary == 'record_validation'
+
+
+@pytest.mark.parametrize('invalid_optional', ['duplicate-query-owner', 'wrong-workflow-terminal-event'])
+def test_dag2_optional_observer_events_are_unique_and_owned(tmp_path, invalid_optional):
+    files = deepcopy(DAG2_TEST_FULL_PACK['files'])
+    trace = json.loads(files['dag2-trace.json'])
+    # Build a closed, counter-neutral event after all actual events. Its claimed
+    # owner/raw event is invalid without changing any state or history bytes.
+    extra = deepcopy(trace['events'][-1])
+    extra.update(seq=extra['seq'] + 1, mission='hosted-normal', node=None,
+                 worker_generation=None)
+    if invalid_optional == 'duplicate-query-owner':
+        owner = next(row for row in trace['rpc_operations'] if row['operation_id'] == 'query-normal-final')
+        extra.update(kind='query_observed', operation_id=owner['operation_id'], history_event_id=None)
+        first = deepcopy(extra)
+        trace['events'].append(first)
+        extra['seq'] += 1
+    else:
+        extra.update(kind='workflow_terminal_observed', operation_id='history-normal-final',
+                     history_event_id=42)
+    trace['events'].append(extra)
+    files['dag2-trace.json'] = _dag2_test_bytes(trace).decode()
+    audit = _dag2_full_pack_write(tmp_path, files)
+    with pytest.raises(gate.GateError) as caught:
+        _dag2_validate_complete_pack(audit)
+    assert caught.value.code in {'RPC_UNCONFIRMED', 'HISTORY_LINKAGE'}
+    assert caught.value.boundary == 'record_validation'
