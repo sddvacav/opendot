@@ -60,9 +60,14 @@ configuration; neither comes from CAD/mesh metadata. The existing environment is
 preserved. No executable or shared library is copied into a receipt pack.
 
 Unix only: the external process runs without a shell in a new process group,
-with 1–300 s caller wall timeout, 300 s CPU limit and 32 MiB per-file output
-limit. The timeout kills and waits for the process group. The case is capped at
-10,000 elements. OpenMP, OpenBLAS, MKL and CalculiX result/equation-solver thread
+with a 1–300 s caller-configured wait timeout, CPU limit at most 300 s preserving
+lower inherited CPU limits, and a configured 32 MiB per-file output limit. On
+timeout, while the direct child is still running, the adapter requests SIGKILL
+for the process group and then waits for that child without a further timeout.
+This does not prove that all descendants stopped or establish a hard overall
+elapsed-time bound. The unchanged file-size setup may fail when a lower hard
+file-size limit is inherited. The case is capped at 10,000 elements. OpenMP,
+OpenBLAS, MKL and CalculiX result/equation-solver thread
 environment variables are set to 1. Solver CPU-count messages are checked too.
 These are configured limits, not measured CPU-core-hours or a hostile-code
 sandbox. Memory and aggregate directory size are not OS-limited. The Unix
@@ -142,9 +147,11 @@ Pure tests need no solver. Integration tests are explicitly skipped without both
 configured paths and are designed for the default beam dimensions. With real
 CalculiX enabled they cover actual solving, ordinary/resealed artifact tampering,
 wrong BC/deck identity, wrong thermal field/flux, false metadata, nonconverged or
-missing outputs, process timeout cleanup, existing-output refusal and incomplete
-receipt publication. Test fixtures and injected failure processes are explicitly
-not presented as solver evidence. Generated files stay outside the source tree.
+missing outputs, timeout exception reporting, existing-output refusal and incomplete
+receipt publication. The sleeping-shell timeout fixture asserts TimeoutExpired;
+it does not establish descendant cleanup. Test fixtures and injected failure
+processes are explicitly not presented as solver evidence. Generated files stay
+outside the source tree.
 
 ## Official semantics and licensing
 
