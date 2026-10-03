@@ -1,5 +1,15 @@
 # Finite synthetic batch: preparation protocol
 
+**Current status pointer (2026-10-02).** This page preserves dated preparation
+checkpoints. Later source-only live-batch and retained-public-projection results
+are summarized in [the later qualification record](temporal-reference-transport.md#later-source-only-200-job-qualification-2026-10-02).
+They do not change the frozen a3 assets. The retained run reports 200 accepted
+synthetic jobs, Activity interval peak 3 and handler interval peak 1; handler
+concurrency remains NOT_DEMONSTRATED, and original execution evidence is not
+independently replayable from the projection. These results do not demonstrate
+200 agents, CPU parallelism, multi-host operation or scientific acceptance.
+
+**Historical preparation checkpoint.**
 Decision date: 2026-10-02. LOCAL PREPARATION ONLY; hosted batch NOT RUN.
 Base: main 26e301795bcd6bf2ad26274e25fed7c8fc2106a8, tree
 6f2f8bdad9ab1dc7ff1c311fe3c581a5eec71634.
@@ -124,6 +134,8 @@ evidence raises only a fixed verifier code. The new schema does not weaken any
 old seven-case validator, CLI acceptance or node selection.
 
 ## Initial eight-path verification disposition
+
+**Historical preparation checkpoint, before hosted wiring.**
 
 The exact 18-method preparation selection ran with Python 3.12.14's stdlib
 unittest runner by compiling only each self-contained appended batch section.
@@ -383,6 +395,8 @@ receipt was accepted: 200 reported validated terminals, Activity interval peak 3
 handler interval peak 1 and outstanding-reservation peak 16. Handler overlap was
 NOT_DEMONSTRATED; CPU parallelism stayed NOT_EVALUATED. No stronger claim follows.
 
+**Historical first-run / pre-retention checkpoint.**
+
 Only the published summary/table digests remain available for that run. The complete
 per-job trace and tables are unavailable; their missing rows cannot be independently
 rechecked, recovered from hashes or fabricated. This section preserves the first-run
@@ -391,6 +405,7 @@ retroactively strengthen that evidence and has NOT RUN in hosted CI.
 
 ## Optional public projection retention candidate (2026-10-02)
 
+**Historical pre-run checkpoint.**
 Status: LOCAL PREPARATION ONLY. No new hosted run, upload or publication has occurred.
 A future evidence-retention run requires root approval of the exact candidate and
 manual batch200 dispatch with retain_public_evidence=true. This boolean defaults
