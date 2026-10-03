@@ -24,7 +24,7 @@
     },
     "git_tree": "8244ca5fd791f15c30a29ef3f420c7045447e338",
     "public_source_url": "https://github.com/sddvacav/opendot/tree/f45f2be4c2bbc858055db2eebb08cf61fc92342f",
-    "identity_scope": "The Git commit/tree identify the public base before adding this crosswalk and its README navigation line. Referenced file pins identify this documentation integration; the README pin includes that line. These are source identities, not execution receipts. Historical recorded revisions, outcomes and receipt URLs remain historical even when a record's current file pin changes.",
+    "identity_scope": "The Git commit/tree identify the public base before adding this crosswalk and the repository README navigation line. Referenced file pins identify this documentation integration; the repository README pin includes that line. The historical research README and source-needs-index are unchanged. These are source identities, not execution receipts. Historical recorded revisions, outcomes and receipt URLs remain historical even when a record's current file pin changes.",
     "current_status": {
       "a5_status": "PUBLISHED_PRERELEASE",
       "a5_release_url": "https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5",
@@ -2265,8 +2265,8 @@
       "claim_kind": "PROJECT_INFERENCE",
       "current_summary_locator": {
         "path": "docs/research/README.md",
-        "sha256": "e467ccd83f073dea8b48b8a166a29d65bd67c48ecaf99bce58aed1331ccd4a10",
-        "bytes": 4731,
+        "sha256": "a0f62e2b04f51eabc028b2f5bc25c4d798bfdaf11b4a1a77caf925f0c9204359",
+        "bytes": 4501,
         "heading": "汇总后的产品决策建议",
         "text_anchor": "## 汇总后的产品决策建议",
         "observed_line": 23,
@@ -5350,8 +5350,8 @@
       "evidence_id": "EV06",
       "record": {
         "path": "README.md",
-        "sha256": "34e19f89b05d07bfb13f27a8c19260d8670e5b7e093fafc5cdfc9998e36eec6e",
-        "bytes": 12662,
+        "sha256": "041fb0831a9c0a96be1dcac658ec9936499f146cfb448da873894e505b8d7b24",
+        "bytes": 12879,
         "heading": "Current experimental release · 0.3.0a5",
         "text_anchor": "## Current experimental release · 0.3.0a5",
         "observed_line": 3,
@@ -6747,8 +6747,8 @@
       "stable_heading": "汇总后的产品决策建议",
       "file": {
         "path": "docs/research/README.md",
-        "sha256": "e467ccd83f073dea8b48b8a166a29d65bd67c48ecaf99bce58aed1331ccd4a10",
-        "bytes": 4731
+        "sha256": "a0f62e2b04f51eabc028b2f5bc25c4d798bfdaf11b4a1a77caf925f0c9204359",
+        "bytes": 4501
       },
       "proposal": "Use README.md#汇总后的产品决策建议 plus the current snapshot SHA-256; line 23 is secondary navigation. The historical line 13 and frozen index remain unchanged.",
       "stable_heading_url": "README.md#汇总后的产品决策建议"
@@ -6832,8 +6832,8 @@
       },
       "correction": {
         "path": "README.md",
-        "sha256": "34e19f89b05d07bfb13f27a8c19260d8670e5b7e093fafc5cdfc9998e36eec6e",
-        "bytes": 12662,
+        "sha256": "041fb0831a9c0a96be1dcac658ec9936499f146cfb448da873894e505b8d7b24",
+        "bytes": 12879,
         "heading": "Current experimental release · 0.3.0a5",
         "text_anchor": "## Current experimental release · 0.3.0a5",
         "observed_line": 3,
@@ -6857,8 +6857,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "34e19f89b05d07bfb13f27a8c19260d8670e5b7e093fafc5cdfc9998e36eec6e",
-      "bytes": 12662
+      "sha256": "041fb0831a9c0a96be1dcac658ec9936499f146cfb448da873894e505b8d7b24",
+      "bytes": 12879
     },
     {
       "path": "RESEARCH-MAP.md",
@@ -6882,8 +6882,8 @@
     },
     {
       "path": "docs/research/README.md",
-      "sha256": "e467ccd83f073dea8b48b8a166a29d65bd67c48ecaf99bce58aed1331ccd4a10",
-      "bytes": 4731
+      "sha256": "a0f62e2b04f51eabc028b2f5bc25c4d798bfdaf11b4a1a77caf925f0c9204359",
+      "bytes": 4501
     },
     {
       "path": "docs/research/academic-needs.md",
