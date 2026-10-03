@@ -139,3 +139,5 @@ Good starting points are clearer documentation, a minimal synthetic example, or 
 [Version overview](OVERVIEW.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Support](SUPPORT.md) · [Release gates](docs/release-checklist.md)
 
 Original project code is [Apache-2.0](LICENSE); see [NOTICE](NOTICE) and the separate [artwork notice](assets/brand/NOTICE). Optional dependencies retain their own obligations. No response SLA is promised.
+
+[Source → need → feature → acceptance crosswalk](docs/research/source-feature-crosswalk.md) connects 18 historical sources and 22 needs to bounded implementation evidence; full-need acceptance remains NOT_RUN.
