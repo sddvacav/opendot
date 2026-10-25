@@ -3,6 +3,7 @@
 ## Current experimental release · 0.3.0a5
 
 **ALPHA / NOT_SCORED; [published prerelease](https://github.com/sddvacav/opendot/releases/tag/v0.3.0a5).**
+Before any external wording, check the [public claims boundary (CN)](docs/research/public_claims_boundary_cn_20261025.md): allowed vs forbidden claims; keep ALPHA / NOT_SCORED; no private research in public claims.
 Use the [a5 installed guide](docs/installed-quickstart.md) only with its matching
 reviewed five-file bundle and independently accepted external SHA256SUMS digest.
 Exact source, installed and guide qualification require separate external receipts;
