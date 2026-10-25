@@ -4,7 +4,7 @@ Focus contributions on the bounded adapter package, reproducible synthetic examp
 
 ## Start with the current boundary
 
-Read [the architecture](docs/architecture.md), [claim status](docs/claim-status.md), and [AGENTS.md](AGENTS.md). Keep the package import namespace and module entrypoints stable unless a reviewed change explicitly requires otherwise. A model-driven agent runtime, scheduler, device controller, database, or managed evidence service is outside this source cut. The bounded callable-only owner is retained unchanged; do not add a second execution owner. The sole local storage exception is the canonical artifact closure in [ADR 002](docs/decisions/002-canonical-artifact-core.md); do not add another storage owner.
+Read [the architecture](docs/architecture.md), [claim status](docs/claim-status.md), [AGENTS.md](AGENTS.md), and the Chinese [public claims boundary](docs/research/public_claims_boundary_cn_20261025.md) (allowed/forbidden list; ALPHA / NOT_SCORED). Keep the package import namespace and module entrypoints stable unless a reviewed change explicitly requires otherwise. A model-driven agent runtime, scheduler, device controller, database, or managed evidence service is outside this source cut. The bounded callable-only owner is retained unchanged; do not add a second execution owner. The sole local storage exception is the canonical artifact closure in [ADR 002](docs/decisions/002-canonical-artifact-core.md); do not add another storage owner.
 
 Useful changes include clearer explanations, a minimal public fixture, a narrowly scoped adapter contract, or a synthetic rejection/failure test. Peer documentation references are not requests to integrate those projects.
 
