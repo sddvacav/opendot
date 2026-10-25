@@ -44,6 +44,20 @@ OpenDot Engineering is a Python toolkit for local tool execution and inspectable
 
 Use it to prototype reviewable developer and research-engineering workflows: connect a callable to an artifact, review a synthetic measurement summary, or create a controlled local Git working copy. Start with the small example below, then explore the [APIs and examples](#explore-the-package).
 
+## First example · about 30 seconds
+
+From a **source checkout** root on Linux/POSIX with Python 3.12+. This standard-library example writes and checks a small synthetic text artifact. It needs no model, service, or native solver:
+
+```sh
+OUTPUT_PARENT=$(mktemp -d /tmp/opendot-composition.XXXXXX)
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/callable-artifacts/demo.py --output "$OUTPUT_PARENT/result"
+```
+
+Look for `synthetic_software_assertions_passed: true` in the printed JSON. More detail: [callable-artifacts example](examples/callable-artifacts/README.md) · [shortest first examples](examples/README.md).
+
+**Installed the reviewed wheel already?** Do not copy the source-tree `PYTHONPATH=src` command into that environment. Follow the [installed quickstart](docs/installed-quickstart.md) sections [2 · first result](docs/installed-quickstart.md#2-create-and-inspect-your-first-result) and [3 · three cases](docs/installed-quickstart.md#3-try-success-refusal-and-missing-permission) instead.
+
 **Synthetic result preview** · [Run it and verify the saved output](examples/measurement-review/README.md#preview-a-checked-synthetic-result)
 
 `A.mean=2.0` · `B.mean=4.0` · exact difference `2/1` · tolerance `2/1` (all `au`)  

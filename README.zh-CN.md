@@ -39,6 +39,20 @@ OpenDot Engineering 是一套用于本地工具执行和结果检查的 Python �
 
 它适合开发者与科研工程人员构建可复核的工作流原型：把函数输出连接到产物存储、复核合成测量数据的统计结果，或创建受控的本地 Git 工作副本。先运行下面的小示例，再按需要查看 [API 与示例](#按需要选择入口)。
 
+## 第一个示例 · 约 30 秒
+
+在 **源码检出** 根目录、Linux/POSIX 与 Python 3.12+ 下运行。该标准库示例写入并检查一份小型合成文本产物，无需模型、服务或原生求解器：
+
+```sh
+OUTPUT_PARENT=$(mktemp -d /tmp/opendot-composition.XXXXXX)
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B \
+  examples/callable-artifacts/demo.py --output "$OUTPUT_PARENT/result"
+```
+
+在打印的 JSON 中查找 `synthetic_software_assertions_passed: true`。更多说明：[callable-artifacts 示例](examples/callable-artifacts/README.md) · [最短优先示例](examples/README.md)。
+
+**已经装好复核过的 wheel？** 不要把源码树的 `PYTHONPATH=src` 命令复制到已装环境。请改走[安装入门](docs/installed-quickstart.zh-CN.md)第 [2 · 首个结果](docs/installed-quickstart.zh-CN.md#2-创建并检查首个结果) 与第 [3 · 三种结果](docs/installed-quickstart.zh-CN.md#3-检查成功语义拒绝与缺少权限) 节。
+
 **合成结果预览** · [运行示例并核验已保存的输出](examples/measurement-review/README.zh-CN.md#预览已复核的合成结果)
 
 `A.mean=2.0` · `B.mean=4.0` · 精确差值 `2/1` · 容差 `2/1`（单位均为 `au`）  
